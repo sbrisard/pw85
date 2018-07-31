@@ -1,0 +1,26 @@
+import ctypes
+
+from ctypes import c_double
+
+c_double_p = ctypes.POINTER(c_double)
+
+Vector = c_double * 3
+Tensor = c_double * 6
+
+cpw85 = ctypes.cdll.LoadLibrary("../C/pw85.o")
+
+cpw85.spheroid.argtypes = [c_double, c_double, Vector, Tensor]
+cpw85.spheroid.restype = None
+
+
+def spheroid(a, c, n, q=None):
+    if q is None:
+        q = Tensor()
+    cpw85.spheroid(1.0, 0.1, Vector(), q)
+    return q
+
+
+if __name__ == '__main__':
+    q = spheroid(1.0, 0.1, None)
+    for qi in q:
+        print(qi)
