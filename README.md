@@ -6,4 +6,4 @@ introduced by Perram and Wertheim (*J. Comp. Phys*, **58(3)**, 409–416,
 
 PW85 is released under a BSD 3-Clause License.
 
-The documentations can be found on **TODO: fill link**.
+The documentations can be found [here](https://sbrisard.github.io/pw85/).
