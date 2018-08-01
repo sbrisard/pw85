@@ -8,7 +8,7 @@ if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=sphinx-build
 )
 set SOURCEDIR=.
-set BUILDDIR=..\docs
+set BUILDDIR=_build
 set SPHINXPROJ=PW85
 
 if "%1" == "" goto help
@@ -27,6 +27,11 @@ if errorlevel 9009 (
 )
 
 %SPHINXBUILD% -M %1 %SOURCEDIR% %BUILDDIR% %SPHINXOPTS%
+
+REM A trick to allow for html docs to be displayed in Github pages
+REM TODO Do this only if present script is invoked with html option
+if exist "_build\html\" xcopy /i /s /e _build\html ..\docs
+
 goto end
 
 :help
