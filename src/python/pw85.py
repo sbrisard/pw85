@@ -30,9 +30,3 @@ def spheroid(a, c, n, q=None):
         q = Tensor()
     cpw85.spheroid(1.0, 0.1, Vector(), q)
     return q
-
-
-if __name__ == '__main__':
-    q = spheroid(1.0, 0.1, None)
-    for qi in q:
-        print(qi)
