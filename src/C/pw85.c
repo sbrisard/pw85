@@ -3,7 +3,7 @@
 #define DIM 3
 #define SYM 6
 
-void spheroid(double a, double c, double n[DIM], double q[SYM]) {
+__declspec(dllexport) void spheroid(double a, double c, double n[DIM], double q[SYM]) {
     for (int i = 0; i < SYM; i++) {
 	q[i] = i;
     }
