@@ -21,12 +21,12 @@ else:
     raise RuntimeError("Configuration file not found.")
 
 
-cpw85.spheroid.argtypes = [c_double, c_double, Vector, Tensor]
-cpw85.spheroid.restype = None
+cpw85.pw85_spheroid.argtypes = [c_double, c_double, Vector, Tensor]
+cpw85.pw85_spheroid.restype = None
 
 
 def spheroid(a, c, n, q=None):
     if q is None:
         q = Tensor()
-    cpw85.spheroid(1.0, 0.1, Vector(), q)
+    cpw85.pw85_spheroid(1.0, 0.1, n, q)
     return q
