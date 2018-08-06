@@ -9,8 +9,8 @@ from ctypes import c_double
 
 c_double_p = ctypes.POINTER(c_double)
 
-Vector = npct.ndpointer(dtype=np.float64, ndim=1, shape=(3,), flags='C_CONTIGUOUS')
-Tensor = npct.ndpointer(dtype=np.float64, ndim=1, shape=(6,), flags='C_CONTIGUOUS')
+Vector = npct.ndpointer(dtype=np.float64, ndim=1, shape=(3,), flags='C')
+Tensor = npct.ndpointer(dtype=np.float64, ndim=1, shape=(6,), flags='C')
 
 # TODO: wrap in a function
 path = os.path.expanduser('~/.pw85rc')
