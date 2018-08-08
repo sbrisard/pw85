@@ -28,6 +28,15 @@ cpw85.pw85_spheroid.restype = None
 
 
 def spheroid(a, c, n, q=None):
+    """Return the quadratic form associated to a spheroid.
+
+    The spheroid is defined by its equatorial radius `a`, its polar
+    radius `c` and the direction of its axis of revolution, `n`
+    (array-like of length 3).
+
+    If `q` is not ``None``, then it must be an array of length 6. It
+    is modified in place.
+    """
     if q is None:
         q = np.empty((6,), dtype=np.float64, order='C')
     cpw85.pw85_spheroid(a, c, n, q)
