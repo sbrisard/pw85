@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='pw85',
-    py_modules=['pw85'],
+    name='pypw85',
+    py_modules=['pypw85'],
     license='BSD-3',
 )

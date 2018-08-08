@@ -2,7 +2,7 @@
 The python API
 ##############
 
-.. automodule:: pw85
+.. automodule:: pypw85
    :members:
    :private-members:
    :undoc-members:

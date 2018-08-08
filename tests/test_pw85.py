@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 import scipy.linalg
 
-import pw85
+import pypw85
 
 from numpy.testing import assert_allclose
 
@@ -32,7 +32,7 @@ def test_spheroid(a, c, n, in_place, rtol=1E-7, atol=0):
     inv_c2 = 1.0/c**2
     n = np.asarray(n)
     out = np.empty((6,), dtype=np.float64) if in_place else None
-    q = pw85.spheroid(a, c, n, out)
+    q = pypw85.spheroid(a, c, n, out)
     if in_place:
         assert q is out
     q_mat = np.zeros((3, 3), dtype=np.float64)
