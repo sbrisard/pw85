@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -7,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Index &#8212; PW85  documentation</title>
+    <title>The python API &#8212; PW85  documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -15,8 +14,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="index" title="Index" href="#" />
+    <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="The C API" href="c_api.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -33,47 +33,26 @@
 
           <div class="body" role="main">
             
+  <div class="section" id="module-pypw85">
+<span id="the-python-api"></span><h1>The python API<a class="headerlink" href="#module-pypw85" title="Permalink to this headline">¶</a></h1>
+<dl class="attribute">
+<dt id="pypw85.c_double_p">
+<code class="descclassname">pypw85.</code><code class="descname">c_double_p</code><a class="headerlink" href="#pypw85.c_double_p" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">pypw85.LP_c_double</span></code></p>
+</dd></dl>
 
-<h1 id="index">Index</h1>
+<dl class="function">
+<dt id="pypw85.spheroid">
+<code class="descclassname">pypw85.</code><code class="descname">spheroid</code><span class="sig-paren">(</span><em>a</em>, <em>c</em>, <em>n</em>, <em>q=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#spheroid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.spheroid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the quadratic form associated to a spheroid.</p>
+<p>The spheroid is defined by its equatorial radius <cite>a</cite>, its polar
+radius <cite>c</cite> and the direction of its axis of revolution, <cite>n</cite>
+(array-like of length 3).</p>
+<p>If <cite>q</cite> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, then it must be an array of length 6. It
+is modified in place.</p>
+</dd></dl>
 
-<div class="genindex-jumpbox">
- <a href="#C"><strong>C</strong></a>
- | <a href="#P"><strong>P</strong></a>
- | <a href="#S"><strong>S</strong></a>
- 
 </div>
-<h2 id="C">C</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="py_api.html#pypw85.c_double_p">c_double_p (in module pypw85)</a>
-</li>
-  </ul></td>
-</tr></table>
-
-<h2 id="P">P</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="c_api.html#c.PW85_DIM">PW85_DIM (C macro)</a>
-</li>
-      <li><a href="c_api.html#c.pw85_spheroid">pw85_spheroid (C function)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="c_api.html#c.PW85_SYM">PW85_SYM (C macro)</a>
-</li>
-      <li><a href="py_api.html#module-pypw85">pypw85 (module)</a>
-</li>
-  </ul></td>
-</tr></table>
-
-<h2 id="S">S</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="py_api.html#pypw85.spheroid">spheroid() (in module pypw85)</a>
-</li>
-  </ul></td>
-</tr></table>
-
 
 
           </div>
@@ -93,15 +72,16 @@
 
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The python API</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="c_api.html" title="previous chapter">The C API</a></li>
   </ul></li>
 </ul>
 </div>
@@ -128,6 +108,9 @@
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
+      |
+      <a href="_sources/py_api.rst.txt"
+          rel="nofollow">Page source</a>
     </div>
 
     

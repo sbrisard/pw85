@@ -10,7 +10,8 @@ Welcome to PW85's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   c_api
+   py_api
 
 Indices and tables
 ==================
