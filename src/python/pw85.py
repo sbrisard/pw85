@@ -28,11 +28,7 @@ cpw85.pw85_spheroid.restype = None
 
 
 def spheroid(a, c, n, q=None):
-    # n = Vector()
-    # n[0] = 10.
-    # n[1] = 20.
-    # n[2] = 30.
     if q is None:
         q = np.empty((6,), dtype=np.float64, order='C')
-    cpw85.pw85_spheroid(1.0, 0.1, n, q)
+    cpw85.pw85_spheroid(a, c, n, q)
     return q
