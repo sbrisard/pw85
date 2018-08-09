@@ -30,7 +30,7 @@ if errorlevel 9009 (
 
 REM A trick to allow for html docs to be displayed in Github pages
 REM TODO Do this only if present script is invoked with html option
-if exist "_build\html\" xcopy /i /s /e /y _build\html ..\docs
+if "%1"=="html" if exist "_build\html\" xcopy /i /s /e /y _build\html ..\docs
 
 goto end
 
