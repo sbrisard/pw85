@@ -3,18 +3,18 @@ Reference
 *********
 
 This chapter provides some mathematical background to the
-Perram–Wertheim algorithm. We use matrices rather than tensors: a
-point or a vector are therefore defined through the column-vector of
-their coordinates. Likewise, a second-rank tensor is represented by
-its 3×3 matrix.
+Perram–Wertheim algorithm [PW85]_. We use matrices rather than
+tensors: a point or a vector are therefore defined through the
+column-vector of their coordinates. Likewise, a second-rank tensor is
+represented by its 3×3 matrix.
 
 Only the global, cartesian frame is considered here, and there is no
 ambiguity about the basis to which these column vectors and square
 matrices refer.
 
 
-Mathematical representation of ellipsoids – Implementation in ``PW85``
-==================================================================
+Mathematical representation of ellipsoids
+=========================================
 
 Ellipsoids are defined from their center ``c`` and a positive-definite
 quadratic form ``Q`` as the set of points ``m`` such that::
@@ -48,8 +48,8 @@ For ``0 ≤ λ ≤ 1`` and a point ``x``, we introduce the function::
 
   F(x, λ) = λ(x-c₁)ᵀ⋅Q₁⁻¹⋅(x-c₁)+(1-λ)(x-c₂)ᵀ⋅Q₂⁻¹⋅(x-c₂)
 
-For fixed ``λ``, ``F(x, λ)`` has a unique minimum [PW85] ``f(λ)``, and
-we define::
+For fixed ``λ``, ``F(x, λ)`` has a unique minimum [PW85]_ ``f(λ)``,
+and we define::
 
   f(λ) = min{ F(x, λ), x ∈ ℝ³ }, 0 ≤ λ ≤ 1.
 
@@ -71,3 +71,8 @@ of two ellipsoids. The ``PW85`` library computes this value.
 
 Geometric interpretation
 ========================
+
+References
+==========
+
+.. [PW85] Perram, J. W., & Wertheim, M. S. (1985). Statistical mechanics of hard ellipsoids. I. Overlap algorithm and the contact function. *Journal of Computational Physics*, 58(3), 409–416. https://doi.org/10.1016/0021-9991(85)90171-8

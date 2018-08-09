@@ -37,15 +37,15 @@
   <div class="section" id="reference">
 <h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
 <p>This chapter provides some mathematical background to the
-Perram–Wertheim algorithm. We use matrices rather than tensors: a
-point or a vector are therefore defined through the column-vector of
-their coordinates. Likewise, a second-rank tensor is represented by
-its 3×3 matrix.</p>
+Perram–Wertheim algorithm <a class="reference internal" href="#pw85" id="id1">[PW85]</a>. We use matrices rather than
+tensors: a point or a vector are therefore defined through the
+column-vector of their coordinates. Likewise, a second-rank tensor is
+represented by its 3×3 matrix.</p>
 <p>Only the global, cartesian frame is considered here, and there is no
 ambiguity about the basis to which these column vectors and square
 matrices refer.</p>
-<div class="section" id="mathematical-representation-of-ellipsoids-implementation-in-pw85">
-<h2>Mathematical representation of ellipsoids – Implementation in <code class="docutils literal notranslate"><span class="pre">PW85</span></code><a class="headerlink" href="#mathematical-representation-of-ellipsoids-implementation-in-pw85" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="mathematical-representation-of-ellipsoids">
+<h2>Mathematical representation of ellipsoids<a class="headerlink" href="#mathematical-representation-of-ellipsoids" title="Permalink to this headline">¶</a></h2>
 <p>Ellipsoids are defined from their center <code class="docutils literal notranslate"><span class="pre">c</span></code> and a positive-definite
 quadratic form <code class="docutils literal notranslate"><span class="pre">Q</span></code> as the set of points <code class="docutils literal notranslate"><span class="pre">m</span></code> such that:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
@@ -75,8 +75,8 @@ order:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>F(x, λ) = λ(x-c₁)ᵀ⋅Q₁⁻¹⋅(x-c₁)+(1-λ)(x-c₂)ᵀ⋅Q₂⁻¹⋅(x-c₂)
 </pre></div>
 </div>
-<p>For fixed <code class="docutils literal notranslate"><span class="pre">λ</span></code>, <code class="docutils literal notranslate"><span class="pre">F(x,</span> <span class="pre">λ)</span></code> has a unique minimum [PW85] <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>, and
-we define:</p>
+<p>For fixed <code class="docutils literal notranslate"><span class="pre">λ</span></code>, <code class="docutils literal notranslate"><span class="pre">F(x,</span> <span class="pre">λ)</span></code> has a unique minimum <a class="reference internal" href="#pw85" id="id2">[PW85]</a> <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>,
+and we define:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>f(λ) = min{ F(x, λ), x ∈ ℝ³ }, 0 ≤ λ ≤ 1.
 </pre></div>
 </div>
@@ -97,6 +97,15 @@ of two ellipsoids. The <code class="docutils literal notranslate"><span class="p
 </div>
 <div class="section" id="geometric-interpretation">
 <h2>Geometric interpretation<a class="headerlink" href="#geometric-interpretation" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<table class="docutils citation" frame="void" id="pw85" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[PW85]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Perram, J. W., &amp; Wertheim, M. S. (1985). Statistical mechanics of hard ellipsoids. I. Overlap algorithm and the contact function. <em>Journal of Computational Physics</em>, 58(3), 409–416. <a class="reference external" href="https://doi.org/10.1016/0021-9991(85)90171-8">https://doi.org/10.1016/0021-9991(85)90171-8</a></td></tr>
+</tbody>
+</table>
 </div>
 </div>
 
@@ -120,9 +129,10 @@ of two ellipsoids. The <code class="docutils literal notranslate"><span class="p
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#mathematical-representation-of-ellipsoids-implementation-in-pw85">Mathematical representation of ellipsoids – Implementation in <code class="docutils literal notranslate"><span class="pre">PW85</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mathematical-representation-of-ellipsoids">Mathematical representation of ellipsoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-contact-function-of-two-ellipsoids">The contact function of two ellipsoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#geometric-interpretation">Geometric interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
