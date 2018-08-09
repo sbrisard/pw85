@@ -36,28 +36,67 @@
             
   <div class="section" id="reference">
 <h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
-<p>This chapter provides some references to the algorithm. We use
-matrices rather than tensors: a point or a vector are therefore
-defined through the column-vector of their coordinates. Likewise, a
-second-rank tensor is represented by its 3×3 matrix.</p>
+<p>This chapter provides some mathematical background to the
+Perram–Wertheim algorithm. We use matrices rather than tensors: a
+point or a vector are therefore defined through the column-vector of
+their coordinates. Likewise, a second-rank tensor is represented by
+its 3×3 matrix.</p>
 <p>Only the global, cartesian frame is considered here, and there is no
 ambiguity about the basis to which these column vectors and square
 matrices refer.</p>
-<div class="section" id="mathematical-definition-of-ellipsoids-implementation-in-pw85">
-<h2>Mathematical definition of ellipsoids – Implementation in <code class="docutils literal notranslate"><span class="pre">PW85</span></code><a class="headerlink" href="#mathematical-definition-of-ellipsoids-implementation-in-pw85" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="mathematical-representation-of-ellipsoids-implementation-in-pw85">
+<h2>Mathematical representation of ellipsoids – Implementation in <code class="docutils literal notranslate"><span class="pre">PW85</span></code><a class="headerlink" href="#mathematical-representation-of-ellipsoids-implementation-in-pw85" title="Permalink to this headline">¶</a></h2>
 <p>Ellipsoids are defined from their center <code class="docutils literal notranslate"><span class="pre">c</span></code> and a positive-definite
 quadratic form <code class="docutils literal notranslate"><span class="pre">Q</span></code> as the set of points <code class="docutils literal notranslate"><span class="pre">m</span></code> such that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(m-c)ᵀ⋅Q⋅(m-c) ≤ 1.
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">Q</span></code> is a symmetric, positive-definite matrix. In the <code class="docutils literal notranslate"><span class="pre">PQ85</span></code>, it is
-represented as a <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array <code class="docutils literal notranslate"><span class="pre">q</span></code> which stores the upper
-triangular part of <code class="docutils literal notranslate"><span class="pre">Q</span></code> in row-major order:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Q = ⎡ q[0] q[1] q[2] ⎤
+<p><code class="docutils literal notranslate"><span class="pre">Q</span></code> is a symmetric, positive-definite matrix:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Q = ∑ aᵢ² vᵢ⋅vᵢᵀ,
+    ⁱ
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">a₁</span></code>, <code class="docutils literal notranslate"><span class="pre">a₂</span></code>, <code class="docutils literal notranslate"><span class="pre">a₃</span></code> are the lengths of the principal
+semi-axes and <code class="docutils literal notranslate"><span class="pre">v₁</span></code>, <code class="docutils literal notranslate"><span class="pre">v₂</span></code>, <code class="docutils literal notranslate"><span class="pre">v₃</span></code> their directions (unit vectors).</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">PW85</span></code> library, <code class="docutils literal notranslate"><span class="pre">Q</span></code> is represented as a <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array
+<code class="docutils literal notranslate"><span class="pre">q</span></code> which stores the upper triangular part of <code class="docutils literal notranslate"><span class="pre">Q</span></code> in row-major
+order:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Q = ⎡ q[0] q[1] q[2] ⎤.
     ⎢      q[3] q[4] ⎥
     ⎣ sym.      q[5] ⎦
 </pre></div>
 </div>
+</div>
+<div class="section" id="the-contact-function-of-two-ellipsoids">
+<h2>The contact function of two ellipsoids<a class="headerlink" href="#the-contact-function-of-two-ellipsoids" title="Permalink to this headline">¶</a></h2>
+<p>Let <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> be two ellipsoids, defined by their centers
+<code class="docutils literal notranslate"><span class="pre">c₁</span></code> and <code class="docutils literal notranslate"><span class="pre">c₂</span></code> and quadratic forms <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code>, respectively.</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">≤</span> <span class="pre">λ</span> <span class="pre">≤</span> <span class="pre">1</span></code> and a point <code class="docutils literal notranslate"><span class="pre">x</span></code>, we introduce the function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>F(x, λ) = λ(x-c₁)ᵀ⋅Q₁⁻¹⋅(x-c₁)+(1-λ)(x-c₂)ᵀ⋅Q₂⁻¹⋅(x-c₂)
+</pre></div>
+</div>
+<p>For fixed <code class="docutils literal notranslate"><span class="pre">λ</span></code>, <code class="docutils literal notranslate"><span class="pre">F(x,</span> <span class="pre">λ)</span></code> has a unique minimum [PW85] <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>, and
+we define:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>f(λ) = min{ F(x, λ), x ∈ ℝ³ }, 0 ≤ λ ≤ 1.
+</pre></div>
+</div>
+<p>Now, the function <code class="docutils literal notranslate"><span class="pre">f</span></code> has a unique maximum over <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>, and the
+“contact function” <code class="docutils literal notranslate"><span class="pre">F(r₁₂,</span> <span class="pre">Q₁,</span> <span class="pre">Q₂)</span></code> of ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code>
+is defined as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>F(r₁₂, Q₁, Q₂) = max{ f(λ), 0 ≤ λ ≤ 1},
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">r₁₂</span> <span class="pre">=</span> <span class="pre">c₂-c₁</span></code>. It can be shown that</p>
+<ul class="simple">
+<li>if <code class="docutils literal notranslate"><span class="pre">F(r₁₂,</span> <span class="pre">Q₁,</span> <span class="pre">Q₂)</span> <span class="pre">&lt;</span> <span class="pre">1</span></code> then <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> overlap,</li>
+<li>if <code class="docutils literal notranslate"><span class="pre">F(r₁₂,</span> <span class="pre">Q₁,</span> <span class="pre">Q₂)</span> <span class="pre">=</span> <span class="pre">1</span></code> then <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> are externally tangent,</li>
+<li>if <code class="docutils literal notranslate"><span class="pre">F(r₁₂,</span> <span class="pre">Q₁,</span> <span class="pre">Q₂)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> then <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> do not overlap.</li>
+</ul>
+<p>The contact function therefore provides a criterion to check overlap
+of two ellipsoids. The <code class="docutils literal notranslate"><span class="pre">PW85</span></code> library computes this value.</p>
+</div>
+<div class="section" id="geometric-interpretation">
+<h2>Geometric interpretation<a class="headerlink" href="#geometric-interpretation" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -81,7 +120,9 @@ triangular part of <code class="docutils literal notranslate"><span class="pre">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#mathematical-definition-of-ellipsoids-implementation-in-pw85">Mathematical definition of ellipsoids – Implementation in <code class="docutils literal notranslate"><span class="pre">PW85</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mathematical-representation-of-ellipsoids-implementation-in-pw85">Mathematical representation of ellipsoids – Implementation in <code class="docutils literal notranslate"><span class="pre">PW85</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-contact-function-of-two-ellipsoids">The contact function of two ellipsoids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#geometric-interpretation">Geometric interpretation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
