@@ -1,0 +1,31 @@
+*********
+Reference
+*********
+
+This chapter provides some mathematical background to the
+Perram–Wertheim algorithm. We use matrices rather than tensors: a
+point or a vector are therefore defined through the column-vector of
+their coordinates. Likewise, a second-rank tensor is represented by
+its 3×3 matrix.
+
+Only the global, cartesian frame is considered here, and there is no
+ambiguity about the basis to which these column vectors and square
+matrices refer.
+
+
+Mathematical definition of ellipsoids – Implementation in ``PW85``
+==================================================================
+
+Ellipsoids are defined from their center ``c`` and a positive-definite
+quadratic form ``Q`` as the set of points ``m`` such that::
+
+    (m-c)ᵀ⋅Q⋅(m-c) ≤ 1.
+
+``Q`` is a symmetric, positive-definite matrix. In the ``PQ85``, it is
+represented as a ``double[6]`` array ``q`` which stores the upper
+triangular part of ``Q`` in row-major order::
+
+
+    Q = ⎡ q[0] q[1] q[2] ⎤
+        ⎢      q[3] q[4] ⎥
+	⎣ sym.      q[5] ⎦
