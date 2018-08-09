@@ -11,15 +11,15 @@
 
 __declspec(dllexport) void pw85_spheroid(double a, double c, double n[PW85_DIM], double q[PW85_SYM])
 {
-    const double inv_a2 = 1.0 / (a * a);
-    const double inv_c2_minus_inv_a2 = 1.0 / (c * c) - inv_a2;
+    const double a2 = a * a;
+    const double c2_minus_a2 = c * c - a2;
     const double nx = n[0];
     const double ny = n[1];
     const double nz = n[2];
-    q[PW85_XX] = nx * nx * inv_c2_minus_inv_a2 + inv_a2;
-    q[PW85_YY] = ny * ny * inv_c2_minus_inv_a2 + inv_a2;
-    q[PW85_ZZ] = nz * nz * inv_c2_minus_inv_a2 + inv_a2;
-    q[PW85_YZ] = ny * nz * inv_c2_minus_inv_a2;
-    q[PW85_XZ] = nx * nz * inv_c2_minus_inv_a2;
-    q[PW85_XY] = nx * ny * inv_c2_minus_inv_a2;
+    q[PW85_XX] = nx * nx * c2_minus_a2 + a2;
+    q[PW85_YY] = ny * ny * c2_minus_a2 + a2;
+    q[PW85_ZZ] = nz * nz * c2_minus_a2 + a2;
+    q[PW85_YZ] = ny * nz * c2_minus_a2;
+    q[PW85_XZ] = nx * nz * c2_minus_a2;
+    q[PW85_XY] = nx * ny * c2_minus_a2;
 }

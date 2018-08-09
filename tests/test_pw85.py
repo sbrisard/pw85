@@ -28,8 +28,8 @@ BOOLEANS = [False, True]
 @pytest.mark.parametrize('a, c, n, in_place',
                          itertools.product(RADII, RADII, DIRECTIONS, BOOLEANS))
 def test_spheroid(a, c, n, in_place, rtol=1E-7, atol=0):
-    inv_a2 = 1.0/a**2
-    inv_c2 = 1.0/c**2
+    a2 = a**2
+    c2 = c**2
     n = np.asarray(n)
     out = np.empty((6,), dtype=np.float64) if in_place else None
     q = pypw85.spheroid(a, c, n, out)
@@ -41,11 +41,11 @@ def test_spheroid(a, c, n, in_place, rtol=1E-7, atol=0):
     q_mat[1:, 1] = q[3:5]
     q_mat[2, 2] = q[5]
     w_act, v_act = scipy.linalg.eigh(q_mat)
-    if inv_a2 <= inv_c2:
-        w_exp = (inv_a2, inv_a2, inv_c2)
+    if a2 <= c2:
+        w_exp = (a2, a2, c2)
         n_act = v_act[:, -1]
     else:
-        w_exp = (inv_c2, inv_a2, inv_a2)
+        w_exp = (c2, a2, a2)
         n_act = v_act[:, 0]
     assert_allclose(w_act, w_exp, rtol, atol)
     if a != c:
