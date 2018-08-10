@@ -19,12 +19,12 @@ Mathematical representation of ellipsoids
 Ellipsoids are defined from their center ``c`` and a positive-definite
 quadratic form ``Q`` as the set of points ``m`` such that::
 
-  (m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.                                              (1)
+  (1)    (m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
 
 ``Q`` is a symmetric, positive-definite matrix::
 
-  Q = ∑ aᵢ² vᵢ⋅vᵢᵀ,                                                  (2)
-      ⁱ
+  (2)    Q = ∑ aᵢ² vᵢ⋅vᵢᵀ,
+             ⁱ
 
 where ``a₁``, ``a₂``, ``a₃`` are the lengths of the principal
 semi-axes and ``v₁``, ``v₂``, ``v₃`` their directions (unit vectors).
@@ -33,9 +33,9 @@ In the ``PW85`` library, ``Q`` is represented as a ``double[6]`` array
 ``q`` which stores the upper triangular part of ``Q`` in row-major
 order::
 
-      ⎡ q[0] q[1] q[2] ⎤
-  Q = ⎢      q[3] q[4] ⎥.                                            (3)
-      ⎣ sym.      q[5] ⎦
+             ⎡ q[0] q[1] q[2] ⎤
+  (3)    Q = ⎢      q[3] q[4] ⎥.
+             ⎣ sym.      q[5] ⎦
 
 
 The contact function of two ellipsoids
@@ -48,18 +48,18 @@ Let ``E₁`` and ``E₂`` be two ellipsoids, defined by their centers
 
 For ``0 ≤ λ ≤ 1`` and a point ``x``, we introduce the function::
 
-  F(x, λ) = λ(x-c₁)ᵀ⋅Q₁⁻¹⋅(x-c₁)+(1-λ)(x-c₂)ᵀ⋅Q₂⁻¹⋅(x-c₂).           (4)
+  (4)    F(x, λ) = λ(x-c₁)ᵀ⋅Q₁⁻¹⋅(x-c₁)+(1-λ)(x-c₂)ᵀ⋅Q₂⁻¹⋅(x-c₂).
 
 For fixed ``λ``, ``F(x, λ)`` has a unique minimum [PW85]_ ``f(λ)``,
 and we define::
 
-  f(λ) = min{ F(x, λ), x ∈ ℝ³ }, 0 ≤ λ ≤ 1.                          (5)
+  (5)    f(λ) = min{ F(x, λ), x ∈ ℝ³ }, 0 ≤ λ ≤ 1.
 
 Now, the function ``f`` has a unique maximum over ``[0, 1]``, and the
 “contact function” ``F(r₁₂, Q₁, Q₂)`` of ellipsoids ``E₁`` and ``E₂``
 is defined as::
 
-  F(r₁₂, Q₁, Q₂) = max{ f(λ), 0 ≤ λ ≤ 1 },                           (6)
+  (6)    F(r₁₂, Q₁, Q₂) = max{ f(λ), 0 ≤ λ ≤ 1 },
 
 where ``r₁₂ = c₂-c₁``. It can be shown that
 
@@ -79,40 +79,40 @@ Geometric interpretation
 The scalar ``λ`` being fixed, we introduce the minimizer ``x₀(λ)`` of
 ``F(x, λ)``. The stationarity of ``F`` w.r.t to ``x`` reads::
 
-  ∇F(x₀(λ), λ) = 0,                                                  (7)
+  (7)    ∇F(x₀(λ), λ) = 0,
 
 .. _theory-eq-8:
 
 which leads to::
 
-  λQ₁⁻¹⋅[x₀(λ)-c₁] + (1-λ)Q₂⁻¹⋅[x₀(λ)-c₂] = 0,                       (8)
+  (8)    λQ₁⁻¹⋅[x₀(λ)-c₁] + (1-λ)Q₂⁻¹⋅[x₀(λ)-c₂] = 0,
 
 and can be rearranged::
 
-  x₀(λ)-c₁ = (1-λ)Q₁⋅Q⁻¹⋅r₁₂,                                       (9a)
-  x₀(λ)-c₂ = λQ₂⋅Q⁻¹⋅r₁₂,                                           (9b)
+  (9a)    x₀(λ)-c₁ = (1-λ)Q₁⋅Q⁻¹⋅r₁₂,
+  (9b)    x₀(λ)-c₂ = λQ₂⋅Q⁻¹⋅r₁₂,
 
 with::
 
-  Q = (1-λ)Q₁ + λQ₂.                                                (10)
+  (10)    Q = (1-λ)Q₁ + λQ₂.
 
 It results from the above that::
 
-  f(λ) = F(x₀(λ), λ) = λ(1-λ)r₁₂ᵀ⋅Q⋅r₁₂.                            (11)
+  (11)    f(λ) = F(x₀(λ), λ) = λ(1-λ)r₁₂ᵀ⋅Q⋅r₁₂.
 
 Maximization of ``f`` with respect to ``λ`` now delivers the
 stationarity condition::
 
-                                    ∂F
-  0 = f'(λ) = ∇F(x₀(λ), λ)⋅x₀'(λ) + ──(x₀(λ), λ).                   (12)
-                                    ∂λ
+                                            ∂F
+  (12)    0 = f'(λ) = ∇F(x₀(λ), λ)⋅x₀'(λ) + ──(x₀(λ), λ).
+                                            ∂λ
 
 .. _theory-eq-13:
 
 Using Eqs. :ref:`(4) <theory-eq-4>` and :ref:`(7) <theory-eq-7>`, it
 is found that ``f`` is minimum for ``λ = λ₀`` such that::
 
-  [x₀(λ₀)-c₁]ᵀ⋅Q₁⁻¹⋅[x₀(λ₀)-c₁] = [x₀(λ₀)-c₂]ᵀ⋅Q₂⁻¹⋅[x₀(λ₀)-c₂].    (13)
+  (13)    [x₀(λ₀)-c₁]ᵀ⋅Q₁⁻¹⋅[x₀(λ₀)-c₁] = [x₀(λ₀)-c₂]ᵀ⋅Q₂⁻¹⋅[x₀(λ₀)-c₂].
 
 Let ``μ²`` be this common value. It trivially results from
 Eqs. :ref:`(4) <theory-eq-4>` and :ref:`(13) <theory-eq-13>` that ``μ²
@@ -123,11 +123,11 @@ We are now in a position to give a geometric interpretation of
 ``μ``. It results from Eq. :ref:`(13) <theory-eq-13>` and the
 definition of ``μ`` that::
 
-  [x₀(λ₀)-c₁]ᵀ⋅(μ²Q₁)⁻¹⋅[x₀(λ₀)-c₁] = 1,                           (14a)
+  (14a)    [x₀(λ₀)-c₁]ᵀ⋅(μ²Q₁)⁻¹⋅[x₀(λ₀)-c₁] = 1,
 
 and::
 
-  [x₀(λ₀)-c₂]ᵀ⋅(μ²Q₂)⁻¹⋅[x₀(λ₀)-c₂] = 1.                           (14b)
+  (14b)    [x₀(λ₀)-c₂]ᵀ⋅(μ²Q₂)⁻¹⋅[x₀(λ₀)-c₂] = 1.
 
 The above equations mean that ``x₀(λ₀)`` belongs to both ellipsoids
 centered at ``cⱼ`` and defined by the symmetric, positive-definite
