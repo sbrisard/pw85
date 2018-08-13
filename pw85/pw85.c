@@ -23,3 +23,9 @@ __declspec(dllexport) void pw85_spheroid(double a, double c, double n[PW85_DIM],
     q[PW85_XZ] = nx * nz * c2_minus_a2;
     q[PW85_XY] = nx * ny * c2_minus_a2;
 }
+
+
+__declspec(dllexport) double pw85_det_sym_3x3(double a0, double a1, double a2,
+					      double a3, double a4, double a5) {
+    return a0*a3*a5 + 2*a1*a2*a4 - a0*a4*a4 - a3*a2*a2 - a5*a1*a1;
+}

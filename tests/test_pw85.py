@@ -7,6 +7,10 @@ import pypw85
 from numpy.testing import assert_allclose
 
 
+def setup_module():
+    np.random.seed(20180813)
+
+
 def generate_directions(num_theta, num_phi):
     cos_theta = np.linspace(-1.0, 1.0, num=num_theta)
     sin_theta = np.sqrt(1.0-cos_theta**2)
@@ -51,3 +55,14 @@ def test_spheroid(a, c, n, in_place, rtol=1E-7, atol=0):
     if a != c:
         s = np.sign(np.dot(n_act, n))
         assert_allclose(s*n_act, n)
+
+
+@pytest.mark.parametrize('a', np.random.rand(100, 6))
+def test__det_sym_3x3(a, rtol=1E-14, atol=1E-16):
+
+    a0, a1, a2, a3, a4, a5 = a
+    expected = np.linalg.det(np.array([[a0, a1, a2],
+                                       [a1, a3, a4],
+                                       [a2, a4, a5]], dtype=np.float64))
+    actual = pypw85._det_sym_3x3(a0, a1, a2, a3, a4, a5)
+    assert_allclose(actual, expected, rtol, atol)

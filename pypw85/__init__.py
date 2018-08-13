@@ -41,3 +41,8 @@ def spheroid(a, c, n, q=None):
         q = np.empty((6,), dtype=np.float64, order='C')
     cpw85.pw85_spheroid(a, c, n, q)
     return q
+
+
+cpw85.pw85_det_sym_3x3.argtypes = 6*[c_double]
+cpw85.pw85_det_sym_3x3.restype = c_double
+_det_sym_3x3 = cpw85.pw85_det_sym_3x3

@@ -19,3 +19,14 @@ The C API
 		its polar radius `c` and the direction of its axis of
 		revolution, `n`; `q` is modified in-place with the
 		coefficients of the quadratic form.
+
+
+.. c:function:: double pw85_det_sym_3x3(double a0, double a1, double a2, double a3, double a4, double a5)
+
+		Return the determinant of a 3×3, symmetric matrix
+		``A`` defined from the coefficients of its
+		triangular-upper part, in row-major order::
+
+                      ⎡ a0 a1 a2 ⎤
+                  A = ⎢    a3 a4 ⎥.
+                      ⎣ sym.  a5 ⎦
