@@ -98,7 +98,7 @@ with::
 
 It results from the above that::
 
-  (11)    f(λ) = F(x₀(λ), λ) = λ(1-λ)r₁₂ᵀ⋅Q⋅r₁₂.
+  (11)    f(λ) = F(x₀(λ), λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂.
 
 Maximization of ``f`` with respect to ``λ`` now delivers the
 stationarity condition::
