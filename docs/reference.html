@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Theory &#8212; PW85  documentation</title>
+    <title>Reference &#8212; PW85  documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -34,12 +34,12 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="theory">
-<h1>Theory<a class="headerlink" href="#theory" title="Permalink to this headline">¶</a></h1>
-<p>This chapter provides the theoretical background to the
+  <div class="section" id="reference">
+<h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<p>This chapter provides some mathematical background to the
 Perram–Wertheim algorithm <a class="reference internal" href="#pw85" id="id1">[PW85]</a>. We use matrices rather than
-tensors: a point/vector is therefore defined through the 3×1
-column-vector of its coordinates. Likewise, a second-rank tensor is
+tensors: a point or a vector are therefore defined through the
+column-vector of their coordinates. Likewise, a second-rank tensor is
 represented by its 3×3 matrix.</p>
 <p>Only the global, cartesian frame is considered here, and there is no
 ambiguity about the basis to which these column vectors and square
@@ -48,12 +48,12 @@ matrices refer.</p>
 <h2>Mathematical representation of ellipsoids<a class="headerlink" href="#mathematical-representation-of-ellipsoids" title="Permalink to this headline">¶</a></h2>
 <p>Ellipsoids are defined from their center <code class="docutils literal notranslate"><span class="pre">c</span></code> and a positive-definite
 quadratic form <code class="docutils literal notranslate"><span class="pre">Q</span></code> as the set of points <code class="docutils literal notranslate"><span class="pre">m</span></code> such that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(1)    (m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">Q</span></code> is a symmetric, positive-definite matrix:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(2)    Q = ∑ aᵢ² vᵢ⋅vᵢᵀ,
-           ⁱ
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Q = ∑ aᵢ² vᵢ⋅vᵢᵀ,
+    ⁱ
 </pre></div>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">a₁</span></code>, <code class="docutils literal notranslate"><span class="pre">a₂</span></code>, <code class="docutils literal notranslate"><span class="pre">a₃</span></code> are the lengths of the principal
@@ -61,9 +61,9 @@ semi-axes and <code class="docutils literal notranslate"><span class="pre">v₁<
 <p>In the <code class="docutils literal notranslate"><span class="pre">PW85</span></code> library, <code class="docutils literal notranslate"><span class="pre">Q</span></code> is represented as a <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array
 <code class="docutils literal notranslate"><span class="pre">q</span></code> which stores the upper triangular part of <code class="docutils literal notranslate"><span class="pre">Q</span></code> in row-major
 order:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>           ⎡ q[0] q[1] q[2] ⎤
-(3)    Q = ⎢      q[3] q[4] ⎥.
-           ⎣ sym.      q[5] ⎦
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Q = ⎡ q[0] q[1] q[2] ⎤.
+    ⎢      q[3] q[4] ⎥
+    ⎣ sym.      q[5] ⎦
 </pre></div>
 </div>
 </div>
@@ -71,19 +71,19 @@ order:</p>
 <h2>The contact function of two ellipsoids<a class="headerlink" href="#the-contact-function-of-two-ellipsoids" title="Permalink to this headline">¶</a></h2>
 <p>Let <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> be two ellipsoids, defined by their centers
 <code class="docutils literal notranslate"><span class="pre">c₁</span></code> and <code class="docutils literal notranslate"><span class="pre">c₂</span></code> and quadratic forms <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code>, respectively.</p>
-<p id="theory-eq-4">For <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">≤</span> <span class="pre">λ</span> <span class="pre">≤</span> <span class="pre">1</span></code> and a point <code class="docutils literal notranslate"><span class="pre">x</span></code>, we introduce the function:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(4)    F(x, λ) = λ(x-c₁)ᵀ⋅Q₁⁻¹⋅(x-c₁)+(1-λ)(x-c₂)ᵀ⋅Q₂⁻¹⋅(x-c₂).
+<p>For <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">≤</span> <span class="pre">λ</span> <span class="pre">≤</span> <span class="pre">1</span></code> and a point <code class="docutils literal notranslate"><span class="pre">x</span></code>, we introduce the function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>F(x, λ) = λ(x-c₁)ᵀ⋅Q₁⁻¹⋅(x-c₁)+(1-λ)(x-c₂)ᵀ⋅Q₂⁻¹⋅(x-c₂)
 </pre></div>
 </div>
 <p>For fixed <code class="docutils literal notranslate"><span class="pre">λ</span></code>, <code class="docutils literal notranslate"><span class="pre">F(x,</span> <span class="pre">λ)</span></code> has a unique minimum <a class="reference internal" href="#pw85" id="id2">[PW85]</a> <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>,
 and we define:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(5)    f(λ) = min{ F(x, λ), x ∈ ℝ³ }, 0 ≤ λ ≤ 1.
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>f(λ) = min{ F(x, λ), x ∈ ℝ³ }, 0 ≤ λ ≤ 1.
 </pre></div>
 </div>
 <p>Now, the function <code class="docutils literal notranslate"><span class="pre">f</span></code> has a unique maximum over <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>, and the
 “contact function” <code class="docutils literal notranslate"><span class="pre">F(r₁₂,</span> <span class="pre">Q₁,</span> <span class="pre">Q₂)</span></code> of ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code>
 is defined as:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(6)    F(r₁₂, Q₁, Q₂) = max{ f(λ), 0 ≤ λ ≤ 1 },
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>F(r₁₂, Q₁, Q₂) = max{ f(λ), 0 ≤ λ ≤ 1},
 </pre></div>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">r₁₂</span> <span class="pre">=</span> <span class="pre">c₂-c₁</span></code>. It can be shown that</p>
@@ -97,75 +97,13 @@ of two ellipsoids. The <code class="docutils literal notranslate"><span class="p
 </div>
 <div class="section" id="geometric-interpretation">
 <h2>Geometric interpretation<a class="headerlink" href="#geometric-interpretation" title="Permalink to this headline">¶</a></h2>
-<p id="theory-eq-7">The scalar <code class="docutils literal notranslate"><span class="pre">λ</span></code> being fixed, we introduce the minimizer <code class="docutils literal notranslate"><span class="pre">x₀(λ)</span></code> of
-<code class="docutils literal notranslate"><span class="pre">F(x,</span> <span class="pre">λ)</span></code>. The stationarity of <code class="docutils literal notranslate"><span class="pre">F</span></code> w.r.t to <code class="docutils literal notranslate"><span class="pre">x</span></code> reads:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(7)    ∇F(x₀(λ), λ) = 0,
-</pre></div>
-</div>
-<p id="theory-eq-8">which leads to:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(8)    λQ₁⁻¹⋅[x₀(λ)-c₁] + (1-λ)Q₂⁻¹⋅[x₀(λ)-c₂] = 0,
-</pre></div>
-</div>
-<p>and can be rearranged:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(9a)    x₀(λ)-c₁ = (1-λ)Q₁⋅Q⁻¹⋅r₁₂,
-(9b)    x₀(λ)-c₂ = λQ₂⋅Q⁻¹⋅r₁₂,
-</pre></div>
-</div>
-<p>with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(10)    Q = (1-λ)Q₁ + λQ₂.
-</pre></div>
-</div>
-<p>It results from the above that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(11)    f(λ) = F(x₀(λ), λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂.
-</pre></div>
-</div>
-<p>Maximization of <code class="docutils literal notranslate"><span class="pre">f</span></code> with respect to <code class="docutils literal notranslate"><span class="pre">λ</span></code> now delivers the
-stationarity condition:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                                          ∂F
-(12)    0 = f&#39;(λ) = ∇F(x₀(λ), λ)⋅x₀&#39;(λ) + ──(x₀(λ), λ).
-                                          ∂λ
-</pre></div>
-</div>
-<p id="theory-eq-13">Using Eqs. <a class="reference internal" href="#theory-eq-4"><span class="std std-ref">(4)</span></a> and <a class="reference internal" href="#theory-eq-7"><span class="std std-ref">(7)</span></a>, it
-is found that <code class="docutils literal notranslate"><span class="pre">f</span></code> is minimum for <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">=</span> <span class="pre">λ₀</span></code> such that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(13)    [x₀(λ₀)-c₁]ᵀ⋅Q₁⁻¹⋅[x₀(λ₀)-c₁] = [x₀(λ₀)-c₂]ᵀ⋅Q₂⁻¹⋅[x₀(λ₀)-c₂].
-</pre></div>
-</div>
-<p>Let <code class="docutils literal notranslate"><span class="pre">μ²</span></code> be this common value. It trivially results from
-Eqs. <a class="reference internal" href="#theory-eq-4"><span class="std std-ref">(4)</span></a> and <a class="reference internal" href="#theory-eq-13"><span class="std std-ref">(13)</span></a> that <code class="docutils literal notranslate"><span class="pre">μ²</span>
-<span class="pre">=</span> <span class="pre">F(x₀(λ₀),</span> <span class="pre">λ₀)</span></code>. In other words, <code class="docutils literal notranslate"><span class="pre">μ²</span></code> is the value of the contact
-function.</p>
-<p>We are now in a position to give a geometric interpretation of
-<code class="docutils literal notranslate"><span class="pre">μ</span></code>. It results from Eq. <a class="reference internal" href="#theory-eq-13"><span class="std std-ref">(13)</span></a> and the
-definition of <code class="docutils literal notranslate"><span class="pre">μ</span></code> that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(14a)    [x₀(λ₀)-c₁]ᵀ⋅(μ²Q₁)⁻¹⋅[x₀(λ₀)-c₁] = 1,
-</pre></div>
-</div>
-<p>and:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(14b)    [x₀(λ₀)-c₂]ᵀ⋅(μ²Q₂)⁻¹⋅[x₀(λ₀)-c₂] = 1.
-</pre></div>
-</div>
-<p>The above equations mean that <code class="docutils literal notranslate"><span class="pre">x₀(λ₀)</span></code> belongs to both ellipsoids
-centered at <code class="docutils literal notranslate"><span class="pre">cⱼ</span></code> and defined by the symmetric, positive-definite
-quadratic form <code class="docutils literal notranslate"><span class="pre">μ²Qⱼ</span></code> (<code class="docutils literal notranslate"><span class="pre">j</span> <span class="pre">=</span> <span class="pre">1,</span> <span class="pre">2</span></code>). These two ellipsoids are
-nothing but the initial ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code>, scaled by the
-<em>same</em> factor <code class="docutils literal notranslate"><span class="pre">μ</span></code>.</p>
-<p>Furthermore, Eq. <a class="reference internal" href="#theory-eq-8"><span class="std std-ref">(8)</span></a> applies for <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">=</span>
-<span class="pre">λ₀</span></code>. Therefore, the normals to the scaled ellipsoids coincide at
-<code class="docutils literal notranslate"><span class="pre">x₀(λ₀)</span></code>: the two scaled ellipsoids are externally tangent.</p>
-<p>To sum up, <code class="docutils literal notranslate"><span class="pre">μ</span></code> is the common factor by wich ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and
-<code class="docutils literal notranslate"><span class="pre">E₂</span></code> must be scaled in order for them to be externally tangent at
-point <code class="docutils literal notranslate"><span class="pre">x₀(λ₀)</span></code>.</p>
 </div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <table class="docutils citation" frame="void" id="pw85" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[PW85]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Perram, J. W., &amp; Wertheim, M. S. (1985). Statistical
-mechanics of hard ellipsoids. I. Overlap algorithm and the
-contact function. <em>Journal of Computational Physics</em>, 58(3),
-409–416. <a class="reference external" href="https://doi.org/10.1016/0021-9991(85)90171-8">https://doi.org/10.1016/0021-9991(85)90171-8</a></td></tr>
+<tr><td class="label">[PW85]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Perram, J. W., &amp; Wertheim, M. S. (1985). Statistical mechanics of hard ellipsoids. I. Overlap algorithm and the contact function. <em>Journal of Computational Physics</em>, 58(3), 409–416. <a class="reference external" href="https://doi.org/10.1016/0021-9991(85)90171-8">https://doi.org/10.1016/0021-9991(85)90171-8</a></td></tr>
 </tbody>
 </table>
 </div>
@@ -190,7 +128,7 @@ contact function. <em>Journal of Computational Physics</em>, 58(3),
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Theory</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#mathematical-representation-of-ellipsoids">Mathematical representation of ellipsoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-contact-function-of-two-ellipsoids">The contact function of two ellipsoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#geometric-interpretation">Geometric interpretation</a></li>
@@ -234,7 +172,7 @@ contact function. <em>Journal of Computational Physics</em>, 58(3),
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
       |
-      <a href="_sources/theory.rst.txt"
+      <a href="_sources/reference.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

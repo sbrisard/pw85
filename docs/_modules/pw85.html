@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pypw85 &#8212; PW85  documentation</title>
+    <title>pw85 &#8212; PW85  documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -32,7 +32,7 @@
 
           <div class="body" role="main">
             
-  <h1>Source code for pypw85</h1><div class="highlight"><pre>
+  <h1>Source code for pw85</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">configparser</span>
 <span class="kn">import</span> <span class="nn">ctypes</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
@@ -62,7 +62,7 @@
 <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_spheroid</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<div class="viewcode-block" id="spheroid"><a class="viewcode-back" href="../py_api.html#pypw85.spheroid">[docs]</a><span class="k">def</span> <span class="nf">spheroid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="spheroid"><a class="viewcode-back" href="../py_api.html#pw85.spheroid">[docs]</a><span class="k">def</span> <span class="nf">spheroid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the quadratic form associated to a spheroid.</span>
 
 <span class="sd">    The spheroid is defined by its equatorial radius `a`, its polar</span>
@@ -76,11 +76,6 @@
         <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">6</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
     <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_spheroid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">q</span></div>
-
-
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_det_sym_3x3</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">6</span><span class="o">*</span><span class="p">[</span><span class="n">c_double</span><span class="p">]</span>
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_det_sym_3x3</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
-<span class="n">_det_sym_3x3</span> <span class="o">=</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_det_sym_3x3</span>
 </pre></div>
 
           </div>
@@ -101,7 +96,6 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../theory.html">Theory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../c_api.html">The C API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../py_api.html">The python API</a></li>
 </ul>
