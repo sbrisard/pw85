@@ -31,7 +31,7 @@ BOOLEANS = [False, True]
 @pytest.mark.parametrize('c', RADII)
 @pytest.mark.parametrize('n', DIRECTIONS)
 @pytest.mark.parametrize('in_place', BOOLEANS)
-def test_spheroid(a, c, n, in_place, rtol=1E-7, atol=0):
+def test_spheroid(a, c, n, in_place, rtol=1E-10, atol=1E-12):
     a2 = a**2
     c2 = c**2
     n = np.asarray(n)
@@ -54,7 +54,7 @@ def test_spheroid(a, c, n, in_place, rtol=1E-7, atol=0):
     assert_allclose(w_act, w_exp, rtol, atol)
     if a != c:
         s = np.sign(np.dot(n_act, n))
-        assert_allclose(s*n_act, n)
+        assert_allclose(s*n_act, n, rtol, atol)
 
 
 @pytest.mark.parametrize('a', np.random.rand(100, 6))
