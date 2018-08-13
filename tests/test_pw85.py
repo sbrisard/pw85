@@ -1,5 +1,3 @@
-import itertools
-
 import numpy as np
 import pytest
 import scipy.linalg
@@ -25,8 +23,10 @@ DIRECTIONS = generate_directions(7, 7)
 BOOLEANS = [False, True]
 
 
-@pytest.mark.parametrize('a, c, n, in_place',
-                         itertools.product(RADII, RADII, DIRECTIONS, BOOLEANS))
+@pytest.mark.parametrize('a', RADII)
+@pytest.mark.parametrize('c', RADII)
+@pytest.mark.parametrize('n', DIRECTIONS)
+@pytest.mark.parametrize('in_place', BOOLEANS)
 def test_spheroid(a, c, n, in_place, rtol=1E-7, atol=0):
     a2 = a**2
     c2 = c**2
