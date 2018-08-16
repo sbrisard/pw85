@@ -18,7 +18,9 @@ def generate_directions(num_theta, num_phi):
     for cos_theta in np.linspace(-1.0, 1.0, num=num_theta):
         sin_theta = np.sqrt(1.0-cos_theta**2)
         for phi in np.linspace(0., 2.*np.pi, num=num_phi, endpoint=False):
-            out.append((sin_theta*np.cos(phi), sin_theta*np.sin(phi), cos_theta))
+            out.append(np.array((sin_theta*np.cos(phi),
+                                 sin_theta*np.sin(phi),
+                                 cos_theta)))
     return out
 
 
@@ -65,4 +67,28 @@ def test__det_sym_3x3(a, rtol=1E-14, atol=1E-16):
                                        [a1, a3, a4],
                                        [a2, a4, a5]], dtype=np.float64))
     actual = pypw85._det_sym_3x3(a)
+    assert_allclose(actual, expected, rtol, atol)
+
+
+@pytest.mark.parametrize('a1', [2.0])
+@pytest.mark.parametrize('c1', [3.0])
+@pytest.mark.parametrize('n1', DIRECTIONS[:1])
+@pytest.mark.parametrize('a2', [0.04])
+@pytest.mark.parametrize('c2', [5.0])
+@pytest.mark.parametrize('n2', DIRECTIONS[:1])
+def test_det_q_as_poly(a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
+    q1 = pypw85.spheroid(a1, c1, n1)
+    Q1 = np.array([[q1[0], q1[1], q1[2]],
+                   [q1[1], q1[3], q1[4]],
+                   [q1[2], q1[4], q1[5]]])
+    q2 = pypw85.spheroid(a2, c2, n2)
+    Q2 = np.array([[q2[0], q2[1], q2[2]],
+                   [q2[1], q2[3], q2[4]],
+                   [q2[2], q2[4], q2[5]]])
+    x = np.linspace(0., 1., num=11)
+    b = np.poly1d(pypw85.det_q_as_poly(q1, q2)[::-1])
+    actual = b(x)
+
+    x = x[:, None, None]
+    expected = np.linalg.det((1.-x)*Q1+x*Q2)
     assert_allclose(actual, expected, rtol, atol)

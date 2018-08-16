@@ -46,3 +46,14 @@ def spheroid(a, c, n, q=None):
 cpw85.pw85_det_sym_3x3.argtypes = [Tensor]
 cpw85.pw85_det_sym_3x3.restype = c_double
 _det_sym_3x3 = cpw85.pw85_det_sym_3x3
+
+
+cpw85.pw85_det_q_as_poly.argtypes = [Tensor, Tensor, npct.ndpointer(dtype=np.float64, ndim=1, shape=(4,), flags='C')]
+cpw85.pw85_det_q_as_poly.restype = None
+
+
+def det_q_as_poly(q1, q2, b=None):
+    if b is None:
+        b = np.empty((4,), dtype=np.float64, order='C')
+    cpw85.pw85_det_q_as_poly(q1, q2, b)
+    return b
