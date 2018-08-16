@@ -43,6 +43,6 @@ def spheroid(a, c, n, q=None):
     return q
 
 
-cpw85.pw85_det_sym_3x3.argtypes = 6*[c_double]
+cpw85.pw85_det_sym_3x3.argtypes = [Tensor]
 cpw85.pw85_det_sym_3x3.restype = c_double
 _det_sym_3x3 = cpw85.pw85_det_sym_3x3

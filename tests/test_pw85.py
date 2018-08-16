@@ -64,5 +64,5 @@ def test__det_sym_3x3(a, rtol=1E-14, atol=1E-16):
     expected = np.linalg.det(np.array([[a0, a1, a2],
                                        [a1, a3, a4],
                                        [a2, a4, a5]], dtype=np.float64))
-    actual = pypw85._det_sym_3x3(a0, a1, a2, a3, a4, a5)
+    actual = pypw85._det_sym_3x3(a)
     assert_allclose(actual, expected, rtol, atol)
