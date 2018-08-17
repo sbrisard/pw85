@@ -2,6 +2,8 @@
 The C API
 #########
 
+.. highlight:: none
+
 Storage of symmetric matrices
 =============================
 
