@@ -41,9 +41,8 @@ __declspec(dllexport) void pw85_axpby(size_t n,
 }
 
 
-__declspec(dllexport) void pw85_det_q_as_poly(double q1[PW85_SYM],
-					      double q2[PW85_SYM],
-					      double b[PW85_DIM+1]) {
+__declspec(dllexport) void pw85_det_q_as_poly(double* q1, double* q2, double* b)
+{
     double q[PW85_SYM];
     const double g_zero = pw85_det_sym_3x3(q1);
     const double g_one = pw85_det_sym_3x3(q2);
