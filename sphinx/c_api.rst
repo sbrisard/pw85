@@ -50,9 +50,13 @@ Functions
 
 		Compute the linear combination of two vectors.
 
-		This function performs the operation::
+		This function performs the operation:
 
-		  out[i] = a * x[i] + b * y[i] for i = 0, ... n.
+		.. code-block:: c
+
+		  for (int i = 0; i < n; i++) {
+    		      out[i] = a * x[i] + b * y[i];
+		  }
 
 		`n` is the common size of `x`, `y` and `out`.
 
