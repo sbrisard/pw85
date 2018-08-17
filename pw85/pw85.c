@@ -9,7 +9,8 @@
 #define PW85_XZ 2
 #define PW85_YZ 4
 
-__declspec(dllexport) void pw85_spheroid(double a, double c, double n[PW85_DIM], double q[PW85_SYM])
+__declspec(dllexport) void pw85_spheroid(double a, double c, double* n,
+					 double* q)
 {
     const double a2 = a * a;
     const double c2_minus_a2 = c * c - a2;
