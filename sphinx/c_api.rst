@@ -76,3 +76,17 @@ Functions
 		The coefficients ``bᵢ`` are stored in `b` (array of
 		length ``PW85_DIM + 1``) in *increasing* order: ``b[i]
 		= bᵢ``.
+
+
+.. c:function:: double pw85__xT_adjA_x(double* x, double* a)
+
+		Return the product ``xᵀ⋅adj(A)⋅x``.
+
+		The symmetric, 3×3 matrice ``A`` is specified as the
+		array ``a`` of length :c:macro:`PW85_SYM`; ``adj(A)``
+		denotes its adjugate matrix (transpose of its cofactor
+		matrix), see e.g
+		`Wikipedia <https://en.wikipedia.org/wiki/Adjugate_matrix>`_.
+
+		The column vector ``x`` is specified as an array of
+		length :c:macro:`PW85_DIM`.

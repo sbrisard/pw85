@@ -57,3 +57,8 @@ def det_q_as_poly(q1, q2, b=None):
         b = np.empty((4,), dtype=np.float64, order='C')
     cpw85.pw85_det_q_as_poly(q1, q2, b)
     return b
+
+
+_xT_adjA_x = cpw85.pw85__xT_adjA_x
+_xT_adjA_x.argtypes = [Vector, Tensor]
+_xT_adjA_x.restype = c_double

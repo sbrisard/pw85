@@ -60,7 +60,7 @@ def test_spheroid(a, c, n, in_place, rtol=1E-10, atol=1E-12):
 
 
 @pytest.mark.parametrize('a', np.random.rand(100, 6))
-def test__det_sym_3x3(a, rtol=1E-14, atol=1E-16):
+def test__det_sym_3x3(a, rtol=1E-12, atol=1E-14):
 
     a0, a1, a2, a3, a4, a5 = a
     expected = np.linalg.det(np.array([[a0, a1, a2],
@@ -91,4 +91,31 @@ def test_det_q_as_poly(a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
 
     x = x[:, None, None]
     expected = np.linalg.det((1.-x)*Q1+x*Q2)
+    assert_allclose(actual, expected, rtol, atol)
+
+
+def minor(A, i, j):
+    assert A.ndim == 2
+    assert A.shape[0] == A.shape[1]
+    n = A.shape[0]
+    rows = list(range(n))
+    rows.remove(i)
+    cols = list(range(n))
+    cols.remove(j)
+    rows, cols = np.meshgrid(rows, cols, indexing='ij')
+    return A[rows, cols]
+
+
+@pytest.mark.parametrize('x', np.random.rand(5, 3))
+@pytest.mark.parametrize('a', np.random.rand(5, 6))
+def test__xT_adjA_x(x, a, rtol=1E-12, atol=1E-14):
+    actual = pypw85._xT_adjA_x(x, a)
+    A = np.array([[a[0], a[1], a[2]],
+                  [a[1], a[3], a[4]],
+                  [a[2], a[4], a[5]]], dtype=np.float64)
+    adjA = np.empty_like(A)
+    for i in range(3):
+        for j in range(3):
+            adjA[i, j] = (-1)**(i+j)*np.linalg.det(minor(A, i, j))
+    expected = np.dot(x, np.dot(adjA, x))
     assert_allclose(actual, expected, rtol, atol)
