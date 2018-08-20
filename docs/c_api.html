@@ -112,6 +112,19 @@ length <code class="docutils literal notranslate"><span class="pre">PW85_DIM</sp
 <span class="pre">=</span> <span class="pre">bᵢ</span></code>.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="c.pw85__xT_adjA_x">
+double <code class="descname">pw85__xT_adjA_x</code><span class="sig-paren">(</span>double*<em>&nbsp;x</em>, double*<em>&nbsp;a</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__xT_adjA_x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the product <code class="docutils literal notranslate"><span class="pre">xᵀ⋅adj(A)⋅x</span></code>.</p>
+<p>The symmetric, 3×3 matrice <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified as the
+array <code class="docutils literal notranslate"><span class="pre">a</span></code> of length <a class="reference internal" href="#c.PW85_SYM" title="PW85_SYM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PW85_SYM</span></code></a>; <code class="docutils literal notranslate"><span class="pre">adj(A)</span></code>
+denotes its adjugate matrix (transpose of its cofactor
+matrix), see e.g
+<a class="reference external" href="https://en.wikipedia.org/wiki/Adjugate_matrix">Wikipedia</a>.</p>
+<p>The column vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is specified as an array of
+length <a class="reference internal" href="#c.PW85_DIM" title="PW85_DIM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PW85_DIM</span></code></a>.</p>
+</dd></dl>
+
 </div>
 </div>
 

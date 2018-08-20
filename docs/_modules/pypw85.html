@@ -92,6 +92,11 @@
         <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">4</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
     <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_det_q_as_poly</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">b</span></div>
+
+
+<span class="n">_xT_adjA_x</span> <span class="o">=</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__xT_adjA_x</span>
+<span class="n">_xT_adjA_x</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Vector</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]</span>
+<span class="n">_xT_adjA_x</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
 </pre></div>
 
           </div>
