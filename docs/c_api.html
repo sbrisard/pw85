@@ -77,14 +77,14 @@ in-place with the coefficients of the quadratic form.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="c.pw85_det_sym_3x3">
-double <code class="descname">pw85_det_sym_3x3</code><span class="sig-paren">(</span>double<em>&nbsp;a0</em>, double<em>&nbsp;a1</em>, double<em>&nbsp;a2</em>, double<em>&nbsp;a3</em>, double<em>&nbsp;a4</em>, double<em>&nbsp;a5</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_det_sym_3x3" title="Permalink to this definition">¶</a></dt>
+<dt id="c.pw85__det_sym">
+double <code class="descname">pw85__det_sym</code><span class="sig-paren">(</span>double<em>&nbsp;a0</em>, double<em>&nbsp;a1</em>, double<em>&nbsp;a2</em>, double<em>&nbsp;a3</em>, double<em>&nbsp;a4</em>, double<em>&nbsp;a5</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__det_sym" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the determinant of a 3×3, symmetric matrix.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="c.pw85_axpby">
-void <code class="descname">pw85_axpby</code><span class="sig-paren">(</span>size_t<em>&nbsp;n</em>, double<em>&nbsp;a</em>, double*<em>&nbsp;x</em>, double<em>&nbsp;b</em>, double*<em>&nbsp;y</em>, double*<em>&nbsp;out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_axpby" title="Permalink to this definition">¶</a></dt>
+<dt id="c.pw85__axpby">
+void <code class="descname">pw85__axpby</code><span class="sig-paren">(</span>size_t<em>&nbsp;n</em>, double<em>&nbsp;a</em>, double*<em>&nbsp;x</em>, double<em>&nbsp;b</em>, double*<em>&nbsp;y</em>, double*<em>&nbsp;out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__axpby" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the linear combination of two vectors.</p>
 <p>This function performs the operation:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
@@ -96,8 +96,8 @@ void <code class="descname">pw85_axpby</code><span class="sig-paren">(</span>siz
 </dd></dl>
 
 <dl class="function">
-<dt id="c.pw85_det_q_as_poly">
-void <code class="descname">pw85_det_q_as_poly</code><span class="sig-paren">(</span>double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;b</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_det_q_as_poly" title="Permalink to this definition">¶</a></dt>
+<dt id="c.pw85__detQ_as_poly">
+void <code class="descname">pw85__detQ_as_poly</code><span class="sig-paren">(</span>double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;b</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__detQ_as_poly" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the coefficients of <code class="docutils literal notranslate"><span class="pre">det[(1-λ)Q₁+λQ₂]</span></code> as a polynomial
 of <code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
 <p>The symmetric, positive definite, 3×3 matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code>
@@ -123,6 +123,24 @@ matrix), see e.g
 <a class="reference external" href="https://en.wikipedia.org/wiki/Adjugate_matrix">Wikipedia</a>.</p>
 <p>The column vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is specified as an array of
 length <a class="reference internal" href="#c.PW85_DIM" title="PW85_DIM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PW85_DIM</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.pw85_r12T_adjQ_r12_as_poly">
+double <code class="descname">pw85_r12T_adjQ_r12_as_poly</code><span class="sig-paren">(</span>double*<em>&nbsp;r12</em>, double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;a</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_r12T_adjQ_r12_as_poly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the coefficients of
+<code class="docutils literal notranslate"><span class="pre">r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂</span></code> as a polynomial of
+<code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
+<p>The symmetric, positive definite, 3×3 matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code>
+and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified as arrays <cite>q1</cite> and <cite>q2</cite> of
+length <a class="reference internal" href="#c.PW85_SYM" title="PW85_SYM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PW85_SYM</span></code></a>. The determinant is a
+polynomial of degree <code class="docutils literal notranslate"><span class="pre">PW85_DIM</span> <span class="pre">-</span> <span class="pre">1</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂ = a₀ + a₁λ + a₂λ².
+</pre></div>
+</div>
+<p>The coefficients <code class="docutils literal notranslate"><span class="pre">aᵢ</span></code> are stored in <cite>a</cite> (array of
+length <code class="docutils literal notranslate"><span class="pre">PW85_DIM</span></code>) in <em>increasing</em> order: <code class="docutils literal notranslate"><span class="pre">a[i]</span>
+<span class="pre">=</span> <span class="pre">aᵢ</span></code>.</p>
 </dd></dl>
 
 </div>
