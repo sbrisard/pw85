@@ -106,6 +106,14 @@ def minor(A, i, j):
     return A[rows, cols]
 
 
+def adjugate(A):
+    adjA = np.empty_like(A)
+    for i in range(3):
+        for j in range(3):
+            adjA[i, j] = (-1)**(i+j)*np.linalg.det(minor(A, i, j))
+    return adjA
+
+
 @pytest.mark.parametrize('x', np.random.rand(5, 3))
 @pytest.mark.parametrize('a', np.random.rand(5, 6))
 def test__xT_adjA_x(x, a, rtol=1E-12, atol=1E-14):
@@ -113,9 +121,5 @@ def test__xT_adjA_x(x, a, rtol=1E-12, atol=1E-14):
     A = np.array([[a[0], a[1], a[2]],
                   [a[1], a[3], a[4]],
                   [a[2], a[4], a[5]]], dtype=np.float64)
-    adjA = np.empty_like(A)
-    for i in range(3):
-        for j in range(3):
-            adjA[i, j] = (-1)**(i+j)*np.linalg.det(minor(A, i, j))
-    expected = np.dot(x, np.dot(adjA, x))
+    expected = np.dot(x, np.dot(adjugate(A), x))
     assert_allclose(actual, expected, rtol, atol)
