@@ -41,12 +41,12 @@ Functions
 		in-place with the coefficients of the quadratic form.
 
 
-.. c:function:: double pw85_det_sym_3x3(double a0, double a1, double a2, double a3, double a4, double a5)
+.. c:function:: double pw85__det_sym(double a0, double a1, double a2, double a3, double a4, double a5)
 
 		Return the determinant of a 3×3, symmetric matrix.
 
 
-.. c:function:: void pw85_axpby(size_t n, double a, double* x, double b, double* y, double* out)
+.. c:function:: void pw85__axpby(size_t n, double a, double* x, double b, double* y, double* out)
 
 		Compute the linear combination of two vectors.
 
@@ -61,7 +61,7 @@ Functions
 		`n` is the common size of `x`, `y` and `out`.
 
 
-.. c:function:: void pw85_det_q_as_poly(double* q1, double* q2, double* b)
+.. c:function:: void pw85__detQ_as_poly(double* q1, double* q2, double* b)
 
 		Compute the coefficients of ``det[(1-λ)Q₁+λQ₂]`` as a polynomial
 		of ``λ``.
@@ -90,3 +90,21 @@ Functions
 
 		The column vector ``x`` is specified as an array of
 		length :c:macro:`PW85_DIM`.
+
+
+.. c:function:: double pw85_r12T_adjQ_r12_as_poly(double* r12, double* q1, double* q2, double* a)
+
+		Compute the coefficients of
+		``r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂`` as a polynomial of
+		``λ``.
+
+		The symmetric, positive definite, 3×3 matrices ``Q₁``
+		and ``Q₂`` are specified as arrays `q1` and `q2` of
+		length :c:macro:`PW85_SYM`. The determinant is a
+		polynomial of degree ``PW85_DIM - 1``::
+
+		  r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂ = a₀ + a₁λ + a₂λ².
+
+		The coefficients ``aᵢ`` are stored in `a` (array of
+		length ``PW85_DIM``) in *increasing* order: ``a[i]
+		= aᵢ``.
