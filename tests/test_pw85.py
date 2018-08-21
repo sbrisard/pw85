@@ -59,13 +59,16 @@ def test_spheroid(a, c, n, in_place, rtol=1E-10, atol=1E-12):
         assert_allclose(s*n_act, n, rtol, atol)
 
 
+def to_array_3x3(a):
+    return np.array([[a[0], a[1], a[2]],
+                     [a[1], a[3], a[4]],
+                     [a[2], a[4], a[5]]])
+
+
 @pytest.mark.parametrize('a', np.random.rand(100, 6))
 def test__det_sym_3x3(a, rtol=1E-12, atol=1E-14):
 
-    a0, a1, a2, a3, a4, a5 = a
-    expected = np.linalg.det(np.array([[a0, a1, a2],
-                                       [a1, a3, a4],
-                                       [a2, a4, a5]], dtype=np.float64))
+    expected = np.linalg.det(to_array_3x3(a))
     actual = pypw85._det_sym_3x3(a)
     assert_allclose(actual, expected, rtol, atol)
 
@@ -78,13 +81,9 @@ def test__det_sym_3x3(a, rtol=1E-12, atol=1E-14):
 @pytest.mark.parametrize('n2', DIRECTIONS[:1])
 def test_det_q_as_poly(a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
     q1 = pypw85.spheroid(a1, c1, n1)
-    Q1 = np.array([[q1[0], q1[1], q1[2]],
-                   [q1[1], q1[3], q1[4]],
-                   [q1[2], q1[4], q1[5]]])
+    Q1 = to_array_3x3(q1)
     q2 = pypw85.spheroid(a2, c2, n2)
-    Q2 = np.array([[q2[0], q2[1], q2[2]],
-                   [q2[1], q2[3], q2[4]],
-                   [q2[2], q2[4], q2[5]]])
+    Q2 = to_array_3x3(q2)
     x = np.linspace(0., 1., num=11)
     b = np.poly1d(pypw85.det_q_as_poly(q1, q2)[::-1])
     actual = b(x)
@@ -118,8 +117,5 @@ def adjugate(A):
 @pytest.mark.parametrize('a', np.random.rand(5, 6))
 def test__xT_adjA_x(x, a, rtol=1E-12, atol=1E-14):
     actual = pypw85._xT_adjA_x(x, a)
-    A = np.array([[a[0], a[1], a[2]],
-                  [a[1], a[3], a[4]],
-                  [a[2], a[4], a[5]]], dtype=np.float64)
-    expected = np.dot(x, np.dot(adjugate(A), x))
+    expected = np.dot(x, np.dot(adjugate(to_array_3x3(a)), x))
     assert_allclose(actual, expected, rtol, atol)
