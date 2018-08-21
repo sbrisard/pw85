@@ -26,7 +26,7 @@ __declspec(dllexport) void pw85_spheroid(double a, double c, double* n,
 }
 
 
-__declspec(dllexport) double pw85_det_sym_3x3(double* a) {
+__declspec(dllexport) double pw85__det_sym(double* a) {
     return a[0]*a[3]*a[5] + 2*a[1]*a[2]*a[4] - a[0]*a[4]*a[4]
 	- a[3]*a[2]*a[2] - a[5]*a[1]*a[1];
 }
@@ -45,12 +45,12 @@ __declspec(dllexport) void pw85__axpby(size_t n,
 __declspec(dllexport) void pw85_detQ_as_poly(double* q1, double* q2, double* b)
 {
     double q[PW85_SYM];
-    const double g_zero = pw85_det_sym_3x3(q1);
-    const double g_one = pw85_det_sym_3x3(q2);
+    const double g_zero = pw85__det_sym(q1);
+    const double g_one = pw85__det_sym(q2);
     pw85__axpby(PW85_SYM, 2., q1, -1.,q2, q);
-    const double g_minus_one = pw85_det_sym_3x3(q);
+    const double g_minus_one = pw85__det_sym(q);
     pw85__axpby(PW85_SYM, .5, q1, .5, q2, q);
-    const double g_one_half = pw85_det_sym_3x3(q);
+    const double g_one_half = pw85__det_sym(q);
 
     b[0] = g_zero;
     b[2] = 0.5*(g_one+g_minus_one)-g_zero;

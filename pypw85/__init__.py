@@ -43,9 +43,9 @@ def spheroid(a, c, n, q=None):
     return q
 
 
-cpw85.pw85_det_sym_3x3.argtypes = [Tensor]
-cpw85.pw85_det_sym_3x3.restype = c_double
-_det_sym_3x3 = cpw85.pw85_det_sym_3x3
+cpw85.pw85__det_sym.argtypes = [Tensor]
+cpw85.pw85__det_sym.restype = c_double
+_det_sym = cpw85.pw85__det_sym
 
 
 cpw85.pw85_detQ_as_poly.argtypes = [Tensor, Tensor, npct.ndpointer(dtype=np.float64, ndim=1, shape=(4,), flags='C')]

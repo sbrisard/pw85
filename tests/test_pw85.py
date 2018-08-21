@@ -66,10 +66,10 @@ def to_array_3x3(a):
 
 
 @pytest.mark.parametrize('a', np.random.rand(100, 6))
-def test__det_sym_3x3(a, rtol=1E-12, atol=1E-14):
+def test__det_sym(a, rtol=1E-12, atol=1E-14):
 
     expected = np.linalg.det(to_array_3x3(a))
-    actual = pypw85._det_sym_3x3(a)
+    actual = pypw85._det_sym(a)
     assert_allclose(actual, expected, rtol, atol)
 
 
