@@ -79,13 +79,13 @@ def test__det_sym_3x3(a, rtol=1E-12, atol=1E-14):
 @pytest.mark.parametrize('a2', [0.04])
 @pytest.mark.parametrize('c2', [5.0])
 @pytest.mark.parametrize('n2', DIRECTIONS[:1])
-def test_det_q_as_poly(a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
+def test_detQ_as_poly(a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
     q1 = pypw85.spheroid(a1, c1, n1)
     Q1 = to_array_3x3(q1)
     q2 = pypw85.spheroid(a2, c2, n2)
     Q2 = to_array_3x3(q2)
     x = np.linspace(0., 1., num=11)
-    b = np.poly1d(pypw85.det_q_as_poly(q1, q2)[::-1])
+    b = np.poly1d(pypw85.detQ_as_poly(q1, q2)[::-1])
     actual = b(x)
 
     x = x[:, None, None]
