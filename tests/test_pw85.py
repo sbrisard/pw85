@@ -119,3 +119,21 @@ def test__xT_adjA_x(x, a, rtol=1E-12, atol=1E-14):
     actual = pypw85._xT_adjA_x(x, a)
     expected = np.dot(x, np.dot(adjugate(to_array_3x3(a)), x))
     assert_allclose(actual, expected, rtol, atol)
+
+
+@pytest.mark.parametrize('r12', [np.array([3.0, 4.0, 5.0])])
+@pytest.mark.parametrize('a1', [2.0])
+@pytest.mark.parametrize('c1', [3.0])
+@pytest.mark.parametrize('n1', DIRECTIONS[:1])
+@pytest.mark.parametrize('a2', [0.04])
+@pytest.mark.parametrize('c2', [5.0])
+@pytest.mark.parametrize('n2', DIRECTIONS[:1])
+def test_r12T_adjQ_r12_as_poly(r12, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
+    q1 = pypw85.spheroid(a1, c1, n1)
+    q2 = pypw85.spheroid(a2, c2, n2)
+    x = np.linspace(0., 1., num=11)
+    actual = np.poly1d(pypw85.r12T_adjQ_r12_as_poly(r12, q1, q2)[::-1])(x)
+    x = x[:, None, None]
+    Q = (1-x)*to_array_3x3(q1)+x*to_array_3x3(q2)
+    expected = np.dot(np.dot(adjugate(Q), r12), r12)
+    assert_allclose(actual, expected, rtol, atol)

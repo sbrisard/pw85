@@ -69,10 +69,21 @@ __declspec(dllexport) double pw85__xT_adjA_x(double* x, double* a) {
     const double x0 = x[0];
     const double x1 = x[1];
     const double x2 = x[2];
-    return (x0*x0*(a3*a5-a4*a4)
-	    + x1*x1*(a0*a5-a2*a2)
-	    + x2*x2*(a0*a3-a1*a1)
-	    + 2.*(x0*x1*(a2*a4-a1*a5)
-		  + x0*x2*(a1*a4-a2*a3)
-		  + x1*x2*(a1*a2-a0*a4)));
+    return (x0*x0*(a3*a5-a4*a4)+x1*x1*(a0*a5-a2*a2)+x2*x2*(a0*a3-a1*a1)
+	    +2.*(x0*x1*(a2*a4-a1*a5)+x0*x2*(a1*a4-a2*a3)+x1*x2*(a1*a2-a0*a4)));
+}
+
+
+__declspec(dllexport) void pw85_r12T_adjQ_r12_as_poly(double* r12, double* q1,
+						      double* q2, double* a)
+{
+    double q[PW85_SYM];
+    const double f_zero = pw85__xT_adjA_x(r12, q1);
+    const double f_one = pw85__xT_adjA_x(r12, q2);
+    pw85_axpby(PW85_SYM, 2., q1, -1.,q2, q);
+    const double f_minus_one = pw85__xT_adjA_x(r12, q);
+
+    a[0] = f_zero;
+    a[2] = 0.5*(f_one+f_minus_one)-f_zero;
+    a[1] = 0.5*(f_one-f_minus_one);
 }
