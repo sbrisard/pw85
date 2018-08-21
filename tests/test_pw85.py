@@ -94,22 +94,22 @@ def test_det_q_as_poly(a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
 
 
 def minor(A, i, j):
-    assert A.ndim == 2
-    assert A.shape[0] == A.shape[1]
-    n = A.shape[0]
+    assert A.ndim >= 2
+    assert A.shape[-2] == A.shape[-1]
+    n = A.shape[-1]
     rows = list(range(n))
     rows.remove(i)
     cols = list(range(n))
     cols.remove(j)
     rows, cols = np.meshgrid(rows, cols, indexing='ij')
-    return A[rows, cols]
+    return A[..., rows, cols]
 
 
 def adjugate(A):
     adjA = np.empty_like(A)
     for i in range(3):
         for j in range(3):
-            adjA[i, j] = (-1)**(i+j)*np.linalg.det(minor(A, i, j))
+            adjA[..., i, j] = (-1)**(i+j)*np.linalg.det(minor(A, i, j))
     return adjA
 
 
