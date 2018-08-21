@@ -32,10 +32,10 @@ __declspec(dllexport) double pw85_det_sym_3x3(double* a) {
 }
 
 
-__declspec(dllexport) void pw85_axpby(size_t n,
-				      double a, double* x,
-				      double b, double* y,
-				      double* out) {
+__declspec(dllexport) void pw85__axpby(size_t n,
+				       double a, double* x,
+				       double b, double* y,
+				       double* out) {
     for (int i = 0; i < n; i++) {
 	out[i] = a * x[i] + b * y[i];
     }
@@ -47,9 +47,9 @@ __declspec(dllexport) void pw85_det_q_as_poly(double* q1, double* q2, double* b)
     double q[PW85_SYM];
     const double g_zero = pw85_det_sym_3x3(q1);
     const double g_one = pw85_det_sym_3x3(q2);
-    pw85_axpby(PW85_SYM, 2., q1, -1.,q2, q);
+    pw85__axpby(PW85_SYM, 2., q1, -1.,q2, q);
     const double g_minus_one = pw85_det_sym_3x3(q);
-    pw85_axpby(PW85_SYM, .5, q1, .5, q2, q);
+    pw85__axpby(PW85_SYM, .5, q1, .5, q2, q);
     const double g_one_half = pw85_det_sym_3x3(q);
 
     b[0] = g_zero;
@@ -80,7 +80,7 @@ __declspec(dllexport) void pw85_r12T_adjQ_r12_as_poly(double* r12, double* q1,
     double q[PW85_SYM];
     const double f_zero = pw85__xT_adjA_x(r12, q1);
     const double f_one = pw85__xT_adjA_x(r12, q2);
-    pw85_axpby(PW85_SYM, 2., q1, -1.,q2, q);
+    pw85__axpby(PW85_SYM, 2., q1, -1.,q2, q);
     const double f_minus_one = pw85__xT_adjA_x(r12, q);
 
     a[0] = f_zero;
