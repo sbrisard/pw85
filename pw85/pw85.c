@@ -22,9 +22,9 @@ __declspec(dllexport) void pw85__axpby(size_t n,
     }
 }
 
-__declspec(dllexport) double pw85__det_sym(double* a) {
-    return a[0]*a[3]*a[5] + 2*a[1]*a[2]*a[4] - a[0]*a[4]*a[4]
-	- a[3]*a[2]*a[2] - a[5]*a[1]*a[1];
+__declspec(dllexport) double pw85__det_sym(double a0, double a1, double a2,
+					   double a3, double a4, double a5) {
+    return a0*a3*a5 + 2*a1*a2*a4 - a0*a4*a4 - a3*a2*a2 - a5*a1*a1;
 }
 
 __declspec(dllexport) double pw85__xT_adjA_x(double* x, double* a) {
@@ -64,14 +64,30 @@ __declspec(dllexport) void pw85_spheroid(double a, double c, double* n,
 
 __declspec(dllexport) void pw85_detQ_as_poly(double* q1, double* q2, double* b)
 {
-    double q[PW85_SYM];
-    const double g_zero = pw85__det_sym(q1);
-    const double g_one = pw85__det_sym(q2);
-    pw85__axpby(PW85_SYM, 2., q1, -1.,q2, q);
-    const double g_minus_one = pw85__det_sym(q);
-    pw85__axpby(PW85_SYM, .5, q1, .5, q2, q);
-    const double g_one_half = pw85__det_sym(q);
+    const double q1_0 = q1[0];
+    const double q1_1 = q1[1];
+    const double q1_2 = q1[2];
+    const double q1_3 = q1[3];
+    const double q1_4 = q1[4];
+    const double q1_5 = q1[5];
 
+    const double q2_0 = q2[0];
+    const double q2_1 = q2[1];
+    const double q2_2 = q2[2];
+    const double q2_3 = q2[3];
+    const double q2_4 = q2[4];
+    const double q2_5 = q2[5];
+
+    const double g_zero = pw85__det_sym(q1_0, q1_1, q1_2, q1_3, q1_4, q1_5);
+    const double g_one = pw85__det_sym(q2_0, q2_1, q2_2, q2_3, q2_4, q2_5);
+    /* Compute det[(1-x)*q1+x*q2] for x = -1. */
+    const double g_minus_one = pw85__det_sym(2.*q1_0-q2_0, 2.*q1_1-q2_1,
+					     2.*q1_2-q2_2, 2.*q1_3-q2_3,
+					     2.*q1_4-q2_4, 2.*q1_5-q2_5);
+    /* Compute det[(1-x)*q1+x*q2] for x = 1/2. */
+    const double g_one_half = pw85__det_sym(.5*(q1_0+q2_0), .5*(q1_1+q2_1),
+					    .5*(q1_2+q2_2), .5*(q1_3+q2_3),
+					    .5*(q1_4+q2_4), .5*(q1_5+q2_5));
     b[0] = g_zero;
     b[2] = 0.5*(g_one+g_minus_one)-g_zero;
     b[1] = (8.*g_one_half-6.*g_zero-1.5*g_one-0.5*g_minus_one)/3.;

@@ -69,7 +69,7 @@ def to_array_2d(a):
 def test__det_sym(a, rtol=1E-12, atol=1E-14):
 
     expected = np.linalg.det(to_array_2d(a))
-    actual = pypw85._det_sym(a)
+    actual = pypw85._det_sym(*a)
     assert_allclose(actual, expected, rtol, atol)
 
 

@@ -41,11 +41,6 @@ Functions
 		in-place with the coefficients of the quadratic form.
 
 
-.. c:function:: double pw85__det_sym(double a0, double a1, double a2, double a3, double a4, double a5)
-
-		Return the determinant of a 3×3, symmetric matrix.
-
-
 .. c:function:: void pw85__axpby(size_t n, double a, double* x, double b, double* y, double* out)
 
 		Compute the linear combination of two vectors.
@@ -59,6 +54,11 @@ Functions
 		  }
 
 		`n` is the common size of `x`, `y` and `out`.
+
+
+.. c:function:: double pw85__det_sym(double a0, double a1, double a2, double a3, double a4, double a5)
+
+		Return the determinant of a 3×3, symmetric matrix.
 
 
 .. c:function:: void pw85__detQ_as_poly(double* q1, double* q2, double* b)
