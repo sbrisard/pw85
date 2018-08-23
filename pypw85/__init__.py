@@ -60,16 +60,16 @@ def detQ_as_poly(q1, q2, b=None):
 
 
 _xT_adjA_x = cpw85.pw85__xT_adjA_x
-_xT_adjA_x.argtypes = [Vector, Tensor]
+_xT_adjA_x.argtypes = 9*[c_double]
 _xT_adjA_x.restype = c_double
 
 
-cpw85.pw85_r12T_adjQ_r12_as_poly.argtypes = [Vector, Tensor, Tensor, npct.ndpointer(dtype=np.float64, ndim=1, shape=(3,), flags='C')]
-cpw85.pw85_r12T_adjQ_r12_as_poly.restype = None
+cpw85.pw85_rT_adjQ_r_as_poly.argtypes = [Vector, Tensor, Tensor, npct.ndpointer(dtype=np.float64, ndim=1, shape=(3,), flags='C')]
+cpw85.pw85_rT_adjQ_r_as_poly.restype = None
 
 
-def r12T_adjQ_r12_as_poly(r12, q1, q2, a=None):
+def rT_adjQ_r_as_poly(r, q1, q2, a=None):
     if a is None:
         a = np.empty((3,), dtype=np.float64, order='C')
-    cpw85.pw85_r12T_adjQ_r12_as_poly(r12, q1, q2, a)
+    cpw85.pw85_rT_adjQ_r_as_poly(r, q1, q2, a)
     return a

@@ -116,24 +116,24 @@ def adjugate(A):
 @pytest.mark.parametrize('x', np.random.rand(5, 3))
 @pytest.mark.parametrize('a', np.random.rand(5, 6))
 def test__xT_adjA_x(x, a, rtol=1E-12, atol=1E-14):
-    actual = pypw85._xT_adjA_x(x, a)
+    actual = pypw85._xT_adjA_x(*x, *a)
     expected = np.dot(x, np.dot(adjugate(to_array_2d(a)), x))
     assert_allclose(actual, expected, rtol, atol)
 
 
-@pytest.mark.parametrize('r12', [np.array([3.0, 4.0, 5.0])])
+@pytest.mark.parametrize('r', [np.array([3.0, 4.0, 5.0])])
 @pytest.mark.parametrize('a1', [2.0])
 @pytest.mark.parametrize('c1', [3.0])
 @pytest.mark.parametrize('n1', DIRECTIONS[:1])
 @pytest.mark.parametrize('a2', [0.04])
 @pytest.mark.parametrize('c2', [5.0])
 @pytest.mark.parametrize('n2', DIRECTIONS[:1])
-def test_r12T_adjQ_r12_as_poly(r12, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
+def test_rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
     q1 = pypw85.spheroid(a1, c1, n1)
     q2 = pypw85.spheroid(a2, c2, n2)
     x = np.linspace(0., 1., num=11)
-    actual = np.poly1d(pypw85.r12T_adjQ_r12_as_poly(r12, q1, q2)[::-1])(x)
+    actual = np.poly1d(pypw85.rT_adjQ_r_as_poly(r, q1, q2)[::-1])(x)
     x = x[:, None, None]
     Q = (1-x)*to_array_2d(q1)+x*to_array_2d(q2)
-    expected = np.dot(np.dot(adjugate(Q), r12), r12)
+    expected = np.dot(np.dot(adjugate(Q), r), r)
     assert_allclose(actual, expected, rtol, atol)
