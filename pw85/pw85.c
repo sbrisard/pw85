@@ -9,6 +9,42 @@
 #define PW85_XZ 2
 #define PW85_YZ 4
 
+/* Convenience functions */
+/* ===================== */
+/* These functions are exported for the sake of testing. */
+
+__declspec(dllexport) void pw85__axpby(size_t n,
+				       double a, double* x,
+				       double b, double* y,
+				       double* out) {
+    for (int i = 0; i < n; i++) {
+	out[i] = a * x[i] + b * y[i];
+    }
+}
+
+__declspec(dllexport) double pw85__det_sym(double* a) {
+    return a[0]*a[3]*a[5] + 2*a[1]*a[2]*a[4] - a[0]*a[4]*a[4]
+	- a[3]*a[2]*a[2] - a[5]*a[1]*a[1];
+}
+
+__declspec(dllexport) double pw85__xT_adjA_x(double* x, double* a) {
+    const double a0 = a[0];
+    const double a1 = a[1];
+    const double a2 = a[2];
+    const double a3 = a[3];
+    const double a4 = a[4];
+    const double a5 = a[5];
+    const double x0 = x[0];
+    const double x1 = x[1];
+    const double x2 = x[2];
+    return (x0*x0*(a3*a5-a4*a4)+x1*x1*(a0*a5-a2*a2)+x2*x2*(a0*a3-a1*a1)
+	    +2.*(x0*x1*(a2*a4-a1*a5)+x0*x2*(a1*a4-a2*a3)+x1*x2*(a1*a2-a0*a4)));
+}
+
+
+/* Public API */
+/* ========== */
+
 __declspec(dllexport) void pw85_spheroid(double a, double c, double* n,
 					 double* q)
 {
@@ -26,22 +62,6 @@ __declspec(dllexport) void pw85_spheroid(double a, double c, double* n,
 }
 
 
-__declspec(dllexport) double pw85__det_sym(double* a) {
-    return a[0]*a[3]*a[5] + 2*a[1]*a[2]*a[4] - a[0]*a[4]*a[4]
-	- a[3]*a[2]*a[2] - a[5]*a[1]*a[1];
-}
-
-
-__declspec(dllexport) void pw85__axpby(size_t n,
-				       double a, double* x,
-				       double b, double* y,
-				       double* out) {
-    for (int i = 0; i < n; i++) {
-	out[i] = a * x[i] + b * y[i];
-    }
-}
-
-
 __declspec(dllexport) void pw85_detQ_as_poly(double* q1, double* q2, double* b)
 {
     double q[PW85_SYM];
@@ -56,21 +76,6 @@ __declspec(dllexport) void pw85_detQ_as_poly(double* q1, double* q2, double* b)
     b[2] = 0.5*(g_one+g_minus_one)-g_zero;
     b[1] = (8.*g_one_half-6.*g_zero-1.5*g_one-0.5*g_minus_one)/3.;
     b[3] = (-8.*g_one_half+6.*g_zero+3.*g_one-g_minus_one)/3.;
-}
-
-
-__declspec(dllexport) double pw85__xT_adjA_x(double* x, double* a) {
-    const double a0 = a[0];
-    const double a1 = a[1];
-    const double a2 = a[2];
-    const double a3 = a[3];
-    const double a4 = a[4];
-    const double a5 = a[5];
-    const double x0 = x[0];
-    const double x1 = x[1];
-    const double x2 = x[2];
-    return (x0*x0*(a3*a5-a4*a4)+x1*x1*(a0*a5-a2*a2)+x2*x2*(a0*a3-a1*a1)
-	    +2.*(x0*x1*(a2*a4-a1*a5)+x0*x2*(a1*a4-a2*a3)+x1*x2*(a1*a2-a0*a4)));
 }
 
 
