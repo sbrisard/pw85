@@ -126,3 +126,50 @@ __declspec(dllexport) void pw85_rT_adjQ_r_as_poly(double* r, double* q1,
     a[2] = 0.5*(f_one+f_minus_one)-f_zero;
     a[1] = 0.5*(f_one-f_minus_one);
 }
+
+__declspec(dllexport) double pw85_contact_function(double* r, double* q1,
+						   double* q2, double* out)
+{
+    const double a[3];
+    const double b[4];
+    pw85_rT_adjQ_r_as_poly(r, q1, q2, a);
+    pw85_detQ_as_poly(q1, q2, b);
+
+    const double a0 = a[0];
+    const double a1 = a[1];
+    const double a2 = a[2];
+
+    const double b0 = b[0];
+    const double b1 = b[1];
+    const double b2 = b[2];
+    const double b3 = b[3];
+
+    const double c0 = a0*b0;
+    const double c1 = 2.*(a1-a0)*b0;
+    const double c2 = -a0*(b1+b2)+3.*b0*(a2-a1)+a1*b1;
+    const double c3 = 2.*(b1*(a2-a1)-a0*b3)-4.*a2*b0;
+    const double c4 = (a0-a1)*b3+(a2-a1)*b2-3.*a2*b1;
+    const double c5 = -2.*a2*b2;
+    const double c6 = -a2*b3;
+
+    double xl = 0.;
+    double yl = c0;
+    double xr = 1.;
+    double yr = c0+c1+c2+c3+c4+c5+c6;
+    double x, y;
+    while (fabs(xr-xl) > 1E-12) {
+	x = 0.5*(xl+xr);
+	y = c0+x*(c1+x*(c2+x*(c3+x*(c4+x*(c5+x*c6)))));
+	if (y == 0.0) { break; }
+	else {
+	    if (yl*y < 0) { xr = x; yr = y; }
+	    else { xl = x; yl = y; }
+	}
+    }
+    y = x*(1.-x)*(a0+x*(a1+x*a2))/(b0+x*(b1+x*(b2+x*b3)));
+    if (out) {
+	out[0] = y;
+	out[1] = x;
+    }
+    return y;
+}

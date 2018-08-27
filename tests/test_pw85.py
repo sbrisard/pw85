@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 import scipy.linalg
+import scipy.optimize
 
 import pypw85
 
@@ -137,3 +138,41 @@ def test_rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
     Q = (1-x)*to_array_2d(q1)+x*to_array_2d(q2)
     expected = np.dot(np.dot(adjugate(Q), r), r)
     assert_allclose(actual, expected, rtol, atol)
+
+
+@pytest.mark.parametrize('r', [np.array([3.0, 4.0, 5.0])])
+@pytest.mark.parametrize('a1', [2.0])
+@pytest.mark.parametrize('c1', [3.0])
+@pytest.mark.parametrize('n1', DIRECTIONS[:1])
+@pytest.mark.parametrize('a2', [0.04])
+@pytest.mark.parametrize('c2', [5.0])
+@pytest.mark.parametrize('n2', DIRECTIONS[:1])
+def test_contact_function(r, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
+    q1 = pypw85.spheroid(a1, c1, n1)
+    q2 = pypw85.spheroid(a2, c2, n2)
+    actual = pypw85.contact_function(r, q1, q2)
+
+    a = np.poly1d(pypw85.rT_adjQ_r_as_poly(r, q1, q2)[::-1])
+    b = np.poly1d(pypw85.detQ_as_poly(q1, q2)[::-1])
+    f = lambda x: -x*(1-x)*a(x)/b(x)
+    print(f(actual-1E-5), f(actual), f(actual+1E-5))
+    expected = scipy.optimize.minimize_scalar(f, (0., 1.))
+    assert_allclose(actual, expected, 1E-10, 1E-12)
+
+
+if __name__ == '__main__':
+    r = np.array([3.0, 4.0, 5.0])
+    a1 = 2.
+    c1 =  3.
+    n1 = DIRECTIONS[0]
+    a2 = 0.04
+    c2 = 5.0
+    n2= DIRECTIONS[0]
+    q1 = pypw85.spheroid(a1, c1, n1)
+    q2 = pypw85.spheroid(a2, c2, n2)
+    actual = pypw85.contact_function(r, q1, q2)
+
+    a = np.poly1d(pypw85.rT_adjQ_r_as_poly(r, q1, q2)[::-1])
+    b = np.poly1d(pypw85.detQ_as_poly(q1, q2)[::-1])
+    f = lambda x: -x*(1-x)*a(x)/b(x)
+    print(f(actual-1E-5), f(actual), f(actual+1E-5))

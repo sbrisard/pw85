@@ -73,3 +73,16 @@ def rT_adjQ_r_as_poly(r, q1, q2, a=None):
         a = np.empty((3,), dtype=np.float64, order='C')
     cpw85.pw85_rT_adjQ_r_as_poly(r, q1, q2, a)
     return a
+
+
+cpw85.pw85_contact_function.argtypes = [Vector, Tensor, Tensor, npct.ndpointer(dtype=np.float64, ndim=1, shape=(2,), flags='C')]
+cpw85.pw85_contact_function.restype = c_double
+
+
+def contact_function(r, q1, q2, full_output=False):
+    out = np.empty((2,), dtype=np.float64, order='C')
+    val = cpw85.pw85_contact_function(r, q1, q2, out)
+    if full_output:
+        return out
+    else:
+        return val
