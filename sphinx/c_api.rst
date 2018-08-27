@@ -109,19 +109,49 @@ Functions
 		= bᵢ``.
 
 
-.. c:function:: double pw85_r12T_adjQ_r12_as_poly(double* r12, double* q1, double* q2, double* a)
+.. c:function:: double pw85_rT_adjQ_r_as_poly(double* r, double* q1, double* q2, double* a)
 
-		Compute the coefficients of
-		``r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂`` as a polynomial of
-		``λ``.
+		Compute the coefficients of ``rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r``
+		as a polynomial of ``λ``.
 
 		The symmetric, positive definite, 3×3 matrices ``Q₁``
 		and ``Q₂`` are specified as arrays `q1` and `q2` of
 		length :c:macro:`PW85_SYM`. The determinant is a
 		polynomial of degree ``PW85_DIM - 1``::
 
-		  r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂ = a₀ + a₁λ + a₂λ².
+		  rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².
 
 		The coefficients ``aᵢ`` are stored in `a` (array of
 		length ``PW85_DIM``) in *increasing* order: ``a[i]
 		= aᵢ``.
+
+
+.. c:function:: double pw85_contact_function(double* r, double* q1, double* q2, double* out)
+
+		Return the value of the contact function of two ellipsoids.
+
+		Ellipsoids 1 and 2 are defined as the sets of points
+		``m`` (column-vector) such that::
+
+		    (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
+
+	        where ``cᵢ`` is the center (column-vector); ``r =
+	        c₂-c₁`` is the center-to-center radius-vector. The
+	        symmetric, positive-definite matrices ``Q₁`` and
+	        ``Q₂`` are specified through the arrays ``q1`` and
+	        ``q2`` of the coefficients of their upper triangular
+	        part (in row-major order)::
+
+		       ⎡ q1[0] q1[1] q1[2] ⎤            ⎡ q2[0] q2[1] q2[2] ⎤
+                  Q₁ = ⎢       q1[3] q1[4] ⎥  and  Q₂ = ⎢       q2[3] q2[4] ⎥.
+                       ⎣ sym.        q1[5] ⎦	        ⎣ sym.        q2[5] ⎦
+
+	        This function returns the value of ``μ²``, defined as
+	        (see :ref:`theory`)::
+
+		  μ² = max{ λ(1-λ)rᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r, 0 ≤ λ ≤ 1 }.
+
+		If ``out`` is not null, then a full-output is
+		produced: ``out[0]`` is updated with the value of
+		``μ²``, while ``out[1]`` is updated with the maximizer
+		``λ`` .

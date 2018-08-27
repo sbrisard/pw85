@@ -143,21 +143,51 @@ length <code class="docutils literal notranslate"><span class="pre">PW85_DIM</sp
 </dd></dl>
 
 <dl class="function">
-<dt id="c.pw85_r12T_adjQ_r12_as_poly">
-double <code class="descname">pw85_r12T_adjQ_r12_as_poly</code><span class="sig-paren">(</span>double*<em>&nbsp;r12</em>, double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;a</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_r12T_adjQ_r12_as_poly" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the coefficients of
-<code class="docutils literal notranslate"><span class="pre">r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂</span></code> as a polynomial of
-<code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
+<dt id="c.pw85_rT_adjQ_r_as_poly">
+double <code class="descname">pw85_rT_adjQ_r_as_poly</code><span class="sig-paren">(</span>double*<em>&nbsp;r</em>, double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;a</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_rT_adjQ_r_as_poly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the coefficients of <code class="docutils literal notranslate"><span class="pre">rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r</span></code>
+as a polynomial of <code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
 <p>The symmetric, positive definite, 3×3 matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code>
 and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified as arrays <cite>q1</cite> and <cite>q2</cite> of
 length <a class="reference internal" href="#c.PW85_SYM" title="PW85_SYM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PW85_SYM</span></code></a>. The determinant is a
 polynomial of degree <code class="docutils literal notranslate"><span class="pre">PW85_DIM</span> <span class="pre">-</span> <span class="pre">1</span></code>:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂ = a₀ + a₁λ + a₂λ².
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².
 </pre></div>
 </div>
 <p>The coefficients <code class="docutils literal notranslate"><span class="pre">aᵢ</span></code> are stored in <cite>a</cite> (array of
 length <code class="docutils literal notranslate"><span class="pre">PW85_DIM</span></code>) in <em>increasing</em> order: <code class="docutils literal notranslate"><span class="pre">a[i]</span>
 <span class="pre">=</span> <span class="pre">aᵢ</span></code>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.pw85_contact_function">
+double <code class="descname">pw85_contact_function</code><span class="sig-paren">(</span>double*<em>&nbsp;r</em>, double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_contact_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the contact function of two ellipsoids.</p>
+<p>Ellipsoids 1 and 2 are defined as the sets of points
+<code class="docutils literal notranslate"><span class="pre">m</span></code> (column-vector) such that:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">cᵢ</span></code> is the center (column-vector); <code class="docutils literal notranslate"><span class="pre">r</span> <span class="pre">=</span>
+<span class="pre">c₂-c₁</span></code> is the center-to-center radius-vector. The
+symmetric, positive-definite matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified through the arrays <code class="docutils literal notranslate"><span class="pre">q1</span></code> and
+<code class="docutils literal notranslate"><span class="pre">q2</span></code> of the coefficients of their upper triangular
+part (in row-major order):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>     ⎡ q1[0] q1[1] q1[2] ⎤            ⎡ q2[0] q2[1] q2[2] ⎤
+Q₁ = ⎢       q1[3] q1[4] ⎥  and  Q₂ = ⎢       q2[3] q2[4] ⎥.
+     ⎣ sym.        q1[5] ⎦            ⎣ sym.        q2[5] ⎦
+</pre></div>
+</div>
+<p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, defined as
+(see <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>μ² = max{ λ(1-λ)rᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r, 0 ≤ λ ≤ 1 }.
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">out</span></code> is not null, then a full-output is
+produced: <code class="docutils literal notranslate"><span class="pre">out[0]</span></code> is updated with the value of
+<code class="docutils literal notranslate"><span class="pre">μ²</span></code>, while <code class="docutils literal notranslate"><span class="pre">out[1]</span></code> is updated with the maximizer
+<code class="docutils literal notranslate"><span class="pre">λ</span></code> .</p>
 </dd></dl>
 
 </div>
