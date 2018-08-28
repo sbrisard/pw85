@@ -5,7 +5,7 @@ import os.path
 import numpy as np
 import numpy.ctypeslib as npct
 
-from ctypes import c_double
+from ctypes import c_double, c_ushort
 
 c_double_p = ctypes.POINTER(c_double)
 
@@ -23,7 +23,7 @@ else:
     raise RuntimeError("Configuration file not found.")
 
 
-cpw85.pw85_spheroid.argtypes = [c_double, c_double, Vector, Tensor]
+cpw85.pw85_spheroid.argtypes = [c_double, c_double, c_double_p, c_double_p]
 cpw85.pw85_spheroid.restype = None
 
 
@@ -39,7 +39,10 @@ def spheroid(a, c, n, q=None):
     """
     if q is None:
         q = np.empty((6,), dtype=np.float64, order='C')
-    cpw85.pw85_spheroid(a, c, n, q)
+    # TODO Check input
+    cpw85.pw85_spheroid(a, c,
+                        n.ctypes.data_as(c_double_p),
+                        q.ctypes.data_as(c_double_p))
     return q
 
 
@@ -47,15 +50,16 @@ cpw85.pw85__det_sym.argtypes = 6*[c_double]
 cpw85.pw85__det_sym.restype = c_double
 _det_sym = cpw85.pw85__det_sym
 
-
-cpw85.pw85_detQ_as_poly.argtypes = [Tensor, Tensor, npct.ndpointer(dtype=np.float64, ndim=1, shape=(4,), flags='C')]
+cpw85.pw85_detQ_as_poly.argtypes = [c_double_p, c_double_p, c_double_p]
 cpw85.pw85_detQ_as_poly.restype = None
 
 
 def detQ_as_poly(q1, q2, b=None):
     if b is None:
         b = np.empty((4,), dtype=np.float64, order='C')
-    cpw85.pw85_detQ_as_poly(q1, q2, b)
+    cpw85.pw85_detQ_as_poly(q1.ctypes.data_as(c_double_p),
+                            q2.ctypes.data_as(c_double_p),
+                            b.ctypes.data_as(c_double_p))
     return b
 
 
@@ -63,25 +67,34 @@ _xT_adjA_x = cpw85.pw85__xT_adjA_x
 _xT_adjA_x.argtypes = 9*[c_double]
 _xT_adjA_x.restype = c_double
 
-
-cpw85.pw85_rT_adjQ_r_as_poly.argtypes = [Vector, Tensor, Tensor, npct.ndpointer(dtype=np.float64, ndim=1, shape=(3,), flags='C')]
+cpw85.pw85_rT_adjQ_r_as_poly.argtypes = [c_double_p, c_double_p, c_double_p,
+                                         c_double_p]
 cpw85.pw85_rT_adjQ_r_as_poly.restype = None
 
 
 def rT_adjQ_r_as_poly(r, q1, q2, a=None):
     if a is None:
         a = np.empty((3,), dtype=np.float64, order='C')
-    cpw85.pw85_rT_adjQ_r_as_poly(r, q1, q2, a)
+    cpw85.pw85_rT_adjQ_r_as_poly(r.ctypes.data_as(c_double_p),
+                                 q1.ctypes.data_as(c_double_p),
+                                 q2.ctypes.data_as(c_double_p),
+                                 a.ctypes.data_as(c_double_p))
     return a
 
 
-cpw85.pw85_contact_function.argtypes = [Vector, Tensor, Tensor, npct.ndpointer(dtype=np.float64, ndim=1, shape=(2,), flags='C')]
+cpw85.pw85_contact_function.argtypes = [c_double_p, c_double_p, c_double_p,
+                                        c_double_p, c_ushort]
 cpw85.pw85_contact_function.restype = c_double
 
 
 def contact_function(r, q1, q2, full_output=False):
     out = np.empty((2,), dtype=np.float64, order='C')
-    val = cpw85.pw85_contact_function(r, q1, q2, out)
+
+    # TODO Hard-coded flag
+    val = cpw85.pw85_contact_function(r.ctypes.data_as(c_double_p),
+                                      q1.ctypes.data_as(c_double_p),
+                                      q2.ctypes.data_as(c_double_p),
+                                      out.ctypes.data_as(c_double_p), 4)
     if full_output:
         return out
     else:
