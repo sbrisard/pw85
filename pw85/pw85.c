@@ -128,19 +128,70 @@ __declspec(dllexport) void pw85_rT_adjQ_r_as_poly(double *r, double *q1,
 
 __declspec(dllexport) double pw85_contact_function(double *r, double *q1, double *q2, double *out)
 {
-    const double a[3];
-    const double b[4];
-    pw85_rT_adjQ_r_as_poly(r, q1, q2, a);
-    pw85_detQ_as_poly(q1, q2, b);
+    const double r_0 = r[0];
+    const double r_1 = r[1];
+    const double r_2 = r[2];
 
-    const double a0 = a[0];
-    const double a1 = a[1];
-    const double a2 = a[2];
+    const double q1_0 = q1[0];
+    const double q1_1 = q1[1];
+    const double q1_2 = q1[2];
+    const double q1_3 = q1[3];
+    const double q1_4 = q1[4];
+    const double q1_5 = q1[5];
 
-    const double b0 = b[0];
-    const double b1 = b[1];
-    const double b2 = b[2];
-    const double b3 = b[3];
+    const double q2_0 = q2[0];
+    const double q2_1 = q2[1];
+    const double q2_2 = q2[2];
+    const double q2_3 = q2[3];
+    const double q2_4 = q2[4];
+    const double q2_5 = q2[5];
+
+    /* Coefficients of (1-λ)Q₁+λQ₂ for λ = -1. */
+    const double q_0 = 2. * q1_0 - q2_0;
+    const double q_1 = 2. * q1_1 - q2_1;
+    const double q_2 = 2. * q1_2 - q2_2;
+    const double q_3 = 2. * q1_3 - q2_3;
+    const double q_4 = 2. * q1_4 - q2_4;
+    const double q_5 = 2. * q1_5 - q2_5;
+
+    /*
+     * Compute the coefficients of
+     *
+     *   a(λ) = rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r
+     *        = a₀ + a₁λ + a₂λ²
+     *
+     * as a degree-2 polynomial in λ.
+     */
+    const double a_zero = pw85__xT_adjA_x(r_0, r_1, r_2,
+                                          q1_0, q1_1, q1_2, q1_3, q1_4, q1_5);
+    const double a_one = pw85__xT_adjA_x(r_0, r_1, r_2,
+                                         q2_0, q2_1, q2_2, q2_3, q2_4, q2_5);
+    const double a_minus_one = pw85__xT_adjA_x(r_0, r_1, r_2,
+                                               q_0, q_1, q_2, q_3, q_4, q_5);
+    const double a0 = a_zero;
+    const double a2 = 0.5 * (a_one + a_minus_one) - a_zero;
+    const double a1 = 0.5 * (a_one - a_minus_one);
+
+    /*
+     * Compute the coefficients of
+     *
+     *   b(λ) = det[(1-λ)Q₁+λQ₂]⋅r
+     *        = b₀ + b₁λ + b₂λ² + b₃λ³
+     *
+     * as a degree-3 polynomial in λ.
+     */
+    const double b_zero = pw85__det_sym(q1_0, q1_1, q1_2, q1_3, q1_4, q1_5);
+    const double b_one = pw85__det_sym(q2_0, q2_1, q2_2, q2_3, q2_4, q2_5);
+    /* Compute det[(1-x)*q1+x*q2] for x = -1. */
+    const double b_minus_one = pw85__det_sym(q_0, q_1, q_2, q_3, q_4, q_5);
+    /* Compute det[(1-x)*q1+x*q2] for x = 1/2. */
+    const double b_one_half = pw85__det_sym(.5 * (q1_0 + q2_0), .5 * (q1_1 + q2_1),
+                                            .5 * (q1_2 + q2_2), .5 * (q1_3 + q2_3),
+                                            .5 * (q1_4 + q2_4), .5 * (q1_5 + q2_5));
+    const double b0 = b_zero;
+    const double b2 = 0.5 * (b_one + b_minus_one) - b_zero;
+    const double b1 = (8. * b_one_half - 6. * b_zero - 1.5 * b_one - 0.5 * b_minus_one) / 3.;
+    const double b3 = (-8. * b_one_half + 6. * b_zero + 3. * b_one - b_minus_one) / 3.;
 
     const double c0 = a0 * b0;
     const double c1 = 2. * (a1 - a0) * b0;
