@@ -140,6 +140,7 @@ def test_rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
     assert_allclose(actual, expected, rtol, atol)
 
 
+@pytest.mark.skip(reason='Not fully implemented yet.')
 @pytest.mark.parametrize('r', [np.array([3.0, 4.0, 5.0])])
 @pytest.mark.parametrize('a1', [2.0])
 @pytest.mark.parametrize('c1', [3.0])
