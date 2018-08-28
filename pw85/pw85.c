@@ -9,6 +9,10 @@
 #define PW85_XZ 2
 #define PW85_YZ 4
 
+#define PW85_rT_adjQ_r_AS_POLY 1
+#define PW85_detQ_AS_POLY 2
+#define PW85_CONTACT_FUNCTION 4
+
 /* Convenience functions */
 /* ===================== */
 /* These functions are exported for the sake of testing. */
@@ -126,7 +130,7 @@ __declspec(dllexport) void pw85_rT_adjQ_r_as_poly(double *r, double *q1,
     a[1] = 0.5 * (f_one - f_minus_one);
 }
 
-__declspec(dllexport) double pw85_contact_function(double *r, double *q1, double *q2, double *out)
+__declspec(dllexport) double pw85_contact_function(double *r, double *q1, double *q2, double *out, unsigned short type)
 {
     const double r_0 = r[0];
     const double r_1 = r[1];
@@ -154,6 +158,8 @@ __declspec(dllexport) double pw85_contact_function(double *r, double *q1, double
     const double q_4 = 2. * q1_4 - q2_4;
     const double q_5 = 2. * q1_5 - q2_5;
 
+    size_t out_index = 0;
+
     /*
      * Compute the coefficients of
      *
@@ -171,6 +177,15 @@ __declspec(dllexport) double pw85_contact_function(double *r, double *q1, double
     const double a0 = a_zero;
     const double a2 = 0.5 * (a_one + a_minus_one) - a_zero;
     const double a1 = 0.5 * (a_one - a_minus_one);
+    if (type && PW85_rT_adjQ_r_AS_POLY)
+    {
+        out[out_index] = a0;
+        ++out_index;
+        out[out_index] = a1;
+        ++out_index;
+        out[out_index] = a2;
+        ++out_index;
+    }
 
     /*
      * Compute the coefficients of
@@ -192,6 +207,17 @@ __declspec(dllexport) double pw85_contact_function(double *r, double *q1, double
     const double b2 = 0.5 * (b_one + b_minus_one) - b_zero;
     const double b1 = (8. * b_one_half - 6. * b_zero - 1.5 * b_one - 0.5 * b_minus_one) / 3.;
     const double b3 = (-8. * b_one_half + 6. * b_zero + 3. * b_one - b_minus_one) / 3.;
+    if (type && PW85_detQ_AS_POLY)
+    {
+        out[out_index] = b0;
+        ++out_index;
+        out[out_index] = b1;
+        ++out_index;
+        out[out_index] = b2;
+        ++out_index;
+        out[out_index] = b3;
+        ++out_index;
+    }
 
     const double c0 = a0 * b0;
     const double c1 = 2. * (a1 - a0) * b0;
@@ -229,10 +255,12 @@ __declspec(dllexport) double pw85_contact_function(double *r, double *q1, double
         }
     }
     y = x * (1. - x) * (a0 + x * (a1 + x * a2)) / (b0 + x * (b1 + x * (b2 + x * b3)));
-    if (out)
+    if (type && PW85_CONTACT_FUNCTION)
     {
-        out[0] = y;
-        out[1] = x;
+        out[out_index] = y;
+        ++out_index;
+        out[out_index] = x;
+        ++out_index;
     }
     return y;
 }
