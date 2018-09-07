@@ -73,9 +73,12 @@ cpw85.pw85_detQ_as_poly.restype = None
 def detQ_as_poly(q1, q2, b=None):
     if b is None:
         b = np.empty((4,), dtype=np.float64, order='C')
-    cpw85.pw85_detQ_as_poly(q1.ctypes.data_as(c_double_p),
-                            q2.ctypes.data_as(c_double_p),
-                            b.ctypes.data_as(c_double_p))
+    r = np.zeros((3,), dtype=np.float64, order='C')
+    cpw85.pw85_contact_function(r.ctypes.data_as(c_double_p),
+                                q1.ctypes.data_as(c_double_p),
+                                q2.ctypes.data_as(c_double_p),
+                                b.ctypes.data_as(c_double_p),
+                                FLAG_detQ_AS_POLY)
     return b
 
 
