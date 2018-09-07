@@ -83,18 +83,15 @@ _xT_adjA_x = cpw85.pw85__xT_adjA_x
 _xT_adjA_x.argtypes = 9*[c_double]
 _xT_adjA_x.restype = c_double
 
-cpw85.pw85_rT_adjQ_r_as_poly.argtypes = [c_double_p, c_double_p, c_double_p,
-                                         c_double_p]
-cpw85.pw85_rT_adjQ_r_as_poly.restype = None
-
 
 def rT_adjQ_r_as_poly(r, q1, q2, a=None):
     if a is None:
         a = np.empty((3,), dtype=np.float64, order='C')
-    cpw85.pw85_rT_adjQ_r_as_poly(r.ctypes.data_as(c_double_p),
-                                 q1.ctypes.data_as(c_double_p),
-                                 q2.ctypes.data_as(c_double_p),
-                                 a.ctypes.data_as(c_double_p))
+    cpw85.pw85_contact_function(r.ctypes.data_as(c_double_p),
+                                q1.ctypes.data_as(c_double_p),
+                                q2.ctypes.data_as(c_double_p),
+                                a.ctypes.data_as(c_double_p),
+                                FLAG_rT_adjQ_r_AS_POLY)
     return a
 
 
