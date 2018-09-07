@@ -3,14 +3,11 @@ import ctypes
 import os.path
 
 import numpy as np
-import numpy.ctypeslib as npct
 
-from ctypes import c_char_p, c_double, c_int, c_ushort
+from ctypes import c_char_p, c_double, c_int
 
 c_double_p = ctypes.POINTER(c_double)
 
-Vector = npct.ndpointer(dtype=np.float64, ndim=1, shape=(3,), flags='C')
-Tensor = npct.ndpointer(dtype=np.float64, ndim=1, shape=(6,), flags='C')
 
 # TODO: wrap in a function
 path = os.path.expanduser('~/.pw85rc')
@@ -21,6 +18,15 @@ if os.path.isfile(path):
 else:
     # TODO: improve error message
     raise RuntimeError("Configuration file not found.")
+
+
+_det_sym = cpw85.pw85__det_sym
+_det_sym.argtypes = 6*[c_double]
+_det_sym.restype = c_double
+
+_xT_adjA_x = cpw85.pw85__xT_adjA_x
+_xT_adjA_x.argtypes = 9*[c_double]
+_xT_adjA_x.restype = c_double
 
 cpw85.pw85__get_flag.argtypes = [c_char_p]
 cpw85.pw85__get_flag.restype = c_int
@@ -62,9 +68,9 @@ def spheroid(a, c, n, q=None):
     return q
 
 
-cpw85.pw85__det_sym.argtypes = 6*[c_double]
-cpw85.pw85__det_sym.restype = c_double
-_det_sym = cpw85.pw85__det_sym
+cpw85.pw85_contact_function.argtypes = [c_double_p, c_double_p, c_double_p,
+                                        c_double_p, c_int]
+cpw85.pw85_contact_function.restype = c_double
 
 
 def detQ_as_poly(q1, q2, b=None):
@@ -79,11 +85,6 @@ def detQ_as_poly(q1, q2, b=None):
     return b
 
 
-_xT_adjA_x = cpw85.pw85__xT_adjA_x
-_xT_adjA_x.argtypes = 9*[c_double]
-_xT_adjA_x.restype = c_double
-
-
 def rT_adjQ_r_as_poly(r, q1, q2, a=None):
     if a is None:
         a = np.empty((3,), dtype=np.float64, order='C')
@@ -93,11 +94,6 @@ def rT_adjQ_r_as_poly(r, q1, q2, a=None):
                                 a.ctypes.data_as(c_double_p),
                                 FLAG_rT_adjQ_r_AS_POLY)
     return a
-
-
-cpw85.pw85_contact_function.argtypes = [c_double_p, c_double_p, c_double_p,
-                                        c_double_p, c_ushort]
-cpw85.pw85_contact_function.restype = c_double
 
 
 def contact_function(r, q1, q2, full_output=False):
