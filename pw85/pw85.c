@@ -18,17 +18,6 @@
 /* ===================== */
 /* These functions are exported for the sake of testing. */
 
-__declspec(dllexport) void pw85__axpby(size_t n,
-                                       double a, double *x,
-                                       double b, double *y,
-                                       double *out)
-{
-    for (int i = 0; i < n; i++)
-    {
-        out[i] = a * x[i] + b * y[i];
-    }
-}
-
 __declspec(dllexport) double pw85__det_sym(double a0, double a1, double a2,
                                            double a3, double a4, double a5)
 {
