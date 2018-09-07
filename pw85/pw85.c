@@ -130,8 +130,11 @@ __declspec(dllexport) void pw85_rT_adjQ_r_as_poly(double *r, double *q1,
     a[1] = 0.5 * (f_one - f_minus_one);
 }
 
-__declspec(dllexport) double pw85_contact_function(double *r, double *q1, double *q2, double *out, unsigned short type)
-{
+__declspec(dllexport) double pw85_contact_function(double *r,
+						   double *q1,
+						   double *q2,
+						   double *out,
+						   unsigned short type) {
     const double r_0 = r[0];
     const double r_1 = r[1];
     const double r_2 = r[2];
@@ -168,23 +171,23 @@ __declspec(dllexport) double pw85_contact_function(double *r, double *q1, double
      *
      * as a degree-2 polynomial in λ.
      */
-    const double a_zero = pw85__xT_adjA_x(r_0, r_1, r_2,
-                                          q1_0, q1_1, q1_2, q1_3, q1_4, q1_5);
-    const double a_one = pw85__xT_adjA_x(r_0, r_1, r_2,
-                                         q2_0, q2_1, q2_2, q2_3, q2_4, q2_5);
-    const double a_minus_one = pw85__xT_adjA_x(r_0, r_1, r_2,
-                                               q_0, q_1, q_2, q_3, q_4, q_5);
-    const double a0 = a_zero;
-    const double a2 = 0.5 * (a_one + a_minus_one) - a_zero;
-    const double a1 = 0.5 * (a_one - a_minus_one);
-    if (type && PW85_rT_adjQ_r_AS_POLY)
-    {
-        out[out_index] = a0;
-        ++out_index;
-        out[out_index] = a1;
-        ++out_index;
-        out[out_index] = a2;
-        ++out_index;
+    unsigned short rT_adj_r_as_poly = type && PW85_rT_adj_r_AS_POLY;
+    unsigned short contact_function = type && PW85_CONTACT_FUNCTION;
+    if (rT_adjQ_r_as_poly || contact_function) {
+	const double a_zero = pw85__xT_adjA_x(r_0, r_1, r_2,
+					      q1_0, q1_1, q1_2, q1_3, q1_4, q1_5);
+	const double a_one = pw85__xT_adjA_x(r_0, r_1, r_2,
+					     q2_0, q2_1, q2_2, q2_3, q2_4, q2_5);
+	const double a_minus_one = pw85__xT_adjA_x(r_0, r_1, r_2,
+						   q_0, q_1, q_2, q_3, q_4, q_5);
+	const double a0 = a_zero;
+	const double a2 = 0.5 * (a_one + a_minus_one) - a_zero;
+	const double a1 = 0.5 * (a_one - a_minus_one);
+	if (rT_adjQ_r_as_poly) {
+	    out[out_index] = a0; ++out_index;
+	    out[out_index] = a1; ++out_index;
+	    out[out_index] = a2; ++out_index;
+	}
     }
 
     /*
@@ -195,72 +198,53 @@ __declspec(dllexport) double pw85_contact_function(double *r, double *q1, double
      *
      * as a degree-3 polynomial in λ.
      */
-    const double b_zero = pw85__det_sym(q1_0, q1_1, q1_2, q1_3, q1_4, q1_5);
-    const double b_one = pw85__det_sym(q2_0, q2_1, q2_2, q2_3, q2_4, q2_5);
-    /* Compute det[(1-x)*q1+x*q2] for x = -1. */
-    const double b_minus_one = pw85__det_sym(q_0, q_1, q_2, q_3, q_4, q_5);
-    /* Compute det[(1-x)*q1+x*q2] for x = 1/2. */
-    const double b_one_half = pw85__det_sym(.5 * (q1_0 + q2_0), .5 * (q1_1 + q2_1),
-                                            .5 * (q1_2 + q2_2), .5 * (q1_3 + q2_3),
-                                            .5 * (q1_4 + q2_4), .5 * (q1_5 + q2_5));
-    const double b0 = b_zero;
-    const double b2 = 0.5 * (b_one + b_minus_one) - b_zero;
-    const double b1 = (8. * b_one_half - 6. * b_zero - 1.5 * b_one - 0.5 * b_minus_one) / 3.;
-    const double b3 = (-8. * b_one_half + 6. * b_zero + 3. * b_one - b_minus_one) / 3.;
-    if (type && PW85_detQ_AS_POLY)
-    {
-        out[out_index] = b0;
-        ++out_index;
-        out[out_index] = b1;
-        ++out_index;
-        out[out_index] = b2;
-        ++out_index;
-        out[out_index] = b3;
-        ++out_index;
+    if (detQ_as_poly || contact_function) {
+	const double b_zero = pw85__det_sym(q1_0, q1_1, q1_2, q1_3, q1_4, q1_5);
+	const double b_one = pw85__det_sym(q2_0, q2_1, q2_2, q2_3, q2_4, q2_5);
+	/* Compute det[(1-x)*q1+x*q2] for x = -1. */
+	const double b_minus_one = pw85__det_sym(q_0, q_1, q_2, q_3, q_4, q_5);
+	/* Compute det[(1-x)*q1+x*q2] for x = 1/2. */
+	const double b_one_half = pw85__det_sym(.5 * (q1_0 + q2_0), .5 * (q1_1 + q2_1),
+						.5 * (q1_2 + q2_2), .5 * (q1_3 + q2_3),
+						.5 * (q1_4 + q2_4), .5 * (q1_5 + q2_5));
+	const double b0 = b_zero;
+	const double b2 = 0.5 * (b_one + b_minus_one) - b_zero;
+	const double b1 = (8. * b_one_half - 6. * b_zero - 1.5 * b_one - 0.5 * b_minus_one) / 3.;
+	const double b3 = (-8. * b_one_half + 6. * b_zero + 3. * b_one - b_minus_one) / 3.;
+	if (detQ_as_poly) {
+	    out[out_index] = b0; ++out_index;
+	    out[out_index] = b1; ++out_index;
+	    out[out_index] = b2; ++out_index;
+	    out[out_index] = b3; ++out_index;
+	}
     }
+    if (contact_function) {
+	const double c0 = a0 * b0;
+	const double c1 = 2. * (a1 - a0) * b0;
+	const double c2 = -a0 * (b1 + b2) + 3. * b0 * (a2 - a1) + a1 * b1;
+	const double c3 = 2. * (b1 * (a2 - a1) - a0 * b3) - 4. * a2 * b0;
+	const double c4 = (a0 - a1) * b3 + (a2 - a1) * b2 - 3. * a2 * b1;
+	const double c5 = -2. * a2 * b2;
+	const double c6 = -a2 * b3;
 
-    const double c0 = a0 * b0;
-    const double c1 = 2. * (a1 - a0) * b0;
-    const double c2 = -a0 * (b1 + b2) + 3. * b0 * (a2 - a1) + a1 * b1;
-    const double c3 = 2. * (b1 * (a2 - a1) - a0 * b3) - 4. * a2 * b0;
-    const double c4 = (a0 - a1) * b3 + (a2 - a1) * b2 - 3. * a2 * b1;
-    const double c5 = -2. * a2 * b2;
-    const double c6 = -a2 * b3;
-
-    double xl = 0.;
-    double yl = c0;
-    double xr = 1.;
-    double yr = c0 + c1 + c2 + c3 + c4 + c5 + c6;
-    double x, y;
-    while (fabs(xr - xl) > 1E-12)
-    {
-        x = 0.5 * (xl + xr);
-        y = c0 + x * (c1 + x * (c2 + x * (c3 + x * (c4 + x * (c5 + x * c6)))));
-        if (y == 0.0)
-        {
-            break;
-        }
-        else
-        {
-            if (yl * y < 0)
-            {
-                xr = x;
-                yr = y;
-            }
-            else
-            {
-                xl = x;
-                yl = y;
-            }
-        }
-    }
-    y = x * (1. - x) * (a0 + x * (a1 + x * a2)) / (b0 + x * (b1 + x * (b2 + x * b3)));
-    if (type && PW85_CONTACT_FUNCTION)
-    {
-        out[out_index] = y;
-        ++out_index;
-        out[out_index] = x;
-        ++out_index;
+	double xl = 0.;
+	double yl = c0;
+	double xr = 1.;
+	double yr = c0 + c1 + c2 + c3 + c4 + c5 + c6;
+	double x, y;
+	while (fabs(xr - xl) > 1E-12) {
+	    x = 0.5 * (xl + xr);
+	    y = c0 + x * (c1 + x * (c2 + x * (c3 + x * (c4 + x * (c5 + x * c6)))));
+	    if (y == 0.0) {
+		break;
+	    } else {
+		if (yl * y < 0) { xr = x; yr = y; }
+		else { xl = x; yl = y; }
+	    }
+	}
+	y = x * (1. - x) * (a0 + x * (a1 + x * a2)) / (b0 + x * (b1 + x * (b2 + x * b3)));
+        out[out_index] = y; ++out_index;
+        out[out_index] = x; ++out_index;
     }
     return y;
 }
