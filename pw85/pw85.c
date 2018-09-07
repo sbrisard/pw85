@@ -147,7 +147,7 @@ __declspec(dllexport) double pw85_contact_function(double *r,
 						   double *q1,
 						   double *q2,
 						   double *out,
-						   unsigned short type) {
+						   int type) {
     const double r_0 = r[0];
     const double r_1 = r[1];
     const double r_2 = r[2];
@@ -193,7 +193,7 @@ __declspec(dllexport) double pw85_contact_function(double *r,
     const double a0 = a_zero;
     const double a2 = 0.5 * (a_one + a_minus_one) - a_zero;
     const double a1 = 0.5 * (a_one - a_minus_one);
-    if (type && PW85_FLAG_rT_adjQ_r_AS_POLY) {
+    if (type & PW85_FLAG_rT_adjQ_r_AS_POLY) {
 	out[out_index] = a0; ++out_index;
 	out[out_index] = a1; ++out_index;
 	out[out_index] = a2; ++out_index;
@@ -219,13 +219,13 @@ __declspec(dllexport) double pw85_contact_function(double *r,
     const double b2 = 0.5 * (b_one + b_minus_one) - b_zero;
     const double b1 = (8. * b_one_half - 6. * b_zero - 1.5 * b_one - 0.5 * b_minus_one) / 3.;
     const double b3 = (-8. * b_one_half + 6. * b_zero + 3. * b_one - b_minus_one) / 3.;
-    if (type && PW85_FLAG_detQ_AS_POLY) {
+    if (type & PW85_FLAG_detQ_AS_POLY) {
 	out[out_index] = b0; ++out_index;
 	out[out_index] = b1; ++out_index;
 	out[out_index] = b2; ++out_index;
 	out[out_index] = b3; ++out_index;
     }
-    if (type && PW85_FLAG_CONTACT_FUNCTION) {
+    if (type & PW85_FLAG_CONTACT_FUNCTION) {
 	const double c0 = a0 * b0;
 	const double c1 = 2. * (a1 - a0) * b0;
 	const double c2 = -a0 * (b1 + b2) + 3. * b0 * (a2 - a1) + a1 * b1;
