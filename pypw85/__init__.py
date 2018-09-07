@@ -106,11 +106,11 @@ cpw85.pw85_contact_function.restype = c_double
 def contact_function(r, q1, q2, full_output=False):
     out = np.empty((2,), dtype=np.float64, order='C')
 
-    # TODO Hard-coded flag
     val = cpw85.pw85_contact_function(r.ctypes.data_as(c_double_p),
                                       q1.ctypes.data_as(c_double_p),
                                       q2.ctypes.data_as(c_double_p),
-                                      out.ctypes.data_as(c_double_p), 4)
+                                      out.ctypes.data_as(c_double_p),
+                                      FLAG_CONTACT_FUNCTION)
     if full_output:
         return out
     else:
