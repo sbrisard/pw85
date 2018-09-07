@@ -5,7 +5,7 @@ import os.path
 import numpy as np
 import numpy.ctypeslib as npct
 
-from ctypes import c_double, c_ushort
+from ctypes import c_char_p, c_double, c_int, c_ushort
 
 c_double_p = ctypes.POINTER(c_double)
 
@@ -22,6 +22,22 @@ else:
     # TODO: improve error message
     raise RuntimeError("Configuration file not found.")
 
+cpw85.pw85__get_flag.argtypes = [c_char_p]
+cpw85.pw85__get_flag.restype = c_int
+
+
+def _get_flag(name):
+    if str(name) is name:
+        name = name.encode('ascii')
+    flag = cpw85.pw85__get_flag(name)
+    if flag == -1:
+        raise ValueError('unknown flag '+name.decode('ascii'))
+    return flag
+
+
+FLAG_rT_adjQ_r_AS_POLY = _get_flag(b'PW85_FLAG_rT_adjQ_r_AS_POLY')
+FLAG_detQ_AS_POLY = _get_flag(b'PW85_FLAG_detQ_AS_POLY')
+FLAG_CONTACT_FUNCTION = _get_flag(b'PW85_FLAG_CONTACT_FUNCTION')
 
 cpw85.pw85_spheroid.argtypes = [c_double, c_double, c_double_p, c_double_p]
 cpw85.pw85_spheroid.restype = None
