@@ -66,9 +66,6 @@ cpw85.pw85__det_sym.argtypes = 6*[c_double]
 cpw85.pw85__det_sym.restype = c_double
 _det_sym = cpw85.pw85__det_sym
 
-cpw85.pw85_detQ_as_poly.argtypes = [c_double_p, c_double_p, c_double_p]
-cpw85.pw85_detQ_as_poly.restype = None
-
 
 def detQ_as_poly(q1, q2, b=None):
     if b is None:

@@ -73,37 +73,6 @@ __declspec(dllexport) void pw85_spheroid(double a, double c, double *n,
     q[PW85_XY] = nx * ny * c2_minus_a2;
 }
 
-__declspec(dllexport) void pw85_detQ_as_poly(double *q1, double *q2, double *b)
-{
-    const double q1_0 = q1[0];
-    const double q1_1 = q1[1];
-    const double q1_2 = q1[2];
-    const double q1_3 = q1[3];
-    const double q1_4 = q1[4];
-    const double q1_5 = q1[5];
-
-    const double q2_0 = q2[0];
-    const double q2_1 = q2[1];
-    const double q2_2 = q2[2];
-    const double q2_3 = q2[3];
-    const double q2_4 = q2[4];
-    const double q2_5 = q2[5];
-
-    const double g_zero = pw85__det_sym(q1_0, q1_1, q1_2, q1_3, q1_4, q1_5);
-    const double g_one = pw85__det_sym(q2_0, q2_1, q2_2, q2_3, q2_4, q2_5);
-    /* Compute det[(1-x)*q1+x*q2] for x = -1. */
-    const double g_minus_one = pw85__det_sym(2. * q1_0 - q2_0, 2. * q1_1 - q2_1,
-                                             2. * q1_2 - q2_2, 2. * q1_3 - q2_3,
-                                             2. * q1_4 - q2_4, 2. * q1_5 - q2_5);
-    /* Compute det[(1-x)*q1+x*q2] for x = 1/2. */
-    const double g_one_half = pw85__det_sym(.5 * (q1_0 + q2_0), .5 * (q1_1 + q2_1),
-                                            .5 * (q1_2 + q2_2), .5 * (q1_3 + q2_3),
-                                            .5 * (q1_4 + q2_4), .5 * (q1_5 + q2_5));
-    b[0] = g_zero;
-    b[2] = 0.5 * (g_one + g_minus_one) - g_zero;
-    b[1] = (8. * g_one_half - 6. * g_zero - 1.5 * g_one - 0.5 * g_minus_one) / 3.;
-    b[3] = (-8. * g_one_half + 6. * g_zero + 3. * g_one - g_minus_one) / 3.;
-}
 
 __declspec(dllexport) void pw85_rT_adjQ_r_as_poly(double *r, double *q1,
                                                   double *q2, double *a)
