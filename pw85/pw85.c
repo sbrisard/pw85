@@ -31,9 +31,6 @@ __declspec(dllexport) double pw85__xT_adjA_x(double x0, double x1, double x2,
     return (x0 * x0 * (a3 * a5 - a4 * a4) + x1 * x1 * (a0 * a5 - a2 * a2) + x2 * x2 * (a0 * a3 - a1 * a1) + 2. * (x0 * x1 * (a2 * a4 - a1 * a5) + x0 * x2 * (a1 * a4 - a2 * a3) + x1 * x2 * (a1 * a2 - a0 * a4)));
 }
 
-/* Public API */
-/* ========== */
-
 __declspec(dllexport) int pw85__get_flag(char* s) {
     if (strcmp(s, "PW85_FLAG_rT_adjQ_r_AS_POLY") == 0) {
 	return PW85_FLAG_rT_adjQ_r_AS_POLY;
@@ -45,6 +42,11 @@ __declspec(dllexport) int pw85__get_flag(char* s) {
 	fprintf(stderr, "unknown flag: %s\n", s); return -1;
     }
 }
+
+
+/* Public API */
+/* ========== */
+
 
 __declspec(dllexport) void pw85_spheroid(double a, double c, double *n,
                                          double *q)
