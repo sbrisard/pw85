@@ -36,18 +36,17 @@
             
   <div class="section" id="theory">
 <span id="id1"></span><h1>Theory<a class="headerlink" href="#theory" title="Permalink to this headline">¶</a></h1>
-<p>This chapter provides the theoretical background to the
-Perram–Wertheim algorithm <a class="reference internal" href="#pw85" id="id2">[PW85]</a>. We use matrices rather than
-tensors: a point/vector is therefore defined through the 3×1
-column-vector of its coordinates. Likewise, a second-rank tensor is
-represented by its 3×3 matrix.</p>
+<p>This chapter provides the theoretical background to the Perram–Wertheim
+algorithm <a class="reference internal" href="#pw85" id="id2">[PW85]</a>. We use matrices rather than tensors: a point/vector is
+therefore defined through the 3×1 column-vector of its coordinates. Likewise, a
+second-rank tensor is represented by its 3×3 matrix.</p>
 <p>Only the global, cartesian frame is considered here, and there is no
-ambiguity about the basis to which these column vectors and square
-matrices refer.</p>
+ambiguity about the basis to which these column vectors and square matrices
+refer.</p>
 <div class="section" id="mathematical-representation-of-ellipsoids">
 <h2>Mathematical representation of ellipsoids<a class="headerlink" href="#mathematical-representation-of-ellipsoids" title="Permalink to this headline">¶</a></h2>
-<p>Ellipsoids are defined from their center <code class="docutils literal notranslate"><span class="pre">c</span></code> and a positive-definite
-quadratic form <code class="docutils literal notranslate"><span class="pre">Q</span></code> as the set of points <code class="docutils literal notranslate"><span class="pre">m</span></code> such that:</p>
+<p>Ellipsoids are defined from their center <code class="docutils literal notranslate"><span class="pre">c</span></code> and a positive-definite quadratic
+form <code class="docutils literal notranslate"><span class="pre">Q</span></code> as the set of points <code class="docutils literal notranslate"><span class="pre">m</span></code> such that:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(1)    (m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
 </pre></div>
 </div>
@@ -56,11 +55,10 @@ quadratic form <code class="docutils literal notranslate"><span class="pre">Q</s
            ⁱ
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">a₁</span></code>, <code class="docutils literal notranslate"><span class="pre">a₂</span></code>, <code class="docutils literal notranslate"><span class="pre">a₃</span></code> are the lengths of the principal
-semi-axes and <code class="docutils literal notranslate"><span class="pre">v₁</span></code>, <code class="docutils literal notranslate"><span class="pre">v₂</span></code>, <code class="docutils literal notranslate"><span class="pre">v₃</span></code> their directions (unit vectors).</p>
-<p>In the <code class="docutils literal notranslate"><span class="pre">PW85</span></code> library, <code class="docutils literal notranslate"><span class="pre">Q</span></code> is represented as a <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array
-<code class="docutils literal notranslate"><span class="pre">q</span></code> which stores the upper triangular part of <code class="docutils literal notranslate"><span class="pre">Q</span></code> in row-major
-order:</p>
+<p>where <code class="docutils literal notranslate"><span class="pre">a₁</span></code>, <code class="docutils literal notranslate"><span class="pre">a₂</span></code>, <code class="docutils literal notranslate"><span class="pre">a₃</span></code> are the lengths of the principal semi-axes and
+<code class="docutils literal notranslate"><span class="pre">v₁</span></code>, <code class="docutils literal notranslate"><span class="pre">v₂</span></code>, <code class="docutils literal notranslate"><span class="pre">v₃</span></code> their directions (unit vectors).</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">PW85</span></code> library, <code class="docutils literal notranslate"><span class="pre">Q</span></code> is represented as a <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array <code class="docutils literal notranslate"><span class="pre">q</span></code>
+which stores the upper triangular part of <code class="docutils literal notranslate"><span class="pre">Q</span></code> in row-major order:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>           ⎡ q[0] q[1] q[2] ⎤
 (3)    Q = ⎢      q[3] q[4] ⎥.
            ⎣ sym.      q[5] ⎦
@@ -69,20 +67,19 @@ order:</p>
 </div>
 <div class="section" id="the-contact-function-of-two-ellipsoids">
 <h2>The contact function of two ellipsoids<a class="headerlink" href="#the-contact-function-of-two-ellipsoids" title="Permalink to this headline">¶</a></h2>
-<p>Let <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> be two ellipsoids, defined by their centers
-<code class="docutils literal notranslate"><span class="pre">c₁</span></code> and <code class="docutils literal notranslate"><span class="pre">c₂</span></code> and quadratic forms <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code>, respectively.</p>
+<p>Let <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> be two ellipsoids, defined by their centers <code class="docutils literal notranslate"><span class="pre">c₁</span></code> and
+<code class="docutils literal notranslate"><span class="pre">c₂</span></code> and quadratic forms <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code>, respectively.</p>
 <p id="theory-eq-4">For <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">≤</span> <span class="pre">λ</span> <span class="pre">≤</span> <span class="pre">1</span></code> and a point <code class="docutils literal notranslate"><span class="pre">x</span></code>, we introduce the function:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(4)    F(x, λ) = λ(x-c₁)ᵀ⋅Q₁⁻¹⋅(x-c₁)+(1-λ)(x-c₂)ᵀ⋅Q₂⁻¹⋅(x-c₂).
 </pre></div>
 </div>
-<p>For fixed <code class="docutils literal notranslate"><span class="pre">λ</span></code>, <code class="docutils literal notranslate"><span class="pre">F(x,</span> <span class="pre">λ)</span></code> has a unique minimum <a class="reference internal" href="#pw85" id="id3">[PW85]</a> <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>,
-and we define:</p>
+<p>For fixed <code class="docutils literal notranslate"><span class="pre">λ</span></code>, <code class="docutils literal notranslate"><span class="pre">F(x,</span> <span class="pre">λ)</span></code> has a unique minimum <a class="reference internal" href="#pw85" id="id3">[PW85]</a> <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>, and we
+define:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(5)    f(λ) = min{ F(x, λ), x ∈ ℝ³ }, 0 ≤ λ ≤ 1.
 </pre></div>
 </div>
-<p>Now, the function <code class="docutils literal notranslate"><span class="pre">f</span></code> has a unique maximum over <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>, and the
-“contact function” <code class="docutils literal notranslate"><span class="pre">F(r₁₂,</span> <span class="pre">Q₁,</span> <span class="pre">Q₂)</span></code> of ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code>
-is defined as:</p>
+<p>Now, the function <code class="docutils literal notranslate"><span class="pre">f</span></code> has a unique maximum over <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code>, and the“contact
+function” <code class="docutils literal notranslate"><span class="pre">F(r₁₂,</span> <span class="pre">Q₁,</span> <span class="pre">Q₂)</span></code> of ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> is defined as:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(6)    F(r₁₂, Q₁, Q₂) = max{ f(λ), 0 ≤ λ ≤ 1 },
 </pre></div>
 </div>
@@ -92,13 +89,13 @@ is defined as:</p>
 <li>if <code class="docutils literal notranslate"><span class="pre">F(r₁₂,</span> <span class="pre">Q₁,</span> <span class="pre">Q₂)</span> <span class="pre">=</span> <span class="pre">1</span></code> then <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> are externally tangent,</li>
 <li>if <code class="docutils literal notranslate"><span class="pre">F(r₁₂,</span> <span class="pre">Q₁,</span> <span class="pre">Q₂)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> then <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> do not overlap.</li>
 </ul>
-<p>The contact function therefore provides a criterion to check overlap
-of two ellipsoids. The <code class="docutils literal notranslate"><span class="pre">PW85</span></code> library computes this value.</p>
+<p>The contact function therefore provides a criterion to check overlap of two
+ellipsoids. The <code class="docutils literal notranslate"><span class="pre">PW85</span></code> library computes this value.</p>
 </div>
 <div class="section" id="geometric-interpretation">
 <h2>Geometric interpretation<a class="headerlink" href="#geometric-interpretation" title="Permalink to this headline">¶</a></h2>
-<p id="theory-eq-7">The scalar <code class="docutils literal notranslate"><span class="pre">λ</span></code> being fixed, we introduce the minimizer <code class="docutils literal notranslate"><span class="pre">x₀(λ)</span></code> of
-<code class="docutils literal notranslate"><span class="pre">F(x,</span> <span class="pre">λ)</span></code>. The stationarity of <code class="docutils literal notranslate"><span class="pre">F</span></code> w.r.t to <code class="docutils literal notranslate"><span class="pre">x</span></code> reads:</p>
+<p id="theory-eq-7">The scalar <code class="docutils literal notranslate"><span class="pre">λ</span></code> being fixed, we introduce the minimizer <code class="docutils literal notranslate"><span class="pre">x₀(λ)</span></code> of <code class="docutils literal notranslate"><span class="pre">F(x,</span>
+<span class="pre">λ)</span></code>. The stationarity of <code class="docutils literal notranslate"><span class="pre">F</span></code> w.r.t to <code class="docutils literal notranslate"><span class="pre">x</span></code> reads:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(7)    ∇F(x₀(λ), λ) = 0,
 </pre></div>
 </div>
@@ -115,29 +112,26 @@ of two ellipsoids. The <code class="docutils literal notranslate"><span class="p
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(10)    Q = (1-λ)Q₁ + λQ₂.
 </pre></div>
 </div>
-<p>It results from the above that:</p>
+<p id="theory-eq-11">It results from the above that:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(11)    f(λ) = F(x₀(λ), λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂.
 </pre></div>
 </div>
-<p>Maximization of <code class="docutils literal notranslate"><span class="pre">f</span></code> with respect to <code class="docutils literal notranslate"><span class="pre">λ</span></code> now delivers the
-stationarity condition:</p>
+<p id="theory-eq-12">Maximization of <code class="docutils literal notranslate"><span class="pre">f</span></code> with respect to <code class="docutils literal notranslate"><span class="pre">λ</span></code> now delivers the stationarity
+condition:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                                          ∂F
 (12)    0 = f&#39;(λ) = ∇F(x₀(λ), λ)⋅x₀&#39;(λ) + ──(x₀(λ), λ).
                                           ∂λ
 </pre></div>
 </div>
-<p id="theory-eq-13">Using Eqs. <a class="reference internal" href="#theory-eq-4"><span class="std std-ref">(4)</span></a> and <a class="reference internal" href="#theory-eq-7"><span class="std std-ref">(7)</span></a>, it
-is found that <code class="docutils literal notranslate"><span class="pre">f</span></code> is minimum for <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">=</span> <span class="pre">λ₀</span></code> such that:</p>
+<p id="theory-eq-13">Using Eqs. <a class="reference internal" href="#theory-eq-4"><span class="std std-ref">(4)</span></a> and <a class="reference internal" href="#theory-eq-7"><span class="std std-ref">(7)</span></a>, it is found
+that <code class="docutils literal notranslate"><span class="pre">f</span></code> is minimum for <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">=</span> <span class="pre">λ₀</span></code> such that:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(13)    [x₀(λ₀)-c₁]ᵀ⋅Q₁⁻¹⋅[x₀(λ₀)-c₁] = [x₀(λ₀)-c₂]ᵀ⋅Q₂⁻¹⋅[x₀(λ₀)-c₂].
 </pre></div>
 </div>
-<p>Let <code class="docutils literal notranslate"><span class="pre">μ²</span></code> be this common value. It trivially results from
-Eqs. <a class="reference internal" href="#theory-eq-4"><span class="std std-ref">(4)</span></a> and <a class="reference internal" href="#theory-eq-13"><span class="std std-ref">(13)</span></a> that <code class="docutils literal notranslate"><span class="pre">μ²</span>
-<span class="pre">=</span> <span class="pre">F(x₀(λ₀),</span> <span class="pre">λ₀)</span></code>. In other words, <code class="docutils literal notranslate"><span class="pre">μ²</span></code> is the value of the contact
-function.</p>
-<p>We are now in a position to give a geometric interpretation of
-<code class="docutils literal notranslate"><span class="pre">μ</span></code>. It results from Eq. <a class="reference internal" href="#theory-eq-13"><span class="std std-ref">(13)</span></a> and the
-definition of <code class="docutils literal notranslate"><span class="pre">μ</span></code> that:</p>
+<p>Let <code class="docutils literal notranslate"><span class="pre">μ²</span></code> be this common value. It trivially results from Eqs. <a class="reference internal" href="#theory-eq-4"><span class="std std-ref">(4)</span></a> and <a class="reference internal" href="#theory-eq-13"><span class="std std-ref">(13)</span></a> that <code class="docutils literal notranslate"><span class="pre">μ²</span> <span class="pre">=</span> <span class="pre">F(x₀(λ₀),</span> <span class="pre">λ₀)</span></code>. In
+other words, <code class="docutils literal notranslate"><span class="pre">μ²</span></code> is the value of the contact function.</p>
+<p>We are now in a position to give a geometric interpretation of <code class="docutils literal notranslate"><span class="pre">μ</span></code>. It results
+from Eq. <a class="reference internal" href="#theory-eq-13"><span class="std std-ref">(13)</span></a> and the definition of <code class="docutils literal notranslate"><span class="pre">μ</span></code> that:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(14a)    [x₀(λ₀)-c₁]ᵀ⋅(μ²Q₁)⁻¹⋅[x₀(λ₀)-c₁] = 1,
 </pre></div>
 </div>
@@ -145,17 +139,65 @@ definition of <code class="docutils literal notranslate"><span class="pre">μ</s
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(14b)    [x₀(λ₀)-c₂]ᵀ⋅(μ²Q₂)⁻¹⋅[x₀(λ₀)-c₂] = 1.
 </pre></div>
 </div>
-<p>The above equations mean that <code class="docutils literal notranslate"><span class="pre">x₀(λ₀)</span></code> belongs to both ellipsoids
-centered at <code class="docutils literal notranslate"><span class="pre">cⱼ</span></code> and defined by the symmetric, positive-definite
-quadratic form <code class="docutils literal notranslate"><span class="pre">μ²Qⱼ</span></code> (<code class="docutils literal notranslate"><span class="pre">j</span> <span class="pre">=</span> <span class="pre">1,</span> <span class="pre">2</span></code>). These two ellipsoids are
-nothing but the initial ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code>, scaled by the
-<em>same</em> factor <code class="docutils literal notranslate"><span class="pre">μ</span></code>.</p>
-<p>Furthermore, Eq. <a class="reference internal" href="#theory-eq-8"><span class="std std-ref">(8)</span></a> applies for <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">=</span>
-<span class="pre">λ₀</span></code>. Therefore, the normals to the scaled ellipsoids coincide at
-<code class="docutils literal notranslate"><span class="pre">x₀(λ₀)</span></code>: the two scaled ellipsoids are externally tangent.</p>
-<p>To sum up, <code class="docutils literal notranslate"><span class="pre">μ</span></code> is the common factor by wich ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and
-<code class="docutils literal notranslate"><span class="pre">E₂</span></code> must be scaled in order for them to be externally tangent at
-point <code class="docutils literal notranslate"><span class="pre">x₀(λ₀)</span></code>.</p>
+<p>The above equations mean that <code class="docutils literal notranslate"><span class="pre">x₀(λ₀)</span></code> belongs to both ellipsoids centered at
+<code class="docutils literal notranslate"><span class="pre">cⱼ</span></code> and defined by the symmetric, positive-definite quadratic form <code class="docutils literal notranslate"><span class="pre">μ²Qⱼ</span></code>
+(<code class="docutils literal notranslate"><span class="pre">j</span> <span class="pre">=</span> <span class="pre">1,</span> <span class="pre">2</span></code>). These two ellipsoids are nothing but the initial ellipsoids
+<code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code>, scaled by the <em>same</em> factor <code class="docutils literal notranslate"><span class="pre">μ</span></code>.</p>
+<p>Furthermore, Eq. <a class="reference internal" href="#theory-eq-8"><span class="std std-ref">(8)</span></a> applies for <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">=</span> <span class="pre">λ₀</span></code>. Therefore, the
+normals to the scaled ellipsoids coincide at <code class="docutils literal notranslate"><span class="pre">x₀(λ₀)</span></code>: the two scaled
+ellipsoids are externally tangent.</p>
+<p>To sum up, <code class="docutils literal notranslate"><span class="pre">μ</span></code> is the common factor by wich ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> must
+be scaled in order for them to be externally tangent at point <code class="docutils literal notranslate"><span class="pre">x₀(λ₀)</span></code>.</p>
+</div>
+<div class="section" id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<p>In this section, we explain how the contact function is computed. From Eq.
+<a class="reference internal" href="#theory-eq-12"><span class="std std-ref">(12)</span></a>, the value of the contact function is found from
+the solution <code class="docutils literal notranslate"><span class="pre">λ</span></code> to equation <code class="docutils literal notranslate"><span class="pre">f'(λ)</span> <span class="pre">=</span> <span class="pre">0</span></code>. We observe that <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code> is a
+rational function [see Eq. <a class="reference internal" href="#theory-eq-11"><span class="std std-ref">(11)</span></a>], and we write:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                λ(1-λ)a(λ)
+(15)    f(λ) =  ──────────,
+                   b(λ)
+</pre></div>
+</div>
+<p>with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(16a)    a(λ) = r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂ = a₀ + a₁λ + a₂λ²,
+
+(16b)    b(λ) = det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³,
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">adj(Q)</span></code> denotes the adjugate matrix of <code class="docutils literal notranslate"><span class="pre">Q</span></code> (transpose of its cofactor
+matrix), see e.g <a class="reference external" href="https://en.wikipedia.org/wiki/Adjugate_matrix">Wikipedia</a>.</p>
+<p>The coefficients <code class="docutils literal notranslate"><span class="pre">aᵢ</span></code> and <code class="docutils literal notranslate"><span class="pre">bᵢ</span></code> are found from the evaluation of <code class="docutils literal notranslate"><span class="pre">a(λ)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">b(λ)</span></code> for specific values of <code class="docutils literal notranslate"><span class="pre">λ</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(17a)    a₀ = a(0),
+
+              a(1) - a(-1)
+(17b)    a₁ = ────────────,
+                   2
+
+              a(1) + a(-1)
+(17c)    a₂ = ──────────── - a(0),
+                   2
+
+(17d)    b₀ = b(0),
+
+              8b(½)            b(1)   b(-1)
+(17e)    b₁ = ─────  - 2b(0) - ──── - ─────
+                3                2      6
+
+              b(1) + b(-1)
+(17f)    b₂ = ──────────── - b(0),
+                   2
+
+               8b(½)                   b(-1)
+(17g)    b₃ = -─────  + 2b(0) + b(1) - ─────.
+                 3                       3
+</pre></div>
+</div>
+<p>This requires the implementation of the determinant and the adjugate matrix of a
+3×3, symmetric matrix, see <a class="reference internal" href="c_api.html#c.pw85__det_sym" title="pw85__det_sym"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85__det_sym()</span></code></a> and
+<a class="reference internal" href="c_api.html#c.pw85__xT_adjA_x" title="pw85__xT_adjA_x"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85__xT_adjA_x()</span></code></a>.</p>
 </div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
@@ -194,6 +236,7 @@ contact function. <em>Journal of Computational Physics</em>, 58(3),
 <li class="toctree-l2"><a class="reference internal" href="#mathematical-representation-of-ellipsoids">Mathematical representation of ellipsoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-contact-function-of-two-ellipsoids">The contact function of two ellipsoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#geometric-interpretation">Geometric interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
 </ul>
 </li>
@@ -230,7 +273,7 @@ contact function. <em>Journal of Computational Physics</em>, 58(3),
       &copy;2018, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
       |

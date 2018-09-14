@@ -38,14 +38,11 @@
 <span class="kn">import</span> <span class="nn">os.path</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">numpy.ctypeslib</span> <span class="k">as</span> <span class="nn">npct</span>
 
-<span class="kn">from</span> <span class="nn">ctypes</span> <span class="k">import</span> <span class="n">c_double</span>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="k">import</span> <span class="n">c_char_p</span><span class="p">,</span> <span class="n">c_double</span><span class="p">,</span> <span class="n">c_int</span>
 
 <span class="n">c_double_p</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">)</span>
 
-<span class="n">Vector</span> <span class="o">=</span> <span class="n">npct</span><span class="o">.</span><span class="n">ndpointer</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,),</span> <span class="n">flags</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-<span class="n">Tensor</span> <span class="o">=</span> <span class="n">npct</span><span class="o">.</span><span class="n">ndpointer</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,),</span> <span class="n">flags</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
 
 <span class="c1"># TODO: wrap in a function</span>
 <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~/.pw85rc&#39;</span><span class="p">)</span>
@@ -58,7 +55,32 @@
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Configuration file not found.&quot;</span><span class="p">)</span>
 
 
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_spheroid</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double</span><span class="p">,</span> <span class="n">c_double</span><span class="p">,</span> <span class="n">Vector</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]</span>
+<span class="n">_det_sym</span> <span class="o">=</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__det_sym</span>
+<span class="n">_det_sym</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">6</span><span class="o">*</span><span class="p">[</span><span class="n">c_double</span><span class="p">]</span>
+<span class="n">_det_sym</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+
+<span class="n">_xT_adjA_x</span> <span class="o">=</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__xT_adjA_x</span>
+<span class="n">_xT_adjA_x</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">9</span><span class="o">*</span><span class="p">[</span><span class="n">c_double</span><span class="p">]</span>
+<span class="n">_xT_adjA_x</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+
+<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__get_flag</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_char_p</span><span class="p">]</span>
+<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__get_flag</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_int</span>
+
+
+<div class="viewcode-block" id="_get_flag"><a class="viewcode-back" href="../py_api.html#pypw85._get_flag">[docs]</a><span class="k">def</span> <span class="nf">_get_flag</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+    <span class="n">flag</span> <span class="o">=</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__get_flag</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;unknown flag &#39;</span><span class="o">+</span><span class="n">name</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">flag</span></div>
+
+
+<span class="n">FLAG_rT_adjQ_r_AS_POLY</span> <span class="o">=</span> <span class="n">_get_flag</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;PW85_FLAG_rT_adjQ_r_AS_POLY&#39;</span><span class="p">)</span>
+<span class="n">FLAG_detQ_AS_POLY</span> <span class="o">=</span> <span class="n">_get_flag</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;PW85_FLAG_detQ_AS_POLY&#39;</span><span class="p">)</span>
+<span class="n">FLAG_CONTACT_FUNCTION</span> <span class="o">=</span> <span class="n">_get_flag</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;PW85_FLAG_CONTACT_FUNCTION&#39;</span><span class="p">)</span>
+
+<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_spheroid</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double</span><span class="p">,</span> <span class="n">c_double</span><span class="p">,</span> <span class="n">c_double_p</span><span class="p">,</span> <span class="n">c_double_p</span><span class="p">]</span>
 <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_spheroid</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="kc">None</span>
 
 
@@ -74,49 +96,49 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">q</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">6</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-    <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_spheroid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+    <span class="c1"># TODO Check input</span>
+    <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_spheroid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span>
+                        <span class="n">n</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                        <span class="n">q</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">q</span></div>
 
 
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__det_sym</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">6</span><span class="o">*</span><span class="p">[</span><span class="n">c_double</span><span class="p">]</span>
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__det_sym</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
-<span class="n">_det_sym</span> <span class="o">=</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__det_sym</span>
-
-
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_detQ_as_poly</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">npct</span><span class="o">.</span><span class="n">ndpointer</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,),</span> <span class="n">flags</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)]</span>
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_detQ_as_poly</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">,</span> <span class="n">c_double_p</span><span class="p">,</span> <span class="n">c_double_p</span><span class="p">,</span>
+                                        <span class="n">c_double_p</span><span class="p">,</span> <span class="n">c_int</span><span class="p">]</span>
+<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
 
 
 <div class="viewcode-block" id="detQ_as_poly"><a class="viewcode-back" href="../py_api.html#pypw85.detQ_as_poly">[docs]</a><span class="k">def</span> <span class="nf">detQ_as_poly</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">4</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-    <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_detQ_as_poly</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+    <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                                <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                                <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                                <span class="n">b</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                                <span class="n">FLAG_detQ_AS_POLY</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">b</span></div>
-
-
-<span class="n">_xT_adjA_x</span> <span class="o">=</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__xT_adjA_x</span>
-<span class="n">_xT_adjA_x</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">9</span><span class="o">*</span><span class="p">[</span><span class="n">c_double</span><span class="p">]</span>
-<span class="n">_xT_adjA_x</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
-
-
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_rT_adjQ_r_as_poly</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Vector</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">npct</span><span class="o">.</span><span class="n">ndpointer</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,),</span> <span class="n">flags</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)]</span>
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_rT_adjQ_r_as_poly</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="rT_adjQ_r_as_poly"><a class="viewcode-back" href="../py_api.html#pypw85.rT_adjQ_r_as_poly">[docs]</a><span class="k">def</span> <span class="nf">rT_adjQ_r_as_poly</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">3</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-    <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_rT_adjQ_r_as_poly</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+    <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                                <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                                <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                                <span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                                <span class="n">FLAG_rT_adjQ_r_AS_POLY</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">a</span></div>
-
-
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Vector</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">npct</span><span class="o">.</span><span class="n">ndpointer</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,),</span> <span class="n">flags</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)]</span>
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
 
 
 <div class="viewcode-block" id="contact_function"><a class="viewcode-back" href="../py_api.html#pypw85.contact_function">[docs]</a><span class="k">def</span> <span class="nf">contact_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">2</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-    <span class="n">val</span> <span class="o">=</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+
+    <span class="n">val</span> <span class="o">=</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                                      <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                                      <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                                      <span class="n">out</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                                      <span class="n">FLAG_CONTACT_FUNCTION</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">full_output</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">out</span>
     <span class="k">else</span><span class="p">:</span>
@@ -175,7 +197,7 @@
       &copy;2018, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
     </div>

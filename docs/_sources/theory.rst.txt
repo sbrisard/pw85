@@ -4,22 +4,21 @@
 Theory
 ******
 
-This chapter provides the theoretical background to the
-Perram–Wertheim algorithm [PW85]_. We use matrices rather than
-tensors: a point/vector is therefore defined through the 3×1
-column-vector of its coordinates. Likewise, a second-rank tensor is
-represented by its 3×3 matrix.
+This chapter provides the theoretical background to the Perram–Wertheim
+algorithm [PW85]_. We use matrices rather than tensors: a point/vector is
+therefore defined through the 3×1 column-vector of its coordinates. Likewise, a
+second-rank tensor is represented by its 3×3 matrix.
 
 Only the global, cartesian frame is considered here, and there is no
-ambiguity about the basis to which these column vectors and square
-matrices refer.
+ambiguity about the basis to which these column vectors and square matrices
+refer.
 
 
 Mathematical representation of ellipsoids
 =========================================
 
-Ellipsoids are defined from their center ``c`` and a positive-definite
-quadratic form ``Q`` as the set of points ``m`` such that::
+Ellipsoids are defined from their center ``c`` and a positive-definite quadratic
+form ``Q`` as the set of points ``m`` such that::
 
   (1)    (m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
 
@@ -28,12 +27,11 @@ quadratic form ``Q`` as the set of points ``m`` such that::
   (2)    Q = ∑ aᵢ² vᵢ⋅vᵢᵀ,
              ⁱ
 
-where ``a₁``, ``a₂``, ``a₃`` are the lengths of the principal
-semi-axes and ``v₁``, ``v₂``, ``v₃`` their directions (unit vectors).
+where ``a₁``, ``a₂``, ``a₃`` are the lengths of the principal semi-axes and
+``v₁``, ``v₂``, ``v₃`` their directions (unit vectors).
 
-In the ``PW85`` library, ``Q`` is represented as a ``double[6]`` array
-``q`` which stores the upper triangular part of ``Q`` in row-major
-order::
+In the ``PW85`` library, ``Q`` is represented as a ``double[6]`` array ``q``
+which stores the upper triangular part of ``Q`` in row-major order::
 
              ⎡ q[0] q[1] q[2] ⎤
   (3)    Q = ⎢      q[3] q[4] ⎥.
@@ -43,8 +41,8 @@ order::
 The contact function of two ellipsoids
 ======================================
 
-Let ``E₁`` and ``E₂`` be two ellipsoids, defined by their centers
-``c₁`` and ``c₂`` and quadratic forms ``Q₁`` and ``Q₂``, respectively.
+Let ``E₁`` and ``E₂`` be two ellipsoids, defined by their centers ``c₁`` and
+``c₂`` and quadratic forms ``Q₁`` and ``Q₂``, respectively.
 
 .. _theory-eq-4:
 
@@ -52,14 +50,13 @@ For ``0 ≤ λ ≤ 1`` and a point ``x``, we introduce the function::
 
   (4)    F(x, λ) = λ(x-c₁)ᵀ⋅Q₁⁻¹⋅(x-c₁)+(1-λ)(x-c₂)ᵀ⋅Q₂⁻¹⋅(x-c₂).
 
-For fixed ``λ``, ``F(x, λ)`` has a unique minimum [PW85]_ ``f(λ)``,
-and we define::
+For fixed ``λ``, ``F(x, λ)`` has a unique minimum [PW85]_ ``f(λ)``, and we
+define::
 
   (5)    f(λ) = min{ F(x, λ), x ∈ ℝ³ }, 0 ≤ λ ≤ 1.
 
-Now, the function ``f`` has a unique maximum over ``[0, 1]``, and the
-“contact function” ``F(r₁₂, Q₁, Q₂)`` of ellipsoids ``E₁`` and ``E₂``
-is defined as::
+Now, the function ``f`` has a unique maximum over ``[0, 1]``, and the“contact
+function” ``F(r₁₂, Q₁, Q₂)`` of ellipsoids ``E₁`` and ``E₂`` is defined as::
 
   (6)    F(r₁₂, Q₁, Q₂) = max{ f(λ), 0 ≤ λ ≤ 1 },
 
@@ -69,8 +66,8 @@ where ``r₁₂ = c₂-c₁``. It can be shown that
 - if ``F(r₁₂, Q₁, Q₂) = 1`` then ``E₁`` and ``E₂`` are externally tangent,
 - if ``F(r₁₂, Q₁, Q₂) > 1`` then ``E₁`` and ``E₂`` do not overlap.
 
-The contact function therefore provides a criterion to check overlap
-of two ellipsoids. The ``PW85`` library computes this value.
+The contact function therefore provides a criterion to check overlap of two
+ellipsoids. The ``PW85`` library computes this value.
 
 
 Geometric interpretation
@@ -78,8 +75,8 @@ Geometric interpretation
 
 .. _theory-eq-7:
 
-The scalar ``λ`` being fixed, we introduce the minimizer ``x₀(λ)`` of
-``F(x, λ)``. The stationarity of ``F`` w.r.t to ``x`` reads::
+The scalar ``λ`` being fixed, we introduce the minimizer ``x₀(λ)`` of ``F(x,
+λ)``. The stationarity of ``F`` w.r.t to ``x`` reads::
 
   (7)    ∇F(x₀(λ), λ) = 0,
 
@@ -98,12 +95,16 @@ with::
 
   (10)    Q = (1-λ)Q₁ + λQ₂.
 
+.. _theory-eq-11:
+
 It results from the above that::
 
   (11)    f(λ) = F(x₀(λ), λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂.
 
-Maximization of ``f`` with respect to ``λ`` now delivers the
-stationarity condition::
+.. _theory-eq-12:
+
+Maximization of ``f`` with respect to ``λ`` now delivers the stationarity
+condition::
 
                                             ∂F
   (12)    0 = f'(λ) = ∇F(x₀(λ), λ)⋅x₀'(λ) + ──(x₀(λ), λ).
@@ -111,19 +112,17 @@ stationarity condition::
 
 .. _theory-eq-13:
 
-Using Eqs. :ref:`(4) <theory-eq-4>` and :ref:`(7) <theory-eq-7>`, it
-is found that ``f`` is minimum for ``λ = λ₀`` such that::
+Using Eqs. :ref:`(4) <theory-eq-4>` and :ref:`(7) <theory-eq-7>`, it is found
+that ``f`` is minimum for ``λ = λ₀`` such that::
 
   (13)    [x₀(λ₀)-c₁]ᵀ⋅Q₁⁻¹⋅[x₀(λ₀)-c₁] = [x₀(λ₀)-c₂]ᵀ⋅Q₂⁻¹⋅[x₀(λ₀)-c₂].
 
-Let ``μ²`` be this common value. It trivially results from
-Eqs. :ref:`(4) <theory-eq-4>` and :ref:`(13) <theory-eq-13>` that ``μ²
-= F(x₀(λ₀), λ₀)``. In other words, ``μ²`` is the value of the contact
-function.
+Let ``μ²`` be this common value. It trivially results from Eqs. :ref:`(4)
+<theory-eq-4>` and :ref:`(13) <theory-eq-13>` that ``μ² = F(x₀(λ₀), λ₀)``. In
+other words, ``μ²`` is the value of the contact function.
 
-We are now in a position to give a geometric interpretation of
-``μ``. It results from Eq. :ref:`(13) <theory-eq-13>` and the
-definition of ``μ`` that::
+We are now in a position to give a geometric interpretation of ``μ``. It results
+from Eq. :ref:`(13) <theory-eq-13>` and the definition of ``μ`` that::
 
   (14a)    [x₀(λ₀)-c₁]ᵀ⋅(μ²Q₁)⁻¹⋅[x₀(λ₀)-c₁] = 1,
 
@@ -131,19 +130,70 @@ and::
 
   (14b)    [x₀(λ₀)-c₂]ᵀ⋅(μ²Q₂)⁻¹⋅[x₀(λ₀)-c₂] = 1.
 
-The above equations mean that ``x₀(λ₀)`` belongs to both ellipsoids
-centered at ``cⱼ`` and defined by the symmetric, positive-definite
-quadratic form ``μ²Qⱼ`` (``j = 1, 2``). These two ellipsoids are
-nothing but the initial ellipsoids ``E₁`` and ``E₂``, scaled by the
-*same* factor ``μ``.
+The above equations mean that ``x₀(λ₀)`` belongs to both ellipsoids centered at
+``cⱼ`` and defined by the symmetric, positive-definite quadratic form ``μ²Qⱼ``
+(``j = 1, 2``). These two ellipsoids are nothing but the initial ellipsoids
+``E₁`` and ``E₂``, scaled by the *same* factor ``μ``.
 
-Furthermore, Eq. :ref:`(8) <theory-eq-8>` applies for ``λ =
-λ₀``. Therefore, the normals to the scaled ellipsoids coincide at
-``x₀(λ₀)``: the two scaled ellipsoids are externally tangent.
+Furthermore, Eq. :ref:`(8) <theory-eq-8>` applies for ``λ = λ₀``. Therefore, the
+normals to the scaled ellipsoids coincide at ``x₀(λ₀)``: the two scaled
+ellipsoids are externally tangent.
 
-To sum up, ``μ`` is the common factor by wich ellipsoids ``E₁`` and
-``E₂`` must be scaled in order for them to be externally tangent at
-point ``x₀(λ₀)``.
+To sum up, ``μ`` is the common factor by wich ellipsoids ``E₁`` and ``E₂`` must
+be scaled in order for them to be externally tangent at point ``x₀(λ₀)``.
+
+
+Implementation
+==============
+
+In this section, we explain how the contact function is computed. From Eq.
+:ref:`(12) <theory-eq-12>`, the value of the contact function is found from
+the solution ``λ`` to equation ``f'(λ) = 0``. We observe that ``f(λ)`` is a
+rational function [see Eq. :ref:`(11) <theory-eq-11>`], and we write::
+
+                  λ(1-λ)a(λ)
+  (15)    f(λ) =  ──────────,
+                     b(λ)
+
+with::
+
+  (16a)    a(λ) = r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂ = a₀ + a₁λ + a₂λ²,
+
+  (16b)    b(λ) = det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³,
+
+where ``adj(Q)`` denotes the adjugate matrix of ``Q`` (transpose of its cofactor
+matrix), see e.g `Wikipedia <https://en.wikipedia.org/wiki/Adjugate_matrix>`_.
+
+The coefficients ``aᵢ`` and ``bᵢ`` are found from the evaluation of ``a(λ)`` and
+``b(λ)`` for specific values of ``λ``::
+
+  (17a)    a₀ = a(0),
+
+                a(1) - a(-1)
+  (17b)    a₁ = ────────────,
+		     2
+
+                a(1) + a(-1)
+  (17c)    a₂ = ──────────── - a(0),
+		     2
+
+  (17d)    b₀ = b(0),
+
+                8b(½)            b(1)   b(-1)
+  (17e)    b₁ = ─────  - 2b(0) - ──── - ─────
+                  3                2      6
+
+                b(1) + b(-1)
+  (17f)    b₂ = ──────────── - b(0),
+		     2
+
+                 8b(½)                   b(-1)
+  (17g)    b₃ = -─────  + 2b(0) + b(1) - ─────.
+                   3                       3
+
+This requires the implementation of the determinant and the adjugate matrix of a
+3×3, symmetric matrix, see :c:func:`pw85__det_sym` and
+:c:func:`pw85__xT_adjA_x`.
 
 
 References
