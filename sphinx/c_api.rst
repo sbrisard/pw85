@@ -41,6 +41,37 @@ Functions
 		in-place with the coefficients of the quadratic form.
 
 
+.. c:function:: double pw85_contact_function(double* r, double* q1, double* q2, double* out)
+
+		Return the value of the contact function of two ellipsoids.
+
+		Ellipsoids 1 and 2 are defined as the sets of points
+		``m`` (column-vector) such that::
+
+		    (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
+
+	        where ``cᵢ`` is the center (column-vector); ``r =
+	        c₂-c₁`` is the center-to-center radius-vector. The
+	        symmetric, positive-definite matrices ``Q₁`` and
+	        ``Q₂`` are specified through the arrays ``q1`` and
+	        ``q2`` of the coefficients of their upper triangular
+	        part (in row-major order)::
+
+		       ⎡ q1[0] q1[1] q1[2] ⎤            ⎡ q2[0] q2[1] q2[2] ⎤
+                  Q₁ = ⎢       q1[3] q1[4] ⎥  and  Q₂ = ⎢       q2[3] q2[4] ⎥.
+                       ⎣ sym.        q1[5] ⎦	        ⎣ sym.        q2[5] ⎦
+
+	        This function returns the value of ``μ²``, defined as
+	        (see :ref:`theory`)::
+
+		  μ² = max{ λ(1-λ)rᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r, 0 ≤ λ ≤ 1 }.
+
+		If ``out`` is not null, then a full-output is
+		produced: ``out[0]`` is updated with the value of
+		``μ²``, while ``out[1]`` is updated with the maximizer
+		``λ`` .
+
+
 .. c:function:: double pw85__det_sym(double a0, double a1, double a2, double a3, double a4, double a5)
 
 		Return the determinant of ``A``.
@@ -109,34 +140,3 @@ Functions
 		The coefficients ``aᵢ`` are stored in `a` (array of
 		length ``PW85_DIM``) in *increasing* order: ``a[i]
 		= aᵢ``.
-
-
-.. c:function:: double pw85_contact_function(double* r, double* q1, double* q2, double* out)
-
-		Return the value of the contact function of two ellipsoids.
-
-		Ellipsoids 1 and 2 are defined as the sets of points
-		``m`` (column-vector) such that::
-
-		    (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
-
-	        where ``cᵢ`` is the center (column-vector); ``r =
-	        c₂-c₁`` is the center-to-center radius-vector. The
-	        symmetric, positive-definite matrices ``Q₁`` and
-	        ``Q₂`` are specified through the arrays ``q1`` and
-	        ``q2`` of the coefficients of their upper triangular
-	        part (in row-major order)::
-
-		       ⎡ q1[0] q1[1] q1[2] ⎤            ⎡ q2[0] q2[1] q2[2] ⎤
-                  Q₁ = ⎢       q1[3] q1[4] ⎥  and  Q₂ = ⎢       q2[3] q2[4] ⎥.
-                       ⎣ sym.        q1[5] ⎦	        ⎣ sym.        q2[5] ⎦
-
-	        This function returns the value of ``μ²``, defined as
-	        (see :ref:`theory`)::
-
-		  μ² = max{ λ(1-λ)rᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r, 0 ≤ λ ≤ 1 }.
-
-		If ``out`` is not null, then a full-output is
-		produced: ``out[0]`` is updated with the value of
-		``μ²``, while ``out[1]`` is updated with the maximizer
-		``λ`` .
