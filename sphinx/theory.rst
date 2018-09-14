@@ -95,9 +95,13 @@ with::
 
   (10)    Q = (1-λ)Q₁ + λQ₂.
 
+.. _theory-eq-11:
+
 It results from the above that::
 
   (11)    f(λ) = F(x₀(λ), λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂.
+
+.. _theory-eq-12:
 
 Maximization of ``f`` with respect to ``λ`` now delivers the stationarity
 condition::
@@ -137,6 +141,59 @@ ellipsoids are externally tangent.
 
 To sum up, ``μ`` is the common factor by wich ellipsoids ``E₁`` and ``E₂`` must
 be scaled in order for them to be externally tangent at point ``x₀(λ₀)``.
+
+
+Implementation
+==============
+
+In this section, we explain how the contact function is computed. From Eq.
+:ref:`(12) <theory-eq-12>`, the value of the contact function is found from
+the solution ``λ`` to equation ``f'(λ) = 0``. We observe that ``f(λ)`` is a
+rational function [see Eq. :ref:`(11) <theory-eq-11>`], and we write::
+
+                  λ(1-λ)a(λ)
+  (15)    f(λ) =  ──────────,
+                     b(λ)
+
+with::
+
+  (16a)    a(λ) = r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂ = a₀ + a₁λ + a₂λ²,
+
+  (16b)    b(λ) = det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³,
+
+where ``adj(Q)`` denotes the adjugate matrix of ``Q`` (transpose of its cofactor
+matrix), see e.g `Wikipedia <https://en.wikipedia.org/wiki/Adjugate_matrix>`_.
+
+The coefficients ``aᵢ`` and ``bᵢ`` are found from the evaluation of ``a(λ)`` and
+``b(λ)`` for specific values of ``λ``::
+
+  (17a)    a₀ = a(0),
+
+                a(1) - a(-1)
+  (17b)    a₁ = ────────────,
+		     2
+
+                a(1) + a(-1)
+  (17c)    a₂ = ──────────── - a(0),
+		     2
+
+  (17d)    b₀ = b(0),
+
+                8b(½)            b(1)   b(-1)
+  (17e)    b₁ = ─────  - 2b(0) - ──── - ─────
+                  3                2      6
+
+                b(1) + b(-1)
+  (17f)    b₂ = ──────────── - b(0),
+		     2
+
+                 8b(½)                   b(-1)
+  (17g)    b₃ = -─────  + 2b(0) + b(1) - ─────.
+                   3                       3
+
+This requires the implementation of the determinant and the adjugate matrix of a
+3×3, symmetric matrix, see :c:func:`pw85__det_sym` and
+:c:func:`pw85__xT_adjA_x`.
 
 
 References
