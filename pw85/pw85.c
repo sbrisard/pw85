@@ -18,10 +18,9 @@
 /* ===================== */
 /* These functions are exported for the sake of testing. */
 
-__declspec(dllexport) double pw85__det_sym(double a0, double a1, double a2,
-                                           double a3, double a4, double a5)
+__declspec(dllexport) double pw85__det_sym(double a[PW85_SYM])
 {
-    return a0 * a3 * a5 + 2 * a1 * a2 * a4 - a0 * a4 * a4 - a3 * a2 * a2 - a5 * a1 * a1;
+    return a[0] * a[3] * a[5] + 2 * a[1] * a[2] * a[4] - a[0] * a[4] * a[4] - a[3] * a[2] * a[2] - a[5] * a[1] * a[1];
 }
 
 __declspec(dllexport) double pw85__xT_adjA_x(double x0, double x1, double x2,
@@ -103,6 +102,13 @@ __declspec(dllexport) double pw85_contact_function(double *r,
     const double q_4 = 2. * q1_4 - q2_4;
     const double q_5 = 2. * q1_5 - q2_5;
 
+    double q[PW85_SYM];
+    double qq[PW85_SYM];
+    for (int i = 0; i < PW85_SYM; i++) {
+	q[i] = 2. * q1[i] - q2[i];
+	qq[i] = 0.5*(q1[i]+q2[i]);
+    }
+
     size_t out_index = 0;
 
     /*
@@ -140,14 +146,12 @@ __declspec(dllexport) double pw85_contact_function(double *r,
      *
      * as a degree-3 polynomial in λ.
      */
-    const double b_zero = pw85__det_sym(q1_0, q1_1, q1_2, q1_3, q1_4, q1_5);
-    const double b_one = pw85__det_sym(q2_0, q2_1, q2_2, q2_3, q2_4, q2_5);
+    const double b_zero = pw85__det_sym(q1);
+    const double b_one = pw85__det_sym(q2);
     /* Compute det[(1-x)*q1+x*q2] for x = -1. */
-    const double b_minus_one = pw85__det_sym(q_0, q_1, q_2, q_3, q_4, q_5);
+    const double b_minus_one = pw85__det_sym(q);
     /* Compute det[(1-x)*q1+x*q2] for x = 1/2. */
-    const double b_one_half = pw85__det_sym(.5 * (q1_0 + q2_0), .5 * (q1_1 + q2_1),
-                                            .5 * (q1_2 + q2_2), .5 * (q1_3 + q2_3),
-                                            .5 * (q1_4 + q2_4), .5 * (q1_5 + q2_5));
+    const double b_one_half = pw85__det_sym(qq);
     const double b0 = b_zero;
     const double b2 = 0.5 * (b_one + b_minus_one) - b_zero;
     const double b1 = (8. * b_one_half - 6. * b_zero - 1.5 * b_one - 0.5 * b_minus_one) / 3.;

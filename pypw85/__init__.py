@@ -20,9 +20,13 @@ else:
     raise RuntimeError("Configuration file not found.")
 
 
-_det_sym = cpw85.pw85__det_sym
-_det_sym.argtypes = 6*[c_double]
-_det_sym.restype = c_double
+cpw85.pw85__det_sym.argtypes = [c_double_p]
+cpw85.pw85__det_sym.restype = c_double
+
+
+def _det_sym(a):
+    return cpw85.pw85__det_sym(a.ctypes.data_as(c_double_p))
+
 
 _xT_adjA_x = cpw85.pw85__xT_adjA_x
 _xT_adjA_x.argtypes = 9*[c_double]
