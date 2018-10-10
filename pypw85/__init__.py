@@ -28,9 +28,14 @@ def _det_sym(a):
     return cpw85.pw85__det_sym(a.ctypes.data_as(c_double_p))
 
 
-_xT_adjA_x = cpw85.pw85__xT_adjA_x
-_xT_adjA_x.argtypes = 9*[c_double]
-_xT_adjA_x.restype = c_double
+cpw85.pw85__xT_adjA_x.argtypes = [c_double_p, c_double_p]
+cpw85.pw85__xT_adjA_x.restype = c_double
+
+
+def _xT_adjA_x(x, a):
+    return cpw85.pw85__xT_adjA_x(x.ctypes.data_as(c_double_p),
+                                 a.ctypes.data_as(c_double_p))
+
 
 cpw85.pw85__get_flag.argtypes = [c_char_p]
 cpw85.pw85__get_flag.restype = c_int

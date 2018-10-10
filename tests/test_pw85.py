@@ -117,7 +117,7 @@ def adjugate(A):
 @pytest.mark.parametrize('x', np.random.rand(5, 3))
 @pytest.mark.parametrize('a', np.random.rand(5, 6))
 def test__xT_adjA_x(x, a, rtol=1E-12, atol=1E-14):
-    actual = pypw85._xT_adjA_x(*x, *a)
+    actual = pypw85._xT_adjA_x(x, a)
     expected = np.dot(x, np.dot(adjugate(to_array_2d(a)), x))
     assert_allclose(actual, expected, rtol, atol)
 

@@ -23,11 +23,10 @@ __declspec(dllexport) double pw85__det_sym(double a[PW85_SYM])
     return a[0] * a[3] * a[5] + 2 * a[1] * a[2] * a[4] - a[0] * a[4] * a[4] - a[3] * a[2] * a[2] - a[5] * a[1] * a[1];
 }
 
-__declspec(dllexport) double pw85__xT_adjA_x(double x0, double x1, double x2,
-                                             double a0, double a1, double a2,
-                                             double a3, double a4, double a5)
+__declspec(dllexport) double pw85__xT_adjA_x(double x[PW85_DIM],
+					     double a[PW85_SYM])
 {
-    return (x0 * x0 * (a3 * a5 - a4 * a4) + x1 * x1 * (a0 * a5 - a2 * a2) + x2 * x2 * (a0 * a3 - a1 * a1) + 2. * (x0 * x1 * (a2 * a4 - a1 * a5) + x0 * x2 * (a1 * a4 - a2 * a3) + x1 * x2 * (a1 * a2 - a0 * a4)));
+    return (x[0] * x[0] * (a[3] * a[5] - a[4] * a[4]) + x[1] * x[1] * (a[0] * a[5] - a[2] * a[2]) + x[2] * x[2] * (a[0] * a[3] - a[1] * a[1]) + 2. * (x[0] * x[1] * (a[2] * a[4] - a[1] * a[5]) + x[0] * x[2] * (a[1] * a[4] - a[2] * a[3]) + x[1] * x[2] * (a[1] * a[2] - a[0] * a[4])));
 }
 
 __declspec(dllexport) int pw85__get_flag(char *s)
@@ -119,12 +118,9 @@ __declspec(dllexport) double pw85_contact_function(double *r,
      *
      * as a degree-2 polynomial in λ.
      */
-    const double a_zero = pw85__xT_adjA_x(r_0, r_1, r_2,
-                                          q1_0, q1_1, q1_2, q1_3, q1_4, q1_5);
-    const double a_one = pw85__xT_adjA_x(r_0, r_1, r_2,
-                                         q2_0, q2_1, q2_2, q2_3, q2_4, q2_5);
-    const double a_minus_one = pw85__xT_adjA_x(r_0, r_1, r_2,
-                                               q_0, q_1, q_2, q_3, q_4, q_5);
+    const double a_zero = pw85__xT_adjA_x(r, q1);
+    const double a_one = pw85__xT_adjA_x(r, q2);
+    const double a_minus_one = pw85__xT_adjA_x(r, q);
     const double a0 = a_zero;
     const double a2 = 0.5 * (a_one + a_minus_one) - a_zero;
     const double a1 = 0.5 * (a_one - a_minus_one);
