@@ -75,32 +75,6 @@ __declspec(dllexport) double pw85_contact_function(double *r,
                                                    double *out,
                                                    int type)
 {
-    const double r_0 = r[0];
-    const double r_1 = r[1];
-    const double r_2 = r[2];
-
-    const double q1_0 = q1[0];
-    const double q1_1 = q1[1];
-    const double q1_2 = q1[2];
-    const double q1_3 = q1[3];
-    const double q1_4 = q1[4];
-    const double q1_5 = q1[5];
-
-    const double q2_0 = q2[0];
-    const double q2_1 = q2[1];
-    const double q2_2 = q2[2];
-    const double q2_3 = q2[3];
-    const double q2_4 = q2[4];
-    const double q2_5 = q2[5];
-
-    /* Coefficients of (1-λ)Q₁+λQ₂ for λ = -1. */
-    const double q_0 = 2. * q1_0 - q2_0;
-    const double q_1 = 2. * q1_1 - q2_1;
-    const double q_2 = 2. * q1_2 - q2_2;
-    const double q_3 = 2. * q1_3 - q2_3;
-    const double q_4 = 2. * q1_4 - q2_4;
-    const double q_5 = 2. * q1_5 - q2_5;
-
     double q[PW85_SYM];
     double qq[PW85_SYM];
     for (int i = 0; i < PW85_SYM; i++) {
