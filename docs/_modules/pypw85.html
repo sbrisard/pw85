@@ -55,13 +55,22 @@
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Configuration file not found.&quot;</span><span class="p">)</span>
 
 
-<span class="n">_det_sym</span> <span class="o">=</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__det_sym</span>
-<span class="n">_det_sym</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">6</span><span class="o">*</span><span class="p">[</span><span class="n">c_double</span><span class="p">]</span>
-<span class="n">_det_sym</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__det_sym</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__det_sym</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
 
-<span class="n">_xT_adjA_x</span> <span class="o">=</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__xT_adjA_x</span>
-<span class="n">_xT_adjA_x</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">9</span><span class="o">*</span><span class="p">[</span><span class="n">c_double</span><span class="p">]</span>
-<span class="n">_xT_adjA_x</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+
+<div class="viewcode-block" id="_det_sym"><a class="viewcode-back" href="../py_api.html#pypw85._det_sym">[docs]</a><span class="k">def</span> <span class="nf">_det_sym</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__det_sym</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">))</span></div>
+
+
+<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__xT_adjA_x</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">,</span> <span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__xT_adjA_x</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+
+
+<div class="viewcode-block" id="_xT_adjA_x"><a class="viewcode-back" href="../py_api.html#pypw85._xT_adjA_x">[docs]</a><span class="k">def</span> <span class="nf">_xT_adjA_x</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__xT_adjA_x</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                                 <span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">))</span></div>
+
 
 <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__get_flag</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_char_p</span><span class="p">]</span>
 <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__get_flag</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_int</span>
@@ -197,7 +206,7 @@
       &copy;2018, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
     </div>

@@ -67,34 +67,34 @@ Functions
   maximizer ``λ`` .
 
 
-.. c:function:: double pw85__det_sym(double a0, double a1, double a2, double a3, double a4, double a5)
+.. c:function:: double pw85__det_sym(double a[PW85_SYM])
 
   Return the determinant of ``A``.
 
   The symmetric, 3×3 matrix ``A`` is specified trough the coefficients of its
   triangular upper part, listed in row-major order::
 
-        ⎡ a0 a1 a2 ⎤
-    A = ⎢    a3 a4 ⎥.
-        ⎣ sym.  a5 ⎦
+        ⎡ a[0] a[1] a[2] ⎤
+    A = ⎢      a[3] a[4] ⎥.
+        ⎣ sym.      a[5] ⎦
 
 
-.. c:function:: double pw85__xT_adjA_x(double x0, double x1, double x2, double a0, double a1, double a2, double a3, double a4, double a5)
+.. c:function:: double pw85__xT_adjA_x(double x[PW85_DIM], double a[PW85_SYM])
 
   Return the product ``xᵀ⋅adj(A)⋅x``.
 
   The column vector ``x`` is specified through its coefficients::
 
-        ⎡ x0 ⎤
-    x = ⎢ x1 ⎥.
-        ⎣ x2 ⎦
+        ⎡ x[0] ⎤
+    x = ⎢ x[1] ⎥.
+        ⎣ x[2] ⎦
 
   The symmetric, 3×3 matrix ``A`` is specified trough the coefficients of its
   triangular upper part, listed in row-major order::
 
-        ⎡ a0 a1 a2 ⎤
-    A = ⎢    a3 a4 ⎥.
-        ⎣ sym.  a5 ⎦
+        ⎡ a[0] a[1] a[2] ⎤
+    A = ⎢      a[3] a[4] ⎥.
+        ⎣ sym.      a[5] ⎦
 
   ``adj(A)`` denotes the adjugate matrix of ``A`` (transpose of its cofactor
   matrix), see e.g `Wikipedia <https://en.wikipedia.org/wiki/Adjugate_matrix>`_.

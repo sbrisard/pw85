@@ -104,32 +104,32 @@ maximizer <code class="docutils literal notranslate"><span class="pre">λ</span>
 
 <dl class="function">
 <dt id="c.pw85__det_sym">
-double <code class="descname">pw85__det_sym</code><span class="sig-paren">(</span>double<em>&nbsp;a0</em>, double<em>&nbsp;a1</em>, double<em>&nbsp;a2</em>, double<em>&nbsp;a3</em>, double<em>&nbsp;a4</em>, double<em>&nbsp;a5</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__det_sym" title="Permalink to this definition">¶</a></dt>
+double <code class="descname">pw85__det_sym</code><span class="sig-paren">(</span>double<em>&nbsp;a[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__det_sym" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the determinant of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
 <p>The symmetric, 3×3 matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified trough the coefficients of its
 triangular upper part, listed in row-major order:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    ⎡ a0 a1 a2 ⎤
-A = ⎢    a3 a4 ⎥.
-    ⎣ sym.  a5 ⎦
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    ⎡ a[0] a[1] a[2] ⎤
+A = ⎢      a[3] a[4] ⎥.
+    ⎣ sym.      a[5] ⎦
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="c.pw85__xT_adjA_x">
-double <code class="descname">pw85__xT_adjA_x</code><span class="sig-paren">(</span>double<em>&nbsp;x0</em>, double<em>&nbsp;x1</em>, double<em>&nbsp;x2</em>, double<em>&nbsp;a0</em>, double<em>&nbsp;a1</em>, double<em>&nbsp;a2</em>, double<em>&nbsp;a3</em>, double<em>&nbsp;a4</em>, double<em>&nbsp;a5</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__xT_adjA_x" title="Permalink to this definition">¶</a></dt>
+double <code class="descname">pw85__xT_adjA_x</code><span class="sig-paren">(</span>double<em>&nbsp;x[PW85_DIM]</em>, double<em>&nbsp;a[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__xT_adjA_x" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the product <code class="docutils literal notranslate"><span class="pre">xᵀ⋅adj(A)⋅x</span></code>.</p>
 <p>The column vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is specified through its coefficients:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    ⎡ x0 ⎤
-x = ⎢ x1 ⎥.
-    ⎣ x2 ⎦
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    ⎡ x[0] ⎤
+x = ⎢ x[1] ⎥.
+    ⎣ x[2] ⎦
 </pre></div>
 </div>
 <p>The symmetric, 3×3 matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified trough the coefficients of its
 triangular upper part, listed in row-major order:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    ⎡ a0 a1 a2 ⎤
-A = ⎢    a3 a4 ⎥.
-    ⎣ sym.  a5 ⎦
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    ⎡ a[0] a[1] a[2] ⎤
+A = ⎢      a[3] a[4] ⎥.
+    ⎣ sym.      a[5] ⎦
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">adj(A)</span></code> denotes the adjugate matrix of <code class="docutils literal notranslate"><span class="pre">A</span></code> (transpose of its cofactor
@@ -225,7 +225,7 @@ polynomial of degree <code class="docutils literal notranslate"><span class="pre
       &copy;2018, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
       |
