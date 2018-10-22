@@ -87,21 +87,16 @@ def detQ_as_poly(q1, q2, q3=None, q4=None, b=None):
     cpw85.pw85_detQ_as_poly(*args)
     return b
 
-"""
-cpw85.pw85_contact_function.argtypes = [c_double_p, c_double_p, c_double_p,
-                                        c_double_p, c_int]
+
+cpw85.pw85_contact_function.argtypes = 4*[c_double_p]
 cpw85.pw85_contact_function.restype = c_double
 
-def contact_function(r, q1, q2, full_output=False):
-    out = np.empty((2,), dtype=np.float64, order='C')
 
-    val = cpw85.pw85_contact_function(r.ctypes.data_as(c_double_p),
-                                      q1.ctypes.data_as(c_double_p),
-                                      q2.ctypes.data_as(c_double_p),
-                                      out.ctypes.data_as(c_double_p),
-                                      FLAG_CONTACT_FUNCTION)
-    if full_output:
-        return out
-    else:
-        return val
-"""
+def contact_function(r, q1, q2, out=None):
+    if out is not None:
+        out = out.ctypes.data_as(c_double_p)
+
+    return cpw85.pw85_contact_function(r.ctypes.data_as(c_double_p),
+                                       q1.ctypes.data_as(c_double_p),
+                                       q2.ctypes.data_as(c_double_p),
+                                       out)
