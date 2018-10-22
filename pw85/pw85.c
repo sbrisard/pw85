@@ -66,7 +66,7 @@ __declspec(dllexport) void pw85_detQ_as_poly(double* q1, double* q2, double* q3,
     b[3] = (-8. * b_one_half + 6. * b_zero + 3. * b_one - b_minus_one) / 3.;
 }
 
-__declspec(dllexport) double pw85_contact_function(double *r, double *q1, double *q2) {
+__declspec(dllexport) double pw85_contact_function(double *r, double *q1, double *q2, double* out) {
     double q3[PW85_SYM];  /* q3 = 2*q1-q2. */
     double q4[PW85_SYM];  /* q4 = (q1+q2)/2. */
     for (int i = 0; i < PW85_SYM; i++) {
@@ -103,5 +103,9 @@ __declspec(dllexport) double pw85_contact_function(double *r, double *q1, double
         }
     }
     y = x * (1. - x) * (a[0] + x * (a[1] + x * a[2])) / (b[0] + x * (b[1] + x * (b[2] + x * b[3])));
+    if (out != NULL) {
+        out[0] = y;
+        out[1] = x;
+    }
     return y;
 }
