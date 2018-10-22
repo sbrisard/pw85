@@ -140,7 +140,7 @@ def test_rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
     assert_allclose(actual, expected, rtol, atol)
 
 
-#@pytest.mark.skip(reason='Not fully implemented yet.')
+# @pytest.mark.skip(reason='Not fully implemented yet.')
 @pytest.mark.parametrize('r', [np.array([3.0, 4.0, 5.0])])
 @pytest.mark.parametrize('a1', [2.0])
 @pytest.mark.parametrize('c1', [3.0])
@@ -170,8 +170,8 @@ def test_contact_function(r, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
     assert_allclose(r_actual, r, rtol, atol)
 
     # Check that point x0 belongs to both scaled ellipsoids
-    assert_allclose(μ2, np.linalg.solve(Q1, x0).dot(x0))
-    assert_allclose(μ2, np.linalg.solve(Q2, x0-r).dot(x0-r))
+    assert_allclose(μ2, np.linalg.solve(Q1, c1_x0).dot(c1_x0))
+    assert_allclose(μ2, np.linalg.solve(Q2, c2_x0).dot(c2_x0))
 
 
 @pytest.mark.parametrize('r', [np.array([3.0, 4.0, 5.0])])
@@ -181,7 +181,7 @@ def test_contact_function(r, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
 @pytest.mark.parametrize('a2', [0.04])
 @pytest.mark.parametrize('c2', [5.0])
 @pytest.mark.parametrize('n2', DIRECTIONS[:1])
-def test_contact_function(r, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
+def test_contact_function2(r, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
     # Check that full and partial outputs are consistent
     q1 = pypw85.spheroid(a1, c1, n1)
     q2 = pypw85.spheroid(a2, c2, n2)
