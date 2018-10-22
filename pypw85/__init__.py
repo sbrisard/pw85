@@ -37,19 +37,6 @@ def _xT_adjA_x(x, a):
                                  a.ctypes.data_as(c_double_p))
 
 
-cpw85.pw85__get_flag.argtypes = [c_char_p]
-cpw85.pw85__get_flag.restype = c_int
-
-
-def _get_flag(name):
-    if str(name) is name:
-        name = name.encode('ascii')
-    flag = cpw85.pw85__get_flag(name)
-    if flag == -1:
-        raise ValueError('unknown flag '+name.decode('ascii'))
-    return flag
-
-
 cpw85.pw85_spheroid.argtypes = [c_double, c_double, c_double_p, c_double_p]
 cpw85.pw85_spheroid.restype = None
 
