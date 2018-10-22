@@ -4,7 +4,7 @@ import os.path
 
 import numpy as np
 
-from ctypes import c_char_p, c_double, c_int
+from ctypes import c_double
 
 c_double_p = ctypes.POINTER(c_double)
 
@@ -73,8 +73,10 @@ def rT_adjQ_r_as_poly(r, q1, q2, q3=None, a=None):
     cpw85.pw85_rT_adjQ_r_as_poly(*args)
     return a
 
+
 cpw85.pw85_detQ_as_poly.argtypes = 5*[c_double_p]
 cpw85.pw85_detQ_as_poly.restype = None
+
 
 def detQ_as_poly(q1, q2, q3=None, q4=None, b=None):
     if q3 is None:
