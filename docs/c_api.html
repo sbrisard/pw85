@@ -62,8 +62,9 @@ A = ⎢      a[3] a[4] ⎥.
 </dd></dl>
 
 </div>
-<div class="section" id="functions">
-<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="public-functions">
+<h2>“Public” functions<a class="headerlink" href="#public-functions" title="Permalink to this headline">¶</a></h2>
+<p>These functions form the public API of the library.</p>
 <dl class="function">
 <dt id="c.pw85_spheroid">
 void <code class="descname">pw85_spheroid</code><span class="sig-paren">(</span>double<em>&nbsp;a</em>, double<em>&nbsp;c</em>, double<em>&nbsp;n[PW85_DIM]</em>, double<em>&nbsp;q[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_spheroid" title="Permalink to this definition">¶</a></dt>
@@ -76,14 +77,14 @@ in-place with the coefficients of the quadratic form.</p>
 
 <dl class="function">
 <dt id="c.pw85_contact_function">
-double <code class="descname">pw85_contact_function</code><span class="sig-paren">(</span>double*<em>&nbsp;r</em>, double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_contact_function" title="Permalink to this definition">¶</a></dt>
+double <code class="descname">pw85_contact_function</code><span class="sig-paren">(</span>double*<em>&nbsp;r12</em>, double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_contact_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the value of the contact function of two ellipsoids.</p>
 <p>Ellipsoids 1 and 2 are defined as the sets of points <code class="docutils literal notranslate"><span class="pre">m</span></code> (column-vector)
 such that:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">cᵢ</span></code> is the center (column-vector); <code class="docutils literal notranslate"><span class="pre">r</span> <span class="pre">=</span> <span class="pre">c₂-c₁</span></code> is the
+<p>where <code class="docutils literal notranslate"><span class="pre">cᵢ</span></code> is the center (column-vector); <code class="docutils literal notranslate"><span class="pre">r₁₂</span> <span class="pre">=</span> <span class="pre">c₂-c₁</span></code> is the
 center-to-center radius-vector. The symmetric, positive-definite
 matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified through the arrays <code class="docutils literal notranslate"><span class="pre">q1</span></code> and
 <code class="docutils literal notranslate"><span class="pre">q2</span></code> of the coefficients of their upper triangular part (in row-major
@@ -94,7 +95,7 @@ Q₁ = ⎢       q1[3] q1[4] ⎥  and  Q₂ = ⎢       q2[3] q2[4] ⎥.
 </pre></div>
 </div>
 <p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, defined as (see <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>μ² = max{ λ(1-λ)rᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r, 0 ≤ λ ≤ 1 }.
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
 </pre></div>
 </div>
 <p>If <code class="docutils literal notranslate"><span class="pre">out</span></code> is not null, then a full-output is produced: <code class="docutils literal notranslate"><span class="pre">out[0]</span></code> is
@@ -102,6 +103,11 @@ updated with the value of <code class="docutils literal notranslate"><span class
 maximizer <code class="docutils literal notranslate"><span class="pre">λ</span></code> .</p>
 </dd></dl>
 
+</div>
+<div class="section" id="private-functions">
+<h2>“Private” functions<a class="headerlink" href="#private-functions" title="Permalink to this headline">¶</a></h2>
+<p>These functions are not really private. They are fully exposed and tested.
+However, they are not really needed for standard applications of the library.</p>
 <dl class="function">
 <dt id="c.pw85__det_sym">
 double <code class="descname">pw85__det_sym</code><span class="sig-paren">(</span>double<em>&nbsp;a[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__det_sym" title="Permalink to this definition">¶</a></dt>
@@ -137,8 +143,8 @@ matrix), see e.g <a class="reference external" href="https://en.wikipedia.org/wi
 </dd></dl>
 
 <dl class="function">
-<dt id="c.pw85_detQ_as_poly">
-void <code class="descname">pw85_detQ_as_poly</code><span class="sig-paren">(</span>double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;b</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_detQ_as_poly" title="Permalink to this definition">¶</a></dt>
+<dt id="c.pw85__detQ_as_poly">
+void <code class="descname">pw85__detQ_as_poly</code><span class="sig-paren">(</span>double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;b</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__detQ_as_poly" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Compute the coefficients of <code class="docutils literal notranslate"><span class="pre">det[(1-λ)Q₁+λQ₂]</span></code> as a polynomial of <code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
@@ -151,8 +157,8 @@ polynomial of degree <a class="reference internal" href="#c.PW85_DIM" title="PW8
 <p>The coefficients <code class="docutils literal notranslate"><span class="pre">bᵢ</span></code> are stored in <cite>b</cite> (array of length <code class="docutils literal notranslate"><span class="pre">PW85_DIM</span> <span class="pre">+</span> <span class="pre">1</span></code>) in
 <em>increasing</em> order: <code class="docutils literal notranslate"><span class="pre">b[i]</span> <span class="pre">=</span> <span class="pre">bᵢ</span></code>.</p>
 <dl class="function">
-<dt id="c.pw85_rT_adjQ_r_as_poly">
-double <code class="descname">pw85_rT_adjQ_r_as_poly</code><span class="sig-paren">(</span>double*<em>&nbsp;r</em>, double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;a</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_rT_adjQ_r_as_poly" title="Permalink to this definition">¶</a></dt>
+<dt id="c.pw85__rT_adjQ_r_as_poly">
+double <code class="descname">pw85__rT_adjQ_r_as_poly</code><span class="sig-paren">(</span>double*<em>&nbsp;r</em>, double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;a</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__rT_adjQ_r_as_poly" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Compute the coefficients of <code class="docutils literal notranslate"><span class="pre">rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r</span></code> as a polynomial of <code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
@@ -190,7 +196,8 @@ polynomial of degree <code class="docutils literal notranslate"><span class="pre
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The C API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#storage-of-symmetric-matrices">Storage of symmetric matrices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#macros">Macros</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#public-functions">“Public” functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#private-functions">“Private” functions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a></li>
