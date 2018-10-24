@@ -89,7 +89,7 @@ which leads to::
 and can be rearranged::
 
   (9a)    x₀(λ)-c₁ = (1-λ)Q₁⋅Q⁻¹⋅r₁₂,
-  (9b)    x₀(λ)-c₂ = λQ₂⋅Q⁻¹⋅r₁₂,
+  (9b)    x₀(λ)-c₂ = -λQ₂⋅Q⁻¹⋅r₁₂,
 
 with::
 
