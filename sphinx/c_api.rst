@@ -26,8 +26,10 @@ Macros
 
   The dimension of the space of symmetric matrices (6).
 
-Functions
-=========
+“Public” functions
+==================
+
+These functions form the public API of the library.
 
 .. c:function:: void pw85_spheroid(double a, double c, double n[PW85_DIM], double q[PW85_SYM])
 
@@ -39,7 +41,7 @@ Functions
   in-place with the coefficients of the quadratic form.
 
 
-.. c:function:: double pw85_contact_function(double* r, double* q1, double* q2, double* out)
+.. c:function:: double pw85_contact_function(double* r12, double* q1, double* q2, double* out)
 
   Return the value of the contact function of two ellipsoids.
 
@@ -48,7 +50,7 @@ Functions
 
     (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
 
-  where ``cᵢ`` is the center (column-vector); ``r = c₂-c₁`` is the
+  where ``cᵢ`` is the center (column-vector); ``r₁₂ = c₂-c₁`` is the
   center-to-center radius-vector. The symmetric, positive-definite
   matrices ``Q₁`` and ``Q₂`` are specified through the arrays ``q1`` and
   ``q2`` of the coefficients of their upper triangular part (in row-major
@@ -60,12 +62,17 @@ Functions
 
   This function returns the value of ``μ²``, defined as (see :ref:`theory`)::
 
-    μ² = max{ λ(1-λ)rᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r, 0 ≤ λ ≤ 1 }.
+    μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
 
   If ``out`` is not null, then a full-output is produced: ``out[0]`` is
   updated with the value of ``μ²``, while ``out[1]`` is updated with the
   maximizer ``λ`` .
 
+“Private” functions
+===================
+
+These functions are not really private. They are fully exposed and tested.
+However, they are not really needed for standard applications of the library.
 
 .. c:function:: double pw85__det_sym(double a[PW85_SYM])
 
@@ -100,7 +107,7 @@ Functions
   matrix), see e.g `Wikipedia <https://en.wikipedia.org/wiki/Adjugate_matrix>`_.
 
 
-.. c:function:: void pw85_detQ_as_poly(double* q1, double* q2, double* b)
+.. c:function:: void pw85__detQ_as_poly(double* q1, double* q2, double* b)
 
 Compute the coefficients of ``det[(1-λ)Q₁+λQ₂]`` as a polynomial of ``λ``.
 
@@ -114,7 +121,7 @@ The coefficients ``bᵢ`` are stored in `b` (array of length ``PW85_DIM + 1``) i
 *increasing* order: ``b[i] = bᵢ``.
 
 
-.. c:function:: double pw85_rT_adjQ_r_as_poly(double* r, double* q1, double* q2, double* a)
+.. c:function:: double pw85__rT_adjQ_r_as_poly(double* r, double* q1, double* q2, double* a)
 
 Compute the coefficients of ``rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r`` as a polynomial of ``λ``.
 

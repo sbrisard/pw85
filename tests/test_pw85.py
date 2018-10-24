@@ -80,13 +80,13 @@ def test__det_sym(a, rtol=1E-12, atol=1E-14):
 @pytest.mark.parametrize('a2', [0.04])
 @pytest.mark.parametrize('c2', [5.0])
 @pytest.mark.parametrize('n2', DIRECTIONS[:1])
-def test_detQ_as_poly(a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
+def test__detQ_as_poly(a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
     q1 = pypw85.spheroid(a1, c1, n1)
     Q1 = to_array_2d(q1)
     q2 = pypw85.spheroid(a2, c2, n2)
     Q2 = to_array_2d(q2)
     x = np.linspace(0., 1., num=11)
-    b = np.poly1d(pypw85.detQ_as_poly(q1, q2)[::-1])
+    b = np.poly1d(pypw85._detQ_as_poly(q1, q2)[::-1])
     actual = b(x)
 
     x = x[:, None, None]
@@ -129,11 +129,11 @@ def test__xT_adjA_x(x, a, rtol=1E-12, atol=1E-14):
 @pytest.mark.parametrize('a2', [0.04])
 @pytest.mark.parametrize('c2', [5.0])
 @pytest.mark.parametrize('n2', DIRECTIONS[:1])
-def test_rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
+def test__rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
     q1 = pypw85.spheroid(a1, c1, n1)
     q2 = pypw85.spheroid(a2, c2, n2)
     x = np.linspace(0., 1., num=11)
-    actual = np.poly1d(pypw85.rT_adjQ_r_as_poly(r, q1, q2)[::-1])(x)
+    actual = np.poly1d(pypw85._rT_adjQ_r_as_poly(r, q1, q2)[::-1])(x)
     x = x[:, None, None]
     Q = (1-x)*to_array_2d(q1)+x*to_array_2d(q2)
     expected = np.dot(np.dot(adjugate(Q), r), r)

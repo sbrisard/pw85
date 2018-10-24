@@ -60,25 +60,25 @@ def spheroid(a, c, n, q=None):
     return q
 
 
-cpw85.pw85_rT_adjQ_r_as_poly.argtypes = 5*[c_double_p]
-cpw85.pw85_rT_adjQ_r_as_poly.restype = None
+cpw85.pw85__rT_adjQ_r_as_poly.argtypes = 5*[c_double_p]
+cpw85.pw85__rT_adjQ_r_as_poly.restype = None
 
 
-def rT_adjQ_r_as_poly(r, q1, q2, q3=None, a=None):
+def _rT_adjQ_r_as_poly(r, q1, q2, q3=None, a=None):
     if q3 is None:
         q3 = 2*q1-q2
     if a is None:
         a = np.empty((3,), dtype=np.float64, order='C')
     args = [arg.ctypes.data_as(c_double_p) for arg in (r, q1, q2, q3, a)]
-    cpw85.pw85_rT_adjQ_r_as_poly(*args)
+    cpw85.pw85__rT_adjQ_r_as_poly(*args)
     return a
 
 
-cpw85.pw85_detQ_as_poly.argtypes = 5*[c_double_p]
-cpw85.pw85_detQ_as_poly.restype = None
+cpw85.pw85__detQ_as_poly.argtypes = 5*[c_double_p]
+cpw85.pw85__detQ_as_poly.restype = None
 
 
-def detQ_as_poly(q1, q2, q3=None, q4=None, b=None):
+def _detQ_as_poly(q1, q2, q3=None, q4=None, b=None):
     if q3 is None:
         q3 = 2*q1-q2
     if q4 is None:
@@ -86,7 +86,7 @@ def detQ_as_poly(q1, q2, q3=None, q4=None, b=None):
     if b is None:
         b = np.empty((4,), dtype=np.float64, order='C')
     args = [arg.ctypes.data_as(c_double_p) for arg in (q1, q2, q3, q4, b)]
-    cpw85.pw85_detQ_as_poly(*args)
+    cpw85.pw85__detQ_as_poly(*args)
     return b
 
 

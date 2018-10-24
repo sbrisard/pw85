@@ -10,9 +10,9 @@
 #define PW85_XZ 2
 #define PW85_YZ 4
 
-/* Convenience functions */
-/* ===================== */
-/* These functions are exported for the sake of testing. */
+/* Private functions */
+/* ================= */
+/* These functions are exported for the sake of testing only. */
 
 __declspec(dllexport) double pw85__det_sym(double a[PW85_SYM])
 {
@@ -23,6 +23,30 @@ __declspec(dllexport) double pw85__xT_adjA_x(double x[PW85_DIM],
                                              double a[PW85_SYM])
 {
     return (x[0] * x[0] * (a[3] * a[5] - a[4] * a[4]) + x[1] * x[1] * (a[0] * a[5] - a[2] * a[2]) + x[2] * x[2] * (a[0] * a[3] - a[1] * a[1]) + 2. * (x[0] * x[1] * (a[2] * a[4] - a[1] * a[5]) + x[0] * x[2] * (a[1] * a[4] - a[2] * a[3]) + x[1] * x[2] * (a[1] * a[2] - a[0] * a[4])));
+}
+
+__declspec(dllexport) void pw85__rT_adjQ_r_as_poly(double *r, double *q1, double *q2, double *q3, double *a)
+{
+    const double a_zero = pw85__xT_adjA_x(r, q1);
+    const double a_one = pw85__xT_adjA_x(r, q2);
+    const double a_minus_one = pw85__xT_adjA_x(r, q3);
+    a[0] = a_zero;
+    a[2] = 0.5 * (a_one + a_minus_one) - a_zero;
+    a[1] = 0.5 * (a_one - a_minus_one);
+}
+
+__declspec(dllexport) void pw85__detQ_as_poly(double *q1, double *q2, double *q3, double *q4, double *b)
+{
+    const double b_zero = pw85__det_sym(q1);
+    const double b_one = pw85__det_sym(q2);
+    /* Compute det[(1-x)*q1+x*q2] for x = -1. */
+    const double b_minus_one = pw85__det_sym(q3);
+    /* Compute det[(1-x)*q1+x*q2] for x = 1/2. */
+    const double b_one_half = pw85__det_sym(q4);
+    b[0] = b_zero;
+    b[2] = 0.5 * (b_one + b_minus_one) - b_zero;
+    b[1] = (8. * b_one_half - 6. * b_zero - 1.5 * b_one - 0.5 * b_minus_one) / 3.;
+    b[3] = (-8. * b_one_half + 6. * b_zero + 3. * b_one - b_minus_one) / 3.;
 }
 
 /* Public API */
@@ -44,29 +68,6 @@ __declspec(dllexport) void pw85_spheroid(double a, double c, double *n,
     q[PW85_XY] = nx * ny * c2_minus_a2;
 }
 
-__declspec(dllexport) void pw85_rT_adjQ_r_as_poly(double *r, double *q1, double *q2, double *q3, double *a)
-{
-    const double a_zero = pw85__xT_adjA_x(r, q1);
-    const double a_one = pw85__xT_adjA_x(r, q2);
-    const double a_minus_one = pw85__xT_adjA_x(r, q3);
-    a[0] = a_zero;
-    a[2] = 0.5 * (a_one + a_minus_one) - a_zero;
-    a[1] = 0.5 * (a_one - a_minus_one);
-}
-
-__declspec(dllexport) void pw85_detQ_as_poly(double *q1, double *q2, double *q3, double *q4, double *b)
-{
-    const double b_zero = pw85__det_sym(q1);
-    const double b_one = pw85__det_sym(q2);
-    /* Compute det[(1-x)*q1+x*q2] for x = -1. */
-    const double b_minus_one = pw85__det_sym(q3);
-    /* Compute det[(1-x)*q1+x*q2] for x = 1/2. */
-    const double b_one_half = pw85__det_sym(q4);
-    b[0] = b_zero;
-    b[2] = 0.5 * (b_one + b_minus_one) - b_zero;
-    b[1] = (8. * b_one_half - 6. * b_zero - 1.5 * b_one - 0.5 * b_minus_one) / 3.;
-    b[3] = (-8. * b_one_half + 6. * b_zero + 3. * b_one - b_minus_one) / 3.;
-}
 
 __declspec(dllexport) double pw85_contact_function(double *r, double *q1, double *q2, double *out)
 {
@@ -79,10 +80,10 @@ __declspec(dllexport) double pw85_contact_function(double *r, double *q1, double
     }
 
     double a[3];
-    pw85_rT_adjQ_r_as_poly(r, q1, q2, q3, a);
+    pw85__rT_adjQ_r_as_poly(r, q1, q2, q3, a);
 
     double b[4];
-    pw85_detQ_as_poly(q1, q2, q3, q4, b);
+    pw85__detQ_as_poly(q1, q2, q3, q4, b);
 
     const double c0 = a[0] * b[0];
     const double c1 = 2. * (a[1] - a[0]) * b[0];
