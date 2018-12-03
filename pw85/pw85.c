@@ -3,12 +3,6 @@
 
 #define PW85_DIM 3
 #define PW85_SYM 6
-#define PW85_XX 0
-#define PW85_YY 3
-#define PW85_ZZ 5
-#define PW85_XY 1
-#define PW85_XZ 2
-#define PW85_YZ 4
 
 /* Private functions */
 /* ================= */
@@ -25,7 +19,11 @@ __declspec(dllexport) double pw85__xT_adjA_x(double x[PW85_DIM],
     return (x[0] * x[0] * (a[3] * a[5] - a[4] * a[4]) + x[1] * x[1] * (a[0] * a[5] - a[2] * a[2]) + x[2] * x[2] * (a[0] * a[3] - a[1] * a[1]) + 2. * (x[0] * x[1] * (a[2] * a[4] - a[1] * a[5]) + x[0] * x[2] * (a[1] * a[4] - a[2] * a[3]) + x[1] * x[2] * (a[1] * a[2] - a[0] * a[4])));
 }
 
-__declspec(dllexport) void pw85__rT_adjQ_r_as_poly(double *r, double *q1, double *q2, double *q3, double *a)
+__declspec(dllexport) void pw85__rT_adjQ_r_as_poly(double r[PW85_DIM],
+						   double q1[PW85_SYM],
+						   double q2[PW85_SYM],
+						   double q3[PW85_SYM],
+						   double a[PW85_DIM-1])
 {
     const double a_zero = pw85__xT_adjA_x(r, q1);
     const double a_one = pw85__xT_adjA_x(r, q2);
@@ -35,7 +33,11 @@ __declspec(dllexport) void pw85__rT_adjQ_r_as_poly(double *r, double *q1, double
     a[1] = 0.5 * (a_one - a_minus_one);
 }
 
-__declspec(dllexport) void pw85__detQ_as_poly(double *q1, double *q2, double *q3, double *q4, double *b)
+__declspec(dllexport) void pw85__detQ_as_poly(double q1[PW85_SYM],
+					      double q2[PW85_SYM],
+					      double q3[PW85_SYM],
+					      double q4[PW85_SYM],
+					      double b[PW85_DIM])
 {
     const double b_zero = pw85__det_sym(q1);
     const double b_one = pw85__det_sym(q2);
@@ -52,24 +54,28 @@ __declspec(dllexport) void pw85__detQ_as_poly(double *q1, double *q2, double *q3
 /* Public API */
 /* ========== */
 
-__declspec(dllexport) void pw85_spheroid(double a, double c, double *n,
-                                         double *q)
+__declspec(dllexport) void pw85_spheroid(double a, double c,
+					 double n[PW85_DIM],
+                                         double q[PW85_SYM])
 {
     const double a2 = a * a;
     const double c2_minus_a2 = c * c - a2;
     const double nx = n[0];
     const double ny = n[1];
     const double nz = n[2];
-    q[PW85_XX] = nx * nx * c2_minus_a2 + a2;
-    q[PW85_YY] = ny * ny * c2_minus_a2 + a2;
-    q[PW85_ZZ] = nz * nz * c2_minus_a2 + a2;
-    q[PW85_YZ] = ny * nz * c2_minus_a2;
-    q[PW85_XZ] = nx * nz * c2_minus_a2;
-    q[PW85_XY] = nx * ny * c2_minus_a2;
+    q[0] = nx * nx * c2_minus_a2 + a2;
+    q[3] = ny * ny * c2_minus_a2 + a2;
+    q[5] = nz * nz * c2_minus_a2 + a2;
+    q[4] = ny * nz * c2_minus_a2;
+    q[2] = nx * nz * c2_minus_a2;
+    q[1] = nx * ny * c2_minus_a2;
 }
 
 
-__declspec(dllexport) double pw85_contact_function(double *r, double *q1, double *q2, double *out)
+__declspec(dllexport) double pw85_contact_function(double r[PW85_DIM],
+						   double q1[PW85_SYM],
+						   double q2[PW85_SYM],
+						   double *out)
 {
     double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
     double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
