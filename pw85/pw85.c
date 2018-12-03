@@ -72,7 +72,7 @@ __declspec(dllexport) void pw85_spheroid(double a, double c,
 }
 
 
-__declspec(dllexport) double pw85_contact_function(double r[PW85_DIM],
+__declspec(dllexport) double pw85_contact_function(double r12[PW85_DIM],
 						   double q1[PW85_SYM],
 						   double q2[PW85_SYM],
 						   double *out)
@@ -86,7 +86,7 @@ __declspec(dllexport) double pw85_contact_function(double r[PW85_DIM],
     }
 
     double a[3];
-    pw85__rT_adjQ_r_as_poly(r, q1, q2, q3, a);
+    pw85__rT_adjQ_r_as_poly(r12, q1, q2, q3, a);
 
     double b[4];
     pw85__detQ_as_poly(q1, q2, q3, q4, b);
