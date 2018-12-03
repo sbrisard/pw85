@@ -107,13 +107,19 @@ However, they are not really needed for standard applications of the library.
   matrix), see e.g `Wikipedia <https://en.wikipedia.org/wiki/Adjugate_matrix>`_.
 
 
-.. c:function:: void pw85__detQ_as_poly(double* q1, double* q2, double* b)
+.. c:function:: void pw85__detQ_as_poly(double* q1, double* q2, double* q3, double* q4, double* b)
 
 Compute the coefficients of ``det[(1-λ)Q₁+λQ₂]`` as a polynomial of ``λ``.
 
 The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are specified
-as arrays `q1` and `q2` of length :c:macro:`PW85_SYM`. The determinant is a
-polynomial of degree :c:macro:`PW85_DIM`::
+as arrays `q1` and `q2` of length :c:macro:`PW85_SYM`. The arrays `q3` and `q4`
+(also of length :c:macro:`PW85_SYM`) must hold the difference ``2Q₁-Q₂`` and
+average ``(Q₁+Q₂)/2``, respectively::
+
+  q3[i] = 2*q1[i] - q2[i]  and  q4[i] = 0.5*(q1[i] + q2[i]),
+
+for ``i = 0, …, PW85_SYM-1``. The returned polynomial has degree
+:c:macro:`PW85_DIM`::
 
   det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³.
 
