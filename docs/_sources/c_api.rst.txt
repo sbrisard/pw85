@@ -36,12 +36,11 @@ These functions form the public API of the library.
   Return the quadratic form associated to a spheroid.
 
   The spheroid is defined by its equatorial radius `a`, its polar radius `c` and
-  the direction of its axis of revolution, `n` (array of size
-  :c:macro:`PW85_DIM`); `q` (array of size :c:macro:`PW85_SYM`) is modified
-  in-place with the coefficients of the quadratic form.
+  the direction of its axis of revolution, `n`; `q` is modified in-place with
+  the coefficients of the quadratic form.
 
 
-.. c:function:: double pw85_contact_function(double* r12, double* q1, double* q2, double* out)
+.. c:function:: double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM], double q2[PW85_SYM], double *out)
 
   Return the value of the contact function of two ellipsoids.
 
@@ -107,29 +106,36 @@ However, they are not really needed for standard applications of the library.
   matrix), see e.g `Wikipedia <https://en.wikipedia.org/wiki/Adjugate_matrix>`_.
 
 
-.. c:function:: void pw85__detQ_as_poly(double* q1, double* q2, double* b)
+.. c:function:: void pw85__detQ_as_poly(double q1[PW85_SYM], double q2[PW85_SYM], double q3[PW85_SYM], double q4[PW85_SYM], double b[PW85_DIM+1])
 
 Compute the coefficients of ``det[(1-λ)Q₁+λQ₂]`` as a polynomial of ``λ``.
 
 The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are specified
-as arrays `q1` and `q2` of length :c:macro:`PW85_SYM`. The determinant is a
-polynomial of degree :c:macro:`PW85_DIM`::
+as arrays `q1` and `q2`. The arrays `q3` and `q4` must hold the difference
+``2Q₁-Q₂`` and average ``(Q₁+Q₂)/2``, respectively::
+
+  q3[i] = 2*q1[i] - q2[i]  and  q4[i] = 0.5*(q1[i] + q2[i]),
+
+for ``i = 0, …, PW85_SYM-1``. The returned polynomial has degree
+:c:macro:`PW85_DIM`::
 
   det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³.
 
-The coefficients ``bᵢ`` are stored in `b` (array of length ``PW85_DIM + 1``) in
-*increasing* order: ``b[i] = bᵢ``.
+The coefficients ``bᵢ`` are stored in `b` in *increasing* order: ``b[i] = bᵢ``.
 
 
-.. c:function:: double pw85__rT_adjQ_r_as_poly(double* r, double* q1, double* q2, double* a)
+.. c:function:: double pw85__rT_adjQ_r_as_poly(double r[PW85_DIM], double q1[PW85_SYM], double q2[PW85_SYM], double q3[PW85_SYM], double a[PW85_DIM])
 
 Compute the coefficients of ``rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r`` as a polynomial of ``λ``.
 
 The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are specified
-as arrays `q1` and `q2` of length :c:macro:`PW85_SYM`. The determinant is a
-polynomial of degree ``PW85_DIM - 1``::
+as arrays `q1` and `q2`. The array `q3` must hold the difference ``2Q₁-Q₂``::
+
+  q3[i] = 2*q1[i] - q2[i],
+
+for ``i = 0, …, PW85_SYM-1``. The returned polynomial has degree
+``PW85_DIM - 1``::
 
   rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².
 
-The coefficients ``aᵢ`` are stored in `a` (array of length ``PW85_DIM``) in
-*increasing* order: ``a[i] = aᵢ``.
+The coefficients ``aᵢ`` are stored in `a` in *increasing* order: ``a[i] = aᵢ``.

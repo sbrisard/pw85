@@ -13,7 +13,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="The python API" href="py_api.html" />
@@ -70,14 +70,13 @@ A = ⎢      a[3] a[4] ⎥.
 void <code class="descname">pw85_spheroid</code><span class="sig-paren">(</span>double<em>&nbsp;a</em>, double<em>&nbsp;c</em>, double<em>&nbsp;n[PW85_DIM]</em>, double<em>&nbsp;q[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_spheroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the quadratic form associated to a spheroid.</p>
 <p>The spheroid is defined by its equatorial radius <cite>a</cite>, its polar radius <cite>c</cite> and
-the direction of its axis of revolution, <cite>n</cite> (array of size
-<a class="reference internal" href="#c.PW85_DIM" title="PW85_DIM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PW85_DIM</span></code></a>); <cite>q</cite> (array of size <a class="reference internal" href="#c.PW85_SYM" title="PW85_SYM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PW85_SYM</span></code></a>) is modified
-in-place with the coefficients of the quadratic form.</p>
+the direction of its axis of revolution, <cite>n</cite>; <cite>q</cite> is modified in-place with
+the coefficients of the quadratic form.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="c.pw85_contact_function">
-double <code class="descname">pw85_contact_function</code><span class="sig-paren">(</span>double*<em>&nbsp;r12</em>, double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_contact_function" title="Permalink to this definition">¶</a></dt>
+double <code class="descname">pw85_contact_function</code><span class="sig-paren">(</span>double<em>&nbsp;r12[PW85_DIM]</em>, double<em>&nbsp;q1[PW85_SYM]</em>, double<em>&nbsp;q2[PW85_SYM]</em>, double<em>&nbsp;*out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_contact_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the value of the contact function of two ellipsoids.</p>
 <p>Ellipsoids 1 and 2 are defined as the sets of points <code class="docutils literal notranslate"><span class="pre">m</span></code> (column-vector)
 such that:</p>
@@ -144,32 +143,39 @@ matrix), see e.g <a class="reference external" href="https://en.wikipedia.org/wi
 
 <dl class="function">
 <dt id="c.pw85__detQ_as_poly">
-void <code class="descname">pw85__detQ_as_poly</code><span class="sig-paren">(</span>double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;b</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__detQ_as_poly" title="Permalink to this definition">¶</a></dt>
+void <code class="descname">pw85__detQ_as_poly</code><span class="sig-paren">(</span>double<em>&nbsp;q1[PW85_SYM]</em>, double<em>&nbsp;q2[PW85_SYM]</em>, double<em>&nbsp;q3[PW85_SYM]</em>, double<em>&nbsp;q4[PW85_SYM]</em>, double<em>&nbsp;b[PW85_DIM+1]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__detQ_as_poly" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Compute the coefficients of <code class="docutils literal notranslate"><span class="pre">det[(1-λ)Q₁+λQ₂]</span></code> as a polynomial of <code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
 <p>The symmetric, positive definite, 3×3 matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified
-as arrays <cite>q1</cite> and <cite>q2</cite> of length <a class="reference internal" href="#c.PW85_SYM" title="PW85_SYM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PW85_SYM</span></code></a>. The determinant is a
-polynomial of degree <a class="reference internal" href="#c.PW85_DIM" title="PW85_DIM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PW85_DIM</span></code></a>:</p>
+as arrays <cite>q1</cite> and <cite>q2</cite>. The arrays <cite>q3</cite> and <cite>q4</cite> must hold the difference
+<code class="docutils literal notranslate"><span class="pre">2Q₁-Q₂</span></code> and average <code class="docutils literal notranslate"><span class="pre">(Q₁+Q₂)/2</span></code>, respectively:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>q3[i] = 2*q1[i] - q2[i]  and  q4[i] = 0.5*(q1[i] + q2[i]),
+</pre></div>
+</div>
+<p>for <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">…,</span> <span class="pre">PW85_SYM-1</span></code>. The returned polynomial has degree
+<a class="reference internal" href="#c.PW85_DIM" title="PW85_DIM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PW85_DIM</span></code></a>:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³.
 </pre></div>
 </div>
-<p>The coefficients <code class="docutils literal notranslate"><span class="pre">bᵢ</span></code> are stored in <cite>b</cite> (array of length <code class="docutils literal notranslate"><span class="pre">PW85_DIM</span> <span class="pre">+</span> <span class="pre">1</span></code>) in
-<em>increasing</em> order: <code class="docutils literal notranslate"><span class="pre">b[i]</span> <span class="pre">=</span> <span class="pre">bᵢ</span></code>.</p>
+<p>The coefficients <code class="docutils literal notranslate"><span class="pre">bᵢ</span></code> are stored in <cite>b</cite> in <em>increasing</em> order: <code class="docutils literal notranslate"><span class="pre">b[i]</span> <span class="pre">=</span> <span class="pre">bᵢ</span></code>.</p>
 <dl class="function">
 <dt id="c.pw85__rT_adjQ_r_as_poly">
-double <code class="descname">pw85__rT_adjQ_r_as_poly</code><span class="sig-paren">(</span>double*<em>&nbsp;r</em>, double*<em>&nbsp;q1</em>, double*<em>&nbsp;q2</em>, double*<em>&nbsp;a</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__rT_adjQ_r_as_poly" title="Permalink to this definition">¶</a></dt>
+double <code class="descname">pw85__rT_adjQ_r_as_poly</code><span class="sig-paren">(</span>double<em>&nbsp;r[PW85_DIM]</em>, double<em>&nbsp;q1[PW85_SYM]</em>, double<em>&nbsp;q2[PW85_SYM]</em>, double<em>&nbsp;q3[PW85_SYM]</em>, double<em>&nbsp;a[PW85_DIM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__rT_adjQ_r_as_poly" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Compute the coefficients of <code class="docutils literal notranslate"><span class="pre">rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r</span></code> as a polynomial of <code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
 <p>The symmetric, positive definite, 3×3 matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified
-as arrays <cite>q1</cite> and <cite>q2</cite> of length <a class="reference internal" href="#c.PW85_SYM" title="PW85_SYM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PW85_SYM</span></code></a>. The determinant is a
-polynomial of degree <code class="docutils literal notranslate"><span class="pre">PW85_DIM</span> <span class="pre">-</span> <span class="pre">1</span></code>:</p>
+as arrays <cite>q1</cite> and <cite>q2</cite>. The array <cite>q3</cite> must hold the difference <code class="docutils literal notranslate"><span class="pre">2Q₁-Q₂</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>q3[i] = 2*q1[i] - q2[i],
+</pre></div>
+</div>
+<p>for <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">…,</span> <span class="pre">PW85_SYM-1</span></code>. The returned polynomial has degree
+<code class="docutils literal notranslate"><span class="pre">PW85_DIM</span> <span class="pre">-</span> <span class="pre">1</span></code>:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².
 </pre></div>
 </div>
-<p>The coefficients <code class="docutils literal notranslate"><span class="pre">aᵢ</span></code> are stored in <cite>a</cite> (array of length <code class="docutils literal notranslate"><span class="pre">PW85_DIM</span></code>) in
-<em>increasing</em> order: <code class="docutils literal notranslate"><span class="pre">a[i]</span> <span class="pre">=</span> <span class="pre">aᵢ</span></code>.</p>
+<p>The coefficients <code class="docutils literal notranslate"><span class="pre">aᵢ</span></code> are stored in <cite>a</cite> in <em>increasing</em> order: <code class="docutils literal notranslate"><span class="pre">a[i]</span> <span class="pre">=</span> <span class="pre">aᵢ</span></code>.</p>
 </div>
 </div>
 
@@ -224,6 +230,14 @@ polynomial of degree <code class="docutils literal notranslate"><span class="pre
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -232,8 +246,8 @@ polynomial of degree <code class="docutils literal notranslate"><span class="pre
       &copy;2018, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/c_api.rst.txt"
