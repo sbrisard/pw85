@@ -121,13 +121,18 @@ The coefficients ``bᵢ`` are stored in `b` (array of length ``PW85_DIM + 1``) i
 *increasing* order: ``b[i] = bᵢ``.
 
 
-.. c:function:: double pw85__rT_adjQ_r_as_poly(double* r, double* q1, double* q2, double* a)
+.. c:function:: double pw85__rT_adjQ_r_as_poly(double* r, double* q1, double* q2, double* q3, double* a)
 
 Compute the coefficients of ``rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r`` as a polynomial of ``λ``.
 
-The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are specified
-as arrays `q1` and `q2` of length :c:macro:`PW85_SYM`. The determinant is a
-polynomial of degree ``PW85_DIM - 1``::
+The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are specified as
+arrays `q1` and `q2` of length :c:macro:`PW85_SYM`. The array `q3` (also of
+length :c:macro:`PW85_SYM`) must hold the difference ``2Q₁-Q₂``::
+
+  q3[i] = 2*q1[i] - q2[i],
+
+for ``i = 0, …, PW85_SYM-1``. The returned polynomial has degree ``PW85_DIM - 1``
+::
 
   rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².
 
