@@ -58,45 +58,57 @@
 <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__det_sym</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
 <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__det_sym</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
 
-
-<div class="viewcode-block" id="_det_sym"><a class="viewcode-back" href="../py_api.html#pypw85._det_sym">[docs]</a><span class="k">def</span> <span class="nf">_det_sym</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__det_sym</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">))</span></div>
-
-
 <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__xT_adjA_x</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">,</span> <span class="n">c_double_p</span><span class="p">]</span>
 <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__xT_adjA_x</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
-
-
-<div class="viewcode-block" id="_xT_adjA_x"><a class="viewcode-back" href="../py_api.html#pypw85._xT_adjA_x">[docs]</a><span class="k">def</span> <span class="nf">_xT_adjA_x</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__xT_adjA_x</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
-                                 <span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">))</span></div>
-
 
 <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_spheroid</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double</span><span class="p">,</span> <span class="n">c_double</span><span class="p">,</span> <span class="n">c_double_p</span><span class="p">,</span> <span class="n">c_double_p</span><span class="p">]</span>
 <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_spheroid</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="kc">None</span>
 
-
-<div class="viewcode-block" id="spheroid"><a class="viewcode-back" href="../py_api.html#pypw85.spheroid">[docs]</a><span class="k">def</span> <span class="nf">spheroid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return the quadratic form associated to a spheroid.</span>
-
-<span class="sd">    The spheroid is defined by its equatorial radius `a`, its polar</span>
-<span class="sd">    radius `c` and the direction of its axis of revolution, `n`</span>
-<span class="sd">    (array-like of length 3).</span>
-
-<span class="sd">    If `q` is not ``None``, then it must be an array of length 6. It</span>
-<span class="sd">    is modified in place.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">q</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">6</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-    <span class="c1"># TODO Check input</span>
-    <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_spheroid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span>
-                        <span class="n">n</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
-                        <span class="n">q</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">q</span></div>
-
-
 <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__rT_adjQ_r_as_poly</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">5</span><span class="o">*</span><span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
 <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__rT_adjQ_r_as_poly</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__detQ_as_poly</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">5</span><span class="o">*</span><span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__detQ_as_poly</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+
+
+<div class="viewcode-block" id="_det_sym"><a class="viewcode-back" href="../py_api.html#pypw85._det_sym">[docs]</a><span class="k">def</span> <span class="nf">_det_sym</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return det(A) (``A``: 3×3, symmetric matrix).</span>
+
+<span class="sd">    The symmetric, 3×3 matrix ``A`` is specified trough the array-like</span>
+<span class="sd">    list `a` of the six coefficients of its triangular upper part,</span>
+<span class="sd">    listed in row-major order::</span>
+
+<span class="sd">          ⎡ a[0] a[1] a[2] ⎤</span>
+<span class="sd">      A = ⎢      a[3] a[4] ⎥.</span>
+<span class="sd">          ⎣ sym.      a[5] ⎦</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__det_sym</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="_xT_adjA_x"><a class="viewcode-back" href="../py_api.html#pypw85._xT_adjA_x">[docs]</a><span class="k">def</span> <span class="nf">_xT_adjA_x</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return ``xᵀ⋅adj(A)⋅x`` (``A``: 3×3, symmetric matrix; ``x``: 3×1  vector).</span>
+
+<span class="sd">    The column vector ``x`` is specified through the array-like list</span>
+<span class="sd">    of its three coefficients::</span>
+
+<span class="sd">          ⎡ x[0] ⎤</span>
+<span class="sd">      x = ⎢ x[1] ⎥.</span>
+<span class="sd">          ⎣ x[2] ⎦</span>
+
+<span class="sd">    The symmetric, 3×3 matrix ``A`` is specified trough the array-like</span>
+<span class="sd">    list `a` of the six coefficients of its triangular upper part,</span>
+<span class="sd">    listed in row-major order::</span>
+
+<span class="sd">          ⎡ a[0] a[1] a[2] ⎤</span>
+<span class="sd">      A = ⎢      a[3] a[4] ⎥.</span>
+<span class="sd">          ⎣ sym.      a[5] ⎦</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__xT_adjA_x</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                                 <span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="_rT_adjQ_r_as_poly"><a class="viewcode-back" href="../py_api.html#pypw85._rT_adjQ_r_as_poly">[docs]</a><span class="k">def</span> <span class="nf">_rT_adjQ_r_as_poly</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -107,10 +119,6 @@
     <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="p">,</span> <span class="n">a</span><span class="p">)]</span>
     <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__rT_adjQ_r_as_poly</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">a</span></div>
-
-
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__detQ_as_poly</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">5</span><span class="o">*</span><span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__detQ_as_poly</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="_detQ_as_poly"><a class="viewcode-back" href="../py_api.html#pypw85._detQ_as_poly">[docs]</a><span class="k">def</span> <span class="nf">_detQ_as_poly</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">q4</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -125,8 +133,22 @@
     <span class="k">return</span> <span class="n">b</span></div>
 
 
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
-<span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+<div class="viewcode-block" id="spheroid"><a class="viewcode-back" href="../py_api.html#pypw85.spheroid">[docs]</a><span class="k">def</span> <span class="nf">spheroid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the quadratic form associated to a spheroid.</span>
+
+<span class="sd">    The spheroid is defined by its equatorial radius `a`, its polar</span>
+<span class="sd">    radius `c` and the direction of its axis of revolution, `n`</span>
+<span class="sd">    (array-like of length 3).</span>
+
+<span class="sd">    If `q` is not ``None``, then it must be an array of length 6. It</span>
+<span class="sd">    is modified in place.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">q</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">6</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+    <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_spheroid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span>
+                        <span class="n">n</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+                        <span class="n">q</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">q</span></div>
 
 
 <div class="viewcode-block" id="contact_function"><a class="viewcode-back" href="../py_api.html#pypw85.contact_function">[docs]</a><span class="k">def</span> <span class="nf">contact_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

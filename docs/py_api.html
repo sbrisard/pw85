@@ -43,7 +43,16 @@
 <dl class="function">
 <dt id="pypw85._det_sym">
 <code class="descclassname">pypw85.</code><code class="descname">_det_sym</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#_det_sym"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85._det_sym" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return det(A) (<code class="docutils literal notranslate"><span class="pre">A</span></code>: 3×3, symmetric matrix).</p>
+<p>The symmetric, 3×3 matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified trough the array-like
+list <cite>a</cite> of the six coefficients of its triangular upper part,
+listed in row-major order:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    ⎡ a[0] a[1] a[2] ⎤
+A = ⎢      a[3] a[4] ⎥.
+    ⎣ sym.      a[5] ⎦
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="function">
 <dt id="pypw85._rT_adjQ_r_as_poly">
@@ -53,7 +62,23 @@
 <dl class="function">
 <dt id="pypw85._xT_adjA_x">
 <code class="descclassname">pypw85.</code><code class="descname">_xT_adjA_x</code><span class="sig-paren">(</span><em>x</em>, <em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#_xT_adjA_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85._xT_adjA_x" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">xᵀ⋅adj(A)⋅x</span></code> (<code class="docutils literal notranslate"><span class="pre">A</span></code>: 3×3, symmetric matrix; <code class="docutils literal notranslate"><span class="pre">x</span></code>: 3×1  vector).</p>
+<p>The column vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is specified through the array-like list
+of its three coefficients:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    ⎡ x[0] ⎤
+x = ⎢ x[1] ⎥.
+    ⎣ x[2] ⎦
+</pre></div>
+</div>
+<p>The symmetric, 3×3 matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified trough the array-like
+list <cite>a</cite> of the six coefficients of its triangular upper part,
+listed in row-major order:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    ⎡ a[0] a[1] a[2] ⎤
+A = ⎢      a[3] a[4] ⎥.
+    ⎣ sym.      a[5] ⎦
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="pypw85.c_double_p">
