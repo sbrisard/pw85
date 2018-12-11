@@ -33,7 +33,39 @@
           <div class="body" role="main">
             
   <h1>Source code for pypw85</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">configparser</span>
+<span></span><span class="sd">&quot;&quot;&quot;Overlap test of two ellipsoids</span>
+<span class="sd">------------------------------</span>
+
+<span class="sd">This module provides an implementation of the “contact function”</span>
+<span class="sd">defined by Perram and Wertheim (J. Comp. Phys. 58(3), 409–416) for two</span>
+<span class="sd">ellipsoids. Given two ellipsoids, this function returns the *square*</span>
+<span class="sd">of the common factor by which both ellipsoids must be scaled (their</span>
+<span class="sd">centers being fixed) in order to be tangentially in contact.</span>
+
+<span class="sd">Representation of vectors and matrices</span>
+<span class="sd">--------------------------------------</span>
+
+<span class="sd">An ellipsoid is defined from its center ``c`` (a 3×1, column-vector)</span>
+<span class="sd">and quadratic form ``Q`` (a 3×3, symmetric, positive definite matrix)</span>
+<span class="sd">as the set of points ``m`` such that::</span>
+
+<span class="sd">  (m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.</span>
+
+<span class="sd">In this module, objects referred to as “vectors” are length-3 arrays</span>
+<span class="sd">of ``double`` coordinates.</span>
+
+<span class="sd">Objects referred to as “symmetric matrices” (or “quadratic forms”) are</span>
+<span class="sd">length-6 arrays of ``double``. Such arrays list in row-major order the</span>
+<span class="sd">coefficients of the triangular upper part. In other words, the</span>
+<span class="sd">representation of a the symmetric matrix ``A`` is the array ``a`` such</span>
+<span class="sd">that::</span>
+
+<span class="sd">      ⎡ a[0] a[1] a[2] ⎤</span>
+<span class="sd">  A = ⎢      a[3] a[4] ⎥.</span>
+<span class="sd">      ⎣ sym.      a[5] ⎦</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">configparser</span>
 <span class="kn">import</span> <span class="nn">ctypes</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
 
@@ -75,37 +107,20 @@
 
 
 <div class="viewcode-block" id="_det_sym"><a class="viewcode-back" href="../py_api.html#pypw85._det_sym">[docs]</a><span class="k">def</span> <span class="nf">_det_sym</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return det(A) (``A``: 3×3, symmetric matrix).</span>
+    <span class="sd">&quot;&quot;&quot;Return ``det(A)``.</span>
 
-<span class="sd">    The symmetric, 3×3 matrix ``A`` is specified trough the array-like</span>
-<span class="sd">    list `a` of the six coefficients of its triangular upper part,</span>
-<span class="sd">    listed in row-major order::</span>
-
-<span class="sd">          ⎡ a[0] a[1] a[2] ⎤</span>
-<span class="sd">      A = ⎢      a[3] a[4] ⎥.</span>
-<span class="sd">          ⎣ sym.      a[5] ⎦</span>
+<span class="sd">    ``A`` is a symmetric matrix represented by the array `a`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__det_sym</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="_xT_adjA_x"><a class="viewcode-back" href="../py_api.html#pypw85._xT_adjA_x">[docs]</a><span class="k">def</span> <span class="nf">_xT_adjA_x</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return ``xᵀ⋅adj(A)⋅x`` (``A``: 3×3, symmetric matrix; ``x``: 3×1  vector).</span>
+    <span class="sd">&quot;&quot;&quot;Return ``xᵀ⋅adj(A)⋅x``</span>
 
-<span class="sd">    The column vector ``x`` is specified through the array-like list</span>
-<span class="sd">    of its three coefficients::</span>
+<span class="sd">    ``x`` is a vector, represented by the array `x`. ``A`` is a</span>
+<span class="sd">    symmetric matrix, represented by the array `a`.</span>
 
-<span class="sd">          ⎡ x[0] ⎤</span>
-<span class="sd">      x = ⎢ x[1] ⎥.</span>
-<span class="sd">          ⎣ x[2] ⎦</span>
-
-<span class="sd">    The symmetric, 3×3 matrix ``A`` is specified trough the array-like</span>
-<span class="sd">    list `a` of the six coefficients of its triangular upper part,</span>
-<span class="sd">    listed in row-major order::</span>
-
-<span class="sd">          ⎡ a[0] a[1] a[2] ⎤</span>
-<span class="sd">      A = ⎢      a[3] a[4] ⎥.</span>
-<span class="sd">          ⎣ sym.      a[5] ⎦</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85__xT_adjA_x</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
                                  <span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">))</span></div>
@@ -138,10 +153,11 @@
 
 <span class="sd">    The spheroid is defined by its equatorial radius `a`, its polar</span>
 <span class="sd">    radius `c` and the direction of its axis of revolution, `n`</span>
-<span class="sd">    (array-like of length 3).</span>
+<span class="sd">    (vector).</span>
 
-<span class="sd">    If `q` is not ``None``, then it must be an array of length 6. It</span>
-<span class="sd">    is modified in place.</span>
+<span class="sd">    If `q` is not ``None``, then it must the array representation of a</span>
+<span class="sd">    symmetric matrix. It is modified in place.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">q</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">6</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
@@ -151,11 +167,34 @@
     <span class="k">return</span> <span class="n">q</span></div>
 
 
-<div class="viewcode-block" id="contact_function"><a class="viewcode-back" href="../py_api.html#pypw85.contact_function">[docs]</a><span class="k">def</span> <span class="nf">contact_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="contact_function"><a class="viewcode-back" href="../py_api.html#pypw85.contact_function">[docs]</a><span class="k">def</span> <span class="nf">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the value of the contact function of two ellipsoids.</span>
+
+<span class="sd">    Ellipsoids 1 and 2 are defined as the sets of points ``m``</span>
+<span class="sd">    (column-vector) such that::</span>
+
+<span class="sd">      (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1</span>
+
+<span class="sd">    where ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is the</span>
+<span class="sd">    center-to-center radius-vector, that is represented by the</span>
+<span class="sd">    ``double[3]`` array `r12`. The symmetric, positive-definite</span>
+<span class="sd">    matrices ``Q₁`` and ``Q₂`` are specified through the ``double[6]``</span>
+<span class="sd">    arrays `q1` and `q2`.</span>
+
+<span class="sd">    This function returns the value of ``μ²``, defined as (see</span>
+<span class="sd">    :ref:`theory`)::</span>
+
+<span class="sd">      μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.</span>
+
+<span class="sd">    If `out` is not null, then a full-output is produced: ``out[0]``</span>
+<span class="sd">    is updated with the value of ``μ²``, while ``out[1]`` is updated</span>
+<span class="sd">    with the maximizer ``λ`` .</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+    <span class="k">return</span> <span class="n">cpw85</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="p">(</span><span class="n">r12</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
                                        <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
                                        <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
                                        <span class="n">out</span><span class="p">)</span></div>

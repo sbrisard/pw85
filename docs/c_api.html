@@ -36,11 +36,21 @@
             
   <div class="section" id="the-c-api">
 <h1>The C API<a class="headerlink" href="#the-c-api" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="storage-of-symmetric-matrices">
-<h2>Storage of symmetric matrices<a class="headerlink" href="#storage-of-symmetric-matrices" title="Permalink to this headline">¶</a></h2>
-<p>In this library, the triangular upper part of symmetric, 3×3 matrices is stored
-in length-6 arrays, in row-major order. In other words, matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is
-reconstructed from the 1d array <code class="docutils literal notranslate"><span class="pre">double</span> <span class="pre">a[6]</span></code> as follows:</p>
+<div class="section" id="storage-of-vectors-and-symmetric-matrices">
+<h2>Storage of vectors and symmetric matrices<a class="headerlink" href="#storage-of-vectors-and-symmetric-matrices" title="Permalink to this headline">¶</a></h2>
+<p>In this module, objects referred to as “vectors” are <code class="docutils literal notranslate"><span class="pre">double[3]</span></code>
+arrays of coordinates. In other words, the representation of the
+vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is the <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <code class="docutils literal notranslate"><span class="pre">x</span></code> such that:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    ⎡ x[0] ⎤
+x = ⎢ x[1] ⎥.
+    ⎣ x[2] ⎦
+</pre></div>
+</div>
+<p>Objects referred to as “symmetric matrices” (or “quadratic forms”) are
+of type <code class="docutils literal notranslate"><span class="pre">double[6]</span></code>. Such arrays list in row-major order the
+coefficients of the triangular upper part. In other words, the
+representation of a the symmetric matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code>
+array <code class="docutils literal notranslate"><span class="pre">a</span></code> such that:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    ⎡ a[0] a[1] a[2] ⎤
 A = ⎢      a[3] a[4] ⎥.
     ⎣ sym.      a[5] ⎦
@@ -68,10 +78,12 @@ A = ⎢      a[3] a[4] ⎥.
 <dl class="function">
 <dt id="c.pw85_spheroid">
 void <code class="descname">pw85_spheroid</code><span class="sig-paren">(</span>double<em>&nbsp;a</em>, double<em>&nbsp;c</em>, double<em>&nbsp;n[PW85_DIM]</em>, double<em>&nbsp;q[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_spheroid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the quadratic form associated to a spheroid.</p>
-<p>The spheroid is defined by its equatorial radius <cite>a</cite>, its polar radius <cite>c</cite> and
-the direction of its axis of revolution, <cite>n</cite>; <cite>q</cite> is modified in-place with
-the coefficients of the quadratic form.</p>
+<dd><p>Compute the quadratic form associated to a spheroid.</p>
+<p>The spheroid is defined by its equatorial radius <cite>a</cite>, its polar
+radius <cite>c</cite> and the direction of its axis of revolution, <cite>n</cite>; <cite>q</cite> is
+the representation of a symmetric matrix as a <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array,
+that is modified in-place with the coefficients of the quadratic
+form.</p>
 </dd></dl>
 
 <dl class="function">
@@ -83,23 +95,17 @@ such that:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">cᵢ</span></code> is the center (column-vector); <code class="docutils literal notranslate"><span class="pre">r₁₂</span> <span class="pre">=</span> <span class="pre">c₂-c₁</span></code> is the
-center-to-center radius-vector. The symmetric, positive-definite
-matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified through the arrays <code class="docutils literal notranslate"><span class="pre">q1</span></code> and
-<code class="docutils literal notranslate"><span class="pre">q2</span></code> of the coefficients of their upper triangular part (in row-major
-order):</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>     ⎡ q1[0] q1[1] q1[2] ⎤            ⎡ q2[0] q2[1] q2[2] ⎤
-Q₁ = ⎢       q1[3] q1[4] ⎥  and  Q₂ = ⎢       q2[3] q2[4] ⎥.
-     ⎣ sym.        q1[5] ⎦            ⎣ sym.        q2[5] ⎦
-</pre></div>
-</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">cᵢ</span></code> is the center; <code class="docutils literal notranslate"><span class="pre">r₁₂</span> <span class="pre">=</span> <span class="pre">c₂-c₁</span></code> is the center-to-center
+radius-vector, that is represented by the <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array
+<cite>r12</cite>. The symmetric, positive-definite matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code>
+are specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> arrays <cite>q1</cite> and <cite>q2</cite>.</p>
 <p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, defined as (see <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
 </pre></div>
 </div>
-<p>If <code class="docutils literal notranslate"><span class="pre">out</span></code> is not null, then a full-output is produced: <code class="docutils literal notranslate"><span class="pre">out[0]</span></code> is
-updated with the value of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, while <code class="docutils literal notranslate"><span class="pre">out[1]</span></code> is updated with the
-maximizer <code class="docutils literal notranslate"><span class="pre">λ</span></code> .</p>
+<p>If <cite>out</cite> is not null, then a full-output is produced: <code class="docutils literal notranslate"><span class="pre">out[0]</span></code> is
+updated with the value of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, while <code class="docutils literal notranslate"><span class="pre">out[1]</span></code> is updated with
+the maximizer <code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
 </dd></dl>
 
 </div>
@@ -111,34 +117,18 @@ However, they are not really needed for standard applications of the library.</p
 <dt id="c.pw85__det_sym">
 double <code class="descname">pw85__det_sym</code><span class="sig-paren">(</span>double<em>&nbsp;a[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__det_sym" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the determinant of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
-<p>The symmetric, 3×3 matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified trough the coefficients of its
-triangular upper part, listed in row-major order:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    ⎡ a[0] a[1] a[2] ⎤
-A = ⎢      a[3] a[4] ⎥.
-    ⎣ sym.      a[5] ⎦
-</pre></div>
-</div>
+<p>The symmetric matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array <cite>a</cite>.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="c.pw85__xT_adjA_x">
 double <code class="descname">pw85__xT_adjA_x</code><span class="sig-paren">(</span>double<em>&nbsp;x[PW85_DIM]</em>, double<em>&nbsp;a[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__xT_adjA_x" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the product <code class="docutils literal notranslate"><span class="pre">xᵀ⋅adj(A)⋅x</span></code>.</p>
-<p>The column vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is specified through its coefficients:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    ⎡ x[0] ⎤
-x = ⎢ x[1] ⎥.
-    ⎣ x[2] ⎦
-</pre></div>
-</div>
-<p>The symmetric, 3×3 matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified trough the coefficients of its
-triangular upper part, listed in row-major order:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    ⎡ a[0] a[1] a[2] ⎤
-A = ⎢      a[3] a[4] ⎥.
-    ⎣ sym.      a[5] ⎦
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">adj(A)</span></code> denotes the adjugate matrix of <code class="docutils literal notranslate"><span class="pre">A</span></code> (transpose of its cofactor
-matrix), see e.g <a class="reference external" href="https://en.wikipedia.org/wiki/Adjugate_matrix">Wikipedia</a>.</p>
+<p>The column vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is specified through the <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array
+<cite>x</cite>.  The symmetric matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified trough the
+<code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array <cite>a</cite>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">adj(A)</span></code> denotes the adjugate matrix of <code class="docutils literal notranslate"><span class="pre">A</span></code> (transpose of its
+cofactor matrix), see e.g <a class="reference external" href="https://en.wikipedia.org/wiki/Adjugate_matrix">Wikipedia</a>.</p>
 </dd></dl>
 
 <dl class="function">
@@ -200,7 +190,7 @@ as arrays <cite>q1</cite> and <cite>q2</cite>. The array <cite>q3</cite> must ho
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The C API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#storage-of-symmetric-matrices">Storage of symmetric matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#storage-of-vectors-and-symmetric-matrices">Storage of vectors and symmetric matrices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#macros">Macros</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#public-functions">“Public” functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#private-functions">“Private” functions</a></li>

@@ -4,16 +4,27 @@ The C API
 
 .. highlight:: none
 
-Storage of symmetric matrices
-=============================
+Storage of vectors and symmetric matrices
+=========================================
 
-In this library, the triangular upper part of symmetric, 3×3 matrices is stored
-in length-6 arrays, in row-major order. In other words, matrix ``A`` is
-reconstructed from the 1d array ``double a[6]`` as follows::
+In this module, objects referred to as “vectors” are ``double[3]``
+arrays of coordinates. In other words, the representation of the
+vector ``x`` is the ``double[3]`` array ``x`` such that::
+
+      ⎡ x[0] ⎤
+  x = ⎢ x[1] ⎥.
+      ⎣ x[2] ⎦
+
+Objects referred to as “symmetric matrices” (or “quadratic forms”) are
+of type ``double[6]``. Such arrays list in row-major order the
+coefficients of the triangular upper part. In other words, the
+representation of a the symmetric matrix ``A`` is the ``double[6]``
+array ``a`` such that::
 
       ⎡ a[0] a[1] a[2] ⎤
   A = ⎢      a[3] a[4] ⎥.
       ⎣ sym.      a[5] ⎦
+
 
 Macros
 ======
@@ -33,11 +44,13 @@ These functions form the public API of the library.
 
 .. c:function:: void pw85_spheroid(double a, double c, double n[PW85_DIM], double q[PW85_SYM])
 
-  Return the quadratic form associated to a spheroid.
+  Compute the quadratic form associated to a spheroid.
 
-  The spheroid is defined by its equatorial radius `a`, its polar radius `c` and
-  the direction of its axis of revolution, `n`; `q` is modified in-place with
-  the coefficients of the quadratic form.
+  The spheroid is defined by its equatorial radius `a`, its polar
+  radius `c` and the direction of its axis of revolution, `n`; `q` is
+  the representation of a symmetric matrix as a ``double[6]`` array,
+  that is modified in-place with the coefficients of the quadratic
+  form.
 
 
 .. c:function:: double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM], double q2[PW85_SYM], double *out)
@@ -49,23 +62,18 @@ These functions form the public API of the library.
 
     (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
 
-  where ``cᵢ`` is the center (column-vector); ``r₁₂ = c₂-c₁`` is the
-  center-to-center radius-vector. The symmetric, positive-definite
-  matrices ``Q₁`` and ``Q₂`` are specified through the arrays ``q1`` and
-  ``q2`` of the coefficients of their upper triangular part (in row-major
-  order)::
-
-         ⎡ q1[0] q1[1] q1[2] ⎤            ⎡ q2[0] q2[1] q2[2] ⎤
-    Q₁ = ⎢       q1[3] q1[4] ⎥  and  Q₂ = ⎢       q2[3] q2[4] ⎥.
-         ⎣ sym.        q1[5] ⎦	          ⎣ sym.        q2[5] ⎦
+  where ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is the center-to-center
+  radius-vector, that is represented by the ``double[3]`` array
+  `r12`. The symmetric, positive-definite matrices ``Q₁`` and ``Q₂``
+  are specified through the ``double[6]`` arrays `q1` and `q2`.
 
   This function returns the value of ``μ²``, defined as (see :ref:`theory`)::
 
     μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
 
-  If ``out`` is not null, then a full-output is produced: ``out[0]`` is
-  updated with the value of ``μ²``, while ``out[1]`` is updated with the
-  maximizer ``λ`` .
+  If `out` is not null, then a full-output is produced: ``out[0]`` is
+  updated with the value of ``μ²``, while ``out[1]`` is updated with
+  the maximizer ``λ``.
 
 “Private” functions
 ===================
@@ -73,37 +81,25 @@ These functions form the public API of the library.
 These functions are not really private. They are fully exposed and tested.
 However, they are not really needed for standard applications of the library.
 
+
 .. c:function:: double pw85__det_sym(double a[PW85_SYM])
 
   Return the determinant of ``A``.
 
-  The symmetric, 3×3 matrix ``A`` is specified trough the coefficients of its
-  triangular upper part, listed in row-major order::
-
-        ⎡ a[0] a[1] a[2] ⎤
-    A = ⎢      a[3] a[4] ⎥.
-        ⎣ sym.      a[5] ⎦
+  The symmetric matrix ``A`` is specified through the ``double[6]`` array `a`.
 
 
 .. c:function:: double pw85__xT_adjA_x(double x[PW85_DIM], double a[PW85_SYM])
 
   Return the product ``xᵀ⋅adj(A)⋅x``.
 
-  The column vector ``x`` is specified through its coefficients::
+  The column vector ``x`` is specified through the ``double[3]`` array
+  `x`.  The symmetric matrix ``A`` is specified trough the
+  ``double[6]`` array `a`.
 
-        ⎡ x[0] ⎤
-    x = ⎢ x[1] ⎥.
-        ⎣ x[2] ⎦
-
-  The symmetric, 3×3 matrix ``A`` is specified trough the coefficients of its
-  triangular upper part, listed in row-major order::
-
-        ⎡ a[0] a[1] a[2] ⎤
-    A = ⎢      a[3] a[4] ⎥.
-        ⎣ sym.      a[5] ⎦
-
-  ``adj(A)`` denotes the adjugate matrix of ``A`` (transpose of its cofactor
-  matrix), see e.g `Wikipedia <https://en.wikipedia.org/wiki/Adjugate_matrix>`_.
+  ``adj(A)`` denotes the adjugate matrix of ``A`` (transpose of its
+  cofactor matrix), see e.g `Wikipedia
+  <https://en.wikipedia.org/wiki/Adjugate_matrix>`_.
 
 
 .. c:function:: void pw85__detQ_as_poly(double q1[PW85_SYM], double q2[PW85_SYM], double q3[PW85_SYM], double q4[PW85_SYM], double b[PW85_DIM+1])

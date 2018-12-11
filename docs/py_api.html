@@ -35,6 +35,34 @@
             
   <div class="section" id="module-pypw85">
 <span id="the-python-api"></span><h1>The python API<a class="headerlink" href="#module-pypw85" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overlap-test-of-two-ellipsoids">
+<h2>Overlap test of two ellipsoids<a class="headerlink" href="#overlap-test-of-two-ellipsoids" title="Permalink to this headline">¶</a></h2>
+<p>This module provides an implementation of the “contact function”
+defined by Perram and Wertheim (J. Comp. Phys. 58(3), 409–416) for two
+ellipsoids. Given two ellipsoids, this function returns the <em>square</em>
+of the common factor by which both ellipsoids must be scaled (their
+centers being fixed) in order to be tangentially in contact.</p>
+</div>
+<div class="section" id="representation-of-vectors-and-matrices">
+<h2>Representation of vectors and matrices<a class="headerlink" href="#representation-of-vectors-and-matrices" title="Permalink to this headline">¶</a></h2>
+<p>An ellipsoid is defined from its center <code class="docutils literal notranslate"><span class="pre">c</span></code> (a 3×1, column-vector)
+and quadratic form <code class="docutils literal notranslate"><span class="pre">Q</span></code> (a 3×3, symmetric, positive definite matrix)
+as the set of points <code class="docutils literal notranslate"><span class="pre">m</span></code> such that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
+</pre></div>
+</div>
+<p>In this module, objects referred to as “vectors” are length-3 arrays
+of <code class="docutils literal notranslate"><span class="pre">double</span></code> coordinates.</p>
+<p>Objects referred to as “symmetric matrices” (or “quadratic forms”) are
+length-6 arrays of <code class="docutils literal notranslate"><span class="pre">double</span></code>. Such arrays list in row-major order the
+coefficients of the triangular upper part. In other words, the
+representation of a the symmetric matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is the array <code class="docutils literal notranslate"><span class="pre">a</span></code> such
+that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    ⎡ a[0] a[1] a[2] ⎤
+A = ⎢      a[3] a[4] ⎥.
+    ⎣ sym.      a[5] ⎦
+</pre></div>
+</div>
 <dl class="function">
 <dt id="pypw85._detQ_as_poly">
 <code class="descclassname">pypw85.</code><code class="descname">_detQ_as_poly</code><span class="sig-paren">(</span><em>q1</em>, <em>q2</em>, <em>q3=None</em>, <em>q4=None</em>, <em>b=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#_detQ_as_poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85._detQ_as_poly" title="Permalink to this definition">¶</a></dt>
@@ -43,15 +71,8 @@
 <dl class="function">
 <dt id="pypw85._det_sym">
 <code class="descclassname">pypw85.</code><code class="descname">_det_sym</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#_det_sym"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85._det_sym" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return det(A) (<code class="docutils literal notranslate"><span class="pre">A</span></code>: 3×3, symmetric matrix).</p>
-<p>The symmetric, 3×3 matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified trough the array-like
-list <cite>a</cite> of the six coefficients of its triangular upper part,
-listed in row-major order:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    ⎡ a[0] a[1] a[2] ⎤
-A = ⎢      a[3] a[4] ⎥.
-    ⎣ sym.      a[5] ⎦
-</pre></div>
-</div>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">det(A)</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">A</span></code> is a symmetric matrix represented by the array <cite>a</cite>.</p>
 </dd></dl>
 
 <dl class="function">
@@ -62,22 +83,9 @@ A = ⎢      a[3] a[4] ⎥.
 <dl class="function">
 <dt id="pypw85._xT_adjA_x">
 <code class="descclassname">pypw85.</code><code class="descname">_xT_adjA_x</code><span class="sig-paren">(</span><em>x</em>, <em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#_xT_adjA_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85._xT_adjA_x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return <code class="docutils literal notranslate"><span class="pre">xᵀ⋅adj(A)⋅x</span></code> (<code class="docutils literal notranslate"><span class="pre">A</span></code>: 3×3, symmetric matrix; <code class="docutils literal notranslate"><span class="pre">x</span></code>: 3×1  vector).</p>
-<p>The column vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is specified through the array-like list
-of its three coefficients:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    ⎡ x[0] ⎤
-x = ⎢ x[1] ⎥.
-    ⎣ x[2] ⎦
-</pre></div>
-</div>
-<p>The symmetric, 3×3 matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified trough the array-like
-list <cite>a</cite> of the six coefficients of its triangular upper part,
-listed in row-major order:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    ⎡ a[0] a[1] a[2] ⎤
-A = ⎢      a[3] a[4] ⎥.
-    ⎣ sym.      a[5] ⎦
-</pre></div>
-</div>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">xᵀ⋅adj(A)⋅x</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">x</span></code> is a vector, represented by the array <cite>x</cite>. <code class="docutils literal notranslate"><span class="pre">A</span></code> is a
+symmetric matrix, represented by the array <cite>a</cite>.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -88,8 +96,27 @@ A = ⎢      a[3] a[4] ⎥.
 
 <dl class="function">
 <dt id="pypw85.contact_function">
-<code class="descclassname">pypw85.</code><code class="descname">contact_function</code><span class="sig-paren">(</span><em>r</em>, <em>q1</em>, <em>q2</em>, <em>out=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#contact_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.contact_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">pypw85.</code><code class="descname">contact_function</code><span class="sig-paren">(</span><em>r12</em>, <em>q1</em>, <em>q2</em>, <em>out=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#contact_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.contact_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the contact function of two ellipsoids.</p>
+<p>Ellipsoids 1 and 2 are defined as the sets of points <code class="docutils literal notranslate"><span class="pre">m</span></code>
+(column-vector) such that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">cᵢ</span></code> is the center; <code class="docutils literal notranslate"><span class="pre">r₁₂</span> <span class="pre">=</span> <span class="pre">c₂-c₁</span></code> is the
+center-to-center radius-vector, that is represented by the
+<code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <cite>r12</cite>. The symmetric, positive-definite
+matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code>
+arrays <cite>q1</cite> and <cite>q2</cite>.</p>
+<p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, defined as (see
+<a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
+</pre></div>
+</div>
+<p>If <cite>out</cite> is not null, then a full-output is produced: <code class="docutils literal notranslate"><span class="pre">out[0]</span></code>
+is updated with the value of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, while <code class="docutils literal notranslate"><span class="pre">out[1]</span></code> is updated
+with the maximizer <code class="docutils literal notranslate"><span class="pre">λ</span></code> .</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="pypw85.spheroid">
@@ -97,11 +124,12 @@ A = ⎢      a[3] a[4] ⎥.
 <dd><p>Return the quadratic form associated to a spheroid.</p>
 <p>The spheroid is defined by its equatorial radius <cite>a</cite>, its polar
 radius <cite>c</cite> and the direction of its axis of revolution, <cite>n</cite>
-(array-like of length 3).</p>
-<p>If <cite>q</cite> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, then it must be an array of length 6. It
-is modified in place.</p>
+(vector).</p>
+<p>If <cite>q</cite> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, then it must the array representation of a
+symmetric matrix. It is modified in place.</p>
 </dd></dl>
 
+</div>
 </div>
 
 
@@ -125,7 +153,11 @@ is modified in place.</p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">The python API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The python API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overlap-test-of-two-ellipsoids">Overlap test of two ellipsoids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#representation-of-vectors-and-matrices">Representation of vectors and matrices</a></li>
+</ul>
+</li>
 </ul>
 
 <div class="relations">

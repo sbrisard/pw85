@@ -1,3 +1,35 @@
+"""Overlap test of two ellipsoids
+------------------------------
+
+This module provides an implementation of the “contact function”
+defined by Perram and Wertheim (J. Comp. Phys. 58(3), 409–416) for two
+ellipsoids. Given two ellipsoids, this function returns the *square*
+of the common factor by which both ellipsoids must be scaled (their
+centers being fixed) in order to be tangentially in contact.
+
+Representation of vectors and matrices
+--------------------------------------
+
+An ellipsoid is defined from its center ``c`` (a 3×1, column-vector)
+and quadratic form ``Q`` (a 3×3, symmetric, positive definite matrix)
+as the set of points ``m`` such that::
+
+  (m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
+
+In this module, objects referred to as “vectors” are length-3 arrays
+of ``double`` coordinates.
+
+Objects referred to as “symmetric matrices” (or “quadratic forms”) are
+length-6 arrays of ``double``. Such arrays list in row-major order the
+coefficients of the triangular upper part. In other words, the
+representation of a the symmetric matrix ``A`` is the array ``a`` such
+that::
+
+      ⎡ a[0] a[1] a[2] ⎤
+  A = ⎢      a[3] a[4] ⎥.
+      ⎣ sym.      a[5] ⎦
+
+"""
 import configparser
 import ctypes
 import os.path
@@ -40,37 +72,20 @@ cpw85.pw85_contact_function.restype = c_double
 
 
 def _det_sym(a):
-    """Return det(A) (``A``: 3×3, symmetric matrix).
+    """Return ``det(A)``.
 
-    The symmetric, 3×3 matrix ``A`` is specified trough the array-like
-    list `a` of the six coefficients of its triangular upper part,
-    listed in row-major order::
-
-          ⎡ a[0] a[1] a[2] ⎤
-      A = ⎢      a[3] a[4] ⎥.
-          ⎣ sym.      a[5] ⎦
+    ``A`` is a symmetric matrix represented by the array `a`.
 
     """
     return cpw85.pw85__det_sym(a.ctypes.data_as(c_double_p))
 
 
 def _xT_adjA_x(x, a):
-    """Return ``xᵀ⋅adj(A)⋅x`` (``A``: 3×3, symmetric matrix; ``x``: 3×1  vector).
+    """Return ``xᵀ⋅adj(A)⋅x``
 
-    The column vector ``x`` is specified through the array-like list
-    of its three coefficients::
+    ``x`` is a vector, represented by the array `x`. ``A`` is a
+    symmetric matrix, represented by the array `a`.
 
-          ⎡ x[0] ⎤
-      x = ⎢ x[1] ⎥.
-          ⎣ x[2] ⎦
-
-    The symmetric, 3×3 matrix ``A`` is specified trough the array-like
-    list `a` of the six coefficients of its triangular upper part,
-    listed in row-major order::
-
-          ⎡ a[0] a[1] a[2] ⎤
-      A = ⎢      a[3] a[4] ⎥.
-          ⎣ sym.      a[5] ⎦
     """
     return cpw85.pw85__xT_adjA_x(x.ctypes.data_as(c_double_p),
                                  a.ctypes.data_as(c_double_p))
@@ -103,10 +118,11 @@ def spheroid(a, c, n, q=None):
 
     The spheroid is defined by its equatorial radius `a`, its polar
     radius `c` and the direction of its axis of revolution, `n`
-    (array-like of length 3).
+    (vector).
 
-    If `q` is not ``None``, then it must be an array of length 6. It
-    is modified in place.
+    If `q` is not ``None``, then it must the array representation of a
+    symmetric matrix. It is modified in place.
+
     """
     if q is None:
         q = np.empty((6,), dtype=np.float64, order='C')
@@ -116,11 +132,34 @@ def spheroid(a, c, n, q=None):
     return q
 
 
-def contact_function(r, q1, q2, out=None):
+def contact_function(r12, q1, q2, out=None):
+    """Return the value of the contact function of two ellipsoids.
+
+    Ellipsoids 1 and 2 are defined as the sets of points ``m``
+    (column-vector) such that::
+
+      (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
+
+    where ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is the
+    center-to-center radius-vector, that is represented by the
+    ``double[3]`` array `r12`. The symmetric, positive-definite
+    matrices ``Q₁`` and ``Q₂`` are specified through the ``double[6]``
+    arrays `q1` and `q2`.
+
+    This function returns the value of ``μ²``, defined as (see
+    :ref:`theory`)::
+
+      μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
+
+    If `out` is not null, then a full-output is produced: ``out[0]``
+    is updated with the value of ``μ²``, while ``out[1]`` is updated
+    with the maximizer ``λ`` .
+
+    """
     if out is not None:
         out = out.ctypes.data_as(c_double_p)
 
-    return cpw85.pw85_contact_function(r.ctypes.data_as(c_double_p),
+    return cpw85.pw85_contact_function(r12.ctypes.data_as(c_double_p),
                                        q1.ctypes.data_as(c_double_p),
                                        q2.ctypes.data_as(c_double_p),
                                        out)
