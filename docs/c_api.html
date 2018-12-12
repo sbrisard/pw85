@@ -36,8 +36,22 @@
             
   <div class="section" id="the-c-api">
 <h1>The C API<a class="headerlink" href="#the-c-api" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="storage-of-vectors-and-symmetric-matrices">
-<h2>Storage of vectors and symmetric matrices<a class="headerlink" href="#storage-of-vectors-and-symmetric-matrices" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="overlap-test-of-two-ellipsoids">
+<h2>Overlap test of two ellipsoids<a class="headerlink" href="#overlap-test-of-two-ellipsoids" title="Permalink to this headline">¶</a></h2>
+<p>This module provides an implementation of the “contact function”
+defined by Perram and Wertheim (J. Comp. Phys. 58(3), 409–416) for two
+ellipsoids. Given two ellipsoids, this function returns the <em>square</em>
+of the common factor by which both ellipsoids must be scaled (their
+centers being fixed) in order to be tangentially in contact.</p>
+</div>
+<div class="section" id="representation-of-vectors-and-matrices">
+<h2>Representation of vectors and matrices<a class="headerlink" href="#representation-of-vectors-and-matrices" title="Permalink to this headline">¶</a></h2>
+<p>An ellipsoid is defined from its center <code class="docutils literal notranslate"><span class="pre">c</span></code> (a 3×1, column-vector)
+and quadratic form <code class="docutils literal notranslate"><span class="pre">Q</span></code> (a 3×3, symmetric, positive definite matrix)
+as the set of points <code class="docutils literal notranslate"><span class="pre">m</span></code> such that:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
+</pre></div>
+</div>
 <p>In this module, objects referred to as “vectors” are <code class="docutils literal notranslate"><span class="pre">double[3]</span></code>
 arrays of coordinates. In other words, the representation of the
 vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is the <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <code class="docutils literal notranslate"><span class="pre">x</span></code> such that:</p>
@@ -57,8 +71,9 @@ A = ⎢      a[3] a[4] ⎥.
 </pre></div>
 </div>
 </div>
-<div class="section" id="macros">
-<h2>Macros<a class="headerlink" href="#macros" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="public-api">
+<h2>“Public” API<a class="headerlink" href="#public-api" title="Permalink to this headline">¶</a></h2>
+<p>These function and macros form the public API of the library.</p>
 <dl class="macro">
 <dt id="c.PW85_DIM">
 <code class="descname">PW85_DIM</code><a class="headerlink" href="#c.PW85_DIM" title="Permalink to this definition">¶</a></dt>
@@ -71,19 +86,14 @@ A = ⎢      a[3] a[4] ⎥.
 <dd><p>The dimension of the space of symmetric matrices (6).</p>
 </dd></dl>
 
-</div>
-<div class="section" id="public-functions">
-<h2>“Public” functions<a class="headerlink" href="#public-functions" title="Permalink to this headline">¶</a></h2>
-<p>These functions form the public API of the library.</p>
 <dl class="function">
 <dt id="c.pw85_spheroid">
 void <code class="descname">pw85_spheroid</code><span class="sig-paren">(</span>double<em>&nbsp;a</em>, double<em>&nbsp;c</em>, double<em>&nbsp;n[PW85_DIM]</em>, double<em>&nbsp;q[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_spheroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the quadratic form associated to a spheroid.</p>
 <p>The spheroid is defined by its equatorial radius <cite>a</cite>, its polar
-radius <cite>c</cite> and the direction of its axis of revolution, <cite>n</cite>; <cite>q</cite> is
-the representation of a symmetric matrix as a <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array,
-that is modified in-place with the coefficients of the quadratic
-form.</p>
+radius <cite>c</cite> and the direction of its axis of revolution, <cite>n</cite>.</p>
+<p><cite>q</cite> is the representation of a symmetric matrix as a <code class="docutils literal notranslate"><span class="pre">double[6]</span></code>
+array. It is modified in-place.</p>
 </dd></dl>
 
 <dl class="function">
@@ -103,9 +113,12 @@ are specified through the <code class="docutils literal notranslate"><span class
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
 </pre></div>
 </div>
-<p>If <cite>out</cite> is not null, then a full-output is produced: <code class="docutils literal notranslate"><span class="pre">out[0]</span></code> is
-updated with the value of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, while <code class="docutils literal notranslate"><span class="pre">out[1]</span></code> is updated with
-the maximizer <code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">μ</span></code> is the common factor by which the two ellipsoids must be
+scaled (their centers being fixed) in order to be tangentially in
+contact.</p>
+<p>If <cite>out</cite> is not <code class="docutils literal notranslate"><span class="pre">NULL</span></code>, then a full-output is produced: <code class="docutils literal notranslate"><span class="pre">out[0]</span></code>
+is updated with the value of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, while <code class="docutils literal notranslate"><span class="pre">out[1]</span></code> is updated
+with the maximizer <code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
 </dd></dl>
 
 </div>
@@ -190,9 +203,9 @@ as arrays <cite>q1</cite> and <cite>q2</cite>. The array <cite>q3</cite> must ho
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The C API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#storage-of-vectors-and-symmetric-matrices">Storage of vectors and symmetric matrices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#macros">Macros</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#public-functions">“Public” functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#overlap-test-of-two-ellipsoids">Overlap test of two ellipsoids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#representation-of-vectors-and-matrices">Representation of vectors and matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#public-api">“Public” API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#private-functions">“Private” functions</a></li>
 </ul>
 </li>

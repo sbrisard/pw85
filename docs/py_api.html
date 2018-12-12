@@ -52,7 +52,13 @@ as the set of points <code class="docutils literal notranslate"><span class="pre
 </pre></div>
 </div>
 <p>In this module, objects referred to as “vectors” are length-3 arrays
-of <code class="docutils literal notranslate"><span class="pre">double</span></code> coordinates.</p>
+of <code class="docutils literal notranslate"><span class="pre">double</span></code> coordinates. In other words, the representation of the
+vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is the <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <code class="docutils literal notranslate"><span class="pre">x</span></code> such that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    ⎡ x[0] ⎤
+x = ⎢ x[1] ⎥.
+    ⎣ x[2] ⎦
+</pre></div>
+</div>
 <p>Objects referred to as “symmetric matrices” (or “quadratic forms”) are
 length-6 arrays of <code class="docutils literal notranslate"><span class="pre">double</span></code>. Such arrays list in row-major order the
 coefficients of the triangular upper part. In other words, the
@@ -113,9 +119,12 @@ arrays <cite>q1</cite> and <cite>q2</cite>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
 </pre></div>
 </div>
-<p>If <cite>out</cite> is not null, then a full-output is produced: <code class="docutils literal notranslate"><span class="pre">out[0]</span></code>
-is updated with the value of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, while <code class="docutils literal notranslate"><span class="pre">out[1]</span></code> is updated
-with the maximizer <code class="docutils literal notranslate"><span class="pre">λ</span></code> .</p>
+<p><cite>μ</cite> is the common factor by which the two ellipsoids must be
+scaled (their centers being fixed) in order to be tangentially in
+contact.</p>
+<p>If <cite>out</cite> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, then a full-output is produced:
+<code class="docutils literal notranslate"><span class="pre">out[0]</span></code> is updated with the value of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, while <code class="docutils literal notranslate"><span class="pre">out[1]</span></code>
+is updated with the maximizer <code class="docutils literal notranslate"><span class="pre">λ</span></code> .</p>
 </dd></dl>
 
 <dl class="function">

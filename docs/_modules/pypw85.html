@@ -52,7 +52,12 @@
 <span class="sd">  (m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.</span>
 
 <span class="sd">In this module, objects referred to as “vectors” are length-3 arrays</span>
-<span class="sd">of ``double`` coordinates.</span>
+<span class="sd">of ``double`` coordinates. In other words, the representation of the</span>
+<span class="sd">vector ``x`` is the ``double[3]`` array ``x`` such that::</span>
+
+<span class="sd">      ⎡ x[0] ⎤</span>
+<span class="sd">  x = ⎢ x[1] ⎥.</span>
+<span class="sd">      ⎣ x[2] ⎦</span>
 
 <span class="sd">Objects referred to as “symmetric matrices” (or “quadratic forms”) are</span>
 <span class="sd">length-6 arrays of ``double``. Such arrays list in row-major order the</span>
@@ -186,9 +191,13 @@
 
 <span class="sd">      μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.</span>
 
-<span class="sd">    If `out` is not null, then a full-output is produced: ``out[0]``</span>
-<span class="sd">    is updated with the value of ``μ²``, while ``out[1]`` is updated</span>
-<span class="sd">    with the maximizer ``λ`` .</span>
+<span class="sd">    `μ` is the common factor by which the two ellipsoids must be</span>
+<span class="sd">    scaled (their centers being fixed) in order to be tangentially in</span>
+<span class="sd">    contact.</span>
+
+<span class="sd">    If `out` is not ``None``, then a full-output is produced:</span>
+<span class="sd">    ``out[0]`` is updated with the value of ``μ²``, while ``out[1]``</span>
+<span class="sd">    is updated with the maximizer ``λ`` .</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

@@ -4,8 +4,24 @@ The C API
 
 .. highlight:: none
 
-Storage of vectors and symmetric matrices
-=========================================
+Overlap test of two ellipsoids
+==============================
+
+This module provides an implementation of the “contact function”
+defined by Perram and Wertheim (J. Comp. Phys. 58(3), 409–416) for two
+ellipsoids. Given two ellipsoids, this function returns the *square*
+of the common factor by which both ellipsoids must be scaled (their
+centers being fixed) in order to be tangentially in contact.
+
+
+Representation of vectors and matrices
+======================================
+
+An ellipsoid is defined from its center ``c`` (a 3×1, column-vector)
+and quadratic form ``Q`` (a 3×3, symmetric, positive definite matrix)
+as the set of points ``m`` such that::
+
+  (m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
 
 In this module, objects referred to as “vectors” are ``double[3]``
 arrays of coordinates. In other words, the representation of the
@@ -26,31 +42,31 @@ array ``a`` such that::
       ⎣ sym.      a[5] ⎦
 
 
-Macros
-======
+“Public” API
+============
+
+These function and macros form the public API of the library.
+
 
 .. c:macro:: PW85_DIM
 
   The dimension of the physical space (3).
 
+
 .. c:macro:: PW85_SYM
 
   The dimension of the space of symmetric matrices (6).
 
-“Public” functions
-==================
-
-These functions form the public API of the library.
 
 .. c:function:: void pw85_spheroid(double a, double c, double n[PW85_DIM], double q[PW85_SYM])
 
   Compute the quadratic form associated to a spheroid.
 
   The spheroid is defined by its equatorial radius `a`, its polar
-  radius `c` and the direction of its axis of revolution, `n`; `q` is
-  the representation of a symmetric matrix as a ``double[6]`` array,
-  that is modified in-place with the coefficients of the quadratic
-  form.
+  radius `c` and the direction of its axis of revolution, `n`.
+
+  `q` is the representation of a symmetric matrix as a ``double[6]``
+  array. It is modified in-place.
 
 
 .. c:function:: double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM], double q2[PW85_SYM], double *out)
@@ -71,15 +87,21 @@ These functions form the public API of the library.
 
     μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
 
-  If `out` is not null, then a full-output is produced: ``out[0]`` is
-  updated with the value of ``μ²``, while ``out[1]`` is updated with
-  the maximizer ``λ``.
+  ``μ`` is the common factor by which the two ellipsoids must be
+  scaled (their centers being fixed) in order to be tangentially in
+  contact.
 
-“Private” functions
-===================
+  If `out` is not ``NULL``, then a full-output is produced: ``out[0]``
+  is updated with the value of ``μ²``, while ``out[1]`` is updated
+  with the maximizer ``λ``.
 
-These functions are not really private. They are fully exposed and tested.
-However, they are not really needed for standard applications of the library.
+
+“Private” API
+=============
+
+These functions are not really private. They are fully exposed for
+testing purposes.  However, they are not really needed for standard
+applications of the library.
 
 
 .. c:function:: double pw85__det_sym(double a[PW85_SYM])

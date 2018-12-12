@@ -17,7 +17,12 @@ as the set of points ``m`` such that::
   (m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
 
 In this module, objects referred to as “vectors” are length-3 arrays
-of ``double`` coordinates.
+of ``double`` coordinates. In other words, the representation of the
+vector ``x`` is the ``double[3]`` array ``x`` such that::
+
+      ⎡ x[0] ⎤
+  x = ⎢ x[1] ⎥.
+      ⎣ x[2] ⎦
 
 Objects referred to as “symmetric matrices” (or “quadratic forms”) are
 length-6 arrays of ``double``. Such arrays list in row-major order the
@@ -151,9 +156,13 @@ def contact_function(r12, q1, q2, out=None):
 
       μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
 
-    If `out` is not null, then a full-output is produced: ``out[0]``
-    is updated with the value of ``μ²``, while ``out[1]`` is updated
-    with the maximizer ``λ`` .
+    ``μ`` is the common factor by which the two ellipsoids must be
+    scaled (their centers being fixed) in order to be tangentially in
+    contact.
+
+    If `out` is not ``None``, then a full-output is produced:
+    ``out[0]`` is updated with the value of ``μ²``, while ``out[1]``
+    is updated with the maximizer ``λ`` .
 
     """
     if out is not None:
