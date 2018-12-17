@@ -178,3 +178,10 @@ epub_exclude_files = ['search.html']
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+# -- Options for autodoc extension -------------------------------------------
+
+autodoc_default_options = {
+    'member-order': 'groupwise',
+    'undoc-members': True,
+}
