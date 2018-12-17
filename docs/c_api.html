@@ -122,10 +122,11 @@ with the maximizer <code class="docutils literal notranslate"><span class="pre">
 </dd></dl>
 
 </div>
-<div class="section" id="private-functions">
-<h2>“Private” functions<a class="headerlink" href="#private-functions" title="Permalink to this headline">¶</a></h2>
-<p>These functions are not really private. They are fully exposed and tested.
-However, they are not really needed for standard applications of the library.</p>
+<div class="section" id="private-api">
+<h2>“Private” API<a class="headerlink" href="#private-api" title="Permalink to this headline">¶</a></h2>
+<p>These functions are not really private. They are fully exposed for
+testing purposes.  However, they are not really needed for standard
+applications of the library.</p>
 <dl class="function">
 <dt id="c.pw85__det_sym">
 double <code class="descname">pw85__det_sym</code><span class="sig-paren">(</span>double<em>&nbsp;a[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__det_sym" title="Permalink to this definition">¶</a></dt>
@@ -149,7 +150,7 @@ cofactor matrix), see e.g <a class="reference external" href="https://en.wikiped
 void <code class="descname">pw85__detQ_as_poly</code><span class="sig-paren">(</span>double<em>&nbsp;q1[PW85_SYM]</em>, double<em>&nbsp;q2[PW85_SYM]</em>, double<em>&nbsp;q3[PW85_SYM]</em>, double<em>&nbsp;q4[PW85_SYM]</em>, double<em>&nbsp;b[PW85_DIM+1]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__detQ_as_poly" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>Compute the coefficients of <code class="docutils literal notranslate"><span class="pre">det[(1-λ)Q₁+λQ₂]</span></code> as a polynomial of <code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
+<p>Compute the coefficients of the polynomial <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">↦</span> <span class="pre">det[(1-λ)Q₁+λQ₂]</span></code>.</p>
 <p>The symmetric, positive definite, 3×3 matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified
 as arrays <cite>q1</cite> and <cite>q2</cite>. The arrays <cite>q3</cite> and <cite>q4</cite> must hold the difference
 <code class="docutils literal notranslate"><span class="pre">2Q₁-Q₂</span></code> and average <code class="docutils literal notranslate"><span class="pre">(Q₁+Q₂)/2</span></code>, respectively:</p>
@@ -167,7 +168,7 @@ as arrays <cite>q1</cite> and <cite>q2</cite>. The arrays <cite>q3</cite> and <c
 double <code class="descname">pw85__rT_adjQ_r_as_poly</code><span class="sig-paren">(</span>double<em>&nbsp;r[PW85_DIM]</em>, double<em>&nbsp;q1[PW85_SYM]</em>, double<em>&nbsp;q2[PW85_SYM]</em>, double<em>&nbsp;q3[PW85_SYM]</em>, double<em>&nbsp;a[PW85_DIM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__rT_adjQ_r_as_poly" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>Compute the coefficients of <code class="docutils literal notranslate"><span class="pre">rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r</span></code> as a polynomial of <code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
+<p>Compute the coefficients of the polynomial <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">↦</span> <span class="pre">rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r</span></code>.</p>
 <p>The symmetric, positive definite, 3×3 matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified
 as arrays <cite>q1</cite> and <cite>q2</cite>. The array <cite>q3</cite> must hold the difference <code class="docutils literal notranslate"><span class="pre">2Q₁-Q₂</span></code>:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>q3[i] = 2*q1[i] - q2[i],
@@ -206,7 +207,7 @@ as arrays <cite>q1</cite> and <cite>q2</cite>. The array <cite>q3</cite> must ho
 <li class="toctree-l2"><a class="reference internal" href="#overlap-test-of-two-ellipsoids">Overlap test of two ellipsoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#representation-of-vectors-and-matrices">Representation of vectors and matrices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#public-api">“Public” API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#private-functions">“Private” functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#private-api">“Private” API</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a></li>

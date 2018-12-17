@@ -126,7 +126,7 @@ applications of the library.
 
 .. c:function:: void pw85__detQ_as_poly(double q1[PW85_SYM], double q2[PW85_SYM], double q3[PW85_SYM], double q4[PW85_SYM], double b[PW85_DIM+1])
 
-Compute the coefficients of ``det[(1-λ)Q₁+λQ₂]`` as a polynomial of ``λ``.
+Compute the coefficients of the polynomial ``λ ↦ det[(1-λ)Q₁+λQ₂]``.
 
 The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are specified
 as arrays `q1` and `q2`. The arrays `q3` and `q4` must hold the difference
@@ -144,7 +144,7 @@ The coefficients ``bᵢ`` are stored in `b` in *increasing* order: ``b[i] = bᵢ
 
 .. c:function:: double pw85__rT_adjQ_r_as_poly(double r[PW85_DIM], double q1[PW85_SYM], double q2[PW85_SYM], double q3[PW85_SYM], double a[PW85_DIM])
 
-Compute the coefficients of ``rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r`` as a polynomial of ``λ``.
+Compute the coefficients of the polynomial ``λ ↦ rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r``.
 
 The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are specified
 as arrays `q1` and `q2`. The array `q3` must hold the difference ``2Q₁-Q₂``::
