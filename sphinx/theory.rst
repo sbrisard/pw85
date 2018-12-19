@@ -195,6 +195,50 @@ This requires the implementation of the determinant and the adjugate matrix of a
 3×3, symmetric matrix, see :c:func:`pw85__det_sym` and
 :c:func:`pw85__xT_adjA_x`.
 
+Evaluating the derivative of ``f`` with respect to ``λ`` is fairly easy. The following `Sympy <https://www.sympy.org>`_ script will do the job::
+
+  import sympy
+
+  from sympy import Equality, numer, pprint, Symbol
+
+  if __name__ == '__main__':
+      sympy.init_printing(use_latex=False, use_unicode=True)
+      λ = Symbol('λ')
+      a = sum(sympy.Symbol('a{}'.format(i))*λ**i for i in range(3))
+      b = sum(sympy.Symbol('b{}'.format(i))*λ**i for i in range(4))
+      f = λ*(1-λ)*a/b
+      f_prime = f.diff(λ).ratsimp()
+      c = numer(f_prime)
+      c_dict = c.collect(λ, evaluate=False)
+      for i in range(sympy.degree(c, gen=λ)+1):
+          pprint(Equality(Symbol('c{}'.format(i)), c_dict[λ**i]))
+
+It is readily found that::
+
+                   c(λ)
+  (18)    f'(λ) = ───────,
+                   b(λ)²
+
+where ``c(λ)`` is a sixth-order polynomial in λ::
+
+  (19)    c(λ) = c₀ + c₁λ + c₂λ² + c₃λ³ + c₄λ⁴ + c₅λ⁵ + c₆λ⁶,
+
+with::
+
+  (20a)    c₀ = a₀b₀,
+  (20b)    c₁ = 2(a₁-a₀)b₀,
+  (20c)    c₂ = -a₀(b₁+b₂) + 3b₀(a₂-a₁) + a₁b₁,
+  (20d)    c₃ = 2[b₁(a₂-a₁) - a₀b₃]  - 4a₂b₀,
+  (20e)    c₄ = (a₀-a₁)b₃ + (a₂-a₁)b₂ - 3a₂b₁,
+  (20f)    c₅ = -2a₂b₂,
+  (20g)    c₆ = -a₂b₃,
+
+Solving ``f'(λ) = 0`` for ``λ`` is therefore equivalent to finding the unique
+root of ``c`` in the interval ``0 ≤ λ ≤ 1``. For the sake of robustness, the
+`bisection method <https://en.wikipedia.org/wiki/Bisection_method>`_ has been
+implemented (more efficient methods will be implemented in future versions).
+
+Once ``λ`` is found, ``μ`` is computed from ``μ² = f(λ)`` using Eq. (15).
 
 References
 ==========

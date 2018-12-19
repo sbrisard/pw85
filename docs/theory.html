@@ -198,6 +198,49 @@ matrix), see e.g <a class="reference external" href="https://en.wikipedia.org/wi
 <p>This requires the implementation of the determinant and the adjugate matrix of a
 3×3, symmetric matrix, see <a class="reference internal" href="c_api.html#c.pw85__det_sym" title="pw85__det_sym"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85__det_sym()</span></code></a> and
 <a class="reference internal" href="c_api.html#c.pw85__xT_adjA_x" title="pw85__xT_adjA_x"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85__xT_adjA_x()</span></code></a>.</p>
+<p>Evaluating the derivative of <code class="docutils literal notranslate"><span class="pre">f</span></code> with respect to <code class="docutils literal notranslate"><span class="pre">λ</span></code> is fairly easy. The following <a class="reference external" href="https://www.sympy.org">Sympy</a> script will do the job:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span>
+
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="k">import</span> <span class="n">Equality</span><span class="p">,</span> <span class="n">numer</span><span class="p">,</span> <span class="n">pprint</span><span class="p">,</span> <span class="n">Symbol</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">sympy</span><span class="o">.</span><span class="n">init_printing</span><span class="p">(</span><span class="n">use_latex</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_unicode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">λ</span> <span class="o">=</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;λ&#39;</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;a</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">*</span><span class="n">λ</span><span class="o">**</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;b</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">*</span><span class="n">λ</span><span class="o">**</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">λ</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">λ</span><span class="p">)</span><span class="o">*</span><span class="n">a</span><span class="o">/</span><span class="n">b</span>
+    <span class="n">f_prime</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">λ</span><span class="p">)</span><span class="o">.</span><span class="n">ratsimp</span><span class="p">()</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">numer</span><span class="p">(</span><span class="n">f_prime</span><span class="p">)</span>
+    <span class="n">c_dict</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="n">λ</span><span class="p">,</span> <span class="n">evaluate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">gen</span><span class="o">=</span><span class="n">λ</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">pprint</span><span class="p">(</span><span class="n">Equality</span><span class="p">(</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;c</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)),</span> <span class="n">c_dict</span><span class="p">[</span><span class="n">λ</span><span class="o">**</span><span class="n">i</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>It is readily found that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                 c(λ)
+(18)    f&#39;(λ) = ───────,
+                 b(λ)²
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">c(λ)</span></code> is a sixth-order polynomial in λ:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(19)    c(λ) = c₀ + c₁λ + c₂λ² + c₃λ³ + c₄λ⁴ + c₅λ⁵ + c₆λ⁶,
+</pre></div>
+</div>
+<p>with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(20a)    c₀ = a₀b₀,
+(20b)    c₁ = 2(a₁-a₀)b₀,
+(20c)    c₂ = -a₀(b₁+b₂) + 3b₀(a₂-a₁) + a₁b₁,
+(20d)    c₃ = 2[b₁(a₂-a₁) - a₀b₃]  - 4a₂b₀,
+(20e)    c₄ = (a₀-a₁)b₃ + (a₂-a₁)b₂ - 3a₂b₁,
+(20f)    c₅ = -2a₂b₂,
+(20g)    c₆ = -a₂b₃,
+</pre></div>
+</div>
+<p>Solving <code class="docutils literal notranslate"><span class="pre">f'(λ)</span> <span class="pre">=</span> <span class="pre">0</span></code> for <code class="docutils literal notranslate"><span class="pre">λ</span></code> is therefore equivalent to finding the unique
+root of <code class="docutils literal notranslate"><span class="pre">c</span></code> in the interval <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">≤</span> <span class="pre">λ</span> <span class="pre">≤</span> <span class="pre">1</span></code>. For the sake of robustness, the
+<a class="reference external" href="https://en.wikipedia.org/wiki/Bisection_method">bisection method</a> has been
+implemented (more efficient methods will be implemented in future versions).</p>
+<p>Once <code class="docutils literal notranslate"><span class="pre">λ</span></code> is found, <code class="docutils literal notranslate"><span class="pre">μ</span></code> is computed from <code class="docutils literal notranslate"><span class="pre">μ²</span> <span class="pre">=</span> <span class="pre">f(λ)</span></code> using Eq. (15).</p>
 </div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
