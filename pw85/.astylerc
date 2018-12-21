@@ -1,0 +1,14 @@
+style=google
+attach-closing-while
+max-continuation-indent=120
+pad-oper
+pad-comma
+pad-header
+unpad-paren
+align-pointer=type
+align-reference=type
+break-one-line-headers
+add-braces
+attach-return-type
+attach-return-type-decl
+max-code-length=80
