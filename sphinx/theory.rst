@@ -13,6 +13,7 @@ Only the global, cartesian frame is considered here, and there is no
 ambiguity about the basis to which these column vectors and square matrices
 refer.
 
+.. _theory-representation:
 
 Mathematical representation of ellipsoids
 =========================================
