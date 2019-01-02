@@ -10,6 +10,7 @@ Welcome to PW85's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   tutorial
    theory
    c_api
    py_api

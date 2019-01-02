@@ -1,0 +1,236 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Tutorial &#8212; PW85  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Theory" href="theory.html" />
+    <link rel="prev" title="Welcome to PW85’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="tutorial">
+<span id="id1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, we consider to ellipsoids, and check wether or not
+they overlap.</p>
+<p>Ellipsoid <code class="docutils literal notranslate"><span class="pre">E₁</span></code> is an <a class="reference external" href="https://en.wikipedia.org/wiki/Spheroid">oblate spheroid</a> centered at the origin <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span>
+<span class="pre">0)</span></code>, with equatorial radius <code class="docutils literal notranslate"><span class="pre">a₁</span> <span class="pre">=</span> <span class="pre">10</span></code>, polar radius <code class="docutils literal notranslate"><span class="pre">c₁</span> <span class="pre">=</span> <span class="pre">0.1</span></code> and polar
+axis <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">1)</span></code>.</p>
+<p>Ellipsoid <code class="docutils literal notranslate"><span class="pre">E₂</span></code> is a <a class="reference external" href="https://en.wikipedia.org/wiki/Spheroid">prolate spheroid</a> centered at point <code class="docutils literal notranslate"><span class="pre">(0.2,</span> <span class="pre">-0.3,</span>
+<span class="pre">0.4)</span></code>, with equatorial radius <code class="docutils literal notranslate"><span class="pre">a₁</span> <span class="pre">=</span> <span class="pre">0.5</span></code>, polar radius <code class="docutils literal notranslate"><span class="pre">c₁</span> <span class="pre">=</span> <span class="pre">5</span></code> and polar
+axis <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>.</p>
+<p>To carry out the overlap check, we must first create the representation of
+ellipsoids <code class="docutils literal notranslate"><span class="pre">Eᵢ</span></code> as quadratic forms <code class="docutils literal notranslate"><span class="pre">Qᵢ</span></code> (see <a class="reference internal" href="theory.html#theory-representation"><span class="std std-ref">Mathematical representation of ellipsoids</span></a>).
+Convenience functions are provided to compute the matrix representation of a
+<em>spheroid</em>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In principle, the contact function implemented in PW85 applies to
+<em>any</em> ellipsoids (with unequal axes). However, at the time of writing this
+tutorial (2019-01-01), convenience functions to compute the matrix
+representation of a general ellipsoid is not yet implemented. Users must
+compute the matrices themselves.</p>
+</div>
+<p>We first check for the overlap of <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> using the Python wrapper of
+<code class="docutils literal notranslate"><span class="pre">pw85</span></code>. We will then illustrate the C API.</p>
+<div class="section" id="python-tutorial">
+<h2>Python tutorial<a class="headerlink" href="#python-tutorial" title="Permalink to this headline">¶</a></h2>
+<p>The Python module relies on <a class="reference external" href="www.numpy.org">NumPy</a> for passing arrays to the
+underlying C library. We therefore import both modules:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pypw85</span>
+</pre></div>
+</div>
+<p>and define the parameters of the simulation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">n1</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r12</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">r12</span></code> is the vector that joins the center of the first ellipsoid to the
+center of the second ellipsoid.</p>
+<p>We use the function <a class="reference internal" href="py_api.html#pypw85.spheroid" title="pypw85.spheroid"><code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.spheroid()</span></code></a> to create the matrix
+representations <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code> of the two ellipsoids:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">spheroid</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span>
+<span class="go">array([ 1.e+02, -0.e+00, -0.e+00,  1.e+02, -0.e+00,  1.e-02])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q2</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">spheroid</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">n2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q2</span>
+<span class="go">array([25.  ,  0.  ,  0.  ,  0.25,  0.  ,  0.25])</span>
+</pre></div>
+</div>
+<p>We can now compute the value of the contact function — see the documentation of
+<a class="reference internal" href="py_api.html#pypw85.contact_function" title="pypw85.contact_function"><code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.contact_function()</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mu2</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;μ² = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mu2</span><span class="p">))</span>
+<span class="go">μ² = 0.4446579853323222</span>
+</pre></div>
+</div>
+<p>We find that <code class="docutils literal notranslate"><span class="pre">μ²</span> <span class="pre">&lt;</span> <span class="pre">1</span></code>, hence <code class="docutils literal notranslate"><span class="pre">μ</span> <span class="pre">&lt;</span> <span class="pre">1</span></code>. In other words, both ellipsoids must
+be <em>shrunk</em> in order to bring them in contact: the ellipsoids overlap!</p>
+<div class="section" id="checking-the-output">
+<h3>Checking the output<a class="headerlink" href="#checking-the-output" title="Permalink to this headline">¶</a></h3>
+<p>The output of this simulation can readily be checked. First, we can check that
+<code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code> indeed represent the ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code>. To do so, we first construct the symmetric matrices <code class="docutils literal notranslate"><span class="pre">Q1</span></code> and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> from their upper triangular part</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">triu_indices_from</span><span class="p">(</span><span class="n">Q1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q1</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">q1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q1</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">q1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q1</span>
+<span class="go">array([[ 1.e+02, -0.e+00, -0.e+00],</span>
+<span class="go">       [-0.e+00,  1.e+02, -0.e+00],</span>
+<span class="go">       [-0.e+00, -0.e+00,  1.e-02]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Q1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q2</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">q2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q2</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">q2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q2</span>
+<span class="go">array([[25.  ,  0.  ,  0.  ],</span>
+<span class="go">       [ 0.  ,  0.25,  0.  ],</span>
+<span class="go">       [ 0.  ,  0.  ,  0.25]])</span>
+</pre></div>
+</div>
+<p>We can now check these matrices for some remarkable points, first for ellipsoid
+<code class="docutils literal notranslate"><span class="pre">E₁</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q1_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Q1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f1</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">Q1_inv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f1</span><span class="p">((</span><span class="n">a1</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
+<span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f1</span><span class="p">((</span><span class="o">-</span><span class="n">a1</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
+<span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f1</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
+<span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f1</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="o">-</span><span class="n">a1</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
+<span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f1</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">c1</span><span class="p">))</span>
+<span class="go">0.9999999999994884</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f1</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">-</span><span class="n">c1</span><span class="p">))</span>
+<span class="go">0.9999999999994884</span>
+</pre></div>
+</div>
+<p>then for ellipsoid <code class="docutils literal notranslate"><span class="pre">E₂</span></code> (translated at the origin)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q2_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Q2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f2</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">Q2_inv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f2</span><span class="p">((</span><span class="n">c2</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
+<span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f2</span><span class="p">((</span><span class="o">-</span><span class="n">c2</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
+<span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f2</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
+<span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f2</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="o">-</span><span class="n">a2</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
+<span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f2</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">a2</span><span class="p">))</span>
+<span class="go">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f2</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">-</span><span class="n">a2</span><span class="p">))</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="c-tutorial">
+<h2>C tutorial<a class="headerlink" href="#c-tutorial" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PW85</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#python-tutorial">Python tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c-tutorial">C tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to PW85’s documentation!</a></li>
+      <li>Next: <a href="theory.html" title="next chapter">Theory</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Sébastien Brisard.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/tutorial.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
