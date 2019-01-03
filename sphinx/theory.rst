@@ -51,6 +51,8 @@ For ``0 ≤ λ ≤ 1`` and a point ``x``, we introduce the function::
 
   (4)    F(x, λ) = λ(x-c₁)ᵀ⋅Q₁⁻¹⋅(x-c₁)+(1-λ)(x-c₂)ᵀ⋅Q₂⁻¹⋅(x-c₂).
 
+.. _theory-eq-5:
+
 For fixed ``λ``, ``F(x, λ)`` has a unique minimum [PW85]_ ``f(λ)``, and we
 define::
 
@@ -147,6 +149,8 @@ be scaled in order for them to be externally tangent at point ``x₀(λ₀)``.
 Implementation
 ==============
 
+.. _theory-eq-15:
+
 In this section, we explain how the contact function is computed. From Eq.
 :ref:`(12) <theory-eq-12>`, the value of the contact function is found from
 the solution ``λ`` to equation ``f'(λ) = 0``. We observe that ``f(λ)`` is a
@@ -229,7 +233,7 @@ with::
   (20a)    c₀ = a₀b₀,
   (20b)    c₁ = 2(a₁-a₀)b₀,
   (20c)    c₂ = -a₀(b₁+b₂) + 3b₀(a₂-a₁) + a₁b₁,
-  (20d)    c₃ = 2[b₁(a₂-a₁) - a₀b₃]  - 4a₂b₀,
+  (20d)    c₃ = 2[b₁(a₂-a₁) - a₀b₃] - 4a₂b₀,
   (20e)    c₄ = (a₀-a₁)b₃ + (a₂-a₁)b₂ - 3a₂b₁,
   (20f)    c₅ = -2a₂b₂,
   (20g)    c₆ = -a₂b₃,
@@ -239,7 +243,8 @@ root of ``c`` in the interval ``0 ≤ λ ≤ 1``. For the sake of robustness, th
 `bisection method <https://en.wikipedia.org/wiki/Bisection_method>`_ has been
 implemented (more efficient methods will be implemented in future versions).
 
-Once ``λ`` is found, ``μ`` is computed from ``μ² = f(λ)`` using Eq. (15).
+Once ``λ`` is found, ``μ`` is computed from ``μ² = f(λ)`` using Eq. :ref:`(15)
+<theory-eq-15>`.
 
 References
 ==========
