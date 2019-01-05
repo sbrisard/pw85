@@ -1,19 +1,15 @@
-#include <math.h>
-#include <stdio.h>
-
-#define PW85_DIM 3
-#define PW85_SYM 6
+#include "pw85.h"
 
 /* Private functions */
 /* ================= */
 /* These functions are exported for the sake of testing only. */
 
-__declspec(dllexport) double pw85__det_sym(double a[PW85_SYM]) {
+double pw85__det_sym(double a[PW85_SYM]) {
   return a[0] * a[3] * a[5] + 2 * a[1] * a[2] * a[4] - a[0] * a[4] * a[4] -
          a[3] * a[2] * a[2] - a[5] * a[1] * a[1];
 }
 
-__declspec(dllexport) double pw85__xT_adjA_x(double x[PW85_DIM],
+double pw85__xT_adjA_x(double x[PW85_DIM],
                                              double a[PW85_SYM]) {
   return (x[0] * x[0] * (a[3] * a[5] - a[4] * a[4]) +
           x[1] * x[1] * (a[0] * a[5] - a[2] * a[2]) +
@@ -23,7 +19,7 @@ __declspec(dllexport) double pw85__xT_adjA_x(double x[PW85_DIM],
                 x[1] * x[2] * (a[1] * a[2] - a[0] * a[4])));
 }
 
-__declspec(dllexport) void pw85__rT_adjQ_r_as_poly(double r[PW85_DIM],
+void pw85__rT_adjQ_r_as_poly(double r[PW85_DIM],
                                                    double q1[PW85_SYM],
                                                    double q2[PW85_SYM],
                                                    double q3[PW85_SYM],
@@ -36,7 +32,7 @@ __declspec(dllexport) void pw85__rT_adjQ_r_as_poly(double r[PW85_DIM],
   a[1] = 0.5 * (a_one - a_minus_one);
 }
 
-__declspec(dllexport) void pw85__detQ_as_poly(double q1[PW85_SYM],
+void pw85__detQ_as_poly(double q1[PW85_SYM],
                                               double q2[PW85_SYM],
                                               double q3[PW85_SYM],
                                               double q4[PW85_SYM],
@@ -56,7 +52,7 @@ __declspec(dllexport) void pw85__detQ_as_poly(double q1[PW85_SYM],
 /* Public API */
 /* ========== */
 
-__declspec(dllexport) void pw85_spheroid(double a, double c, double n[PW85_DIM],
+void pw85_spheroid(double a, double c, double n[PW85_DIM],
                                          double q[PW85_SYM]) {
   const double a2 = a * a;
   const double c2_minus_a2 = c * c - a2;
@@ -71,7 +67,7 @@ __declspec(dllexport) void pw85_spheroid(double a, double c, double n[PW85_DIM],
   q[1] = nx * ny * c2_minus_a2;
 }
 
-__declspec(dllexport) double pw85_contact_function(double r12[PW85_DIM],
+double pw85_contact_function(double r12[PW85_DIM],
                                                    double q1[PW85_SYM],
                                                    double q2[PW85_SYM],
                                                    double* out) {
