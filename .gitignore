@@ -1,3 +1,4 @@
+*.exe
 *.o
 *.egg-info
 __pycache__
