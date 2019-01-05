@@ -37,9 +37,9 @@
 <span id="id1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
 <p>In this tutorial, we consider to ellipsoids, and check wether or not
 they overlap.</p>
-<p>Ellipsoid <code class="docutils literal notranslate"><span class="pre">E₁</span></code> is an <a class="reference external" href="https://en.wikipedia.org/wiki/Spheroid">oblate spheroid</a> centered at the origin <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span>
-<span class="pre">0)</span></code>, with equatorial radius <code class="docutils literal notranslate"><span class="pre">a₁</span> <span class="pre">=</span> <span class="pre">10</span></code>, polar radius <code class="docutils literal notranslate"><span class="pre">c₁</span> <span class="pre">=</span> <span class="pre">0.1</span></code> and polar
-axis <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">1)</span></code>.</p>
+<p>Ellipsoid <code class="docutils literal notranslate"><span class="pre">E₁</span></code> is an <a class="reference external" href="https://en.wikipedia.org/wiki/Spheroid">oblate spheroid</a> centered at point <code class="docutils literal notranslate"><span class="pre">x₁</span> <span class="pre">=</span> <span class="pre">(-0.5,</span> <span class="pre">0.4,</span>
+<span class="pre">-0.7)</span></code>, with equatorial radius <code class="docutils literal notranslate"><span class="pre">a₁</span> <span class="pre">=</span> <span class="pre">10</span></code>, polar radius <code class="docutils literal notranslate"><span class="pre">c₁</span> <span class="pre">=</span> <span class="pre">0.1</span></code> and
+polar axis <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">1)</span></code>.</p>
 <p>Ellipsoid <code class="docutils literal notranslate"><span class="pre">E₂</span></code> is a <a class="reference external" href="https://en.wikipedia.org/wiki/Spheroid">prolate spheroid</a> centered at point <code class="docutils literal notranslate"><span class="pre">(0.2,</span> <span class="pre">-0.3,</span>
 <span class="pre">0.4)</span></code>, with equatorial radius <code class="docutils literal notranslate"><span class="pre">a₁</span> <span class="pre">=</span> <span class="pre">0.5</span></code>, polar radius <code class="docutils literal notranslate"><span class="pre">c₁</span> <span class="pre">=</span> <span class="pre">5</span></code> and polar
 axis <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>.</p>
@@ -66,15 +66,19 @@ underlying C library. We therefore import both modules:</p>
 </pre></div>
 </div>
 <p>and define the parameters of the simulation:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">n1</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r12</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a1</span><span class="p">,</span> <span class="n">c1</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a2</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">5.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r12</span> <span class="o">=</span> <span class="n">x2</span><span class="o">-</span><span class="n">x1</span>
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">r12</span></code> is the vector that joins the center of the first ellipsoid to the
-center of the second ellipsoid.</p>
+<p>where <code class="docutils literal notranslate"><span class="pre">r₁₂</span></code> is the vector that joins the center of the first ellipsoid,
+<code class="docutils literal notranslate"><span class="pre">x₁</span></code>, to the center of the second ellipsoid, <code class="docutils literal notranslate"><span class="pre">x₂</span></code>.</p>
 <p>We use the function <a class="reference internal" href="py_api.html#pypw85.spheroid" title="pypw85.spheroid"><code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.spheroid()</span></code></a> to create the matrix
-representations <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code> of the two ellipsoids:</p>
+representations <code class="docutils literal notranslate"><span class="pre">q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">q₂</span></code> of the two ellipsoids:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">spheroid</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span>
 <span class="go">array([ 1.e+02, -0.e+00, -0.e+00,  1.e+02, -0.e+00,  1.e-02])</span>
@@ -87,15 +91,17 @@ representations <code class="docutils literal notranslate"><span class="pre">q1<
 <a class="reference internal" href="py_api.html#pypw85.contact_function" title="pypw85.contact_function"><code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.contact_function()</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mu2</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;μ² = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mu2</span><span class="p">))</span>
-<span class="go">μ² = 0.4446579853323222</span>
+<span class="go">μ² = 3.362706040638343</span>
 </pre></div>
 </div>
-<p>We find that <code class="docutils literal notranslate"><span class="pre">μ²</span> <span class="pre">&lt;</span> <span class="pre">1</span></code>, hence <code class="docutils literal notranslate"><span class="pre">μ</span> <span class="pre">&lt;</span> <span class="pre">1</span></code>. In other words, both ellipsoids must
-be <em>shrunk</em> in order to bring them in contact: the ellipsoids overlap!</p>
+<p>We find that <code class="docutils literal notranslate"><span class="pre">μ²</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>, hence <code class="docutils literal notranslate"><span class="pre">μ</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>. In other words, both ellipsoids must
+be <em>swollen</em> in order to bring them in contact: the ellipsoids do not overlap!</p>
 <div class="section" id="checking-the-output">
 <h3>Checking the output<a class="headerlink" href="#checking-the-output" title="Permalink to this headline">¶</a></h3>
 <p>The output of this simulation can readily be checked. First, we can check that
-<code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code> indeed represent the ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code>. To do so, we first construct the symmetric matrices <code class="docutils literal notranslate"><span class="pre">Q1</span></code> and <code class="docutils literal notranslate"><span class="pre">Q2</span></code> from their upper triangular part</p>
+<code class="docutils literal notranslate"><span class="pre">q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">q₂</span></code> indeed represent the ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code>. To do so,
+we first construct the symmetric matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> from their upper
+triangular part</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">triu_indices_from</span><span class="p">(</span><span class="n">Q1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Q1</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">q1</span>
@@ -104,7 +110,9 @@ be <em>shrunk</em> in order to bring them in contact: the ellipsoids overlap!</p
 <span class="go">array([[ 1.e+02, -0.e+00, -0.e+00],</span>
 <span class="go">       [-0.e+00,  1.e+02, -0.e+00],</span>
 <span class="go">       [-0.e+00, -0.e+00,  1.e-02]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Q2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Q1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">Q1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Q2</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">q2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Q2</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">q2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Q2</span>
@@ -131,7 +139,7 @@ be <em>shrunk</em> in order to bring them in contact: the ellipsoids overlap!</p
 <span class="go">0.9999999999994884</span>
 </pre></div>
 </div>
-<p>then for ellipsoid <code class="docutils literal notranslate"><span class="pre">E₂</span></code> (translated at the origin)</p>
+<p>then for ellipsoid <code class="docutils literal notranslate"><span class="pre">E₂</span></code></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q2_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Q2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f2</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">Q2_inv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f2</span><span class="p">((</span><span class="n">c2</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span>
@@ -148,10 +156,147 @@ be <em>shrunk</em> in order to bring them in contact: the ellipsoids overlap!</p
 <span class="go">1.0</span>
 </pre></div>
 </div>
+<p>Note that in the above tests, we have omitted the centers of ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code>
+et <code class="docutils literal notranslate"><span class="pre">E₂</span></code> (both ellipsoids were translated to the origin).</p>
+<p>We will now verify the corectness of the value found for the scaling factor
+<code class="docutils literal notranslate"><span class="pre">μ</span></code>. To do so, we will find the coordinates of the contact point of the two
+scaled ellipsoids, and check that the normals to the two ellipsoids at that
+point coincide.</p>
+<p>Although we use formulæ from the <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a> section to find the coordinates
+of the contact point, <code class="docutils literal notranslate"><span class="pre">x₀</span></code>, it is not essential for the time being to fully
+understand this derivation. What really matters is to check that the resulting
+point <code class="docutils literal notranslate"><span class="pre">x₀</span></code> is indeed the contact point of the two scaled ellipsoids; how the
+coordinates of this point were found is irrelevant.</p>
+<p>It is possible to ask a <em>full output</em> from the function
+<code class="xref py py-func docutils literal notranslate"><span class="pre">pw85.contact_function()</span></code>. Besides <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, it then also returns the
+maximizer <code class="docutils literal notranslate"><span class="pre">λ</span></code> of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> defined by Eq. <a class="reference internal" href="theory.html#theory-eq-5"><span class="std std-ref">(5)</span></a> in
+section <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a> like so</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mu2</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lambda_</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;λ = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lambda_</span><span class="p">))</span>
+<span class="go">λ = 0.16685895534010342</span>
+</pre></div>
+</div>
+<p>From the value of <code class="docutils literal notranslate"><span class="pre">λ</span></code>, we compute <code class="docutils literal notranslate"><span class="pre">Q</span></code> defined by Eq. <a class="reference internal" href="theory.html#theory-eq-10"><span class="std std-ref">(10)</span></a> in section <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>, as well as <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">Q⁻¹⋅r₁₂</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">lambda_</span><span class="p">)</span><span class="o">*</span><span class="n">Q1</span><span class="o">+</span><span class="n">lambda_</span><span class="o">*</span><span class="n">Q2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">r12</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>From which we find <code class="docutils literal notranslate"><span class="pre">x₀</span></code>, using either Eq. <a class="reference internal" href="theory.html#theory-eq-9"><span class="std std-ref">(9a)</span></a> or Eq. <a class="reference internal" href="theory.html#theory-eq-9"><span class="std std-ref">(9b)</span></a> (and we can check that both give the same result)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x0a</span> <span class="o">=</span> <span class="n">x1</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">lambda_</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x0a</span>
+<span class="go">array([ 0.16662271, -0.29964969, -0.51687799])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x0b</span> <span class="o">=</span> <span class="n">x2</span><span class="o">-</span><span class="n">lambda_</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x0b</span>
+<span class="go">array([ 0.16662271, -0.29964969, -0.51687799])</span>
+</pre></div>
+</div>
+<p>We can now check that <code class="docutils literal notranslate"><span class="pre">x₀</span></code> belongs to the two scaled ellipsoids, that we
+first define, overriding the matrices of the unscaled ellipsoids, that are no
+longer needed. We observe that if ellispoid <code class="docutils literal notranslate"><span class="pre">Eᵢ</span></code> is scaled by <code class="docutils literal notranslate"><span class="pre">μ</span></code>, then its
+matrix representation <code class="docutils literal notranslate"><span class="pre">Qᵢ</span></code> is scaled by <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, and its inverse <code class="docutils literal notranslate"><span class="pre">Qᵢ⁻¹</span></code> is
+scaled by <code class="docutils literal notranslate"><span class="pre">μ⁻²</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span> <span class="o">=</span> <span class="n">x0a</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q1</span> <span class="o">*=</span> <span class="n">mu2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q2</span> <span class="o">*=</span> <span class="n">mu2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q1_inv</span> <span class="o">/=</span> <span class="n">mu2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q2_inv</span> <span class="o">/=</span> <span class="n">mu2</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">x0</span><span class="o">-</span><span class="n">x1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q1_inv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">1.0000000000058238</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">x0</span><span class="o">-</span><span class="n">x2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q2_inv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">0.9999999999988334</span>
+</pre></div>
+</div>
+<p>Therefore <code class="docutils literal notranslate"><span class="pre">x₀</span></code> indeed belongs to both ellipsoids. We now compute the normal
+<code class="docutils literal notranslate"><span class="pre">nᵢ</span></code> to ellipsoid <code class="docutils literal notranslate"><span class="pre">Eᵢ</span></code> at point <code class="docutils literal notranslate"><span class="pre">x₀</span></code>. Since ellipsoid <code class="docutils literal notranslate"><span class="pre">Eᵢ</span></code> is defined
+by the level-set: <code class="docutils literal notranslate"><span class="pre">(x-xᵢ)ᵀ⋅Qᵢ⁻¹⋅(x-xᵢ)</span> <span class="pre">=</span> <span class="pre">1</span></code>, the normal to <code class="docutils literal notranslate"><span class="pre">Eᵢ</span></code> is given by
+<code class="docutils literal notranslate"><span class="pre">Qᵢ⁻¹⋅(x-xᵢ)</span></code> (which is then suitably normalized)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">n1</span> <span class="o">=</span> <span class="n">Q1_inv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x0</span><span class="o">-</span><span class="n">x1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n1</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n1</span>
+<span class="go">array([ 3.64031943e-04, -3.82067448e-04,  9.99999861e-01])</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">n2</span> <span class="o">=</span> <span class="n">Q2_inv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x0</span><span class="o">-</span><span class="n">x2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n2</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">n2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n2</span>
+<span class="go">array([-3.64031943e-04,  3.82067448e-04, -9.99999861e-01])</span>
+</pre></div>
+</div>
+<p>We find that <code class="docutils literal notranslate"><span class="pre">n₁</span> <span class="pre">=</span> <span class="pre">-n₂</span></code>. Therefore, <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> are in external
+contact. QED</p>
+<p>Follow this link to <a class="reference download internal" download="" href="_downloads/da617670770c1e3f9359aa62da00e30f/tutorial.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">the</span> <span class="pre">above</span> <span class="pre">Python</span> <span class="pre">script</span></code></a>.</p>
 </div>
 </div>
 <div class="section" id="c-tutorial">
 <h2>C tutorial<a class="headerlink" href="#c-tutorial" title="Permalink to this headline">¶</a></h2>
+<p>The Python interface to PW85 has been kept close to the undelying C API. The
+following C program (<a class="reference download internal" download="" href="_downloads/d707f52b97e44a98e9e61f2d12aaa43e/tutorial.c"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">source</span> <span class="pre">file</span></code></a>) defines
+the two ellipsoids, then computes <code class="docutils literal notranslate"><span class="pre">μ²</span></code> (simplified output) and <code class="docutils literal notranslate"><span class="pre">λ</span></code> (full
+output).</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pw85.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#define DIM 3</span>
+<span class="cp">#define SYM 6</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">double</span> <span class="n">x1</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">};</span>
+  <span class="kt">double</span> <span class="n">n1</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">};</span>
+  <span class="kt">double</span> <span class="n">a1</span> <span class="o">=</span> <span class="mf">10.</span><span class="p">;</span>
+  <span class="kt">double</span> <span class="n">c1</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
+
+  <span class="kt">double</span> <span class="n">x2</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">};</span>
+  <span class="kt">double</span> <span class="n">n2</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">};</span>
+  <span class="kt">double</span> <span class="n">a2</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
+  <span class="kt">double</span> <span class="n">c2</span> <span class="o">=</span> <span class="mf">5.</span><span class="p">;</span>
+
+  <span class="kt">double</span> <span class="n">r12</span><span class="p">[</span><span class="n">DIM</span><span class="p">];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">DIM</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">r12</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">x1</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+
+  <span class="kt">double</span> <span class="n">q1</span><span class="p">[</span><span class="n">SYM</span><span class="p">],</span> <span class="n">q2</span><span class="p">[</span><span class="n">SYM</span><span class="p">];</span>
+  <span class="n">pw85_spheroid</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">q1</span><span class="p">);</span>
+  <span class="n">pw85_spheroid</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">q2</span><span class="p">);</span>
+
+  <span class="kt">double</span> <span class="n">mu2</span> <span class="o">=</span> <span class="n">pw85_contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Simplified output</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;-----------------</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;mu^2 = %g</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">mu2</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+
+  <span class="kt">double</span> <span class="n">out</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+  <span class="n">pw85_contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Full output</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;-----------</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;mu^2 = %g</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;lambda = %g</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This program is to be compiled as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gcc</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">c</span> <span class="o">-</span><span class="n">o</span> <span class="n">tutorial</span> <span class="o">-</span><span class="n">I</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pw85</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span><span class="n">L</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pw85</span><span class="o">.</span><span class="n">so</span> <span class="o">-</span><span class="n">lpw85</span>
+</pre></div>
+</div>
+<p>on execution, it prints the following lines to <code class="docutils literal notranslate"><span class="pre">stdout</span></code></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Simplified output
+-----------------
+mu^2 = 3.36271
+
+Full output
+-----------
+mu^2 = 3.36271
+lambda = 0.166859
+</pre></div>
+</div>
 </div>
 </div>
 

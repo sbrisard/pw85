@@ -89,10 +89,14 @@ which leads to::
 
   (8)    λQ₁⁻¹⋅[x₀(λ)-c₁] + (1-λ)Q₂⁻¹⋅[x₀(λ)-c₂] = 0,
 
+.. _theory-eq-9:
+
 and can be rearranged::
 
   (9a)    x₀(λ)-c₁ = (1-λ)Q₁⋅Q⁻¹⋅r₁₂,
   (9b)    x₀(λ)-c₂ = -λQ₂⋅Q⁻¹⋅r₁₂,
+
+.. _theory-eq-10:
 
 with::
 

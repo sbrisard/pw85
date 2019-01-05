@@ -72,7 +72,7 @@ which stores the upper triangular part of <code class="docutils literal notransl
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(4)    F(x, λ) = λ(x-c₁)ᵀ⋅Q₁⁻¹⋅(x-c₁)+(1-λ)(x-c₂)ᵀ⋅Q₂⁻¹⋅(x-c₂).
 </pre></div>
 </div>
-<p>For fixed <code class="docutils literal notranslate"><span class="pre">λ</span></code>, <code class="docutils literal notranslate"><span class="pre">F(x,</span> <span class="pre">λ)</span></code> has a unique minimum <a class="reference internal" href="#pw85" id="id3">[PW85]</a> <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>, and we
+<p id="theory-eq-5">For fixed <code class="docutils literal notranslate"><span class="pre">λ</span></code>, <code class="docutils literal notranslate"><span class="pre">F(x,</span> <span class="pre">λ)</span></code> has a unique minimum <a class="reference internal" href="#pw85" id="id3">[PW85]</a> <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>, and we
 define:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(5)    f(λ) = min{ F(x, λ), x ∈ ℝ³ }, 0 ≤ λ ≤ 1.
 </pre></div>
@@ -102,12 +102,12 @@ ellipsoids. The <code class="docutils literal notranslate"><span class="pre">PW8
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(8)    λQ₁⁻¹⋅[x₀(λ)-c₁] + (1-λ)Q₂⁻¹⋅[x₀(λ)-c₂] = 0,
 </pre></div>
 </div>
-<p>and can be rearranged:</p>
+<p id="theory-eq-9">and can be rearranged:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(9a)    x₀(λ)-c₁ = (1-λ)Q₁⋅Q⁻¹⋅r₁₂,
 (9b)    x₀(λ)-c₂ = -λQ₂⋅Q⁻¹⋅r₁₂,
 </pre></div>
 </div>
-<p>with:</p>
+<p id="theory-eq-10">with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(10)    Q = (1-λ)Q₁ + λQ₂.
 </pre></div>
 </div>
@@ -150,7 +150,7 @@ be scaled in order for them to be externally tangent at point <code class="docut
 </div>
 <div class="section" id="implementation">
 <h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
-<p>In this section, we explain how the contact function is computed. From Eq.
+<p id="theory-eq-15">In this section, we explain how the contact function is computed. From Eq.
 <a class="reference internal" href="#theory-eq-12"><span class="std std-ref">(12)</span></a>, the value of the contact function is found from
 the solution <code class="docutils literal notranslate"><span class="pre">λ</span></code> to equation <code class="docutils literal notranslate"><span class="pre">f'(λ)</span> <span class="pre">=</span> <span class="pre">0</span></code>. We observe that <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code> is a
 rational function [see Eq. <a class="reference internal" href="#theory-eq-11"><span class="std std-ref">(11)</span></a>], and we write:</p>
@@ -229,7 +229,7 @@ matrix), see e.g <a class="reference external" href="https://en.wikipedia.org/wi
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(20a)    c₀ = a₀b₀,
 (20b)    c₁ = 2(a₁-a₀)b₀,
 (20c)    c₂ = -a₀(b₁+b₂) + 3b₀(a₂-a₁) + a₁b₁,
-(20d)    c₃ = 2[b₁(a₂-a₁) - a₀b₃]  - 4a₂b₀,
+(20d)    c₃ = 2[b₁(a₂-a₁) - a₀b₃] - 4a₂b₀,
 (20e)    c₄ = (a₀-a₁)b₃ + (a₂-a₁)b₂ - 3a₂b₁,
 (20f)    c₅ = -2a₂b₂,
 (20g)    c₆ = -a₂b₃,
@@ -239,7 +239,7 @@ matrix), see e.g <a class="reference external" href="https://en.wikipedia.org/wi
 root of <code class="docutils literal notranslate"><span class="pre">c</span></code> in the interval <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">≤</span> <span class="pre">λ</span> <span class="pre">≤</span> <span class="pre">1</span></code>. For the sake of robustness, the
 <a class="reference external" href="https://en.wikipedia.org/wiki/Bisection_method">bisection method</a> has been
 implemented (more efficient methods will be implemented in future versions).</p>
-<p>Once <code class="docutils literal notranslate"><span class="pre">λ</span></code> is found, <code class="docutils literal notranslate"><span class="pre">μ</span></code> is computed from <code class="docutils literal notranslate"><span class="pre">μ²</span> <span class="pre">=</span> <span class="pre">f(λ)</span></code> using Eq. (15).</p>
+<p>Once <code class="docutils literal notranslate"><span class="pre">λ</span></code> is found, <code class="docutils literal notranslate"><span class="pre">μ</span></code> is computed from <code class="docutils literal notranslate"><span class="pre">μ²</span> <span class="pre">=</span> <span class="pre">f(λ)</span></code> using Eq. <a class="reference internal" href="#theory-eq-15"><span class="std std-ref">(15)</span></a>.</p>
 </div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
