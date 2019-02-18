@@ -2,4 +2,4 @@ get_filename_component (_dir "${CMAKE_CURRENT_LIST_FILE}" PATH)
 get_filename_component (_prefix "${_dir}/../.." ABSOLUTE)
 
 include ("${_prefix}/lib/pw85-@version@/pw85-targets.cmake")
-set (pw85_INCLUDE_DIRS "${_prefix}/include/pw85-@version@")
+set (pw85_INCLUDE_DIRS "${_prefix}/include")
