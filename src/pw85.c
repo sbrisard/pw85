@@ -9,8 +9,7 @@ double pw85__det_sym(double a[PW85_SYM]) {
          a[3] * a[2] * a[2] - a[5] * a[1] * a[1];
 }
 
-double pw85__xT_adjA_x(double x[PW85_DIM],
-                                             double a[PW85_SYM]) {
+double pw85__xT_adjA_x(double x[PW85_DIM], double a[PW85_SYM]) {
   return (x[0] * x[0] * (a[3] * a[5] - a[4] * a[4]) +
           x[1] * x[1] * (a[0] * a[5] - a[2] * a[2]) +
           x[2] * x[2] * (a[0] * a[3] - a[1] * a[1]) +
@@ -19,11 +18,9 @@ double pw85__xT_adjA_x(double x[PW85_DIM],
                 x[1] * x[2] * (a[1] * a[2] - a[0] * a[4])));
 }
 
-void pw85__rT_adjQ_r_as_poly(double r[PW85_DIM],
-                                                   double q1[PW85_SYM],
-                                                   double q2[PW85_SYM],
-                                                   double q3[PW85_SYM],
-                                                   double a[PW85_DIM]) {
+void pw85__rT_adjQ_r_as_poly(double r[PW85_DIM], double q1[PW85_SYM],
+                             double q2[PW85_SYM], double q3[PW85_SYM],
+                             double a[PW85_DIM]) {
   const double a_zero = pw85__xT_adjA_x(r, q1);
   const double a_one = pw85__xT_adjA_x(r, q2);
   const double a_minus_one = pw85__xT_adjA_x(r, q3);
@@ -32,11 +29,9 @@ void pw85__rT_adjQ_r_as_poly(double r[PW85_DIM],
   a[1] = 0.5 * (a_one - a_minus_one);
 }
 
-void pw85__detQ_as_poly(double q1[PW85_SYM],
-                                              double q2[PW85_SYM],
-                                              double q3[PW85_SYM],
-                                              double q4[PW85_SYM],
-                                              double b[PW85_DIM + 1]) {
+void pw85__detQ_as_poly(double q1[PW85_SYM], double q2[PW85_SYM],
+                        double q3[PW85_SYM], double q4[PW85_SYM],
+                        double b[PW85_DIM + 1]) {
   const double b_zero = pw85__det_sym(q1);
   const double b_one = pw85__det_sym(q2);
   /* Compute det[(1-x)*q1+x*q2] for x = -1. */
@@ -52,8 +47,7 @@ void pw85__detQ_as_poly(double q1[PW85_SYM],
 /* Public API */
 /* ========== */
 
-void pw85_spheroid(double a, double c, double n[PW85_DIM],
-                                         double q[PW85_SYM]) {
+void pw85_spheroid(double a, double c, double n[PW85_DIM], double q[PW85_SYM]) {
   const double a2 = a * a;
   const double c2_minus_a2 = c * c - a2;
   const double nx = n[0];
@@ -67,10 +61,8 @@ void pw85_spheroid(double a, double c, double n[PW85_DIM],
   q[1] = nx * ny * c2_minus_a2;
 }
 
-double pw85_contact_function(double r12[PW85_DIM],
-                                                   double q1[PW85_SYM],
-                                                   double q2[PW85_SYM],
-                                                   double* out) {
+double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM],
+                             double q2[PW85_SYM], double* out) {
   double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
   double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
   for (int i = 0; i < PW85_SYM; i++) {
