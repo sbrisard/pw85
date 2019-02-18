@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.12)
+project (pw85_tutorial LANGUAGES C)
+find_package (pw85 1.0 REQUIRED)
+include_directories(${pw85_INCLUDE_DIRS})
+add_executable (pw85_tutorial pw85_tutorial.c)
+target_link_libraries(pw85_tutorial pw85)
