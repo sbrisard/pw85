@@ -56,7 +56,6 @@ else:
     # TODO: improve error message
     raise RuntimeError("Configuration file not found.")
 
-
 cpw85.pw85__det_sym.argtypes = [__c_double_p]
 cpw85.pw85__det_sym.restype = c_double
 

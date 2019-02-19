@@ -16,7 +16,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Theory" href="theory.html" />
-    <link rel="prev" title="Welcome to PW85’s documentation!" href="index.html" />
+    <link rel="prev" title="Installation" href="installation.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -77,7 +77,7 @@ underlying C library. We therefore import both modules:</p>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">r₁₂</span></code> is the vector that joins the center of the first ellipsoid,
 <code class="docutils literal notranslate"><span class="pre">x₁</span></code>, to the center of the second ellipsoid, <code class="docutils literal notranslate"><span class="pre">x₂</span></code>.</p>
-<p>We use the function <a class="reference internal" href="py_api.html#pypw85.spheroid" title="pypw85.spheroid"><code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.spheroid()</span></code></a> to create the matrix
+<p>We use the function <code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.spheroid()</span></code> to create the matrix
 representations <code class="docutils literal notranslate"><span class="pre">q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">q₂</span></code> of the two ellipsoids:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">spheroid</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span>
@@ -88,7 +88,7 @@ representations <code class="docutils literal notranslate"><span class="pre">q�
 </pre></div>
 </div>
 <p>We can now compute the value of the contact function — see the documentation of
-<a class="reference internal" href="py_api.html#pypw85.contact_function" title="pypw85.contact_function"><code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.contact_function()</span></code></a>:</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.contact_function()</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mu2</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;μ² = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mu2</span><span class="p">))</span>
 <span class="go">μ² = 3.362706040638343</span>
@@ -232,15 +232,16 @@ by the level-set: <code class="docutils literal notranslate"><span class="pre">(
 </div>
 <p>We find that <code class="docutils literal notranslate"><span class="pre">n₁</span> <span class="pre">=</span> <span class="pre">-n₂</span></code>. Therefore, <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> are in external
 contact. QED</p>
-<p>Follow this link to <a class="reference download internal" download="" href="_downloads/da617670770c1e3f9359aa62da00e30f/tutorial.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">the</span> <span class="pre">above</span> <span class="pre">Python</span> <span class="pre">script</span></code></a>.</p>
+<p>Follow this link to
+<a class="reference download internal" download="" href="_downloads/a9ce833ed5464bd1986c065724d913f1/tutorial.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">the</span> <span class="pre">above</span> <span class="pre">Python</span> <span class="pre">script</span></code></a>.</p>
 </div>
 </div>
 <div class="section" id="c-tutorial">
-<h2>C tutorial<a class="headerlink" href="#c-tutorial" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>C tutorial<a class="headerlink" href="#c-tutorial" title="Permalink to this headline">¶</a></h2>
 <p>The Python interface to PW85 has been kept close to the undelying C API. The
-following C program (<a class="reference download internal" download="" href="_downloads/d707f52b97e44a98e9e61f2d12aaa43e/tutorial.c"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">source</span> <span class="pre">file</span></code></a>) defines
-the two ellipsoids, then computes <code class="docutils literal notranslate"><span class="pre">μ²</span></code> (simplified output) and <code class="docutils literal notranslate"><span class="pre">λ</span></code> (full
-output).</p>
+following C program (<a class="reference download internal" download="" href="_downloads/3403d0c0142c96154d5c70059f8bb223/tutorial.c"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">source</span> <span class="pre">file</span></code></a>)
+defines the two ellipsoids, then computes <code class="docutils literal notranslate"><span class="pre">μ²</span></code> (simplified output) and <code class="docutils literal notranslate"><span class="pre">λ</span></code>
+(full output):</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pw85.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
@@ -282,11 +283,21 @@ output).</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>This program is to be compiled as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gcc</span> <span class="n">tutorial</span><span class="o">.</span><span class="n">c</span> <span class="o">-</span><span class="n">o</span> <span class="n">tutorial</span> <span class="o">-</span><span class="n">I</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pw85</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span><span class="n">L</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pw85</span><span class="o">.</span><span class="n">so</span> <span class="o">-</span><span class="n">lpw85</span>
+<p>A <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> file is provided for the compilation of the
+tutorial using CMake. You can copy and paste its contents for reuse in
+one of your own projects:</p>
+<div class="highlight-CMake notranslate"><div class="highlight"><pre><span></span><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.0</span><span class="p">)</span>
+<span class="nb">project</span> <span class="p">(</span><span class="s">tutorial</span> <span class="s">LANGUAGES</span> <span class="s">C</span><span class="p">)</span>
+<span class="nb">find_package</span> <span class="p">(</span><span class="s">pw85</span> <span class="s">1.0</span> <span class="s">REQUIRED</span><span class="p">)</span>
+<span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">pw85_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
+<span class="nb">add_executable</span> <span class="p">(</span><span class="s">tutorial</span> <span class="s">tutorial.c</span><span class="p">)</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">tutorial</span> <span class="s">pw85</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>on execution, it prints the following lines to <code class="docutils literal notranslate"><span class="pre">stdout</span></code></p>
+<p>The compilation procedure is similar to that in the <a class="reference internal" href="installation.html#installation"><span class="std std-ref">Installation</span></a>
+section. It produces an executable called (depending on the platform):
+<code class="docutils literal notranslate"><span class="pre">tutorial.exe</span></code> or <code class="docutils literal notranslate"><span class="pre">tutorial</span></code>. On execution, it prints the following lines
+to <code class="docutils literal notranslate"><span class="pre">stdout</span></code>:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Simplified output
 -----------------
 mu^2 = 3.36271
@@ -296,6 +307,23 @@ Full output
 mu^2 = 3.36271
 lambda = 0.166859
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">On calling <code class="docutils literal notranslate"><span class="pre">cmake</span></code>, you might get the following error message:
+<code class="docutils literal notranslate"><span class="pre">“Could</span> <span class="pre">not</span> <span class="pre">find</span> <span class="pre">a</span> <span class="pre">package</span> <span class="pre">configuration</span> <span class="pre">file</span> <span class="pre">provided</span> <span class="pre">by</span> <span class="pre">&quot;pw85&quot;</span>
+<span class="pre">(requested</span> <span class="pre">version</span> <span class="pre">1.0)</span> <span class="pre">with</span> <span class="pre">any</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">following</span> <span class="pre">names:</span>
+<span class="pre">pw85Config.cmake,</span> <span class="pre">pw85-config.cmake.”</span></code> If that is the case, add the
+following command-line argument to your call to <code class="docutils literal notranslate"><span class="pre">cmake</span></code>:
+<code class="docutils literal notranslate"><span class="pre">-Dpw85_DIR=/prefix/to/pw85/lib/pw85-1.0</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">On Windows/Visual C++ platforms, the system might complain about a
+missing <code class="docutils literal notranslate"><span class="pre">ucrtbased.dll</span></code> file. Make sure that you compiled both the
+tutorial and the library using the
+<code class="docutils literal notranslate"><span class="pre">-DCMAKE_BUILD_TYPE:STRING=Release</span></code> option, rather than
+<code class="docutils literal notranslate"><span class="pre">-DCMAKE_BUILD_TYPE:STRING=Debug</span></code> (the default).</p>
 </div>
 </div>
 </div>
@@ -319,6 +347,7 @@ lambda = 0.166859
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#python-tutorial">Python tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#c-tutorial">C tutorial</a></li>
@@ -333,7 +362,7 @@ lambda = 0.166859
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to PW85’s documentation!</a></li>
+      <li>Previous: <a href="installation.html" title="previous chapter">Installation</a></li>
       <li>Next: <a href="theory.html" title="next chapter">Theory</a></li>
   </ul></li>
 </ul>
