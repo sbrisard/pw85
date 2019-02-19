@@ -65,10 +65,10 @@ Go to :ref:`finalize-your-installation`.
 Windows + MinGW platforms
 -------------------------
 
-Open the command prompt `cd`` into the ``src/build/`` directory. Issue the
+Open the command prompt and `cd`` into the ``src/build/`` directory. Issue the
 following call to cmake::
 
-  C:\path\to\cmake\bin\cmake.exe .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/c/opt/pw85
+  C:\path\to\cmake\bin\cmake.exe .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=C:/opt/pw85
 
 (feel free to modify the install prefix). Then, build the project::
 
