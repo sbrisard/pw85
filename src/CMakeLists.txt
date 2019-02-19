@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.0)
 project (pw85 LANGUAGES C)
 set (version 1.0)
 add_library (pw85 SHARED pw85.c pw85.h)

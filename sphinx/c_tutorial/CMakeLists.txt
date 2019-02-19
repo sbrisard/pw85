@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.0)
 project (tutorial LANGUAGES C)
 find_package (pw85 1.0 REQUIRED)
 include_directories(${pw85_INCLUDE_DIRS})
