@@ -29,12 +29,11 @@ equivalent). This ensures that all native build tools will be correctly
 discovered by CMake. ``cd`` into the ``src/build/`` directory. Issue the
 following call to cmake::
 
-  C:\path\to\cmake\cmake.exe .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=C:/opt/pw85
+  C:\path\to\pw85\src\build>C:\path\to\cmake\cmake.exe .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=C:/opt/pw85
 
 (feel free to modify the install prefix). Then, build the project::
 
-  c:\path\to\pw85\src\build>nmake
-
+  C:\path\to\pw85\src\build>nmake
   Microsoft (R) Program Maintenance Utility Version 14.00.24210.0
   Copyright (C) Microsoft Corporation.  All rights reserved.
 
@@ -47,7 +46,6 @@ following call to cmake::
 Finally, install the project::
 
   c:\path\to\pw85\src\build>nmake install
-
   Microsoft (R) Program Maintenance Utility Version 14.00.24210.0
   Copyright (C) Microsoft Corporation.  All rights reserved.
 
@@ -62,14 +60,41 @@ Finally, install the project::
   -- Installing: C:/opt/pw85/lib/pw85-1.0/pw85-config.cmake
   -- Installing: C:/opt/pw85/lib/pw85-1.0/pw85-config-version.cmake
 
-Congratulations, ``PW85`` is now built and installed! In order to make sure
-that the library will be found in any circumstances (including from within
-Python), do not forget to add the full path to ``pw85.dll`` (see output above)
-to your ``PATH`` environment variable. Then go to :ref:`test-your-installation`.
+Go to :ref:`finalize-your-installation`.
 
 Windows + MinGW platforms
 -------------------------
 
+Open the command prompt `cd`` into the ``src/build/`` directory. Issue the
+following call to cmake::
+
+  C:\path\to\cmake\bin\cmake.exe .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/c/opt/pw85
+
+(feel free to modify the install prefix). Then, build the project::
+
+  C:\path\to\pw85\src\build>mingw32-make
+
+  C:\path\to\pw85\src\build>C:\Users\brisard\Documents\travail\Programmes\pw85\src\build>mingw32-make
+  Scanning dependencies of target pw85
+  [ 50%] Building C object CMakeFiles/pw85.dir/pw85.c.obj
+  [100%] Linking C shared library libpw85.dll
+  [100%] Built target pw85
+
+Finally, install the project::
+
+  C:\path\to\pw85\src\build>mingw32-make install
+  [100%] Built target pw85
+  Install the project...
+  -- Install configuration: "Release"
+  -- Installing: c:/opt/pw85/lib/libpw85.dll.a
+  -- Installing: c:/opt/pw85/bin/libpw85.dll
+  -- Installing: c:/opt/pw85/lib/pw85-1.0/pw85-targets.cmake
+  -- Installing: c:/opt/pw85/lib/pw85-1.0/pw85-targets-release.cmake
+  -- Installing: c:/opt/pw85/include/pw85.h
+  -- Installing: c:/opt/pw85/lib/pw85-1.0/pw85-config.cmake
+  -- Installing: c:/opt/pw85/lib/pw85-1.0/pw85-config-version.cmake
+
+Go to :ref:`finalize-your-installation`.
 
 Linux platforms
 ---------------
@@ -77,13 +102,18 @@ Linux platforms
 MacOS + HomeBrew platforms
 --------------------------
 
-.. _test-your-installation:
+.. _finalize-your-installation:
 
-Test your installation
-----------------------
+Finalize your installation
+--------------------------
 
-In order to test your installation, try to build the example in the
-:ref:`c-tutorial`.
+Congratulations, ``PW85`` is now built and installed! In order to make sure
+that the dynamic library will be found in any circumstances (including from
+within Python), you need to inform your system:
+
+- on Windows platforms, you need to add the full path to ``pw85.dll`` to your ``PATH`` environment variable.
+
+To test your installation, build the example in the :ref:`c-tutorial`.
 
 Installation of the Python bindings
 ===================================
