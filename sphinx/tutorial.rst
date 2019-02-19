@@ -252,6 +252,13 @@ to ``stdout``:
   mu^2 = 3.36271
   lambda = 0.166859
 
+.. note:: On calling ``cmake``, you might get the following error message:
+          ``“Could not find a package configuration file provided by "pw85"
+          (requested version 1.0) with any of the following names:
+          pw85Config.cmake, pw85-config.cmake.”`` If that is the case, add the
+          following command-line argument to your call to ``cmake``:
+          ``-Dpw85_DIR=/prefix/to/pw85/lib/pw85-1.0``.
+
 .. note:: On Windows/Visual C++ platforms, the system might complain about a
           missing ``ucrtbased.dll`` file. Make sure that you compiled both the
           tutorial and the library using the
