@@ -5,7 +5,9 @@ Installation
 ************
 
 This section describes how to install the C library as well as the Python
-bindings.
+bindings. The first step is to clone the Git repository::
+
+  git clone https://github.com/sbrisard/pw85.git
 
 .. highlight:: none
 
@@ -18,8 +20,15 @@ required to install. The instructions below use the command-line
 exclusively. However, you can of course reach the same results from the
 interfaces ``ccmake`` or ``cmake-gui``.
 
+.. note:: The minimum required version of CMake is 3.0. Older versions of CMake
+          have not been tested. Please report any success!
+
 For all platforms, we will assume that the project is built in the
-``src/build/`` directory (that you should first create).
+``src/build/`` directory (that you should first create)::
+
+  cd pw85/src
+  mkdir build
+  cd build
 
 Windows + Visual C++ platforms
 ------------------------------
