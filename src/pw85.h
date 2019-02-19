@@ -8,6 +8,8 @@
 
 #if _WIN32
 #define DllExport __declspec(dllexport)
+#else
+#define DllExport
 #endif
 
 DllExport double pw85__det_sym(double a[PW85_SYM]);
