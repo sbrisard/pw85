@@ -99,6 +99,18 @@ Go to :ref:`finalize-your-installation`.
 Linux platforms
 ---------------
 
+Open a terminal and ``cd`` into the ``src/build/`` directory. Issue the
+following call to cmake::
+
+  cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=~/local
+
+(feel free to modify the install prefix). Then, build and install the project::
+
+  make
+  make install
+
+Go to :ref:`finalize-your-installation`.
+
 MacOS + HomeBrew platforms
 --------------------------
 
