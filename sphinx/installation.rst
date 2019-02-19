@@ -31,34 +31,10 @@ following call to cmake::
 
   C:\path\to\pw85\src\build>C:\path\to\cmake\cmake.exe .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=C:/opt/pw85
 
-(feel free to modify the install prefix). Then, build the project::
+(feel free to modify the install prefix). Then, build and install the project::
 
   C:\path\to\pw85\src\build>nmake
-  Microsoft (R) Program Maintenance Utility Version 14.00.24210.0
-  Copyright (C) Microsoft Corporation.  All rights reserved.
-
-  [ 50%] Building C object CMakeFiles/pw85.dir/pw85.c.obj
-  pw85.c
-  [100%] Linking C shared library pw85.dll
-     Creating library pw85.lib and object pw85.exp
-  [100%] Built target pw85
-
-Finally, install the project::
-
-  c:\path\to\pw85\src\build>nmake install
-  Microsoft (R) Program Maintenance Utility Version 14.00.24210.0
-  Copyright (C) Microsoft Corporation.  All rights reserved.
-
-  [100%] Built target pw85
-  Install the project...
-  -- Install configuration: "Release"
-  -- Installing: C:/opt/pw85/lib/pw85.lib
-  -- Installing: C:/opt/pw85/bin/pw85.dll
-  -- Installing: C:/opt/pw85/lib/pw85-1.0/pw85-targets.cmake
-  -- Installing: C:/opt/pw85/lib/pw85-1.0/pw85-targets-release.cmake
-  -- Installing: C:/opt/pw85/include/pw85.h
-  -- Installing: C:/opt/pw85/lib/pw85-1.0/pw85-config.cmake
-  -- Installing: C:/opt/pw85/lib/pw85-1.0/pw85-config-version.cmake
+  C:\path\to\pw85\src\build>nmake install
 
 Go to :ref:`finalize-your-installation`.
 
@@ -70,29 +46,10 @@ following call to cmake::
 
   C:\path\to\cmake\bin\cmake.exe .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=C:/opt/pw85
 
-(feel free to modify the install prefix). Then, build the project::
+(feel free to modify the install prefix). Then, build and install the project::
 
   C:\path\to\pw85\src\build>mingw32-make
-
-  C:\path\to\pw85\src\build>C:\Users\brisard\Documents\travail\Programmes\pw85\src\build>mingw32-make
-  Scanning dependencies of target pw85
-  [ 50%] Building C object CMakeFiles/pw85.dir/pw85.c.obj
-  [100%] Linking C shared library libpw85.dll
-  [100%] Built target pw85
-
-Finally, install the project::
-
   C:\path\to\pw85\src\build>mingw32-make install
-  [100%] Built target pw85
-  Install the project...
-  -- Install configuration: "Release"
-  -- Installing: c:/opt/pw85/lib/libpw85.dll.a
-  -- Installing: c:/opt/pw85/bin/libpw85.dll
-  -- Installing: c:/opt/pw85/lib/pw85-1.0/pw85-targets.cmake
-  -- Installing: c:/opt/pw85/lib/pw85-1.0/pw85-targets-release.cmake
-  -- Installing: c:/opt/pw85/include/pw85.h
-  -- Installing: c:/opt/pw85/lib/pw85-1.0/pw85-config.cmake
-  -- Installing: c:/opt/pw85/lib/pw85-1.0/pw85-config-version.cmake
 
 Go to :ref:`finalize-your-installation`.
 
