@@ -1,15 +1,20 @@
 Documentation of the PW85 library
 =================================
 
-PW85 is a C implementation of the overlap test for ellipsoids introduced by
-Perram and Wertheim [PW85]_.
+.. raw:: latex
 
-PW85 is released under a BSD 3-Clause License.
+   \begin{abstract}
 
+.. include:: abstract.rst
+   :end-before: ----
+
+.. raw:: latex
+
+   \end{abstract}
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents
 
    installation
    tutorial

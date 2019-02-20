@@ -1,11 +1,14 @@
-"""Overlap test of two ellipsoids
-------------------------------
+"""Overlap test of two ellipsoids.
 
 This module provides an implementation of the “contact function”
 defined by Perram and Wertheim (J. Comp. Phys. 58(3), 409–416) for two
 ellipsoids. Given two ellipsoids, this function returns the *square*
 of the common factor by which both ellipsoids must be scaled (their
 centers being fixed) in order to be tangentially in contact.
+
+This module is released under a BSD 3-Clause License.
+
+----
 
 Representation of vectors and matrices
 --------------------------------------
@@ -34,6 +37,10 @@ that::
   A = ⎢      a[3] a[4] ⎥.
       ⎣ sym.      a[5] ⎦
 
+The present wrapper around the PW85 C library relies on the NumPy library.
+“Array of ``double``” should be understood here as “NumPy array with
+``dtype == numpy.float64``.”
+
 """
 import configparser
 import ctypes
@@ -44,6 +51,8 @@ import numpy as np
 from ctypes import c_double
 
 __c_double_p = ctypes.POINTER(c_double)
+
+__version__ = '1.0'
 
 
 # TODO: wrap in a function
@@ -85,7 +94,7 @@ def _det_sym(a):
 
 
 def _xT_adjA_x(x, a):
-    """Return ``xᵀ⋅adj(A)⋅x``
+    """Return ``xᵀ⋅adj(A)⋅x``.
 
     ``x`` is a vector, represented by the array `x`. ``A`` is a
     symmetric matrix, represented by the array `a`.
