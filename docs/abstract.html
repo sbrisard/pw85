@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Documentation of the PW85 library &#8212; PW85 1.0 documentation</title>
+    <title>Representation of vectors and matrices &#8212; PW85 1.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -15,7 +15,6 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation" href="installation.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -32,47 +31,43 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="documentation-of-the-pw85-library">
-<h1>Documentation of the PW85 library<a class="headerlink" href="#documentation-of-the-pw85-library" title="Permalink to this headline">¶</a></h1>
-<p>Overlap test of two ellipsoids.</p>
+  <p>Overlap test of two ellipsoids.</p>
 <p>PW85 provides an implementation of the “contact function”
 defined by Perram and Wertheim (J. Comp. Phys. 58(3), 409–416) for two
 ellipsoids. Given two ellipsoids, this function returns the <em>square</em>
 of the common factor by which both ellipsoids must be scaled (their
 centers being fixed) in order to be tangentially in contact.</p>
 <p>PW85 is released under a BSD 3-Clause License.</p>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#building-and-installing-the-c-library">Building and installing the C library</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-of-the-python-bindings">Installation of the Python bindings</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#python-tutorial">Python tutorial</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#c-tutorial">C tutorial</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="theory.html#mathematical-representation-of-ellipsoids">Mathematical representation of ellipsoids</a></li>
-<li class="toctree-l2"><a class="reference internal" href="theory.html#the-contact-function-of-two-ellipsoids">The contact function of two ellipsoids</a></li>
-<li class="toctree-l2"><a class="reference internal" href="theory.html#geometric-interpretation">Geometric interpretation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="theory.html#implementation">Implementation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="c_api.html#representation-of-vectors-and-matrices">Representation of vectors and matrices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="c_api.html#public-api">“Public” API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="c_api.html#private-api">“Private” API</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="py_api.html#representation-of-vectors-and-matrices">Representation of vectors and matrices</a></li>
-</ul>
-</li>
-</ul>
+<hr class="docutils" />
+<div class="section" id="representation-of-vectors-and-matrices">
+<h1>Representation of vectors and matrices<a class="headerlink" href="#representation-of-vectors-and-matrices" title="Permalink to this headline">¶</a></h1>
+<p>An ellipsoid is defined from its center <code class="docutils literal notranslate"><span class="pre">c</span></code> (a 3×1, column-vector)
+and quadratic form <code class="docutils literal notranslate"><span class="pre">Q</span></code> (a 3×3, symmetric, positive definite matrix)
+as the set of points <code class="docutils literal notranslate"><span class="pre">m</span></code> such that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
+</pre></div>
 </div>
+<p>In this module, objects referred to as “vectors” are length-3 arrays
+of <code class="docutils literal notranslate"><span class="pre">double</span></code> coordinates. In other words, the representation of the
+vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is the <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <code class="docutils literal notranslate"><span class="pre">x</span></code> such that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    ⎡ x[0] ⎤
+x = ⎢ x[1] ⎥.
+    ⎣ x[2] ⎦
+</pre></div>
+</div>
+<p>Objects referred to as “symmetric matrices” (or “quadratic forms”) are
+length-6 arrays of <code class="docutils literal notranslate"><span class="pre">double</span></code>. Such arrays list in row-major order the
+coefficients of the triangular upper part. In other words, the
+representation of a the symmetric matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is the array <code class="docutils literal notranslate"><span class="pre">a</span></code> such
+that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    ⎡ a[0] a[1] a[2] ⎤
+A = ⎢      a[3] a[4] ⎥.
+    ⎣ sym.      a[5] ⎦
+</pre></div>
+</div>
+<p>The present wrapper around the PW85 C library relies on the NumPy library.
+“Array of <code class="docutils literal notranslate"><span class="pre">double</span></code>” should be understood here as “NumPy array with
+<code class="docutils literal notranslate"><span class="pre">dtype</span> <span class="pre">==</span> <span class="pre">numpy.float64</span></code>.”</p>
 </div>
 
 
@@ -82,7 +77,7 @@ centers being fixed) in order to be tangentially in contact.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">PW85</a></h1>
+<h1 class="logo"><a href="index.html">PW85</a></h1>
 
 
 
@@ -104,8 +99,7 @@ centers being fixed) in order to be tangentially in contact.</p>
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
-  <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="installation.html" title="next chapter">Installation</a></li>
+  <li><a href="index.html">Documentation overview</a><ul>
   </ul></li>
 </ul>
 </div>
@@ -141,7 +135,7 @@ centers being fixed) in order to be tangentially in contact.</p>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="_sources/index.rst.txt"
+      <a href="_sources/abstract.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

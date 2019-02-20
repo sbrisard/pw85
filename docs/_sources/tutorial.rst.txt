@@ -4,7 +4,10 @@
 Tutorial
 ********
 
-In this tutorial, we consider to ellipsoids, and check wether or not
+.. contents:: Contents
+   :local:
+
+In this tutorial, we consider two ellipsoids, and check wether or not
 they overlap.
 
 Ellipsoid ``E₁`` is an `oblate spheroid

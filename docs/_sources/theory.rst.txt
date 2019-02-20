@@ -4,6 +4,9 @@
 Theory
 ******
 
+.. contents:: Contents
+   :local:
+
 This chapter provides the theoretical background to the Perram–Wertheim
 algorithm [PW85]_. We use matrices rather than tensors: a point/vector is
 therefore defined through the 3×1 column-vector of its coordinates. Likewise, a
@@ -250,8 +253,6 @@ implemented (more efficient methods will be implemented in future versions).
 Once ``λ`` is found, ``μ`` is computed from ``μ² = f(λ)`` using Eq. :ref:`(15)
 <theory-eq-15>`.
 
-References
-==========
 
 .. [PW85] Perram, J. W., & Wertheim, M. S. (1985). Statistical
           mechanics of hard ellipsoids. I. Overlap algorithm and the

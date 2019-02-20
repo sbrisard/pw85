@@ -2,17 +2,10 @@
 The C API
 #########
 
+.. contents:: Contents
+   :local:
+
 .. highlight:: none
-
-Overlap test of two ellipsoids
-==============================
-
-This module provides an implementation of the “contact function”
-defined by Perram and Wertheim (J. Comp. Phys. 58(3), 409–416) for two
-ellipsoids. Given two ellipsoids, this function returns the *square*
-of the common factor by which both ellipsoids must be scaled (their
-centers being fixed) in order to be tangentially in contact.
-
 
 Representation of vectors and matrices
 ======================================

@@ -2,11 +2,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>The python API &#8212; PW85  documentation</title>
+    <title>The python API &#8212; PW85 1.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -32,18 +32,24 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-pypw85">
-<span id="the-python-api"></span><h1>The python API<a class="headerlink" href="#module-pypw85" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="overlap-test-of-two-ellipsoids">
-<h2>Overlap test of two ellipsoids<a class="headerlink" href="#overlap-test-of-two-ellipsoids" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="the-python-api">
+<h1>The python API<a class="headerlink" href="#the-python-api" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#representation-of-vectors-and-matrices" id="id1">Representation of vectors and matrices</a></li>
+</ul>
+</div>
+<span class="target" id="module-pypw85"></span><p>Overlap test of two ellipsoids.</p>
 <p>This module provides an implementation of the “contact function”
 defined by Perram and Wertheim (J. Comp. Phys. 58(3), 409–416) for two
 ellipsoids. Given two ellipsoids, this function returns the <em>square</em>
 of the common factor by which both ellipsoids must be scaled (their
 centers being fixed) in order to be tangentially in contact.</p>
-</div>
+<p>This module is released under a BSD 3-Clause License.</p>
+<hr class="docutils" />
 <div class="section" id="representation-of-vectors-and-matrices">
-<h2>Representation of vectors and matrices<a class="headerlink" href="#representation-of-vectors-and-matrices" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id1">Representation of vectors and matrices</a><a class="headerlink" href="#representation-of-vectors-and-matrices" title="Permalink to this headline">¶</a></h2>
 <p>An ellipsoid is defined from its center <code class="docutils literal notranslate"><span class="pre">c</span></code> (a 3×1, column-vector)
 and quadratic form <code class="docutils literal notranslate"><span class="pre">Q</span></code> (a 3×3, symmetric, positive definite matrix)
 as the set of points <code class="docutils literal notranslate"><span class="pre">m</span></code> such that:</p>
@@ -68,6 +74,9 @@ A = ⎢      a[3] a[4] ⎥.
     ⎣ sym.      a[5] ⎦
 </pre></div>
 </div>
+<p>The present wrapper around the PW85 C library relies on the NumPy library.
+“Array of <code class="docutils literal notranslate"><span class="pre">double</span></code>” should be understood here as “NumPy array with
+<code class="docutils literal notranslate"><span class="pre">dtype</span> <span class="pre">==</span> <span class="pre">numpy.float64</span></code>.”</p>
 <dl class="attribute">
 <dt id="pypw85.__c_double_p">
 <code class="descclassname">pypw85.</code><code class="descname">__c_double_p</code><a class="headerlink" href="#pypw85.__c_double_p" title="Permalink to this definition">¶</a></dt>
@@ -121,7 +130,7 @@ the difference <code class="docutils literal notranslate"><span class="pre">2Q�
 <dl class="function">
 <dt id="pypw85._xT_adjA_x">
 <code class="descclassname">pypw85.</code><code class="descname">_xT_adjA_x</code><span class="sig-paren">(</span><em>x</em>, <em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#_xT_adjA_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85._xT_adjA_x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return <code class="docutils literal notranslate"><span class="pre">xᵀ⋅adj(A)⋅x</span></code></p>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">xᵀ⋅adj(A)⋅x</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">x</span></code> is a vector, represented by the array <cite>x</cite>. <code class="docutils literal notranslate"><span class="pre">A</span></code> is a
 symmetric matrix, represented by the array <cite>a</cite>.</p>
 </dd></dl>
@@ -184,14 +193,13 @@ symmetric matrix. It is modified in place.</p>
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption"><span class="caption-text">Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The python API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#overlap-test-of-two-ellipsoids">Overlap test of two ellipsoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#representation-of-vectors-and-matrices">Representation of vectors and matrices</a></li>
 </ul>
 </li>
@@ -230,7 +238,7 @@ symmetric matrix. It is modified in place.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018, Sébastien Brisard.
+      &copy;2018–2019, Sébastien Brisard.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
