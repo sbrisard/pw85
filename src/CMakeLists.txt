@@ -26,27 +26,27 @@ project (pw85 LANGUAGES C)
 add_library (pw85 SHARED pw85.c pw85.h)
 set_target_properties (pw85 PROPERTIES VERSION ${project_version})
 configure_file (${pw85_SOURCE_DIR}/pw85-config.cmake.in
-                ${pw85_BINARY_DIR}/pw85-config.cmake @ONLY)
+  ${pw85_BINARY_DIR}/pw85-config.cmake @ONLY)
 configure_file (${pw85_SOURCE_DIR}/pw85-config-version.cmake.in
-                ${pw85_BINARY_DIR}/pw85-config-version.cmake @ONLY)
+  ${pw85_BINARY_DIR}/pw85-config-version.cmake @ONLY)
 configure_file (${pw85_SOURCE_DIR}/pw85.h.in
-                ${pw85_BINARY_DIR}/pw85.h
-		@ONLY)
+  ${pw85_BINARY_DIR}/pw85.h
+  @ONLY)
 include_directories (${pw85_BINARY_DIR})
 # TODO: place the output file conf.py in another directory?
 configure_file (${pw85_SOURCE_DIR}/../sphinx/conf.py.in
-                ${pw85_SOURCE_DIR}/../sphinx/conf.py
-		@ONLY)
+  ${pw85_SOURCE_DIR}/../sphinx/conf.py
+  @ONLY)
 configure_file (${pw85_SOURCE_DIR}/../sphinx/index.rst.in
-                ${pw85_SOURCE_DIR}/../sphinx/index.rst
-		@ONLY)
+  ${pw85_SOURCE_DIR}/../sphinx/index.rst
+  @ONLY)
 install (FILES ${pw85_BINARY_DIR}/pw85-config.cmake
-               ${pw85_BINARY_DIR}/pw85-config-version.cmake
-	       DESTINATION lib/pw85-${project_version})
+  ${pw85_BINARY_DIR}/pw85-config-version.cmake
+  DESTINATION lib/pw85-${project_version})
 install (TARGETS pw85 EXPORT pw85-targets
-         RUNTIME DESTINATION bin
-	 LIBRARY DESTINATION lib
-	 ARCHIVE DESTINATION lib)
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib)
 install (EXPORT pw85-targets
-         DESTINATION lib/pw85-${project_version})
+  DESTINATION lib/pw85-${project_version})
 install (FILES ${pw85_BINARY_DIR}/pw85.h DESTINATION include)
