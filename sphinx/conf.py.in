@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 import datetime
-import inspect
 
-import pypw85
-
-project = 'PW85'
-title = 'Documentation of the {} library'.format(project)
-author = 'Sébastien Brisard'
-copyright = '2018–{}, {}'.format(datetime.date.today().year, author)
-description = inspect.getdoc(pypw85).split('\n')[0]
-version = pypw85.__version__
+project = '@project_name@'
+version = '@project_version@'
 release = version
-url = 'https://github.com/sbrisard/pw85.git'
-basename = 'pw85'
+author = '@project_author@'
+url = '@project_url@'
+copyright = '@project_copyright@–{}, {}'.format(datetime.date.today().year, author)
+short_description = '@project_short_description@'
+
+title = '@doc_title@'
+basename = '@doc_basename@'
 
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.doctest',
@@ -39,8 +37,8 @@ latex_documents = [(master_doc, basename+'.tex', title, author, 'manual'),]
 
 man_pages = [(master_doc, basename, title, [author], 1)]
 
-texinfo_documents = [(master_doc, basename, title, author, project, description,
-                      'Miscellaneous'),]
+texinfo_documents = [(master_doc, basename, title, author, project,
+                      short_description, 'Miscellaneous'),]
 
 epub_basename = basename
 epub_title = title
@@ -54,7 +52,3 @@ todo_include_todos = True
 
 autodoc_default_options = {'member-order': 'groupwise',
                            'undoc-members': True,}
-
-# Create `abstract.rst` file
-with open('abstract.rst', mode='w', encoding='utf-8') as f:
-    f.write(inspect.getdoc(pypw85).replace('This module', project))
