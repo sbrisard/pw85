@@ -1,21 +1,27 @@
 cmake_minimum_required(VERSION 3.0)
 
 #------------------------------------------------------------------------------
-set (project_name "PW85")
-set (project_version 1.0)
-set (project_author "Sébastien Brisard")
-set (project_url "https://github.com/sbrisard/pw85.git")
-set (project_copyright "2018")
-set (project_short_description "Overlap test of two ellipsoids.")
-set (project_description "${project_short_description}
+set (metadata_dir "../metadata")
 
-PW85 provides an implementation of the “contact function”
-defined by Perram and Wertheim (J. Comp. Phys. 58(3), 409–416) for two
-ellipsoids. Given two ellipsoids, this function returns the *square*
-of the common factor by which both ellipsoids must be scaled (their
-centers being fixed) in order to be tangentially in contact.
+file (STRINGS ${metadata_dir}/name.txt lines ENCODING UTF-8)
+list (GET lines 0 project_name)
 
-PW85 is released under a BSD 3-Clause License.")
+file (STRINGS ${metadata_dir}/version.txt lines ENCODING UTF-8)
+list (GET lines 0 project_version)
+
+file (STRINGS ${metadata_dir}/author.txt lines ENCODING UTF-8)
+list (GET lines 0 project_author)
+
+file (STRINGS ${metadata_dir}/url.txt lines ENCODING UTF-8)
+list (GET lines 0 project_url)
+
+file (STRINGS ${metadata_dir}/copyright.txt lines ENCODING UTF-8)
+list (GET lines 0 project_copyright)
+
+file (STRINGS ${metadata_dir}/short_description.txt lines ENCODING UTF-8)
+list (GET lines 0 project_short_description)
+
+file (READ ${metadata_dir}/description.txt project_description ENCODING UTF-8)
 
 set (doc_title "Documentation of the ${project_name} library")
 set (doc_basename "pw85")
