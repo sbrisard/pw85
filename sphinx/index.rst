@@ -5,7 +5,7 @@ Documentation of the PW85 library
 
    \begin{abstract}
 
-@project_description@
+.. include:: ../metadata/description.txt
 
 .. raw:: latex
 

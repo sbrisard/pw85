@@ -3,28 +3,8 @@ cmake_minimum_required(VERSION 3.0)
 #------------------------------------------------------------------------------
 set (metadata_dir "../metadata")
 
-file (STRINGS ${metadata_dir}/name.txt lines ENCODING UTF-8)
-list (GET lines 0 project_name)
-
 file (STRINGS ${metadata_dir}/version.txt lines ENCODING UTF-8)
 list (GET lines 0 project_version)
-
-file (STRINGS ${metadata_dir}/author.txt lines ENCODING UTF-8)
-list (GET lines 0 project_author)
-
-file (STRINGS ${metadata_dir}/url.txt lines ENCODING UTF-8)
-list (GET lines 0 project_url)
-
-file (STRINGS ${metadata_dir}/copyright.txt lines ENCODING UTF-8)
-list (GET lines 0 project_copyright)
-
-file (STRINGS ${metadata_dir}/short_description.txt lines ENCODING UTF-8)
-list (GET lines 0 project_short_description)
-
-file (READ ${metadata_dir}/description.txt project_description ENCODING UTF-8)
-
-set (doc_title "Documentation of the ${project_name} library")
-set (doc_basename "pw85")
 
 #------------------------------------------------------------------------------
 project (pw85 LANGUAGES C)

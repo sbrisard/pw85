@@ -1,16 +1,24 @@
 # -*- coding: utf-8 -*-
 import datetime
+import pathlib
 
-project = '@project_name@'
-version = '@project_version@'
+
+metadata_dir = pathlib.Path('../metadata')
+
+def read_metadata(basename):
+    with open(metadata_dir/(basename+'.txt'), 'r', encoding='utf-8') as f:
+        return f.read().strip()
+
+basenames = ['name', 'version', 'author', 'url', 'short_description']
+project, version, author, url, short_description = [read_metadata(basename)
+                                                    for basename in basenames]
 release = version
-author = '@project_author@'
-url = '@project_url@'
-copyright = '@project_copyright@–{}, {}'.format(datetime.date.today().year, author)
-short_description = '@project_short_description@'
+copyright = '{}–{}, {}'.format(read_metadata('copyright'),
+                               datetime.date.today().year,
+                               author)
 
-title = '@doc_title@'
-basename = '@doc_basename@'
+title = 'Documentation of the {} library'.format(project)
+basename = project.lower()
 
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.doctest',
