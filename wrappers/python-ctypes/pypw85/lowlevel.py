@@ -1,4 +1,4 @@
-"""Low level interface to the PW85 library."""
+"""Low-level interface to the PW85 library."""
 
 import ctypes
 
@@ -16,7 +16,7 @@ c_double_p = ctypes.POINTER(c_double)
 #     # TODO: improve error message
 #     raise RuntimeError("Configuration file not found.")
 
-cpw85 = ctypes.cdll.LoadLibrary('pw85')
+cpw85 = ctypes.cdll.LoadLibrary('libpw85')
 
 spheroid = cpw85.pw85_spheroid
 contact_function = cpw85.pw85_contact_function
