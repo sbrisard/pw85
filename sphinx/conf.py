@@ -9,9 +9,9 @@ def read_metadata(basename):
     with open(metadata_dir/(basename+'.txt'), 'r', encoding='utf-8') as f:
         return f.read().strip()
 
-basenames = ['name', 'version', 'author', 'url', 'short_description']
-project, version, author, url, short_description = [read_metadata(basename)
-                                                    for basename in basenames]
+basenames = ['name', 'version', 'author', 'url']
+project, version, author, url = [read_metadata(basename)
+                                 for basename in basenames]
 release = version
 copyright = '{}–{}, {}'.format(read_metadata('copyright'),
                                datetime.date.today().year,
@@ -19,6 +19,11 @@ copyright = '{}–{}, {}'.format(read_metadata('copyright'),
 
 title = 'Documentation of the {} library'.format(project)
 basename = project.lower()
+
+with open('../README.md', mode='r', encoding='utf-8') as f:
+    f.readline()
+    f.readline()
+    short_description = f.readline()
 
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.doctest',
