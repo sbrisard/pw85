@@ -1,9 +1,0 @@
-Overlap test of two ellipsoids.
-
-PW85 provides an implementation of the “contact function”
-defined by Perram and Wertheim (J. Comp. Phys. 58(3), 409–416) for two
-ellipsoids. Given two ellipsoids, this function returns the *square*
-of the common factor by which both ellipsoids must be scaled (their
-centers being fixed) in order to be tangentially in contact.
-
-PW85 is released under a BSD 3-Clause License.
