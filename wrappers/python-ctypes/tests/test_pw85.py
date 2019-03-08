@@ -12,28 +12,31 @@ def setup_module():
     np.random.seed(20180813)
 
 
-def generate_directions(num_theta, num_phi):
-    cos_theta = np.linspace(-1.0, 1.0, num=num_theta)
-    sin_theta = np.sqrt(1.0-cos_theta**2)
-    out = []
-    for cos_theta in np.linspace(-1.0, 1.0, num=num_theta):
-        sin_theta = np.sqrt(1.0-cos_theta**2)
-        for phi in np.linspace(0., 2.*np.pi, num=num_phi, endpoint=False):
-            out.append(np.array((sin_theta*np.cos(phi),
-                                 sin_theta*np.sin(phi),
-                                 cos_theta)))
-    return out
+def gen_directions():
+    # Use some vertices of icosahedron
+    golden_ratio = (1.+np.sqrt(5.))/2.
+    norm = np.sqrt(1+golden_ratio**2)
+    u_abs = 1./norm
+    v_abs = golden_ratio/norm
+    # out = []
+    # for u in (-u_abs, u_abs):
+    #     for v in (-v_abs, v_abs):
+    #         out += [np.array((0., u, v), dtype=np.float64),
+    #                 np.array((v, 0., u), dtype=np.float64),
+    #                 np.array((u, v, 0.), dtype=np.float64)]
+    out = [[0., u_abs, v_abs],
+           [v_abs, 0., u_abs],
+           [u_abs, v_abs, 0.]]
+    return np.array(out, dtype=np.float64)
 
 
-RADII = [0.0199, 1.999, 9.999]
-DIRECTIONS = generate_directions(7, 7)
-BOOLEANS = [False, True]
-
+RADII = np.array([0.0199, 1.999, 9.999], dtype=np.float64)
+DIRECTIONS = gen_directions()
 
 @pytest.mark.parametrize('a', RADII)
 @pytest.mark.parametrize('c', RADII)
 @pytest.mark.parametrize('n', DIRECTIONS)
-@pytest.mark.parametrize('in_place', BOOLEANS)
+@pytest.mark.parametrize('in_place', [False, True])
 def test_spheroid(a, c, n, in_place, rtol=1E-10, atol=1E-12):
     a2 = a**2
     c2 = c**2
@@ -74,13 +77,13 @@ def test__det_sym(a, rtol=1E-12, atol=1E-14):
     assert_allclose(actual, expected, rtol, atol)
 
 
-@pytest.mark.parametrize('a1', [2.0])
-@pytest.mark.parametrize('c1', [3.0])
-@pytest.mark.parametrize('n1', DIRECTIONS[:1])
-@pytest.mark.parametrize('a2', [0.04])
-@pytest.mark.parametrize('c2', [5.0])
-@pytest.mark.parametrize('n2', DIRECTIONS[:1])
-def test__detQ_as_poly(a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
+@pytest.mark.parametrize('a1', RADII)
+@pytest.mark.parametrize('c1', RADII)
+@pytest.mark.parametrize('n1', DIRECTIONS)
+@pytest.mark.parametrize('a2', RADII)
+@pytest.mark.parametrize('c2', RADII)
+@pytest.mark.parametrize('n2', DIRECTIONS)
+def test__detQ_as_poly(a1, c1, n1, a2, c2, n2, rtol=1E-10, atol=1E-8):
     q1 = pypw85.spheroid(a1, c1, n1)
     Q1 = to_array_2d(q1)
     q2 = pypw85.spheroid(a2, c2, n2)
@@ -122,14 +125,15 @@ def test__xT_adjA_x(x, a, rtol=1E-12, atol=1E-14):
     assert_allclose(actual, expected, rtol, atol)
 
 
-@pytest.mark.parametrize('r', [np.array([3.0, 4.0, 5.0])])
-@pytest.mark.parametrize('a1', [2.0])
-@pytest.mark.parametrize('c1', [3.0])
-@pytest.mark.parametrize('n1', DIRECTIONS[:1])
-@pytest.mark.parametrize('a2', [0.04])
-@pytest.mark.parametrize('c2', [5.0])
-@pytest.mark.parametrize('n2', DIRECTIONS[:1])
-def test__rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
+@pytest.mark.parametrize('r', DIRECTIONS)
+@pytest.mark.parametrize('a1', RADII)
+@pytest.mark.parametrize('c1', RADII)
+@pytest.mark.parametrize('n1', DIRECTIONS)
+@pytest.mark.parametrize('a2', RADII)
+@pytest.mark.parametrize('c2', RADII)
+@pytest.mark.parametrize('n2', DIRECTIONS)
+def test__rT_adjQ_r_as_poly_fixed_cc_distance(r, a1, c1, n1, a2, c2, n2,
+                                              rtol=1E-10, atol=1E-8):
     q1 = pypw85.spheroid(a1, c1, n1)
     q2 = pypw85.spheroid(a2, c2, n2)
     x = np.linspace(0., 1., num=11)
@@ -138,6 +142,40 @@ def test__rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2, rtol=1E-12, atol=1E-14):
     Q = (1-x)*to_array_2d(q1)+x*to_array_2d(q2)
     expected = np.dot(np.dot(adjugate(Q), r), r)
     assert_allclose(actual, expected, rtol, atol)
+
+
+def _test__rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2, rtol=1E-10, atol=1E-8):
+    q1 = pypw85.spheroid(a1, c1, n1)
+    q2 = pypw85.spheroid(a2, c2, n2)
+    x = np.linspace(0., 1., num=11)
+    actual = np.poly1d(pypw85._rT_adjQ_r_as_poly(r, q1, q2)[::-1])(x)
+    x = x[:, None, None]
+    Q = (1-x)*to_array_2d(q1)+x*to_array_2d(q2)
+    expected = np.dot(np.dot(adjugate(Q), r), r)
+    assert_allclose(actual, expected, rtol, atol)
+
+
+@pytest.mark.parametrize('r', DIRECTIONS)
+@pytest.mark.parametrize('a1', RADII)
+@pytest.mark.parametrize('c1', RADII)
+@pytest.mark.parametrize('n1', DIRECTIONS)
+@pytest.mark.parametrize('a2', RADII)
+@pytest.mark.parametrize('c2', RADII)
+@pytest.mark.parametrize('n2', DIRECTIONS)
+def test__rT_adjQ_r_as_poly_fixed_cc_distance(r, a1, c1, n1, a2, c2, n2):
+    _test__rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2)
+
+
+@pytest.mark.parametrize('r', DIRECTIONS[0, :]*RADII[:, None])
+@pytest.mark.parametrize('a1', RADII)
+@pytest.mark.parametrize('c1', RADII)
+@pytest.mark.parametrize('n1', [DIRECTIONS[1]])
+@pytest.mark.parametrize('a2', RADII)
+@pytest.mark.parametrize('c2', RADII)
+@pytest.mark.parametrize('n2', [DIRECTIONS[2]])
+def test__rT_adjQ_r_as_poly_variable_cc_distance(r, a1, c1, n1, a2, c2, n2):
+    _test__rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2)
+
 
 
 # @pytest.mark.skip(reason='Not fully implemented yet.')
