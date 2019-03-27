@@ -13,6 +13,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Tutorial" href="tutorial.html" />
@@ -38,15 +39,15 @@
 <div class="contents local topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#building-and-installing-the-c-library" id="id3">Building and installing the C library</a><ul>
-<li><a class="reference internal" href="#windows-visual-c-platforms" id="id4">Windows + Visual C++ platforms</a></li>
-<li><a class="reference internal" href="#windows-mingw-platforms" id="id5">Windows + MinGW platforms</a></li>
-<li><a class="reference internal" href="#linux-platforms" id="id6">Linux platforms</a></li>
-<li><a class="reference internal" href="#macos-homebrew-platforms" id="id7">MacOS + HomeBrew platforms</a></li>
-<li><a class="reference internal" href="#finalize-your-installation" id="id8">Finalize your installation</a></li>
+<li><a class="reference internal" href="#building-and-installing-the-c-library" id="id4">Building and installing the C library</a><ul>
+<li><a class="reference internal" href="#windows-visual-c-platforms" id="id5">Windows + Visual C++ platforms</a></li>
+<li><a class="reference internal" href="#windows-mingw-platforms" id="id6">Windows + MinGW platforms</a></li>
+<li><a class="reference internal" href="#linux-platforms" id="id7">Linux platforms</a></li>
+<li><a class="reference internal" href="#macos-homebrew-platforms" id="id8">MacOS + HomeBrew platforms</a></li>
+<li><a class="reference internal" href="#finalize-your-installation" id="id9">Finalize your installation</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#installation-of-the-python-bindings" id="id9">Installation of the Python bindings</a></li>
+<li><a class="reference internal" href="#installation-of-the-python-bindings" id="id10">Installation of the Python bindings</a></li>
 </ul>
 </div>
 <p>This chapter describes how to install the C library as well as the Python
@@ -55,7 +56,7 @@ bindings. The first step is to clone the Git repository:</p>
 </pre></div>
 </div>
 <div class="section" id="building-and-installing-the-c-library">
-<h2><a class="toc-backref" href="#id3">Building and installing the C library</a><a class="headerlink" href="#building-and-installing-the-c-library" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Building and installing the C library</a><a class="headerlink" href="#building-and-installing-the-c-library" title="Permalink to this headline">¶</a></h2>
 <p>The C library has no dependency per se. However, regardless of the platform,
 the building process relies on <a class="reference external" href="https://cmake.org/">CMake</a>, which you are
 required to install. The instructions below use the command-line
@@ -74,7 +75,7 @@ cd build
 </pre></div>
 </div>
 <div class="section" id="windows-visual-c-platforms">
-<h3><a class="toc-backref" href="#id4">Windows + Visual C++ platforms</a><a class="headerlink" href="#windows-visual-c-platforms" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id5">Windows + Visual C++ platforms</a><a class="headerlink" href="#windows-visual-c-platforms" title="Permalink to this headline">¶</a></h3>
 <p>Open the <code class="docutils literal notranslate"><span class="pre">Visual</span> <span class="pre">C++</span> <span class="pre">2015</span> <span class="pre">x64</span> <span class="pre">Native</span> <span class="pre">Buld</span> <span class="pre">Tools</span> <span class="pre">Command</span> <span class="pre">Prompt</span></code> (or
 equivalent). This ensures that all native build tools will be correctly
 discovered by CMake. <code class="docutils literal notranslate"><span class="pre">cd</span></code> into the <code class="docutils literal notranslate"><span class="pre">src/build/</span></code> directory. Issue the
@@ -90,8 +91,8 @@ C:\path\to\pw85\src\build&gt;nmake install
 <p>Go to <a class="reference internal" href="#finalize-your-installation"><span class="std std-ref">Finalize your installation</span></a>.</p>
 </div>
 <div class="section" id="windows-mingw-platforms">
-<h3><a class="toc-backref" href="#id5">Windows + MinGW platforms</a><a class="headerlink" href="#windows-mingw-platforms" title="Permalink to this headline">¶</a></h3>
-<p>Open the command prompt and <cite>cd`</cite> into the <code class="docutils literal notranslate"><span class="pre">src/build/</span></code> directory. Issue the
+<h3><a class="toc-backref" href="#id6">Windows + MinGW platforms</a><a class="headerlink" href="#windows-mingw-platforms" title="Permalink to this headline">¶</a></h3>
+<p>Open the command prompt and <code class="docutils literal notranslate"><span class="pre">cd</span></code> into the <code class="docutils literal notranslate"><span class="pre">src/build/</span></code> directory. Issue the
 following call to cmake:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>C:\path\to\cmake\bin\cmake.exe .. -G &quot;MinGW Makefiles&quot; -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=C:/opt/pw85
 </pre></div>
@@ -104,7 +105,7 @@ C:\path\to\pw85\src\build&gt;mingw32-make install
 <p>Go to <a class="reference internal" href="#finalize-your-installation"><span class="std std-ref">Finalize your installation</span></a>.</p>
 </div>
 <div class="section" id="linux-platforms">
-<h3><a class="toc-backref" href="#id6">Linux platforms</a><a class="headerlink" href="#linux-platforms" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">Linux platforms</a><a class="headerlink" href="#linux-platforms" title="Permalink to this headline">¶</a></h3>
 <p>Open a terminal and <code class="docutils literal notranslate"><span class="pre">cd</span></code> into the <code class="docutils literal notranslate"><span class="pre">src/build/</span></code> directory. Issue the
 following call to cmake:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cmake .. -G &quot;Unix Makefiles&quot; -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=~/local
@@ -118,21 +119,75 @@ make install
 <p>Go to <a class="reference internal" href="#finalize-your-installation"><span class="std std-ref">Finalize your installation</span></a>.</p>
 </div>
 <div class="section" id="macos-homebrew-platforms">
-<h3><a class="toc-backref" href="#id7">MacOS + HomeBrew platforms</a><a class="headerlink" href="#macos-homebrew-platforms" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id8">MacOS + HomeBrew platforms</a><a class="headerlink" href="#macos-homebrew-platforms" title="Permalink to this headline">¶</a></h3>
 </div>
 <div class="section" id="finalize-your-installation">
-<span id="id2"></span><h3><a class="toc-backref" href="#id8">Finalize your installation</a><a class="headerlink" href="#finalize-your-installation" title="Permalink to this headline">¶</a></h3>
-<p>Congratulations, <code class="docutils literal notranslate"><span class="pre">PW85</span></code> is now built and installed! In order to make sure
-that the dynamic library will be found in any circumstances (including from
-within Python), you need to inform your system:</p>
+<span id="id2"></span><h3><a class="toc-backref" href="#id9">Finalize your installation</a><a class="headerlink" href="#finalize-your-installation" title="Permalink to this headline">¶</a></h3>
+<p>Congratulations, <code class="docutils literal notranslate"><span class="pre">PW85</span></code> is now built and installed!</p>
+<p>If you intend to use <code class="docutils literal notranslate"><span class="pre">PW85</span></code> from within Python only, then go to
+<a class="reference internal" href="#installation-of-the-python-bindings"><span class="std std-ref">Installation of the Python bindings</span></a>.</p>
+<p>If you also intend to link the library to e.g. C executables, you must inform
+your system about the location of the library.</p>
 <ul class="simple">
-<li>on Windows platforms, you need to add the full path to <code class="docutils literal notranslate"><span class="pre">pw85.dll</span></code> to your <code class="docutils literal notranslate"><span class="pre">PATH</span></code> environment variable.</li>
+<li>On Windows platforms, you need to add the full path to <code class="docutils literal notranslate"><span class="pre">pw85.dll</span></code> to your
+<code class="docutils literal notranslate"><span class="pre">PATH</span></code> environment variable.</li>
+<li>On Linux or MacOS platforms, no further operation is required.</li>
 </ul>
 <p>To test your installation, build the example in the <a class="reference internal" href="tutorial.html#c-tutorial"><span class="std std-ref">C tutorial</span></a>.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Check that CMake will indeed be able to retrieve the various <code class="docutils literal notranslate"><span class="pre">*.cmake</span></code>
+configuration files</p>
+</div>
 </div>
 </div>
 <div class="section" id="installation-of-the-python-bindings">
-<h2><a class="toc-backref" href="#id9">Installation of the Python bindings</a><a class="headerlink" href="#installation-of-the-python-bindings" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2><a class="toc-backref" href="#id10">Installation of the Python bindings</a><a class="headerlink" href="#installation-of-the-python-bindings" title="Permalink to this headline">¶</a></h2>
+<p>The installation procedure is fairly standard and should be platform
+independent. Installation in a virtual environment is not covered here, but is
+possible with little alterations to the procedure below.</p>
+<p>Open a terminal and <code class="docutils literal notranslate"><span class="pre">cd</span></code> into the <code class="docutils literal notranslate"><span class="pre">wrappers/python-ctypes/</span></code>
+directory. Issue the following command:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$PYTHON_EXEC setup.py install
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">$PYTHON_EXEC</span></code> denotes your Python 3 executable (usually, <code class="docutils literal notranslate"><span class="pre">python</span></code> or
+<code class="docutils literal notranslate"><span class="pre">python3</span></code>). Then, you need to define the location of the dynamic library, for
+<code class="docutils literal notranslate"><span class="pre">ctypes</span></code> to be able to import it. This is done through the <code class="docutils literal notranslate"><span class="pre">pw85.ini</span></code> file,
+which you must create and place at the root of your home directory.</p>
+<p>The contents of this file should be:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[pw85]
+FullPath = full/path/to/the/pw85/dynamic/library
+</pre></div>
+</div>
+<p>where the <code class="docutils literal notranslate"><span class="pre">FullPath</span></code> entry is the full path to the dynamic library
+(<code class="docutils literal notranslate"><span class="pre">*.dll</span></code>, <code class="docutils literal notranslate"><span class="pre">*.so</span></code> or <code class="docutils literal notranslate"><span class="pre">*.dylib</span></code>) <em>including its name</em>. It can be retrieved
+from the output of <code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">install</span></code>. For example, on a Windows machine, where
+the output was:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[100%] Built target pw85
+Install the project...
+-- Install configuration: &quot;Release&quot;
+-- Installing: C:/opt/pw85/lib/pw85-1.0/pw85-config.cmake
+-- Installing: C:/opt/pw85/lib/pw85-1.0/pw85-config-version.cmake
+-- Installing: C:/opt/pw85/lib/libpw85.dll.a
+-- Installing: C:/opt/pw85/bin/libpw85.dll
+-- Installing: C:/opt/pw85/lib/pw85-1.0/pw85-targets.cmake
+-- Installing: C:/opt/pw85/lib/pw85-1.0/pw85-targets-release.cmake
+-- Installing: C:/opt/pw85/include/pw85.h
+</pre></div>
+</div>
+<p>the contents of <code class="docutils literal notranslate"><span class="pre">pw85.ini</span></code> is:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[pw85]
+FullPath = C:/opt/pw85/bin/libpw85.dll
+</pre></div>
+</div>
+<p>Provided the <a class="reference external" href="https://pytest.org/">pytest</a> module is installed on your
+machine, you can run the tests as follows (from the <code class="docutils literal notranslate"><span class="pre">wrappers/python-ctypes</span></code>
+drectory):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$PYTHON_EXEC -m pytest tests
+</pre></div>
+</div>
+<p>Beware! Tests take a while to run…</p>
 </div>
 </div>
 
@@ -203,7 +258,7 @@ within Python), you need to inform your system:</p>
       &copy;2018–2019, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

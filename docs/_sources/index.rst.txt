@@ -5,8 +5,7 @@ Documentation of the PW85 library
 
    \begin{abstract}
 
-.. include:: abstract.rst
-   :end-before: ----
+.. include:: ../metadata/description.txt
 
 .. raw:: latex
 

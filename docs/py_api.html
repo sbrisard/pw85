@@ -13,6 +13,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="The C API" href="c_api.html" />
@@ -41,13 +42,13 @@
 </ul>
 </div>
 <span class="target" id="module-pypw85"></span><p>Overlap test of two ellipsoids.</p>
-<p>This module provides an implementation of the “contact function”
-defined by Perram and Wertheim (J. Comp. Phys. 58(3), 409–416) for two
-ellipsoids. Given two ellipsoids, this function returns the <em>square</em>
-of the common factor by which both ellipsoids must be scaled (their
-centers being fixed) in order to be tangentially in contact.</p>
+<p>This module provides a wrapper around the PW85 C library that implements
+the “contact function” defined by Perram and Wertheim (J. Comp. Phys.
+58(3), 409–416, DOI:10.1016/0021-9991(85)90171-8) for two ellipsoids.
+Given two ellipsoids, this function returns the <em>square</em> of the common
+factor by which both ellipsoids must be scaled (their centers being
+fixed) in order to be tangentially in contact.</p>
 <p>This module is released under a BSD 3-Clause License.</p>
-<hr class="docutils" />
 <div class="section" id="representation-of-vectors-and-matrices">
 <h2><a class="toc-backref" href="#id1">Representation of vectors and matrices</a><a class="headerlink" href="#representation-of-vectors-and-matrices" title="Permalink to this headline">¶</a></h2>
 <p>An ellipsoid is defined from its center <code class="docutils literal notranslate"><span class="pre">c</span></code> (a 3×1, column-vector)
@@ -77,12 +78,6 @@ A = ⎢      a[3] a[4] ⎥.
 <p>The present wrapper around the PW85 C library relies on the NumPy library.
 “Array of <code class="docutils literal notranslate"><span class="pre">double</span></code>” should be understood here as “NumPy array with
 <code class="docutils literal notranslate"><span class="pre">dtype</span> <span class="pre">==</span> <span class="pre">numpy.float64</span></code>.”</p>
-<dl class="attribute">
-<dt id="pypw85.__c_double_p">
-<code class="descclassname">pypw85.</code><code class="descname">__c_double_p</code><a class="headerlink" href="#pypw85.__c_double_p" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">pypw85.LP_c_double</span></code></p>
-</dd></dl>
-
 <dl class="function">
 <dt id="pypw85._detQ_as_poly">
 <code class="descclassname">pypw85.</code><code class="descname">_detQ_as_poly</code><span class="sig-paren">(</span><em>q1</em>, <em>q2</em>, <em>q3=None</em>, <em>q4=None</em>, <em>b=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#_detQ_as_poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85._detQ_as_poly" title="Permalink to this definition">¶</a></dt>
@@ -241,7 +236,7 @@ symmetric matrix. It is modified in place.</p>
       &copy;2018–2019, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
