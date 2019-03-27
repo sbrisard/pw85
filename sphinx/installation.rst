@@ -102,6 +102,11 @@ your system about the location of the library.
 
 To test your installation, build the example in the :ref:`c-tutorial`.
 
+.. todo::
+   Check that CMake will indeed be able to retrieve the various ``*.cmake``
+   configuration files
+
+
 .. _installation-of-the-python-bindings:
 
 Installation of the Python bindings
