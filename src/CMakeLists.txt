@@ -19,13 +19,6 @@ configure_file (${pw85_SOURCE_DIR}/pw85.h.in
   ${pw85_BINARY_DIR}/pw85.h
   @ONLY)
 include_directories (${pw85_BINARY_DIR})
-# TODO: place the output file conf.py in another directory?
-configure_file (${pw85_SOURCE_DIR}/../sphinx/conf.py.in
-  ${pw85_SOURCE_DIR}/../sphinx/conf.py
-  @ONLY)
-configure_file (${pw85_SOURCE_DIR}/../sphinx/index.rst.in
-  ${pw85_SOURCE_DIR}/../sphinx/index.rst
-  @ONLY)
 install (FILES ${pw85_BINARY_DIR}/pw85-config.cmake
   ${pw85_BINARY_DIR}/pw85-config-version.cmake
   DESTINATION lib/pw85-${project_version})
