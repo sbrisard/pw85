@@ -22,8 +22,6 @@ if path.is_file():
 else:
     raise RuntimeError('Cannot file configuration file: {}'.format(path))
 
-cpw85 = ctypes.cdll.LoadLibrary('libpw85')
-
 spheroid = cpw85.pw85_spheroid
 contact_function = cpw85.pw85_contact_function
 
