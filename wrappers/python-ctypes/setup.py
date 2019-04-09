@@ -1,5 +1,4 @@
 import os
-import distutils.log
 import pathlib
 
 from setuptools import setup
