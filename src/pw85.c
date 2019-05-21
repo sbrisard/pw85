@@ -1,4 +1,5 @@
 #include "pw85.h"
+#include <stdio.h>
 
 /* Private functions */
 /* ================= */
@@ -72,9 +73,13 @@ double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM],
 
   double a[3];
   pw85__rT_adjQ_r_as_poly(r12, q1, q2, q3, a);
+  printf("a = \n");
+  for (size_t i = 0; i < 3; i++) printf("%1.15f\n", a[i]);
 
   double b[4];
   pw85__detQ_as_poly(q1, q2, q3, q4, b);
+  printf("b = \n");
+  for (size_t i = 0; i < 4; i++) printf("%1.15f\n", b[i]);
 
   const double c0 = a[0] * b[0];
   const double c1 = 2. * (a[1] - a[0]) * b[0];

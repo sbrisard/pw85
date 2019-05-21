@@ -26,10 +26,14 @@ if __name__ == '__main__':
     pypw85.contact_function(r, q1, q2, out)
     μ2, λ = out
 
+    print('μ² = {} (actual value)'.format(μ2))
+    print('λ  = {} (actual value)'.format(λ))
+
     Q1, Q2 = to_array_2d(q1), to_array_2d(q2)
     Q = (1-λ)*Q1 + λ*Q2
 
     y = np.linalg.solve(Q, r)
+    print('y = {}'.format(y))
 
     c1_x0 = np.dot((1-λ)*Q1, y)
     c2_x0 = -np.dot(λ*Q2, y)
@@ -39,4 +43,6 @@ if __name__ == '__main__':
     μ2_1 = np.linalg.solve(Q1, c1_x0).dot(c1_x0)
     μ2_2 = np.linalg.solve(Q2, c2_x0).dot(c2_x0)
 
-    print(μ2, μ2_1, μ2_2)
+    print('μ²  = {} (value found from the contact_function routine)'.format(μ2))
+    print('μ₁² = {} (first post-processed value)'.format(μ2_1))
+    print('μ₂² = {} (second post-processed value)'.format(μ2_2))
