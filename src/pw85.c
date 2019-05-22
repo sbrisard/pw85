@@ -45,6 +45,36 @@ void pw85__detQ_as_poly(double q1[PW85_SYM], double q2[PW85_SYM],
   b[3] = (-8. * b_one_half + 6. * b_zero + 3. * b_one - b_minus_one) / 3.;
 }
 
+void pw85__solve(double a[PW85_SYM], double b[PW85_DIM], double x[PW85_DIM]) {
+  /* Compute Cholesky decomposition A = L.L^T */
+  double* a_i = a;
+  const double l00 = fsqrt(*a_i);
+  ++a_i;
+  const double l10 = (*a_i) / l00;
+  ++a_i;
+  const double l20 = (*a_i) / l00;
+  ++a_i;
+  const double l11 = fsqrt((*a_i) - l10 * l10);
+  ++a_i;
+  const double l21 = ((*a_i) - l10 * l20) / l11;
+  ++a_i;
+  const double l22 = fsqrt((*a_i) - l20 * l20 - l21 * l21);
+
+  /* Solve L.y = b */
+  double* b_i = b;
+  const double y0 = (*b_i) / l00;
+  ++b_i;
+  const double y1 = (*b_i - l10 * y0) / l11;
+  ++b_i;
+  const double y2 = (*b_i - l20 * y0 - l21 * y1) / l22;
+  ++b_i;
+
+  /* Solve L^T.x = y */
+  x[2] = y2 / l22;
+  x[1] = (y1 - x[2] * l21) / l11;
+  x[0] = (y0 - x[1] * l10 - x[2] * l20) / l00;
+}
+
 /* Public API */
 /* ========== */
 
