@@ -10,6 +10,7 @@ list (GET lines 0 project_version)
 project (pw85 LANGUAGES C)
 
 add_library (pw85 SHARED pw85.c pw85.h)
+target_link_libraries (pw85 PRIVATE m)
 set_target_properties (pw85 PROPERTIES VERSION ${project_version})
 configure_file (${pw85_SOURCE_DIR}/pw85-config.cmake.in
   ${pw85_BINARY_DIR}/pw85-config.cmake @ONLY)

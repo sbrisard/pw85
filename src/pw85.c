@@ -1,4 +1,5 @@
 #include "pw85.h"
+#include <math.h>
 #include <stdio.h>
 
 /* Private functions */
@@ -45,34 +46,26 @@ void pw85__detQ_as_poly(double q1[PW85_SYM], double q2[PW85_SYM],
   b[3] = (-8. * b_one_half + 6. * b_zero + 3. * b_one - b_minus_one) / 3.;
 }
 
-void pw85__solve(double a[PW85_SYM], double b[PW85_DIM], double x[PW85_DIM]) {
-  /* Compute Cholesky decomposition A = L.L^T */
-  double* a_i = a;
-  const double l00 = fsqrt(*a_i);
-  ++a_i;
-  const double l10 = (*a_i) / l00;
-  ++a_i;
-  const double l20 = (*a_i) / l00;
-  ++a_i;
-  const double l11 = fsqrt((*a_i) - l10 * l10);
-  ++a_i;
-  const double l21 = ((*a_i) - l10 * l20) / l11;
-  ++a_i;
-  const double l22 = fsqrt((*a_i) - l20 * l20 - l21 * l21);
+void pw85__cholesky_decomp(double a[PW85_SYM], double l[PW85_SYM]) {
+  l[0] = sqrt(a[0]);
+  l[1] = a[1] / l[0];
+  l[2] = a[2] / l[0];
+  l[3] = sqrt(a[3] - l[1] * l[1]);
+  l[4] = (a[4] - l[1] * l[2]) / l[3];
+  l[5] = sqrt(a[5] - l[2] * l[2] - l[4] * l[4]);
+}
 
+void pw85__cholesky_solve(double l[PW85_SYM], double b[PW85_DIM],
+                          double x[PW85_DIM]) {
   /* Solve L.y = b */
-  double* b_i = b;
-  const double y0 = (*b_i) / l00;
-  ++b_i;
-  const double y1 = (*b_i - l10 * y0) / l11;
-  ++b_i;
-  const double y2 = (*b_i - l20 * y0 - l21 * y1) / l22;
-  ++b_i;
+  const double y0 = b[0] / l[0];
+  const double y1 = (b[1] - l[1] * y0) / l[3];
+  const double y2 = (b[2] - l[2] * y0 - l[4] * y1) / l[5];
 
   /* Solve L^T.x = y */
-  x[2] = y2 / l22;
-  x[1] = (y1 - x[2] * l21) / l11;
-  x[0] = (y0 - x[1] * l10 - x[2] * l20) / l00;
+  x[2] = y2 / l[5];
+  x[1] = (y1 - l[4] * x[2]) / l[3];
+  x[0] = (y0 - l[1] * x[1] - l[2] * x[2]) / l[0];
 }
 
 /* Public API */
@@ -93,7 +86,7 @@ void pw85_spheroid(double a, double c, double n[PW85_DIM], double q[PW85_SYM]) {
 }
 
 double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM],
-                             double q2[PW85_SYM], double* out) {
+                             double q2[PW85_SYM], double *out) {
   double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
   double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
   for (int i = 0; i < PW85_SYM; i++) {
@@ -148,4 +141,47 @@ double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM],
     out[1] = x;
   }
   return y;
+}
+
+double pw85_f(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
+              double q2[PW85_SYM], double *out) {
+  double q[PW85_SYM], q12[PW85_SYM];
+  double *q1_i = q1, *q2_i = q2, *q_i = q, *q12_i = q12;
+  for (size_t i = 0; i < PW85_SYM; i++) {
+    *q_i = (1 - lambda) * (*q1_i) + lambda * (*q2_i);
+    *q12_i = (*q2_i) - (*q1_i);
+    ++q1_i;
+    ++q2_i;
+    ++q_i;
+    ++q12_i;
+  }
+
+  double l[PW85_SYM];
+  pw85__cholesky_decomp(q, l);
+  double s[PW85_DIM];
+  pw85__cholesky_solve(l, r12, s);
+  double u[] = {q12[0] * s[0] + q12[1] * s[1] + q12[2] * s[2],
+                q12[1] * s[0] + q12[3] * s[1] + q12[4] * s[2],
+                q12[2] * s[0] + q12[4] * s[1] + q12[5] * s[2]};
+  double v[PW85_DIM];
+  pw85__cholesky_solve(l, u, v);
+
+  double *r_i = r12, *s_i = s, *u_i = u, *v_i = v;
+  double rs = 0., su = 0., uv = 0.;
+  for (size_t i = 0; i < PW85_DIM; i++) {
+    rs += (*r_i) * (*s_i);
+    su += (*s_i) * (*u_i);
+    uv += (*u_i) * (*v_i);
+    ++r_i;
+    ++s_i;
+    ++u_i;
+    ++v_i;
+  }
+
+  const double aux1 = lambda * (1. - lambda);
+  const double aux2 = 1. - 2. * lambda;
+  out[0] = aux1 * rs;
+  out[1] = aux2 * rs - aux1 * su;
+  out[2] = -2. * (rs + aux2 * su - aux1 * uv);
+  return out[0];
 }
