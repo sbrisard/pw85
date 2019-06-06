@@ -222,3 +222,18 @@ def test__cholesky_decomp(l_exp, rtol=1e-15, atol=1e-15):
     l_act = np.empty_like(a)
     pypw85._cholesky_decomp(a, l_act)
     assert_allclose(l_act, l_exp, rtol=rtol, atol=atol)
+
+
+@pytest.mark.parametrize('l', [[1., 2., 3., 4., 5., 6.],
+                               [1., -2., -3., 4., -5., 6.]])
+@pytest.mark.parametrize('x', [[1.2, -3.4, 5.7]])
+def test__cholesky_solve(l, x, rtol=3e-15, atol=3e-15):
+    l = np.asarray(l)
+    x = np.asarray(x)
+    l_mat = np.array([[l[0], 0., 0.],
+                      [l[1], l[3], 0.],
+                      [l[2], l[4], l[5]]], dtype=np.float64)
+    a_mat = l_mat.dot(l_mat.T)
+    b = a_mat.dot(x)
+    assert_allclose(pypw85._cholesky_solve(l, b), x,
+                    rtol=rtol, atol=atol)
