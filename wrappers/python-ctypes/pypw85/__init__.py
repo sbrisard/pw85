@@ -204,8 +204,8 @@ def _cholesky_solve(l, b, x=None):
     ``L`` is a lower matrix, represented by the array `l`. ``x`` and
     ``b`` are vectors, represented by the arrays `x` and `b`.
 
-    This function returns `x`, updated with the solution to the
-    system. If `x` is ``None``, then a new array is allocated.
+    This function returns `x`, suitably updated with the solution to
+    the system. If `x` is ``None``, then a new array is allocated.
 
     """
     if x is None:
