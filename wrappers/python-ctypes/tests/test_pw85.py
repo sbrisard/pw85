@@ -212,7 +212,7 @@ def _test_contact_function(r, a1, c1, n1, a2, c2, n2, rtol=1E-9, atol=1E-11):
 @pytest.mark.parametrize('l_exp', [[1., 2., 3., 4., 5., 6.],
                                    [1., -2., -3., 4., -5., 6.],
                                    [1e5, -2e-5, -3e-5, 4., -5e-5, 6.e-5]])
-def test__cholesky_decomp(l_exp):
+def test__cholesky_decomp(l_exp, rtol=1e-15, atol=1e-15):
     l_exp = np.asarray(l_exp)
     l_mat = np.array([[l_exp[0], 0., 0.],
                       [l_exp[1], l_exp[3], 0.],
@@ -221,4 +221,4 @@ def test__cholesky_decomp(l_exp):
     a = a_mat[[0, 0, 0, 1, 1, 2], [0, 1, 2, 1, 2, 2]]
     l_act = np.empty_like(a)
     pypw85._cholesky_decomp(a, l_act)
-    assert_allclose(l_act, l_exp)
+    assert_allclose(l_act, l_exp, rtol=rtol, atol=atol)
