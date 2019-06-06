@@ -180,15 +180,22 @@ def contact_function(r12, q1, q2, out=None):
 
 
 
-def _cholesky_decomp(a, l):
+def _cholesky_decomp(a, l=None):
     """Compute the Cholesky decomposition A = L⋅Lᵀ of a 3×3 matrix.
 
     ``A`` is a symmetric matrix, represented by the array `a`, ``L``
     is a lower matrix, represented by the array `l`.
 
+    This function returns `l`, suitably updated with the coefficients
+    of the Cholesky decomposition. If `l` is ``None``, then a new
+    array is allocated.
+
     """
-    return _ll._cholesky_decomp(a.ctypes.data_as(_ll.c_double_p),
-                                l.ctypes.data_as(_ll.c_double_p))
+    if l is None:
+        l = np.empty((6,), dtype=np.float64, order='C')
+    _ll._cholesky_decomp(a.ctypes.data_as(_ll.c_double_p),
+                         l.ctypes.data_as(_ll.c_double_p))
+    return l
 
 
 def _cholesky_solve(l, b, x=None):
