@@ -189,3 +189,21 @@ def _cholesky_decomp(a, l):
     """
     return _ll._cholesky_decomp(a.ctypes.data_as(_ll.c_double_p),
                                 l.ctypes.data_as(_ll.c_double_p))
+
+
+def _cholesky_solve(l, b, x=None):
+    """Compute the solution of the 3×3 linear system L⋅Lᵀ⋅x = b.
+
+    ``L`` is a lower matrix, represented by the array `l`. ``x`` and
+    ``b`` are vectors, represented by the arrays `x` and `b`.
+
+    This function returns `x`, updated with the solution to the
+    system. If `x` is ``None``, then a new array is allocated.
+
+    """
+    if x is None:
+        x = np.empty((3,), dtype=np.float64, order='C')
+    _ll._cholesky_solve(l.ctypes.data_as(_ll.c_double_p),
+                        b.ctypes.data_as(_ll.c_double_p),
+                        x.ctypes.data_as(_ll.c_double_p))
+    return x
