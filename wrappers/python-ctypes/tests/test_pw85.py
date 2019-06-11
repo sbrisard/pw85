@@ -237,3 +237,28 @@ def test__cholesky_solve(l, x, rtol=3e-15, atol=3e-15):
     b = a_mat.dot(x)
     assert_allclose(pypw85._cholesky_solve(l, b), x,
                     rtol=rtol, atol=atol)
+
+
+@pytest.mark.parametrize('r12_dir', DIRECTIONS)
+@pytest.mark.parametrize('a1', RADII)
+@pytest.mark.parametrize('c1', RADII)
+@pytest.mark.parametrize('n1', DIRECTIONS)
+@pytest.mark.parametrize('a2', RADII)
+@pytest.mark.parametrize('c2', RADII)
+@pytest.mark.parametrize('n2', DIRECTIONS)
+def test_f(r12_dir, a1, c1, n1, a2, c2, n2,
+           num_lambdas=11, rtol=1e-10, atol=1e-10):
+    q1 = pypw85.spheroid(a1, c1, n1)
+    q2 = pypw85.spheroid(a2, c2, n2)
+    q1_mat = to_array_2d(q1)
+    q2_mat = to_array_2d(q2)
+    expected = []
+    actual = []
+    for lambda_i in np.linspace(0., 1., num=num_lambdas):
+        q_mat = (1.-lambda_i)*q1_mat+lambda_i*q2_mat
+        exp_ref = (lambda_i*(1.-lambda_i)
+                   *np.dot(np.linalg.solve(q_mat, r12_dir), r12_dir))
+        for r12_norm_j in RADII:
+            expected.append(r12_norm_j**2*exp_ref)
+            actual.append(pypw85.f(lambda_i, r12_norm_j*r12_dir, q1, q2))
+    assert_allclose(actual, expected, rtol=rtol, atol=atol)
