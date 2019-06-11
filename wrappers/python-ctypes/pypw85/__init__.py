@@ -214,3 +214,11 @@ def _cholesky_solve(l, b, x=None):
                         b.ctypes.data_as(_ll.c_double_p),
                         x.ctypes.data_as(_ll.c_double_p))
     return x
+
+
+def f(lambda_, r12, q1, q2, out=None):
+    return _ll.f(lambda_,
+                 r12.ctypes.data_as(_ll.c_double_p),
+                 q1.ctypes.data_as(_ll.c_double_p),
+                 q2.ctypes.data_as(_ll.c_double_p),
+                 out if out is None else out.ctypes.data_as(_ll.c_double_p))

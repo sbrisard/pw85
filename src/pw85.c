@@ -180,8 +180,12 @@ double pw85_f(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
 
   const double aux1 = lambda * (1. - lambda);
   const double aux2 = 1. - 2. * lambda;
-  out[0] = aux1 * rs;
-  out[1] = aux2 * rs - aux1 * su;
-  out[2] = -2. * (rs + aux2 * su - aux1 * uv);
-  return out[0];
+  if (out) {
+    out[0] = aux1 * rs;
+    out[1] = aux2 * rs - aux1 * su;
+    out[2] = -2. * (rs + aux2 * su - aux1 * uv);
+    return out[0];
+  } else {
+    return aux1 * rs;
+  }
 }
