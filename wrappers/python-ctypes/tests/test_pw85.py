@@ -1,3 +1,4 @@
+import h5py
 import numpy as np
 import pytest
 import scipy.linalg
@@ -262,3 +263,18 @@ def test_f(r12_dir, a1, c1, n1, a2, c2, n2,
             expected.append(r12_norm_j**2*exp_ref)
             actual.append(pypw85.f(lambda_i, r12_norm_j*r12_dir, q1, q2))
     assert_allclose(actual, expected, rtol=rtol, atol=atol)
+
+if __name__ == '__main__':
+    with h5py.File('pw85_ref_data.h5', 'r') as f:
+        spheroids = np.array(f['spheroids'])
+        directions = np.array(f['directions'])
+        lambdas = np.array(f['lambdas'])
+        expecteds = np.array(f['f'])
+
+    for i1, q1 in enumerate(spheroids):
+        for i2, q2 in enumerate(spheroids):
+            for i, r12_dir in enumerate(directions):
+                for j, lambda_ in enumerate(lambdas):
+                    expected = expecteds[i1, i2, i, j]
+                    actual = pypw85.f(lambda_, r12_dir, q1, q2)
+                    print(expected, actual, np.abs(2.*(actual-expected)/(actual+expected)))
