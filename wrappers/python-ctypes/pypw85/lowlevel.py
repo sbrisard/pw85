@@ -17,7 +17,7 @@ c_double_p = ctypes.POINTER(c_double)
 path = pathlib.Path.home()/'pw85.ini'
 if path.is_file():
     cfg = configparser.ConfigParser()
-    cfg.read(path)
+    cfg.read(str(path))
     cpw85 = ctypes.cdll.LoadLibrary(cfg['pw85']['FullPath'])
 else:
     raise RuntimeError('Cannot file configuration file: {}'.format(path))

@@ -7,7 +7,9 @@ from setuptools.command.build_py import build_py
 from string import Template
 
 def get_metadata(basename, dir_):
-    with open(dir_/(basename+'.txt'), mode='r', encoding='utf-8') as f:
+    # For python versions < 3.6, open does not accept pathlib.Path
+    # objects; convert to strings
+    with open(str(dir_/(basename+'.txt')), mode='r', encoding='utf-8') as f:
         return f.read().strip()
 
 
@@ -31,12 +33,13 @@ class my_build_py(build_py):
 
 if __name__ == '__main__':
     name = 'pypw85'
-    metadata_dir = pathlib.Path('.')/'..'/'..'/'metadata'
+    metadata_dir = pathlib.Path(__file__).parent/'..'/'..'/'metadata'
     version = get_metadata('version', metadata_dir)
     author = get_metadata('author', metadata_dir)
     url = get_metadata('url', metadata_dir)
 
-    with open(pathlib.Path('../../README.md'), mode='r', encoding='utf-8') as f:
+    path = pathlib.Path('../../README.md')
+    with open(str(path), mode='r', encoding='utf-8') as f:
         lines = f.readlines()
         description = lines[2].strip()
         long_description = ''.join(lines[2:])
