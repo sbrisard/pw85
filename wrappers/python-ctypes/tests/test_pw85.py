@@ -265,16 +265,37 @@ def test_f(r12_dir, a1, c1, n1, a2, c2, n2,
     assert_allclose(actual, expected, rtol=rtol, atol=atol)
 
 if __name__ == '__main__':
-    with h5py.File('pw85_ref_data.h5', 'r') as f:
+    with h5py.File('data/pw85_reference_data.h5', 'r') as f:
+        radii = np.array(f['radii'])
         spheroids = np.array(f['spheroids'])
         directions = np.array(f['directions'])
         lambdas = np.array(f['lambdas'])
         expecteds = np.array(f['f'])
 
+    print(np.product(expecteds.shape))
+    hist_range = (-16.0, 0.0)
+    num_bins = 16
+    hist = None
+    bin_edges = None
     for i1, q1 in enumerate(spheroids):
+        print("{}/{}".format(i1+1, spheroids.shape[0]))
         for i2, q2 in enumerate(spheroids):
+            errors = []
             for i, r12_dir in enumerate(directions):
-                for j, lambda_ in enumerate(lambdas):
-                    expected = expecteds[i1, i2, i, j]
-                    actual = pypw85.f(lambda_, r12_dir, q1, q2)
-                    print(expected, actual, np.abs(2.*(actual-expected)/(actual+expected)))
+                for j, r12_norm in enumerate(radii):
+                    for k, lambda_ in enumerate(lambdas):
+                        expected = expecteds[i1, i2, i, j, k]
+                        actual = pypw85.f(lambda_, r12_norm*r12_dir, q1, q2)
+                        errors.append(np.log10(np.abs((actual-expected)/expected)))
+            hist_new, bin_edges_new = np.histogram(errors, bins=num_bins, range=hist_range, density=False)
+            if hist is None:
+                hist = hist_new
+                bin_edges = bin_edges_new
+                print(bin_edges)
+            else:
+                hist += hist_new
+    # To plot the histogram with gnuplot
+    # plot 'histogram.csv' u (0.5*($1+$2)):3:($2-$1) with boxes
+    with open('histogram.csv', 'w') as f:
+        for i, val in enumerate(hist):
+            f.write('{},{},{}\n'.format(bin_edges[i], bin_edges[i+1], val))
