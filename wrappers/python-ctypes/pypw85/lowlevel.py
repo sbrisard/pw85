@@ -25,6 +25,7 @@ else:
 spheroid = cpw85.pw85_spheroid
 contact_function = cpw85.pw85_contact_function
 f = cpw85.pw85_f
+f_old = cpw85.pw85_f_old
 
 _det_sym = cpw85.pw85__det_sym
 _xT_adjA_x = cpw85.pw85__xT_adjA_x
@@ -42,4 +43,5 @@ init_signature(_detQ_as_poly, 5*[c_double_p])
 init_signature(_rT_adjQ_r_as_poly, 5*[c_double_p])
 init_signature(_cholesky_decomp, 2*[c_double_p])
 init_signature(_cholesky_solve, 3*[c_double_p])
-init_signature(f, [c_double]+4*[c_double_p], c_double)
+init_signature(f, [c_double] + 4 * [c_double_p], c_double)
+init_signature(f_old, [c_double]+4*[c_double_p], c_double)
