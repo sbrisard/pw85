@@ -295,7 +295,9 @@ if __name__ == '__main__':
             else:
                 hist += hist_new
     # To plot the histogram with gnuplot
-    # plot 'histogram.csv' u (0.5*($1+$2)):3:($2-$1) with boxes
+    # plot 'histogram.csv' u 1:2:3 with boxes
+    centers = 0.5*(bin_edges[1:]+bin_edges[:-1])
+    widths = bin_edges[1:]-bin_edges[:-1]
     with open('histogram.csv', 'w') as f:
-        for i, val in enumerate(hist):
-            f.write('{},{},{}\n'.format(bin_edges[i], bin_edges[i+1], val))
+        for y, x, dx in zip(hist, centers, widths):
+            f.write('{},{},{}\n'.format(x, y, dx))
