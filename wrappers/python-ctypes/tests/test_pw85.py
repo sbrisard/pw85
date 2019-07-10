@@ -272,32 +272,41 @@ if __name__ == '__main__':
         lambdas = np.array(f['lambdas'])
         expecteds = np.array(f['f'])
 
-    print(np.product(expecteds.shape))
     hist_range = (-16.0, 0.0)
     num_bins = 16
-    hist = None
+    hist1 = None
+    hist2 = None
     bin_edges = None
     for i1, q1 in enumerate(spheroids):
         print("{}/{}".format(i1+1, spheroids.shape[0]))
         for i2, q2 in enumerate(spheroids):
-            errors = []
+            errors1 = []
+            errors2 = []
             for i, r12_dir in enumerate(directions):
                 for j, r12_norm in enumerate(radii):
                     for k, lambda_ in enumerate(lambdas):
                         expected = expecteds[i1, i2, i, j, k]
-                        actual = pypw85.f(lambda_, r12_norm*r12_dir, q1, q2)
-                        errors.append(np.log10(np.abs((actual-expected)/expected)))
-            hist_new, bin_edges_new = np.histogram(errors, bins=num_bins, range=hist_range, density=False)
-            if hist is None:
-                hist = hist_new
+                        actual1 = pypw85.f(lambda_, r12_norm*r12_dir, q1, q2)
+                        actual2 = pypw85.f_old(lambda_, r12_norm*r12_dir, q1, q2)
+                        if expected == 0.:
+                            errors1.append(np.log10(np.abs(actual1-expected)))
+                            errors2.append(np.log10(np.abs(actual2-expected)))
+                        else:
+                            errors1.append(np.log10(np.abs((actual1-expected)/expected)))
+                            errors2.append(np.log10(np.abs((actual2-expected)/expected)))
+            hist_new, bin_edges_new = np.histogram(errors1, bins=num_bins, range=hist_range, density=False)
+            if hist1 is None:
+                hist1 = hist_new
                 bin_edges = bin_edges_new
-                print(bin_edges)
             else:
-                hist += hist_new
+                hist1 += hist_new
+            hist_new, _ = np.histogram(errors2, bins=num_bins, range=hist_range, density=False)
+            hist2 = hist_new if hist2 is None else hist2+hist_new
+
     # To plot the histogram with gnuplot
     # plot 'histogram.csv' u 1:2:3 with boxes
     centers = 0.5*(bin_edges[1:]+bin_edges[:-1])
     widths = bin_edges[1:]-bin_edges[:-1]
     with open('histogram.csv', 'w') as f:
-        for y, x, dx in zip(hist, centers, widths):
-            f.write('{},{},{}\n'.format(x, y, dx))
+        for x, dx, y1, y2 in zip(centers, widths, hist1, hist2):
+            f.write('{},{},{},{}\n'.format(x, dx, y1, y2))
