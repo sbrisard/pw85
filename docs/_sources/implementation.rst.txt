@@ -1,0 +1,170 @@
+.. _implementation:
+
+**************
+Implementation
+**************
+
+.. _implementation-eq-1:
+
+In this chapter, we explain how the contact function is computed. From
+Eq.  :ref:`(12) <theory-eq-12>` in chapter :ref:`theory`, the value of
+the contact function is found from the solution ``λ`` to equation
+``f'(λ) = 0``, where it is recalled that ``f`` is defined as follows::
+
+  (1)    f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
+
+with::
+
+  (2)    Q = (1-λ)Q₁ + λQ₂.
+
+In the present chapter, we discuss two implementations for the
+evaluation of ``f``. The :ref:`first implementation
+<implementation-rational-functions>` uses a representation of ``f`` as
+a quotient of two polynomials (rational fraction). The :ref:`second
+implementation <implementation-cholesky>` uses the Cholesky
+decomposition of ``Q``.
+
+.. _implementation-rational-functions:
+
+Implementation using rational functions
+=======================================
+
+.. _implementation-eq-3:
+
+We observe that ``f(λ)`` is a
+rational function [see Eq. :ref:`(1) <implementation-eq-1>`], and we write::
+
+                 λ(1-λ)a(λ)
+  (3)    f(λ) =  ──────────,
+                    b(λ)
+
+with::
+
+  (4a)    a(λ) = r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂ = a₀ + a₁λ + a₂λ²,
+
+  (4b)    b(λ) = det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³,
+
+where ``adj(Q)`` denotes the adjugate matrix of ``Q`` (transpose of its cofactor
+matrix), see e.g `Wikipedia <https://en.wikipedia.org/wiki/Adjugate_matrix>`_.
+
+The coefficients ``aᵢ`` and ``bᵢ`` are found from the evaluation of ``a(λ)`` and
+``b(λ)`` for specific values of ``λ``::
+
+  (5a)    a₀ = a(0),
+
+               a(1) - a(-1)
+  (5b)    a₁ = ────────────,
+         	    2
+
+               a(1) + a(-1)
+  (6c)    a₂ = ──────────── - a(0),
+		    2
+
+  (6d)    b₀ = b(0),
+
+               8b(½)            b(1)   b(-1)
+  (6e)    b₁ = ─────  - 2b(0) - ──── - ─────
+                 3                2      6
+
+               b(1) + b(-1)
+  (6f)    b₂ = ──────────── - b(0),
+         	    2
+
+                8b(½)                   b(-1)
+  (6g)    b₃ = -─────  + 2b(0) + b(1) - ─────.
+                  3                       3
+
+This requires the implementation of the determinant and the adjugate matrix of a
+3×3, symmetric matrix, see :c:func:`pw85__det_sym` and
+:c:func:`pw85__xT_adjA_x`.
+
+Evaluating the derivative of ``f`` with respect to ``λ`` is fairly easy. The following `Sympy <https://www.sympy.org>`_ script will do the job::
+
+  import sympy
+
+  from sympy import Equality, numer, pprint, Symbol
+
+  if __name__ == '__main__':
+      sympy.init_printing(use_latex=False, use_unicode=True)
+      λ = Symbol('λ')
+      a = sum(sympy.Symbol('a{}'.format(i))*λ**i for i in range(3))
+      b = sum(sympy.Symbol('b{}'.format(i))*λ**i for i in range(4))
+      f = λ*(1-λ)*a/b
+      f_prime = f.diff(λ).ratsimp()
+      c = numer(f_prime)
+      c_dict = c.collect(λ, evaluate=False)
+      for i in range(sympy.degree(c, gen=λ)+1):
+          pprint(Equality(Symbol('c{}'.format(i)), c_dict[λ**i]))
+
+It is readily found that::
+
+                  c(λ)
+  (7)    f′(λ) = ───────,
+                  b(λ)²
+
+where ``c(λ)`` is a sixth-order polynomial in λ::
+
+  (8)    c(λ) = c₀ + c₁λ + c₂λ² + c₃λ³ + c₄λ⁴ + c₅λ⁵ + c₆λ⁶,
+
+with::
+
+  (9a)    c₀ = a₀b₀,
+  (9b)    c₁ = 2(a₁-a₀)b₀,
+  (9c)    c₂ = -a₀(b₁+b₂) + 3b₀(a₂-a₁) + a₁b₁,
+  (9d)    c₃ = 2[b₁(a₂-a₁) - a₀b₃] - 4a₂b₀,
+  (9e)    c₄ = (a₀-a₁)b₃ + (a₂-a₁)b₂ - 3a₂b₁,
+  (9f)    c₅ = -2a₂b₂,
+  (9g)    c₆ = -a₂b₃,
+
+Solving ``f'(λ) = 0`` for ``λ`` is therefore equivalent to finding the unique
+root of ``c`` in the interval ``0 ≤ λ ≤ 1``. For the sake of robustness, the
+`bisection method <https://en.wikipedia.org/wiki/Bisection_method>`_ has been
+implemented (more efficient methods will be implemented in future versions).
+
+Once ``λ`` is found, ``μ`` is computed from ``μ² = f(λ)`` using Eq. :ref:`(3)
+<implementation-eq-3>`.
+
+.. _implementation-cholesky:
+
+Implementation using Cholesky decompositions
+============================================
+
+Since ``Q`` is a symmetric, positive definite matrix, we can compute
+its `Cholesky decomposition
+<https://en.wikipedia.org/wiki/Cholesky_decomposition>`_, which reads
+as follows::
+
+  (10)    Q = L⋅Lᵀ,
+
+where ``L`` is a lower-triangular matrix. Using this decomposition, it
+is straightforward to compute ``s = Q⁻¹⋅r`` (where we write ``r`` as a
+shorthand for ``r₁₂``), so that::
+
+  (11)    f(λ) = λ(1-λ)rᵀ⋅s.
+
+In order to solve ``f′(λ) = 0`` numerically, we use a `Newton–Raphson
+<https://en.wikipedia.org/wiki/Newton%27s_method>`_ procedure, which
+requires the first and second derivatives of ``f``. It is readily
+found that::
+
+  (12)    s′ = Q⁻¹⋅Q′⋅Q⁻¹⋅r = Q⁻¹⋅u    and    rᵀ⋅s′ = rᵀ⋅Q⁻¹⋅u = sᵀ⋅u,
+
+with ``u = Q₁₂⋅s`` and ``Q₁₂ = Q₂-Q₁``. Therefore::
+
+  (13)    f′(λ) = (1-2λ)rᵀ⋅s + λ(1-λ)sᵀ⋅u.
+
+Similarly, introducing ``v = Q⁻¹⋅u``::
+
+  (14)    sᵀ⋅u′ = sᵀ⋅Q₁₂⋅s′ = sᵀ⋅Q₁₂⋅Q⁻¹⋅u = uᵀ⋅v,
+
+and::
+
+  (15)    uᵀ⋅s′ = uᵀ⋅Q⁻¹⋅u = uᵀ⋅v.
+
+Therefore::
+
+  (16)    f″(λ) = -2rᵀ⋅s + 2(1-2λ)sᵀ⋅u + λ(1-λ)(uᵀ⋅v+sᵀ⋅v).
+
+
+Comparison of the two implementations
+=====================================

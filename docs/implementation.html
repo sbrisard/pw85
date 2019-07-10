@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Implementation &#8212; PW85 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The C API" href="c_api.html" />
+    <link rel="prev" title="Theory" href="theory.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="implementation">
+<span id="id1"></span><h1>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h1>
+<p id="implementation-eq-1">In this chapter, we explain how the contact function is computed. From
+Eq.  <a class="reference internal" href="theory.html#theory-eq-12"><span class="std std-ref">(12)</span></a> in chapter <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>, the value of
+the contact function is found from the solution <code class="docutils literal notranslate"><span class="pre">λ</span></code> to equation
+<code class="docutils literal notranslate"><span class="pre">f'(λ)</span> <span class="pre">=</span> <span class="pre">0</span></code>, where it is recalled that <code class="docutils literal notranslate"><span class="pre">f</span></code> is defined as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(1)    f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
+</pre></div>
+</div>
+<p>with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(2)    Q = (1-λ)Q₁ + λQ₂.
+</pre></div>
+</div>
+<p>In the present chapter, we discuss two implementations for the
+evaluation of <code class="docutils literal notranslate"><span class="pre">f</span></code>. The <a class="reference internal" href="#implementation-rational-functions"><span class="std std-ref">first implementation</span></a> uses a representation of <code class="docutils literal notranslate"><span class="pre">f</span></code> as
+a quotient of two polynomials (rational fraction). The <a class="reference internal" href="#implementation-cholesky"><span class="std std-ref">second
+implementation</span></a> uses the Cholesky
+decomposition of <code class="docutils literal notranslate"><span class="pre">Q</span></code>.</p>
+<div class="section" id="implementation-using-rational-functions">
+<span id="implementation-rational-functions"></span><h2>Implementation using rational functions<a class="headerlink" href="#implementation-using-rational-functions" title="Permalink to this headline">¶</a></h2>
+<p id="implementation-eq-3">We observe that <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code> is a
+rational function [see Eq. <a class="reference internal" href="#implementation-eq-1"><span class="std std-ref">(1)</span></a>], and we write:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>               λ(1-λ)a(λ)
+(3)    f(λ) =  ──────────,
+                  b(λ)
+</pre></div>
+</div>
+<p>with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(4a)    a(λ) = r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂ = a₀ + a₁λ + a₂λ²,
+
+(4b)    b(λ) = det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³,
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">adj(Q)</span></code> denotes the adjugate matrix of <code class="docutils literal notranslate"><span class="pre">Q</span></code> (transpose of its cofactor
+matrix), see e.g <a class="reference external" href="https://en.wikipedia.org/wiki/Adjugate_matrix">Wikipedia</a>.</p>
+<p>The coefficients <code class="docutils literal notranslate"><span class="pre">aᵢ</span></code> and <code class="docutils literal notranslate"><span class="pre">bᵢ</span></code> are found from the evaluation of <code class="docutils literal notranslate"><span class="pre">a(λ)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">b(λ)</span></code> for specific values of <code class="docutils literal notranslate"><span class="pre">λ</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(5a)    a₀ = a(0),
+
+             a(1) - a(-1)
+(5b)    a₁ = ────────────,
+                  2
+
+             a(1) + a(-1)
+(6c)    a₂ = ──────────── - a(0),
+                  2
+
+(6d)    b₀ = b(0),
+
+             8b(½)            b(1)   b(-1)
+(6e)    b₁ = ─────  - 2b(0) - ──── - ─────
+               3                2      6
+
+             b(1) + b(-1)
+(6f)    b₂ = ──────────── - b(0),
+                  2
+
+              8b(½)                   b(-1)
+(6g)    b₃ = -─────  + 2b(0) + b(1) - ─────.
+                3                       3
+</pre></div>
+</div>
+<p>This requires the implementation of the determinant and the adjugate matrix of a
+3×3, symmetric matrix, see <a class="reference internal" href="c_api.html#c.pw85__det_sym" title="pw85__det_sym"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85__det_sym()</span></code></a> and
+<a class="reference internal" href="c_api.html#c.pw85__xT_adjA_x" title="pw85__xT_adjA_x"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85__xT_adjA_x()</span></code></a>.</p>
+<p>Evaluating the derivative of <code class="docutils literal notranslate"><span class="pre">f</span></code> with respect to <code class="docutils literal notranslate"><span class="pre">λ</span></code> is fairly easy. The following <a class="reference external" href="https://www.sympy.org">Sympy</a> script will do the job:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span>
+
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="k">import</span> <span class="n">Equality</span><span class="p">,</span> <span class="n">numer</span><span class="p">,</span> <span class="n">pprint</span><span class="p">,</span> <span class="n">Symbol</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">sympy</span><span class="o">.</span><span class="n">init_printing</span><span class="p">(</span><span class="n">use_latex</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_unicode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">λ</span> <span class="o">=</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;λ&#39;</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;a</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">*</span><span class="n">λ</span><span class="o">**</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;b</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">*</span><span class="n">λ</span><span class="o">**</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">λ</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">λ</span><span class="p">)</span><span class="o">*</span><span class="n">a</span><span class="o">/</span><span class="n">b</span>
+    <span class="n">f_prime</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">λ</span><span class="p">)</span><span class="o">.</span><span class="n">ratsimp</span><span class="p">()</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">numer</span><span class="p">(</span><span class="n">f_prime</span><span class="p">)</span>
+    <span class="n">c_dict</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="n">λ</span><span class="p">,</span> <span class="n">evaluate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">gen</span><span class="o">=</span><span class="n">λ</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">pprint</span><span class="p">(</span><span class="n">Equality</span><span class="p">(</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;c</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)),</span> <span class="n">c_dict</span><span class="p">[</span><span class="n">λ</span><span class="o">**</span><span class="n">i</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>It is readily found that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                c(λ)
+(7)    f′(λ) = ───────,
+                b(λ)²
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">c(λ)</span></code> is a sixth-order polynomial in λ:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(8)    c(λ) = c₀ + c₁λ + c₂λ² + c₃λ³ + c₄λ⁴ + c₅λ⁵ + c₆λ⁶,
+</pre></div>
+</div>
+<p>with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(9a)    c₀ = a₀b₀,
+(9b)    c₁ = 2(a₁-a₀)b₀,
+(9c)    c₂ = -a₀(b₁+b₂) + 3b₀(a₂-a₁) + a₁b₁,
+(9d)    c₃ = 2[b₁(a₂-a₁) - a₀b₃] - 4a₂b₀,
+(9e)    c₄ = (a₀-a₁)b₃ + (a₂-a₁)b₂ - 3a₂b₁,
+(9f)    c₅ = -2a₂b₂,
+(9g)    c₆ = -a₂b₃,
+</pre></div>
+</div>
+<p>Solving <code class="docutils literal notranslate"><span class="pre">f'(λ)</span> <span class="pre">=</span> <span class="pre">0</span></code> for <code class="docutils literal notranslate"><span class="pre">λ</span></code> is therefore equivalent to finding the unique
+root of <code class="docutils literal notranslate"><span class="pre">c</span></code> in the interval <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">≤</span> <span class="pre">λ</span> <span class="pre">≤</span> <span class="pre">1</span></code>. For the sake of robustness, the
+<a class="reference external" href="https://en.wikipedia.org/wiki/Bisection_method">bisection method</a> has been
+implemented (more efficient methods will be implemented in future versions).</p>
+<p>Once <code class="docutils literal notranslate"><span class="pre">λ</span></code> is found, <code class="docutils literal notranslate"><span class="pre">μ</span></code> is computed from <code class="docutils literal notranslate"><span class="pre">μ²</span> <span class="pre">=</span> <span class="pre">f(λ)</span></code> using Eq. <a class="reference internal" href="#implementation-eq-3"><span class="std std-ref">(3)</span></a>.</p>
+</div>
+<div class="section" id="implementation-using-cholesky-decompositions">
+<span id="implementation-cholesky"></span><h2>Implementation using Cholesky decompositions<a class="headerlink" href="#implementation-using-cholesky-decompositions" title="Permalink to this headline">¶</a></h2>
+<p>Since <code class="docutils literal notranslate"><span class="pre">Q</span></code> is a symmetric, positive definite matrix, we can compute
+its <a class="reference external" href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky decomposition</a>, which reads
+as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(10)    Q = L⋅Lᵀ,
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">L</span></code> is a lower-triangular matrix. Using this decomposition, it
+is straightforward to compute <code class="docutils literal notranslate"><span class="pre">s</span> <span class="pre">=</span> <span class="pre">Q⁻¹⋅r</span></code> (where we write <code class="docutils literal notranslate"><span class="pre">r</span></code> as a
+shorthand for <code class="docutils literal notranslate"><span class="pre">r₁₂</span></code>), so that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(11)    f(λ) = λ(1-λ)rᵀ⋅s.
+</pre></div>
+</div>
+<p>In order to solve <code class="docutils literal notranslate"><span class="pre">f′(λ)</span> <span class="pre">=</span> <span class="pre">0</span></code> numerically, we use a <a class="reference external" href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton–Raphson</a> procedure, which
+requires the first and second derivatives of <code class="docutils literal notranslate"><span class="pre">f</span></code>. It is readily
+found that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(12)    s′ = Q⁻¹⋅Q′⋅Q⁻¹⋅r = Q⁻¹⋅u    and    rᵀ⋅s′ = rᵀ⋅Q⁻¹⋅u = sᵀ⋅u,
+</pre></div>
+</div>
+<p>with <code class="docutils literal notranslate"><span class="pre">u</span> <span class="pre">=</span> <span class="pre">Q₁₂⋅s</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₁₂</span> <span class="pre">=</span> <span class="pre">Q₂-Q₁</span></code>. Therefore:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(13)    f′(λ) = (1-2λ)rᵀ⋅s + λ(1-λ)sᵀ⋅u.
+</pre></div>
+</div>
+<p>Similarly, introducing <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">=</span> <span class="pre">Q⁻¹⋅u</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(14)    sᵀ⋅u′ = sᵀ⋅Q₁₂⋅s′ = sᵀ⋅Q₁₂⋅Q⁻¹⋅u = uᵀ⋅v,
+</pre></div>
+</div>
+<p>and:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(15)    uᵀ⋅s′ = uᵀ⋅Q⁻¹⋅u = uᵀ⋅v.
+</pre></div>
+</div>
+<p>Therefore:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(16)    f″(λ) = -2rᵀ⋅s + 2(1-2λ)sᵀ⋅u + λ(1-λ)(uᵀ⋅v+sᵀ⋅v).
+</pre></div>
+</div>
+</div>
+<div class="section" id="comparison-of-the-two-implementations">
+<h2>Comparison of the two implementations<a class="headerlink" href="#comparison-of-the-two-implementations" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PW85</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#implementation-using-rational-functions">Implementation using rational functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#implementation-using-cholesky-decompositions">Implementation using Cholesky decompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#comparison-of-the-two-implementations">Comparison of the two implementations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="theory.html" title="previous chapter">Theory</a></li>
+      <li>Next: <a href="c_api.html" title="next chapter">The C API</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018–2019, Sébastien Brisard.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/implementation.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
