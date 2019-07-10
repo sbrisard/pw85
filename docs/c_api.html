@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>The C API &#8212; PW85 1.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -17,7 +15,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="The python API" href="py_api.html" />
-    <link rel="prev" title="Theory" href="theory.html" />
+    <link rel="prev" title="Implementation" href="implementation.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -39,9 +37,9 @@
 <div class="contents local topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#representation-of-vectors-and-matrices" id="id1">Representation of vectors and matrices</a></li>
-<li><a class="reference internal" href="#public-api" id="id2">“Public” API</a></li>
-<li><a class="reference internal" href="#private-api" id="id3">“Private” API</a></li>
+<li><p><a class="reference internal" href="#representation-of-vectors-and-matrices" id="id1">Representation of vectors and matrices</a></p></li>
+<li><p><a class="reference internal" href="#public-api" id="id2">“Public” API</a></p></li>
+<li><p><a class="reference internal" href="#private-api" id="id3">“Private” API</a></p></li>
 </ul>
 </div>
 <div class="section" id="representation-of-vectors-and-matrices">
@@ -76,19 +74,19 @@ A = ⎢      a[3] a[4] ⎥.
 <p>These function and macros form the public API of the library.</p>
 <dl class="macro">
 <dt id="c.PW85_DIM">
-<code class="descname">PW85_DIM</code><a class="headerlink" href="#c.PW85_DIM" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">PW85_DIM</code><a class="headerlink" href="#c.PW85_DIM" title="Permalink to this definition">¶</a></dt>
 <dd><p>The dimension of the physical space (3).</p>
 </dd></dl>
 
 <dl class="macro">
 <dt id="c.PW85_SYM">
-<code class="descname">PW85_SYM</code><a class="headerlink" href="#c.PW85_SYM" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">PW85_SYM</code><a class="headerlink" href="#c.PW85_SYM" title="Permalink to this definition">¶</a></dt>
 <dd><p>The dimension of the space of symmetric matrices (6).</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="c.pw85_spheroid">
-void <code class="descname">pw85_spheroid</code><span class="sig-paren">(</span>double<em>&nbsp;a</em>, double<em>&nbsp;c</em>, double<em>&nbsp;n[PW85_DIM]</em>, double<em>&nbsp;q[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_spheroid" title="Permalink to this definition">¶</a></dt>
+void <code class="sig-name descname">pw85_spheroid</code><span class="sig-paren">(</span>double<em> a</em>, double<em> c</em>, double<em> n[PW85_DIM]</em>, double<em> q[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_spheroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the quadratic form associated to a spheroid.</p>
 <p>The spheroid is defined by its equatorial radius <cite>a</cite>, its polar
 radius <cite>c</cite> and the direction of its axis of revolution, <cite>n</cite>.</p>
@@ -98,7 +96,7 @@ array. It is modified in-place.</p>
 
 <dl class="function">
 <dt id="c.pw85_contact_function">
-double <code class="descname">pw85_contact_function</code><span class="sig-paren">(</span>double<em>&nbsp;r12[PW85_DIM]</em>, double<em>&nbsp;q1[PW85_SYM]</em>, double<em>&nbsp;q2[PW85_SYM]</em>, double<em>&nbsp;*out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_contact_function" title="Permalink to this definition">¶</a></dt>
+double <code class="sig-name descname">pw85_contact_function</code><span class="sig-paren">(</span>double<em> r12[PW85_DIM]</em>, double<em> q1[PW85_SYM]</em>, double<em> q2[PW85_SYM]</em>, double<em> *out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_contact_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the value of the contact function of two ellipsoids.</p>
 <p>Ellipsoids 1 and 2 are defined as the sets of points <code class="docutils literal notranslate"><span class="pre">m</span></code> (column-vector)
 such that:</p>
@@ -129,14 +127,14 @@ testing purposes.  However, they are not really needed for standard
 applications of the library.</p>
 <dl class="function">
 <dt id="c.pw85__det_sym">
-double <code class="descname">pw85__det_sym</code><span class="sig-paren">(</span>double<em>&nbsp;a[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__det_sym" title="Permalink to this definition">¶</a></dt>
+double <code class="sig-name descname">pw85__det_sym</code><span class="sig-paren">(</span>double<em> a[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__det_sym" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the determinant of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
 <p>The symmetric matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array <cite>a</cite>.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="c.pw85__xT_adjA_x">
-double <code class="descname">pw85__xT_adjA_x</code><span class="sig-paren">(</span>double<em>&nbsp;x[PW85_DIM]</em>, double<em>&nbsp;a[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__xT_adjA_x" title="Permalink to this definition">¶</a></dt>
+double <code class="sig-name descname">pw85__xT_adjA_x</code><span class="sig-paren">(</span>double<em> x[PW85_DIM]</em>, double<em> a[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__xT_adjA_x" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the product <code class="docutils literal notranslate"><span class="pre">xᵀ⋅adj(A)⋅x</span></code>.</p>
 <p>The column vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is specified through the <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array
 <cite>x</cite>.  The symmetric matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified trough the
@@ -147,7 +145,7 @@ cofactor matrix), see e.g <a class="reference external" href="https://en.wikiped
 
 <dl class="function">
 <dt id="c.pw85__detQ_as_poly">
-void <code class="descname">pw85__detQ_as_poly</code><span class="sig-paren">(</span>double<em>&nbsp;q1[PW85_SYM]</em>, double<em>&nbsp;q2[PW85_SYM]</em>, double<em>&nbsp;q3[PW85_SYM]</em>, double<em>&nbsp;q4[PW85_SYM]</em>, double<em>&nbsp;b[PW85_DIM+1]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__detQ_as_poly" title="Permalink to this definition">¶</a></dt>
+void <code class="sig-name descname">pw85__detQ_as_poly</code><span class="sig-paren">(</span>double<em> q1[PW85_SYM]</em>, double<em> q2[PW85_SYM]</em>, double<em> q3[PW85_SYM]</em>, double<em> q4[PW85_SYM]</em>, double<em> b[PW85_DIM+1]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__detQ_as_poly" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Compute the coefficients of the polynomial <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">↦</span> <span class="pre">det[(1-λ)Q₁+λQ₂]</span></code>.</p>
@@ -165,7 +163,7 @@ as arrays <cite>q1</cite> and <cite>q2</cite>. The arrays <cite>q3</cite> and <c
 <p>The coefficients <code class="docutils literal notranslate"><span class="pre">bᵢ</span></code> are stored in <cite>b</cite> in <em>increasing</em> order: <code class="docutils literal notranslate"><span class="pre">b[i]</span> <span class="pre">=</span> <span class="pre">bᵢ</span></code>.</p>
 <dl class="function">
 <dt id="c.pw85__rT_adjQ_r_as_poly">
-double <code class="descname">pw85__rT_adjQ_r_as_poly</code><span class="sig-paren">(</span>double<em>&nbsp;r[PW85_DIM]</em>, double<em>&nbsp;q1[PW85_SYM]</em>, double<em>&nbsp;q2[PW85_SYM]</em>, double<em>&nbsp;q3[PW85_SYM]</em>, double<em>&nbsp;a[PW85_DIM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__rT_adjQ_r_as_poly" title="Permalink to this definition">¶</a></dt>
+double <code class="sig-name descname">pw85__rT_adjQ_r_as_poly</code><span class="sig-paren">(</span>double<em> r[PW85_DIM]</em>, double<em> q1[PW85_SYM]</em>, double<em> q2[PW85_SYM]</em>, double<em> q3[PW85_SYM]</em>, double<em> a[PW85_DIM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__rT_adjQ_r_as_poly" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Compute the coefficients of the polynomial <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">↦</span> <span class="pre">rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r</span></code>.</p>
@@ -205,6 +203,7 @@ as arrays <cite>q1</cite> and <cite>q2</cite>. The array <cite>q3</cite> must ho
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The C API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#representation-of-vectors-and-matrices">Representation of vectors and matrices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#public-api">“Public” API</a></li>
@@ -218,19 +217,17 @@ as arrays <cite>q1</cite> and <cite>q2</cite>. The array <cite>q3</cite> must ho
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="theory.html" title="previous chapter">Theory</a></li>
+      <li>Previous: <a href="implementation.html" title="previous chapter">Implementation</a></li>
       <li>Next: <a href="py_api.html" title="next chapter">The python API</a></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -251,7 +248,7 @@ as arrays <cite>q1</cite> and <cite>q2</cite>. The array <cite>q3</cite> must ho
       &copy;2018–2019, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

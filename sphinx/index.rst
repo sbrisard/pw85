@@ -18,5 +18,6 @@ Documentation of the PW85 library
    installation
    tutorial
    theory
+   implementation
    c_api
    py_api
