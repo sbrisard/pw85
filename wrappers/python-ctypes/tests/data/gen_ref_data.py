@@ -77,7 +77,7 @@ if __name__ == "__main__":
         dset = f.create_dataset("F", shape=shape, dtype="d")
         block = np.empty((num_directions, num_lambdas), dtype=np.float64)
         for i1, q1 in enumerate(spheroids):
-            print(f"{i1+1}/{num_spheroids}")
+            print(f"{i1+1}/{num_spheroids}", flush=True)
             for i2, q2 in enumerate(spheroids):
                 for i, r12_i in enumerate(directions):
                     r12 = r12_i
