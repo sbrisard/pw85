@@ -5,13 +5,13 @@ import mpmath
 import numpy as np
 
 
-def spheroid_mp(a, c, n):
+def spheroid(a, c, n):
     a2 = a * a
     c2_minus_a2 = c * c - a2
     return (c * c - a2) * n * n.T + a2 * mpmath.mp.eye(3)
 
 
-def f_mp(lambda_, r12, q1, q2):
+def F(lambda_, r12, q1, q2):
     one_minus_lambda = 1 - lambda_
     q = one_minus_lambda * q1 + lambda_ * q2
     s12, _ = mpmath.mp.qr_solve(q, r12)
@@ -37,7 +37,7 @@ def gen_directions():
 
 def gen_spheroids(radii, directions):
     return [
-        spheroid_mp(ai, ci, ni)
+        spheroid(ai, ci, ni)
         for ai, ci, ni in itertools.product(radii, radii, directions)
     ]
 
@@ -72,17 +72,16 @@ if __name__ == "__main__":
             dset[i, 4] = float(q[1, 2])
             dset[i, 5] = float(q[2, 2])
 
-        shape = (num_spheroids, num_spheroids, num_directions, num_radii, num_lambdas)
+        shape = (num_spheroids, num_spheroids, num_directions, num_lambdas)
 
-        dset = f.create_dataset("f", shape=shape, dtype="d")
-        block = np.empty((num_directions, num_radii, num_lambdas), dtype=np.float64)
+        dset = f.create_dataset("F", shape=shape, dtype="d")
+        block = np.empty((num_directions, num_lambdas), dtype=np.float64)
         for i1, q1 in enumerate(spheroids):
             print(f"{i1+1}/{num_spheroids}")
             for i2, q2 in enumerate(spheroids):
-                for i, r12_dir in enumerate(directions):
-                    for j, r12_norm in enumerate(radii):
-                        r12 = r12_norm * r12_dir
-                        for k, lambda_ in enumerate(lambdas):
-                            block[i, j, k] = float(f_mp(lambda_, r12, q1, q2))
-                dset[i1, i2, :, :, :] = block
+                for i, r12_i in enumerate(directions):
+                    r12 = r12_i
+                    for j, lambda_j in enumerate(lambdas):
+                        block[i, j] = float(F(lambda_j, r12_i, q1, q2))
+                dset[i1, i2, :, :] = block
                 f.flush()
