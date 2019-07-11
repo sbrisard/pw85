@@ -264,7 +264,8 @@ def test_f(r12_dir, a1, c1, n1, a2, c2, n2,
             actual.append(pypw85.f(lambda_i, r12_norm_j*r12_dir, q1, q2))
     assert_allclose(actual, expected, rtol=rtol, atol=atol)
 
-if __name__ == '__main__':
+
+def accuracy_histogram(func):
     with h5py.File('data/pw85_reference_data.h5', 'r') as f:
         radii = np.array(f['radii'])
         spheroids = np.array(f['spheroids'])
@@ -272,41 +273,46 @@ if __name__ == '__main__':
         lambdas = np.array(f['lambdas'])
         expecteds = np.array(f['f'])
 
-    hist_range = (-16.0, 0.0)
-    num_bins = 16
-    hist1 = None
-    hist2 = None
-    bin_edges = None
+    max_ulp = 16
+    hist = np.zeros(max_ulp+2, dtype=np.uint64)
+    edges = np.linspace(-max_ulp-1., 1., num=max_ulp+3)
+    print(edges)
     for i1, q1 in enumerate(spheroids):
         print("{}/{}".format(i1+1, spheroids.shape[0]))
         for i2, q2 in enumerate(spheroids):
-            errors1 = []
-            errors2 = []
             for i, r12_dir in enumerate(directions):
                 for j, r12_norm in enumerate(radii):
                     for k, lambda_ in enumerate(lambdas):
-                        expected = expecteds[i1, i2, i, j, k]
-                        actual1 = pypw85.f(lambda_, r12_norm*r12_dir, q1, q2)
-                        actual2 = pypw85.f_old(lambda_, r12_norm*r12_dir, q1, q2)
-                        if expected == 0.:
-                            errors1.append(np.log10(np.abs(actual1-expected)))
-                            errors2.append(np.log10(np.abs(actual2-expected)))
-                        else:
-                            errors1.append(np.log10(np.abs((actual1-expected)/expected)))
-                            errors2.append(np.log10(np.abs((actual2-expected)/expected)))
-            hist_new, bin_edges_new = np.histogram(errors1, bins=num_bins, range=hist_range, density=False)
-            if hist1 is None:
-                hist1 = hist_new
-                bin_edges = bin_edges_new
-            else:
-                hist1 += hist_new
-            hist_new, _ = np.histogram(errors2, bins=num_bins, range=hist_range, density=False)
-            hist2 = hist_new if hist2 is None else hist2+hist_new
+                        exp = expecteds[i1, i2, i, j, k]
+                        act = func(lambda_, r12_norm*r12_dir, q1, q2)
+                        if np.isnan(act):
+                            act = 1e100
+                        err = np.abs(act-exp)
 
+                        if err == 0.:
+                            hist[0] += 1
+                        else:
+                            if exp != 0.:
+                                err = err/np.abs(exp)
+                            bin_index = int(np.floor(np.log10(err)+max_ulp+1))
+                            if bin_index < 0:
+                                bin_index = 0
+                            if bin_index > max_ulp+1:
+                                bin_index = max_ulp+1
+                            hist[bin_index] += 1
+    return hist, edges
+
+
+
+if __name__ == '__main__':
+    hist1, edges = accuracy_histogram(pypw85.f)
+    hist2, _ = accuracy_histogram(pypw85.f_old)
+    print(np.sum(hist1))
+    print(np.sum(hist2))
     # To plot the histogram with gnuplot
     # plot 'histogram.csv' u 1:2:3 with boxes
-    centers = 0.5*(bin_edges[1:]+bin_edges[:-1])
-    widths = bin_edges[1:]-bin_edges[:-1]
+    centers = 0.5*(edges[1:]+edges[:-1])
+    widths = edges[1:]-edges[:-1]
     with open('histogram.csv', 'w') as f:
         for x, dx, y1, y2 in zip(centers, widths, hist1, hist2):
             f.write('{},{},{},{}\n'.format(x, dx, y1, y2))
