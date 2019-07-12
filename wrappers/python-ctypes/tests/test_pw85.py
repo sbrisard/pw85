@@ -266,12 +266,12 @@ def test_f(r12_dir, a1, c1, n1, a2, c2, n2,
 
 
 def accuracy_histogram(func):
-    with h5py.File('data/pw85_reference_data.h5', 'r') as f:
+    with h5py.File('data/pw85_ref_data-20190712.h5', 'r') as f:
         radii = np.array(f['radii'])
         spheroids = np.array(f['spheroids'])
         directions = np.array(f['directions'])
         lambdas = np.array(f['lambdas'])
-        expecteds = np.array(f['f'])
+        expecteds = np.array(f['F'])
 
     max_ulp = 16
     hist = np.zeros(max_ulp+2, dtype=np.uint64)
@@ -280,16 +280,17 @@ def accuracy_histogram(func):
     for i1, q1 in enumerate(spheroids):
         print("{}/{}".format(i1+1, spheroids.shape[0]))
         for i2, q2 in enumerate(spheroids):
-            for i, r12_dir in enumerate(directions):
-                for j, r12_norm in enumerate(radii):
-                    for k, lambda_ in enumerate(lambdas):
-                        exp = expecteds[i1, i2, i, j, k]
-                        act = func(lambda_, r12_norm*r12_dir, q1, q2)
+            for i, r12_i in enumerate(directions):
+                for j, lambda_j in enumerate(lambdas):
+                        exp = expecteds[i1, i2, i, j]
+                        act = func(lambda_j, r12_i, q1, q2)
                         if np.isnan(act):
+                            print('nan')
                             act = 1e100
                         err = np.abs(act-exp)
 
                         if err == 0.:
+                            print('0')
                             hist[0] += 1
                         else:
                             if exp != 0.:
