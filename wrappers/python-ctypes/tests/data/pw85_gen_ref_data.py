@@ -63,7 +63,7 @@ if __name__ == "__main__":
     date = datetime.date.today()
     name = "pw85_ref_data-{:04d}{:02d}{:02d}.h5".format(date.year, date.month, date.day)
 
-    with h5py.File(date, "w") as f:
+    with h5py.File(name, "w") as f:
         f["radii"] = [float(r) for r in radii]
         f["directions"] = [(float(x), float(y), float(z)) for x, y, z in directions]
         f["lambdas"] = [float(lambda_) for lambda_ in lambdas]
