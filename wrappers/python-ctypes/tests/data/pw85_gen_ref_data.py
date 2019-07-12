@@ -55,7 +55,7 @@ if __name__ == "__main__":
     spheroids = gen_spheroids(radii, directions)
     num_spheroids = len(spheroids)
 
-    num_lambdas = 11
+    num_lambdas = 9
     lambdas = mpmath.mp.linspace(0.1, 0.9, num_lambdas)
 
     num_blocks = num_radii * num_spheroids ** 2
