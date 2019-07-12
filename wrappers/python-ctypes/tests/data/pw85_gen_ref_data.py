@@ -1,3 +1,4 @@
+import datetime
 import itertools
 
 import h5py
@@ -55,11 +56,14 @@ if __name__ == "__main__":
     num_spheroids = len(spheroids)
 
     num_lambdas = 11
-    lambdas = mpmath.mp.linspace(0, 1, num_lambdas)
+    lambdas = mpmath.mp.linspace(0.1, 0.9, num_lambdas)
 
     num_blocks = num_radii * num_spheroids ** 2
 
-    with h5py.File("pw85_reference_data.h5", "w") as f:
+    date = datetime.date.today()
+    name = "pw85_ref_data-{:04d}{:02d}{:02d}.h5".format(date.year, date.month, date.day)
+
+    with h5py.File(date, "w") as f:
         f["radii"] = [float(r) for r in radii]
         f["directions"] = [(float(x), float(y), float(z)) for x, y, z in directions]
         f["lambdas"] = [float(lambda_) for lambda_ in lambdas]
