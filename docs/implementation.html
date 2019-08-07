@@ -46,52 +46,88 @@ the contact function is found from the solution <code class="docutils literal no
 </pre></div>
 </div>
 <p>In the present chapter, we discuss two implementations for the
-evaluation of <code class="docutils literal notranslate"><span class="pre">f</span></code>. The <a class="reference internal" href="#implementation-rational-functions"><span class="std std-ref">first implementation</span></a> uses a representation of <code class="docutils literal notranslate"><span class="pre">f</span></code> as
-a quotient of two polynomials (rational fraction). The <a class="reference internal" href="#implementation-cholesky"><span class="std std-ref">second
-implementation</span></a> uses the Cholesky
-decomposition of <code class="docutils literal notranslate"><span class="pre">Q</span></code>.</p>
-<div class="section" id="implementation-using-rational-functions">
-<span id="implementation-rational-functions"></span><h2>Implementation using rational functions<a class="headerlink" href="#implementation-using-rational-functions" title="Permalink to this headline">¶</a></h2>
-<p id="implementation-eq-3">We observe that <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code> is a
+evaluation of <code class="docutils literal notranslate"><span class="pre">f</span></code>.  The <a class="reference internal" href="#implementation-cholesky"><span class="std std-ref">first implementation</span></a> uses the Cholesky decomposition of
+<code class="docutils literal notranslate"><span class="pre">Q</span></code>. The <a class="reference internal" href="#implementation-rational-functions"><span class="std std-ref">second implementation</span></a> uses a representation of <code class="docutils literal notranslate"><span class="pre">f</span></code> as
+a quotient of two polynomials (rational fraction).</p>
+<div class="section" id="implementation-1-using-cholesky-decompositions">
+<span id="implementation-cholesky"></span><h2>Implementation #1: using Cholesky decompositions<a class="headerlink" href="#implementation-1-using-cholesky-decompositions" title="Permalink to this headline">¶</a></h2>
+<p>Since <code class="docutils literal notranslate"><span class="pre">Q</span></code> is a symmetric, positive definite matrix, we can compute
+its <a class="reference external" href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky decomposition</a>, which reads
+as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(3)    Q = L⋅Lᵀ,
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">L</span></code> is a lower-triangular matrix. Using this decomposition, it
+is straightforward to compute <code class="docutils literal notranslate"><span class="pre">s</span> <span class="pre">=</span> <span class="pre">Q⁻¹⋅r</span></code> (where we write <code class="docutils literal notranslate"><span class="pre">r</span></code> as a
+shorthand for <code class="docutils literal notranslate"><span class="pre">r₁₂</span></code>), so that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(4)    f(λ) = λ(1-λ)rᵀ⋅s.
+</pre></div>
+</div>
+<p>In order to solve <code class="docutils literal notranslate"><span class="pre">f′(λ)</span> <span class="pre">=</span> <span class="pre">0</span></code> numerically, we use a <a class="reference external" href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton–Raphson</a> procedure, which
+requires the first and second derivatives of <code class="docutils literal notranslate"><span class="pre">f</span></code>. It is readily
+found that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(5)    s′ = Q⁻¹⋅Q′⋅Q⁻¹⋅r = Q⁻¹⋅u    and    rᵀ⋅s′ = rᵀ⋅Q⁻¹⋅u = sᵀ⋅u,
+</pre></div>
+</div>
+<p>with <code class="docutils literal notranslate"><span class="pre">u</span> <span class="pre">=</span> <span class="pre">Q₁₂⋅s</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₁₂</span> <span class="pre">=</span> <span class="pre">Q₂-Q₁</span></code>. Therefore:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(6)    f′(λ) = (1-2λ)rᵀ⋅s + λ(1-λ)sᵀ⋅u.
+</pre></div>
+</div>
+<p>Similarly, introducing <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">=</span> <span class="pre">Q⁻¹⋅u</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(7)    sᵀ⋅u′ = sᵀ⋅Q₁₂⋅s′ = sᵀ⋅Q₁₂⋅Q⁻¹⋅u = uᵀ⋅v,
+</pre></div>
+</div>
+<p>and:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(8)    uᵀ⋅s′ = uᵀ⋅Q⁻¹⋅u = uᵀ⋅v.
+</pre></div>
+</div>
+<p>Therefore:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(9)    f″(λ) = -2rᵀ⋅s + 2(1-2λ)sᵀ⋅u + λ(1-λ)(uᵀ⋅v+sᵀ⋅v).
+</pre></div>
+</div>
+</div>
+<div class="section" id="implementation-2-using-rational-functions">
+<span id="implementation-rational-functions"></span><h2>Implementation #2: using rational functions<a class="headerlink" href="#implementation-2-using-rational-functions" title="Permalink to this headline">¶</a></h2>
+<p id="implementation-eq-10">We observe that <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code> is a
 rational function [see Eq. <a class="reference internal" href="#implementation-eq-1"><span class="std std-ref">(1)</span></a>], and we write:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>               λ(1-λ)a(λ)
-(3)    f(λ) =  ──────────,
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                λ(1-λ)a(λ)
+(10)    f(λ) =  ──────────,
                   b(λ)
 </pre></div>
 </div>
 <p>with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(4a)    a(λ) = r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂ = a₀ + a₁λ + a₂λ²,
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(11a)    a(λ) = r₁₂ᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r₁₂ = a₀ + a₁λ + a₂λ²,
 
-(4b)    b(λ) = det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³,
+(11b)    b(λ) = det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³,
 </pre></div>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">adj(Q)</span></code> denotes the adjugate matrix of <code class="docutils literal notranslate"><span class="pre">Q</span></code> (transpose of its cofactor
 matrix), see e.g <a class="reference external" href="https://en.wikipedia.org/wiki/Adjugate_matrix">Wikipedia</a>.</p>
 <p>The coefficients <code class="docutils literal notranslate"><span class="pre">aᵢ</span></code> and <code class="docutils literal notranslate"><span class="pre">bᵢ</span></code> are found from the evaluation of <code class="docutils literal notranslate"><span class="pre">a(λ)</span></code> and
 <code class="docutils literal notranslate"><span class="pre">b(λ)</span></code> for specific values of <code class="docutils literal notranslate"><span class="pre">λ</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(5a)    a₀ = a(0),
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(12a)    a₀ = a(0),
 
-             a(1) - a(-1)
-(5b)    a₁ = ────────────,
-                  2
+              a(1) - a(-1)
+(12b)    a₁ = ────────────,
+                   2
 
-             a(1) + a(-1)
-(6c)    a₂ = ──────────── - a(0),
-                  2
+              a(1) + a(-1)
+(12c)    a₂ = ──────────── - a(0),
+                   2
 
-(6d)    b₀ = b(0),
+(12d)    b₀ = b(0),
 
-             8b(½)            b(1)   b(-1)
-(6e)    b₁ = ─────  - 2b(0) - ──── - ─────
-               3                2      6
+              8b(½)            b(1)   b(-1)
+(12e)    b₁ = ─────  - 2b(0) - ──── - ─────
+                3                2      6
 
-             b(1) + b(-1)
-(6f)    b₂ = ──────────── - b(0),
-                  2
+              b(1) + b(-1)
+(12f)    b₂ = ──────────── - b(0),
+                   2
 
-              8b(½)                   b(-1)
-(6g)    b₃ = -─────  + 2b(0) + b(1) - ─────.
-                3                       3
+               8b(½)                   b(-1)
+(12g)    b₃ = -─────  + 2b(0) + b(1) - ─────.
+                 3                       3
 </pre></div>
 </div>
 <p>This requires the implementation of the determinant and the adjugate matrix of a
@@ -116,70 +152,125 @@ matrix), see e.g <a class="reference external" href="https://en.wikipedia.org/wi
 </pre></div>
 </div>
 <p>It is readily found that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                c(λ)
-(7)    f′(λ) = ───────,
-                b(λ)²
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                 c(λ)
+(13)    f′(λ) = ───────,
+                 b(λ)²
 </pre></div>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">c(λ)</span></code> is a sixth-order polynomial in λ:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(8)    c(λ) = c₀ + c₁λ + c₂λ² + c₃λ³ + c₄λ⁴ + c₅λ⁵ + c₆λ⁶,
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(14)    c(λ) = c₀ + c₁λ + c₂λ² + c₃λ³ + c₄λ⁴ + c₅λ⁵ + c₆λ⁶,
 </pre></div>
 </div>
 <p>with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(9a)    c₀ = a₀b₀,
-(9b)    c₁ = 2(a₁-a₀)b₀,
-(9c)    c₂ = -a₀(b₁+b₂) + 3b₀(a₂-a₁) + a₁b₁,
-(9d)    c₃ = 2[b₁(a₂-a₁) - a₀b₃] - 4a₂b₀,
-(9e)    c₄ = (a₀-a₁)b₃ + (a₂-a₁)b₂ - 3a₂b₁,
-(9f)    c₅ = -2a₂b₂,
-(9g)    c₆ = -a₂b₃,
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(15a)    c₀ = a₀b₀,
+(15b)    c₁ = 2(a₁-a₀)b₀,
+(15c)    c₂ = -a₀(b₁+b₂) + 3b₀(a₂-a₁) + a₁b₁,
+(15d)    c₃ = 2[b₁(a₂-a₁) - a₀b₃] - 4a₂b₀,
+(15e)    c₄ = (a₀-a₁)b₃ + (a₂-a₁)b₂ - 3a₂b₁,
+(15f)    c₅ = -2a₂b₂,
+(15g)    c₆ = -a₂b₃,
 </pre></div>
 </div>
 <p>Solving <code class="docutils literal notranslate"><span class="pre">f'(λ)</span> <span class="pre">=</span> <span class="pre">0</span></code> for <code class="docutils literal notranslate"><span class="pre">λ</span></code> is therefore equivalent to finding the unique
 root of <code class="docutils literal notranslate"><span class="pre">c</span></code> in the interval <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">≤</span> <span class="pre">λ</span> <span class="pre">≤</span> <span class="pre">1</span></code>. For the sake of robustness, the
 <a class="reference external" href="https://en.wikipedia.org/wiki/Bisection_method">bisection method</a> has been
 implemented (more efficient methods will be implemented in future versions).</p>
-<p>Once <code class="docutils literal notranslate"><span class="pre">λ</span></code> is found, <code class="docutils literal notranslate"><span class="pre">μ</span></code> is computed from <code class="docutils literal notranslate"><span class="pre">μ²</span> <span class="pre">=</span> <span class="pre">f(λ)</span></code> using Eq. <a class="reference internal" href="#implementation-eq-3"><span class="std std-ref">(3)</span></a>.</p>
-</div>
-<div class="section" id="implementation-using-cholesky-decompositions">
-<span id="implementation-cholesky"></span><h2>Implementation using Cholesky decompositions<a class="headerlink" href="#implementation-using-cholesky-decompositions" title="Permalink to this headline">¶</a></h2>
-<p>Since <code class="docutils literal notranslate"><span class="pre">Q</span></code> is a symmetric, positive definite matrix, we can compute
-its <a class="reference external" href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky decomposition</a>, which reads
-as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(10)    Q = L⋅Lᵀ,
-</pre></div>
-</div>
-<p>where <code class="docutils literal notranslate"><span class="pre">L</span></code> is a lower-triangular matrix. Using this decomposition, it
-is straightforward to compute <code class="docutils literal notranslate"><span class="pre">s</span> <span class="pre">=</span> <span class="pre">Q⁻¹⋅r</span></code> (where we write <code class="docutils literal notranslate"><span class="pre">r</span></code> as a
-shorthand for <code class="docutils literal notranslate"><span class="pre">r₁₂</span></code>), so that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(11)    f(λ) = λ(1-λ)rᵀ⋅s.
-</pre></div>
-</div>
-<p>In order to solve <code class="docutils literal notranslate"><span class="pre">f′(λ)</span> <span class="pre">=</span> <span class="pre">0</span></code> numerically, we use a <a class="reference external" href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton–Raphson</a> procedure, which
-requires the first and second derivatives of <code class="docutils literal notranslate"><span class="pre">f</span></code>. It is readily
-found that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(12)    s′ = Q⁻¹⋅Q′⋅Q⁻¹⋅r = Q⁻¹⋅u    and    rᵀ⋅s′ = rᵀ⋅Q⁻¹⋅u = sᵀ⋅u,
-</pre></div>
-</div>
-<p>with <code class="docutils literal notranslate"><span class="pre">u</span> <span class="pre">=</span> <span class="pre">Q₁₂⋅s</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₁₂</span> <span class="pre">=</span> <span class="pre">Q₂-Q₁</span></code>. Therefore:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(13)    f′(λ) = (1-2λ)rᵀ⋅s + λ(1-λ)sᵀ⋅u.
-</pre></div>
-</div>
-<p>Similarly, introducing <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">=</span> <span class="pre">Q⁻¹⋅u</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(14)    sᵀ⋅u′ = sᵀ⋅Q₁₂⋅s′ = sᵀ⋅Q₁₂⋅Q⁻¹⋅u = uᵀ⋅v,
-</pre></div>
-</div>
-<p>and:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(15)    uᵀ⋅s′ = uᵀ⋅Q⁻¹⋅u = uᵀ⋅v.
-</pre></div>
-</div>
-<p>Therefore:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(16)    f″(λ) = -2rᵀ⋅s + 2(1-2λ)sᵀ⋅u + λ(1-λ)(uᵀ⋅v+sᵀ⋅v).
-</pre></div>
-</div>
+<p>Once <code class="docutils literal notranslate"><span class="pre">λ</span></code> is found, <code class="docutils literal notranslate"><span class="pre">μ</span></code> is computed from <code class="docutils literal notranslate"><span class="pre">μ²</span> <span class="pre">=</span> <span class="pre">f(λ)</span></code> using Eq. <a class="reference internal" href="#implementation-eq-10"><span class="std std-ref">(10)</span></a>.</p>
 </div>
 <div class="section" id="comparison-of-the-two-implementations">
 <h2>Comparison of the two implementations<a class="headerlink" href="#comparison-of-the-two-implementations" title="Permalink to this headline">¶</a></h2>
+<p>High precision reference data was generated using the <a class="reference external" href="http://mpmath.org/">mpmath</a> library. The reference dataset is fully described and
+freely downloadable from the <a class="reference external" href="http://about.zenodo.org/">Zenodo platform</a>
+(<a class="reference external" href="https://doi.org/10.5281/zenodo.3323683">DOI:10.5281/zenodo.3323683</a>). Accuracy of both implementations is
+then evaluated through the following script (<a class="reference download internal" download="" href="_downloads/c1c185ef3ea1d0208209bb67af8a191b/f_accuracy.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">source</span> <span class="pre">file</span></code></a>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;Checks the accuracy of various implementations of the function f.&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="kn">import</span> <span class="nn">pypw85</span>
+
+<span class="n">PROXIES</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;http&#39;</span><span class="p">:</span> <span class="s1">&#39;http://proxy.enpc.fr:3128&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;https&#39;</span><span class="p">:</span> <span class="s1">&#39;https://proxy.enpc.fr:3128&#39;</span><span class="p">}</span>
+
+<span class="n">REF_DATA_URL</span> <span class="o">=</span> <span class="s1">&#39;https://zenodo.org/record/3323683/files/pw85_ref_data-20190712.h5&#39;</span>
+<span class="n">REF_DATA_PATH</span> <span class="o">=</span> <span class="s1">&#39;pw85_ref_data.h5&#39;</span>
+
+
+<span class="k">def</span> <span class="nf">download_ref_data</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">REF_DATA_PATH</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">REF_DATA_URL</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="n">PROXIES</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">REF_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;could not retrieve reference data&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">accuracy_histogram</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">spheroids</span><span class="p">,</span> <span class="n">directions</span><span class="p">,</span> <span class="n">lambdas</span><span class="p">,</span> <span class="n">expecteds</span><span class="p">):</span>
+    <span class="n">prec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">precision</span>
+    <span class="n">hist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">prec</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">prec</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">prec</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i1</span><span class="p">,</span> <span class="n">q1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spheroids</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">spheroids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">for</span> <span class="n">i2</span><span class="p">,</span> <span class="n">q2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spheroids</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r12_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">directions</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">lambda_j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lambdas</span><span class="p">):</span>
+                        <span class="n">exp</span> <span class="o">=</span> <span class="n">expecteds</span><span class="p">[</span><span class="n">i1</span><span class="p">,</span> <span class="n">i2</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">exp</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;expected value should not be zero&#39;</span><span class="p">)</span>
+                        <span class="n">act</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">lambda_j</span><span class="p">,</span> <span class="n">r12_i</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">act</span><span class="p">):</span>
+                            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+                            <span class="n">act</span> <span class="o">=</span> <span class="mf">1e100</span>
+                        <span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="n">act</span><span class="o">-</span><span class="n">exp</span><span class="p">)</span><span class="o">/</span><span class="n">exp</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">err</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+                            <span class="n">hist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">bin_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="o">+</span><span class="n">prec</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+                            <span class="k">if</span> <span class="n">bin_index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="n">bin_index</span> <span class="o">=</span> <span class="mi">0</span>
+                            <span class="k">if</span> <span class="n">bin_index</span> <span class="o">&gt;</span> <span class="n">prec</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span>
+                                <span class="n">bin_index</span> <span class="o">=</span> <span class="n">prec</span><span class="o">+</span><span class="mi">1</span>
+                            <span class="n">hist</span><span class="p">[</span><span class="n">bin_index</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">hist</span><span class="p">,</span> <span class="n">edges</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">download_ref_data</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">REF_DATA_PATH</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">spheroids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;spheroids&#39;</span><span class="p">])</span>
+        <span class="n">directions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;directions&#39;</span><span class="p">])</span>
+        <span class="n">lambdas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;lambdas&#39;</span><span class="p">])</span>
+        <span class="n">expecteds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;F&#39;</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;implementation-01.csv&#39;</span><span class="p">),</span>
+                       <span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">f_old</span><span class="p">,</span> <span class="s1">&#39;implementation-02.csv&#39;</span><span class="p">)]:</span>
+
+        <span class="n">hist</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">accuracy_histogram</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">spheroids</span><span class="p">,</span> <span class="n">directions</span><span class="p">,</span> <span class="n">lambdas</span><span class="p">,</span> <span class="n">expecteds</span><span class="p">)</span>
+        <span class="n">centers</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">+</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">widths</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">-</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">widths</span><span class="p">,</span> <span class="n">hist</span><span class="p">):</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;{},{},{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>We get the histograms shown in <a class="reference internal" href="#implementation-histograms"><span class="std std-numref">Fig. 1</span></a>. These
+histograms show that <a class="reference internal" href="#implementation-cholesky"><span class="std std-ref">Implementation #1</span></a> is more
+accurate than <a class="reference internal" href="#implementation-rational-functions"><span class="std std-ref">Implementation #2</span></a>. The
+former will therefore be selected as default.</p>
+<div class="figure align-default" id="id3">
+<span id="implementation-histograms"></span><img alt="_images/histograms.png" src="_images/histograms.png" />
+<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Accuracy of the two implementations.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+<div class="admonition-todo admonition" id="id2">
+<p class="admonition-title">Todo</p>
+<p>Rename the second implementation <code class="docutils literal notranslate"><span class="pre">pw85_f_old</span></code> → <code class="docutils literal notranslate"><span class="pre">pw85_f_2</span></code></p>
+</div>
 </div>
 </div>
 
@@ -206,8 +297,8 @@ found that:</p>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Implementation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#implementation-using-rational-functions">Implementation using rational functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#implementation-using-cholesky-decompositions">Implementation using Cholesky decompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#implementation-1-using-cholesky-decompositions">Implementation #1: using Cholesky decompositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#implementation-2-using-rational-functions">Implementation #2: using rational functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#comparison-of-the-two-implementations">Comparison of the two implementations</a></li>
 </ul>
 </li>
@@ -250,7 +341,7 @@ found that:</p>
       &copy;2018–2019, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
