@@ -170,3 +170,27 @@ Once ``λ`` is found, ``μ`` is computed from ``μ² = f(λ)`` using Eq. :ref:`(
 
 Comparison of the two implementations
 =====================================
+
+High precision reference data was generated using the `mpmath
+<http://mpmath.org/>`_ library. The reference dataset is fully described and
+freely downloadable from the `Zenodo platform <http://about.zenodo.org/>`_
+(`DOI:10.5281/zenodo.3323683
+<https://doi.org/10.5281/zenodo.3323683>`_). Accuracy of both implementations is
+then evaluated through the following script (:download:`download source file
+<./implementation/f_accuracy.py>`):
+
+.. literalinclude:: ./implementation/f_accuracy.py
+   :language: python
+
+We get the histograms shown in :numref:`implementation-histograms`. These
+histograms show that :ref:`Implementation #1 <implementation-cholesky>` is more
+accurate than :ref:`Implementation #2 <implementation-rational-functions>`. The
+former will therefore be selected as default.
+
+.. _implementation-histograms:
+.. figure:: implementation/histograms.*
+
+   Accuracy of the two implementations.
+
+
+.. todo:: Rename the second implementation ``pw85_f_old`` → ``pw85_f_2``

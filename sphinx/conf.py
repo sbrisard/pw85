@@ -31,6 +31,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.viewcode',
               'sphinx.ext.githubpages',]
 
+numfig = True
+
 templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'

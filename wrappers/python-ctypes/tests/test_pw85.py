@@ -1,3 +1,5 @@
+import os.path
+
 import h5py
 import numpy as np
 import pytest
@@ -263,57 +265,3 @@ def test_f(r12_dir, a1, c1, n1, a2, c2, n2,
             expected.append(r12_norm_j**2*exp_ref)
             actual.append(pypw85.f(lambda_i, r12_norm_j*r12_dir, q1, q2))
     assert_allclose(actual, expected, rtol=rtol, atol=atol)
-
-
-def accuracy_histogram(func):
-    with h5py.File('data/pw85_ref_data-20190712.h5', 'r') as f:
-        radii = np.array(f['radii'])
-        spheroids = np.array(f['spheroids'])
-        directions = np.array(f['directions'])
-        lambdas = np.array(f['lambdas'])
-        expecteds = np.array(f['F'])
-
-    max_ulp = 16
-    hist = np.zeros(max_ulp+2, dtype=np.uint64)
-    edges = np.linspace(-max_ulp-1., 1., num=max_ulp+3)
-    print(edges)
-    for i1, q1 in enumerate(spheroids):
-        print("{}/{}".format(i1+1, spheroids.shape[0]))
-        for i2, q2 in enumerate(spheroids):
-            for i, r12_i in enumerate(directions):
-                for j, lambda_j in enumerate(lambdas):
-                        exp = expecteds[i1, i2, i, j]
-                        act = func(lambda_j, r12_i, q1, q2)
-                        if np.isnan(act):
-                            print('nan')
-                            act = 1e100
-                        err = np.abs(act-exp)
-
-                        if err == 0.:
-                            print('0')
-                            hist[0] += 1
-                        else:
-                            if exp != 0.:
-                                err = err/np.abs(exp)
-                            bin_index = int(np.floor(np.log10(err)+max_ulp+1))
-                            if bin_index < 0:
-                                bin_index = 0
-                            if bin_index > max_ulp+1:
-                                bin_index = max_ulp+1
-                            hist[bin_index] += 1
-    return hist, edges
-
-
-
-if __name__ == '__main__':
-    hist1, edges = accuracy_histogram(pypw85.f)
-    hist2, _ = accuracy_histogram(pypw85.f_old)
-    print(np.sum(hist1))
-    print(np.sum(hist2))
-    # To plot the histogram with gnuplot
-    # plot 'histogram.csv' u 1:2:3 with boxes
-    centers = 0.5*(edges[1:]+edges[:-1])
-    widths = edges[1:]-edges[:-1]
-    with open('histogram.csv', 'w') as f:
-        for x, dx, y1, y2 in zip(centers, widths, hist1, hist2):
-            f.write('{},{},{},{}\n'.format(x, dx, y1, y2))
