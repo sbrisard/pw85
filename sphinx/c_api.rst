@@ -62,19 +62,63 @@ These function and macros form the public API of the library.
   array. It is modified in-place.
 
 
+.. c:function:: double pw85_f(double lambda, double r12[PW85_DIM], double q1[PW85_SYM], double q2[PW85_SYM], double* out)
+
+  Return the value of the function ``f`` defined as (see
+  :ref:`theory`)::
+
+    f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
+
+  with::
+
+    Q = (1-λ)Q₁ + λQ₂,
+
+  where ellipsoids 1 and 2 are defined as the sets of points ``m``
+  (column-vector) such that::
+
+    (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
+
+  In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is
+  the center-to-center radius-vector, represented by the ``double[3]``
+  array `r12`. The symmetric, positive-definite matrices ``Q₁`` and
+  ``Q₂`` are specified through the ``double[6]`` arrays `q1` and `q2`.
+
+  The value of ``λ`` is specified through the parameter `lambda`.
+
+  This function returns the value of ``f(λ)``. If `out` is not
+  ``NULL``, then it must be a pre-allocated ``double[3]`` array which
+  is updated with the values of the first and second derivatives::
+
+    out[0] = f(λ),    out[1] = f'(λ)    and    out[2] = f″(λ).
+
+  This implementation uses :ref:`Cholesky decompositions
+  <implementation-cholesky>`.
+
+
+.. c:function:: double pw85_f_alt(double lambda, double r12[PW85_DIM], double q1[PW85_SYM], double q2[PW85_SYM], double* out)
+
+  Alternative implementation of :c:func:`pw85_f`.
+
+  See :c:func:`pw85_f` for the meaning of the parameters `lambda`,
+  `r12`, `q1` and `q2`.
+
+  This function returns the value of ``f(λ)``. If `out` is not
+  ``NULL``, then it must be a pre-allocated ``double[1]`` array which
+  is updated with the value of ``f(λ)``.
+
+  This implementation uses :ref:`rational fractions
+  <implementation-rational-functions>`.
+
+.. todo:: This function should also compute the first and second
+          derivatives.
+
+
 .. c:function:: double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM], double q2[PW85_SYM], double *out)
 
   Return the value of the contact function of two ellipsoids.
 
-  Ellipsoids 1 and 2 are defined as the sets of points ``m`` (column-vector)
-  such that::
-
-    (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
-
-  where ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is the center-to-center
-  radius-vector, that is represented by the ``double[3]`` array
-  `r12`. The symmetric, positive-definite matrices ``Q₁`` and ``Q₂``
-  are specified through the ``double[6]`` arrays `q1` and `q2`.
+  See :c:func:`pw85_f` for the meaning of the parameters `r12`, `q1`
+  and `q2`.
 
   This function returns the value of ``μ²``, defined as (see :ref:`theory`)::
 

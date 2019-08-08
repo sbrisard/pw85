@@ -142,24 +142,79 @@ def spheroid(a, c, n, q=None):
     return q
 
 
-def contact_function(r12, q1, q2, out=None):
-    """Return the value of the contact function of two ellipsoids.
+def f(lambda_, r12, q1, q2, out=None):
+    """Return the value of the function ``f`` defined as::
 
-    Ellipsoids 1 and 2 are defined as the sets of points ``m``
+        f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
+
+    with::
+
+        Q = (1-λ)Q₁ + λQ₂,
+
+    where ellipsoids 1 and 2 are defined as the sets of points ``m``
     (column-vector) such that::
 
-      (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
+        (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
 
-    where ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is the
-    center-to-center radius-vector, that is represented by the
+    In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is
+    the center-to-center radius-vector, represented by the
     ``double[3]`` array `r12`. The symmetric, positive-definite
     matrices ``Q₁`` and ``Q₂`` are specified through the ``double[6]``
     arrays `q1` and `q2`.
 
+    The value of ``λ`` is specified through the parameter `lambda`.
+
+    This function returns the value of ``f(λ)``. If `out` is not
+    ``None``, then it must be a pre-allocated ``double[3]`` array
+    which is updated with the values of the first and second
+    derivatives:
+
+    .. code-block:: none
+
+       out[0] = f(λ),    out[1] = f'(λ)    and    out[2] = f″(λ).
+
+    This implementation uses :ref:`Cholesky decompositions
+    <implementation-cholesky>`.
+
+    """
+    return _ll.f(lambda_,
+                 r12.ctypes.data_as(_ll.c_double_p),
+                 q1.ctypes.data_as(_ll.c_double_p),
+                 q2.ctypes.data_as(_ll.c_double_p),
+                 out if out is None else out.ctypes.data_as(_ll.c_double_p))
+
+
+def f_alt(lambda_, r12, q1, q2, out=None):
+    """Alternative implementation of :py:func:`f`.
+
+    See :py:func:`f` for the meaning of the parameters `lambda`,
+    `r12`, `q1` and `q2`.
+
+    This function returns the value of ``f(λ)``. If `out` is not
+    ``None``, then it must be a pre-allocated ``double[1]`` array
+    which is updated with the value of ``f(λ)``.
+
+    This implementation uses :ref:`rational fractions
+    <implementation-rational-functions>`.
+
+    """
+    return _ll.f_alt(lambda_,
+                     r12.ctypes.data_as(_ll.c_double_p),
+                     q1.ctypes.data_as(_ll.c_double_p),
+                     q2.ctypes.data_as(_ll.c_double_p),
+                     out if out is None else out.ctypes.data_as(_ll.c_double_p))
+
+
+def contact_function(r12, q1, q2, out=None):
+    """Return the value of the contact function of two ellipsoids.
+
+    See :py:func:`f` for the meaning of the parameters `r12`, `q1` and
+    `q2`.
+
     This function returns the value of ``μ²``, defined as (see
     :ref:`theory`)::
 
-      μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
+        μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
 
     ``μ`` is the common factor by which the two ellipsoids must be
     scaled (their centers being fixed) in order to be tangentially in
@@ -214,19 +269,3 @@ def _cholesky_solve(l, b, x=None):
                         b.ctypes.data_as(_ll.c_double_p),
                         x.ctypes.data_as(_ll.c_double_p))
     return x
-
-
-def f(lambda_, r12, q1, q2, out=None):
-    return _ll.f(lambda_,
-                 r12.ctypes.data_as(_ll.c_double_p),
-                 q1.ctypes.data_as(_ll.c_double_p),
-                 q2.ctypes.data_as(_ll.c_double_p),
-                 out if out is None else out.ctypes.data_as(_ll.c_double_p))
-
-
-def f_alt(lambda_, r12, q1, q2, out=None):
-    return _ll.f_alt(lambda_,
-                     r12.ctypes.data_as(_ll.c_double_p),
-                     q1.ctypes.data_as(_ll.c_double_p),
-                     q2.ctypes.data_as(_ll.c_double_p),
-                     out if out is None else out.ctypes.data_as(_ll.c_double_p))
