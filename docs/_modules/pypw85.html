@@ -175,24 +175,79 @@
     <span class="k">return</span> <span class="n">q</span></div>
 
 
-<div class="viewcode-block" id="contact_function"><a class="viewcode-back" href="../py_api.html#pypw85.contact_function">[docs]</a><span class="k">def</span> <span class="nf">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return the value of the contact function of two ellipsoids.</span>
+<div class="viewcode-block" id="f"><a class="viewcode-back" href="../py_api.html#pypw85.f">[docs]</a><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">lambda_</span><span class="p">,</span> <span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the value of the function ``f`` defined as::</span>
 
-<span class="sd">    Ellipsoids 1 and 2 are defined as the sets of points ``m``</span>
+<span class="sd">        f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,</span>
+
+<span class="sd">    with::</span>
+
+<span class="sd">        Q = (1-λ)Q₁ + λQ₂,</span>
+
+<span class="sd">    where ellipsoids 1 and 2 are defined as the sets of points ``m``</span>
 <span class="sd">    (column-vector) such that::</span>
 
-<span class="sd">      (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1</span>
+<span class="sd">        (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1</span>
 
-<span class="sd">    where ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is the</span>
-<span class="sd">    center-to-center radius-vector, that is represented by the</span>
+<span class="sd">    In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is</span>
+<span class="sd">    the center-to-center radius-vector, represented by the</span>
 <span class="sd">    ``double[3]`` array `r12`. The symmetric, positive-definite</span>
 <span class="sd">    matrices ``Q₁`` and ``Q₂`` are specified through the ``double[6]``</span>
 <span class="sd">    arrays `q1` and `q2`.</span>
 
+<span class="sd">    The value of ``λ`` is specified through the parameter `lambda`.</span>
+
+<span class="sd">    This function returns the value of ``f(λ)``. If `out` is not</span>
+<span class="sd">    ``None``, then it must be a pre-allocated ``double[3]`` array</span>
+<span class="sd">    which is updated with the values of the first and second</span>
+<span class="sd">    derivatives:</span>
+
+<span class="sd">    .. code-block:: none</span>
+
+<span class="sd">       out[0] = f(λ),    out[1] = f&#39;(λ)    and    out[2] = f″(λ).</span>
+
+<span class="sd">    This implementation uses :ref:`Cholesky decompositions</span>
+<span class="sd">    &lt;implementation-cholesky&gt;`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_ll</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">lambda_</span><span class="p">,</span>
+                 <span class="n">r12</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+                 <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+                 <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+                 <span class="n">out</span> <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">out</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="f_alt"><a class="viewcode-back" href="../py_api.html#pypw85.f_alt">[docs]</a><span class="k">def</span> <span class="nf">f_alt</span><span class="p">(</span><span class="n">lambda_</span><span class="p">,</span> <span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Alternative implementation of :py:func:`f`.</span>
+
+<span class="sd">    See :py:func:`f` for the meaning of the parameters `lambda`,</span>
+<span class="sd">    `r12`, `q1` and `q2`.</span>
+
+<span class="sd">    This function returns the value of ``f(λ)``. If `out` is not</span>
+<span class="sd">    ``None``, then it must be a pre-allocated ``double[1]`` array</span>
+<span class="sd">    which is updated with the value of ``f(λ)``.</span>
+
+<span class="sd">    This implementation uses :ref:`rational fractions</span>
+<span class="sd">    &lt;implementation-rational-functions&gt;`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_ll</span><span class="o">.</span><span class="n">f_alt</span><span class="p">(</span><span class="n">lambda_</span><span class="p">,</span>
+                     <span class="n">r12</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+                     <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+                     <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+                     <span class="n">out</span> <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">out</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="contact_function"><a class="viewcode-back" href="../py_api.html#pypw85.contact_function">[docs]</a><span class="k">def</span> <span class="nf">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the value of the contact function of two ellipsoids.</span>
+
+<span class="sd">    See :py:func:`f` for the meaning of the parameters `r12`, `q1` and</span>
+<span class="sd">    `q2`.</span>
+
 <span class="sd">    This function returns the value of ``μ²``, defined as (see</span>
 <span class="sd">    :ref:`theory`)::</span>
 
-<span class="sd">      μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.</span>
+<span class="sd">        μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.</span>
 
 <span class="sd">    ``μ`` is the common factor by which the two ellipsoids must be</span>
 <span class="sd">    scaled (their centers being fixed) in order to be tangentially in</span>
@@ -247,22 +302,6 @@
                         <span class="n">b</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
                         <span class="n">x</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">x</span></div>
-
-
-<div class="viewcode-block" id="f"><a class="viewcode-back" href="../py_api.html#pypw85.f">[docs]</a><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">lambda_</span><span class="p">,</span> <span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">_ll</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">lambda_</span><span class="p">,</span>
-                 <span class="n">r12</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
-                 <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
-                 <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
-                 <span class="n">out</span> <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">out</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="f_old"><a class="viewcode-back" href="../py_api.html#pypw85.f_old">[docs]</a><span class="k">def</span> <span class="nf">f_old</span><span class="p">(</span><span class="n">lambda_</span><span class="p">,</span> <span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">_ll</span><span class="o">.</span><span class="n">f_old</span><span class="p">(</span><span class="n">lambda_</span><span class="p">,</span>
-                     <span class="n">r12</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
-                     <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
-                     <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
-                     <span class="n">out</span> <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">out</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">_ll</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">))</span></div>
 </pre></div>
 
           </div>

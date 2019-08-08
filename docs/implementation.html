@@ -249,7 +249,7 @@ then evaluated through the following script (<a class="reference download intern
         <span class="n">expecteds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;F&#39;</span><span class="p">])</span>
 
     <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;implementation-01.csv&#39;</span><span class="p">),</span>
-                       <span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">f_old</span><span class="p">,</span> <span class="s1">&#39;implementation-02.csv&#39;</span><span class="p">)]:</span>
+                       <span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">f_alt</span><span class="p">,</span> <span class="s1">&#39;implementation-02.csv&#39;</span><span class="p">)]:</span>
 
         <span class="n">hist</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">accuracy_histogram</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">spheroids</span><span class="p">,</span> <span class="n">directions</span><span class="p">,</span> <span class="n">lambdas</span><span class="p">,</span> <span class="n">expecteds</span><span class="p">)</span>
         <span class="n">centers</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">+</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
@@ -263,13 +263,9 @@ then evaluated through the following script (<a class="reference download intern
 histograms show that <a class="reference internal" href="#implementation-cholesky"><span class="std std-ref">Implementation #1</span></a> is more
 accurate than <a class="reference internal" href="#implementation-rational-functions"><span class="std std-ref">Implementation #2</span></a>. The
 former will therefore be selected as default.</p>
-<div class="figure align-default" id="id3">
+<div class="figure align-default" id="id2">
 <span id="implementation-histograms"></span><img alt="_images/histograms.png" src="_images/histograms.png" />
-<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Accuracy of the two implementations.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
-</div>
-<div class="admonition-todo admonition" id="id2">
-<p class="admonition-title">Todo</p>
-<p>Rename the second implementation <code class="docutils literal notranslate"><span class="pre">pw85_f_old</span></code> → <code class="docutils literal notranslate"><span class="pre">pw85_f_2</span></code></p>
+<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Accuracy of the two implementations.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>

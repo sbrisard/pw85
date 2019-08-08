@@ -153,16 +153,8 @@ symmetric matrix, represented by the array <cite>a</cite>.</p>
 <dt id="pypw85.contact_function">
 <code class="sig-prename descclassname">pypw85.</code><code class="sig-name descname">contact_function</code><span class="sig-paren">(</span><em class="sig-param">r12</em>, <em class="sig-param">q1</em>, <em class="sig-param">q2</em>, <em class="sig-param">out=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#contact_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.contact_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the value of the contact function of two ellipsoids.</p>
-<p>Ellipsoids 1 and 2 are defined as the sets of points <code class="docutils literal notranslate"><span class="pre">m</span></code>
-(column-vector) such that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
-</pre></div>
-</div>
-<p>where <code class="docutils literal notranslate"><span class="pre">cᵢ</span></code> is the center; <code class="docutils literal notranslate"><span class="pre">r₁₂</span> <span class="pre">=</span> <span class="pre">c₂-c₁</span></code> is the
-center-to-center radius-vector, that is represented by the
-<code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <cite>r12</cite>. The symmetric, positive-definite
-matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code>
-arrays <cite>q1</cite> and <cite>q2</cite>.</p>
+<p>See <a class="reference internal" href="#pypw85.f" title="pypw85.f"><code class="xref py py-func docutils literal notranslate"><span class="pre">f()</span></code></a> for the meaning of the parameters <cite>r12</cite>, <cite>q1</cite> and
+<cite>q2</cite>.</p>
 <p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, defined as (see
 <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
@@ -179,12 +171,46 @@ is updated with the maximizer <code class="docutils literal notranslate"><span c
 <dl class="function">
 <dt id="pypw85.f">
 <code class="sig-prename descclassname">pypw85.</code><code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param">lambda_</em>, <em class="sig-param">r12</em>, <em class="sig-param">q1</em>, <em class="sig-param">q2</em>, <em class="sig-param">out=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.f" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the value of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> defined as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
+</pre></div>
+</div>
+<p>with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Q = (1-λ)Q₁ + λQ₂,
+</pre></div>
+</div>
+<p>where ellipsoids 1 and 2 are defined as the sets of points <code class="docutils literal notranslate"><span class="pre">m</span></code>
+(column-vector) such that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
+</pre></div>
+</div>
+<p>In the above inequality, <code class="docutils literal notranslate"><span class="pre">cᵢ</span></code> is the center; <code class="docutils literal notranslate"><span class="pre">r₁₂</span> <span class="pre">=</span> <span class="pre">c₂-c₁</span></code> is
+the center-to-center radius-vector, represented by the
+<code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <cite>r12</cite>. The symmetric, positive-definite
+matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code>
+arrays <cite>q1</cite> and <cite>q2</cite>.</p>
+<p>The value of <code class="docutils literal notranslate"><span class="pre">λ</span></code> is specified through the parameter <cite>lambda</cite>.</p>
+<p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>. If <cite>out</cite> is not
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, then it must be a pre-allocated <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array
+which is updated with the values of the first and second
+derivatives:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>out[0] = f(λ),    out[1] = f&#39;(λ)    and    out[2] = f″(λ).
+</pre></div>
+</div>
+<p>This implementation uses <a class="reference internal" href="implementation.html#implementation-cholesky"><span class="std std-ref">Cholesky decompositions</span></a>.</p>
+</dd></dl>
 
 <dl class="function">
-<dt id="pypw85.f_old">
-<code class="sig-prename descclassname">pypw85.</code><code class="sig-name descname">f_old</code><span class="sig-paren">(</span><em class="sig-param">lambda_</em>, <em class="sig-param">r12</em>, <em class="sig-param">q1</em>, <em class="sig-param">q2</em>, <em class="sig-param">out=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#f_old"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.f_old" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="pypw85.f_alt">
+<code class="sig-prename descclassname">pypw85.</code><code class="sig-name descname">f_alt</code><span class="sig-paren">(</span><em class="sig-param">lambda_</em>, <em class="sig-param">r12</em>, <em class="sig-param">q1</em>, <em class="sig-param">q2</em>, <em class="sig-param">out=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#f_alt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.f_alt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alternative implementation of <a class="reference internal" href="#pypw85.f" title="pypw85.f"><code class="xref py py-func docutils literal notranslate"><span class="pre">f()</span></code></a>.</p>
+<p>See <a class="reference internal" href="#pypw85.f" title="pypw85.f"><code class="xref py py-func docutils literal notranslate"><span class="pre">f()</span></code></a> for the meaning of the parameters <cite>lambda</cite>,
+<cite>r12</cite>, <cite>q1</cite> and <cite>q2</cite>.</p>
+<p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>. If <cite>out</cite> is not
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, then it must be a pre-allocated <code class="docutils literal notranslate"><span class="pre">double[1]</span></code> array
+which is updated with the value of <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>.</p>
+<p>This implementation uses <a class="reference internal" href="implementation.html#implementation-rational-functions"><span class="std std-ref">rational fractions</span></a>.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="pypw85.spheroid">

@@ -37,13 +37,13 @@
 <div class="contents local topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#representation-of-vectors-and-matrices" id="id1">Representation of vectors and matrices</a></p></li>
-<li><p><a class="reference internal" href="#public-api" id="id2">“Public” API</a></p></li>
-<li><p><a class="reference internal" href="#private-api" id="id3">“Private” API</a></p></li>
+<li><p><a class="reference internal" href="#representation-of-vectors-and-matrices" id="id2">Representation of vectors and matrices</a></p></li>
+<li><p><a class="reference internal" href="#public-api" id="id3">“Public” API</a></p></li>
+<li><p><a class="reference internal" href="#private-api" id="id4">“Private” API</a></p></li>
 </ul>
 </div>
 <div class="section" id="representation-of-vectors-and-matrices">
-<h2><a class="toc-backref" href="#id1">Representation of vectors and matrices</a><a class="headerlink" href="#representation-of-vectors-and-matrices" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">Representation of vectors and matrices</a><a class="headerlink" href="#representation-of-vectors-and-matrices" title="Permalink to this headline">¶</a></h2>
 <p>An ellipsoid is defined from its center <code class="docutils literal notranslate"><span class="pre">c</span></code> (a 3×1, column-vector)
 and quadratic form <code class="docutils literal notranslate"><span class="pre">Q</span></code> (a 3×3, symmetric, positive definite matrix)
 as the set of points <code class="docutils literal notranslate"><span class="pre">m</span></code> such that:</p>
@@ -70,7 +70,7 @@ A = ⎢      a[3] a[4] ⎥.
 </div>
 </div>
 <div class="section" id="public-api">
-<h2><a class="toc-backref" href="#id2">“Public” API</a><a class="headerlink" href="#public-api" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id3">“Public” API</a><a class="headerlink" href="#public-api" title="Permalink to this headline">¶</a></h2>
 <p>These function and macros form the public API of the library.</p>
 <dl class="macro">
 <dt id="c.PW85_DIM">
@@ -95,18 +95,59 @@ array. It is modified in-place.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="c.pw85_contact_function">
-double <code class="sig-name descname">pw85_contact_function</code><span class="sig-paren">(</span>double<em> r12[PW85_DIM]</em>, double<em> q1[PW85_SYM]</em>, double<em> q2[PW85_SYM]</em>, double<em> *out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_contact_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the value of the contact function of two ellipsoids.</p>
-<p>Ellipsoids 1 and 2 are defined as the sets of points <code class="docutils literal notranslate"><span class="pre">m</span></code> (column-vector)
-such that:</p>
+<dt id="c.pw85_f">
+double <code class="sig-name descname">pw85_f</code><span class="sig-paren">(</span>double<em> lambda</em>, double<em> r12[PW85_DIM]</em>, double<em> q1[PW85_SYM]</em>, double<em> q2[PW85_SYM]</em>, double*<em> out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> defined as (see
+<a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
+</pre></div>
+</div>
+<p>with:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Q = (1-λ)Q₁ + λQ₂,
+</pre></div>
+</div>
+<p>where ellipsoids 1 and 2 are defined as the sets of points <code class="docutils literal notranslate"><span class="pre">m</span></code>
+(column-vector) such that:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">cᵢ</span></code> is the center; <code class="docutils literal notranslate"><span class="pre">r₁₂</span> <span class="pre">=</span> <span class="pre">c₂-c₁</span></code> is the center-to-center
-radius-vector, that is represented by the <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array
-<cite>r12</cite>. The symmetric, positive-definite matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code>
-are specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> arrays <cite>q1</cite> and <cite>q2</cite>.</p>
+<p>In the above inequality, <code class="docutils literal notranslate"><span class="pre">cᵢ</span></code> is the center; <code class="docutils literal notranslate"><span class="pre">r₁₂</span> <span class="pre">=</span> <span class="pre">c₂-c₁</span></code> is
+the center-to-center radius-vector, represented by the <code class="docutils literal notranslate"><span class="pre">double[3]</span></code>
+array <cite>r12</cite>. The symmetric, positive-definite matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> arrays <cite>q1</cite> and <cite>q2</cite>.</p>
+<p>The value of <code class="docutils literal notranslate"><span class="pre">λ</span></code> is specified through the parameter <cite>lambda</cite>.</p>
+<p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>. If <cite>out</cite> is not
+<code class="docutils literal notranslate"><span class="pre">NULL</span></code>, then it must be a pre-allocated <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array which
+is updated with the values of the first and second derivatives:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>out[0] = f(λ),    out[1] = f&#39;(λ)    and    out[2] = f″(λ).
+</pre></div>
+</div>
+<p>This implementation uses <a class="reference internal" href="implementation.html#implementation-cholesky"><span class="std std-ref">Cholesky decompositions</span></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.pw85_f_alt">
+double <code class="sig-name descname">pw85_f_alt</code><span class="sig-paren">(</span>double<em> lambda</em>, double<em> r12[PW85_DIM]</em>, double<em> q1[PW85_SYM]</em>, double<em> q2[PW85_SYM]</em>, double*<em> out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_f_alt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alternative implementation of <a class="reference internal" href="#c.pw85_f" title="pw85_f"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85_f()</span></code></a>.</p>
+<p>See <a class="reference internal" href="#c.pw85_f" title="pw85_f"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85_f()</span></code></a> for the meaning of the parameters <cite>lambda</cite>,
+<cite>r12</cite>, <cite>q1</cite> and <cite>q2</cite>.</p>
+<p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>. If <cite>out</cite> is not
+<code class="docutils literal notranslate"><span class="pre">NULL</span></code>, then it must be a pre-allocated <code class="docutils literal notranslate"><span class="pre">double[1]</span></code> array which
+is updated with the value of <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>.</p>
+<p>This implementation uses <a class="reference internal" href="implementation.html#implementation-rational-functions"><span class="std std-ref">rational fractions</span></a>.</p>
+</dd></dl>
+
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>This function should also compute the first and second
+derivatives.</p>
+</div>
+<dl class="function">
+<dt id="c.pw85_contact_function">
+double <code class="sig-name descname">pw85_contact_function</code><span class="sig-paren">(</span>double<em> r12[PW85_DIM]</em>, double<em> q1[PW85_SYM]</em>, double<em> q2[PW85_SYM]</em>, double<em> *out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_contact_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the contact function of two ellipsoids.</p>
+<p>See <a class="reference internal" href="#c.pw85_f" title="pw85_f"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85_f()</span></code></a> for the meaning of the parameters <cite>r12</cite>, <cite>q1</cite>
+and <cite>q2</cite>.</p>
 <p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, defined as (see <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
 </pre></div>
@@ -121,7 +162,7 @@ with the maximizer <code class="docutils literal notranslate"><span class="pre">
 
 </div>
 <div class="section" id="private-api">
-<h2><a class="toc-backref" href="#id3">“Private” API</a><a class="headerlink" href="#private-api" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">“Private” API</a><a class="headerlink" href="#private-api" title="Permalink to this headline">¶</a></h2>
 <p>These functions are not really private. They are fully exposed for
 testing purposes.  However, they are not really needed for standard
 applications of the library.</p>
