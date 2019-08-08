@@ -64,7 +64,7 @@ if __name__ == '__main__':
         expecteds = np.array(f['F'])
 
     for func, path in [(pypw85.f, 'implementation-01.csv'),
-                       (pypw85.f_old, 'implementation-02.csv')]:
+                       (pypw85.f_alt, 'implementation-02.csv')]:
 
         hist, edges = accuracy_histogram(func, spheroids, directions, lambdas, expecteds)
         centers = 0.5*(edges[1:]+edges[:-1])

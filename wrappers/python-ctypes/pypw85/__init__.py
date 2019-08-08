@@ -224,8 +224,8 @@ def f(lambda_, r12, q1, q2, out=None):
                  out if out is None else out.ctypes.data_as(_ll.c_double_p))
 
 
-def f_old(lambda_, r12, q1, q2, out=None):
-    return _ll.f_old(lambda_,
+def f_alt(lambda_, r12, q1, q2, out=None):
+    return _ll.f_alt(lambda_,
                      r12.ctypes.data_as(_ll.c_double_p),
                      q1.ctypes.data_as(_ll.c_double_p),
                      q2.ctypes.data_as(_ll.c_double_p),

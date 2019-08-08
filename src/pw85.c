@@ -190,7 +190,7 @@ double pw85_f(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
   }
 }
 
-double pw85_f_old(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
+double pw85_f_alt(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
                   double q2[PW85_SYM], double *out) {
   double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
   double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */

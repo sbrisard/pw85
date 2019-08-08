@@ -191,6 +191,3 @@ former will therefore be selected as default.
 .. figure:: implementation/histograms.*
 
    Accuracy of the two implementations.
-
-
-.. todo:: Rename the second implementation ``pw85_f_old`` → ``pw85_f_2``
