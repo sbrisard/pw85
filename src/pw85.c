@@ -85,64 +85,6 @@ void pw85_spheroid(double a, double c, double n[PW85_DIM], double q[PW85_SYM]) {
   q[1] = nx * ny * c2_minus_a2;
 }
 
-double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM],
-                             double q2[PW85_SYM], double *out) {
-  double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
-  double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
-  for (int i = 0; i < PW85_SYM; i++) {
-    q3[i] = 2. * q1[i] - q2[i];
-    q4[i] = 0.5 * (q1[i] + q2[i]);
-  }
-
-  double a[3];
-  pw85__rT_adjQ_r_as_poly(r12, q1, q2, q3, a);
-  printf("a = \n");
-  for (size_t i = 0; i < 3; i++) printf("%1.15f\n", a[i]);
-
-  double b[4];
-  pw85__detQ_as_poly(q1, q2, q3, q4, b);
-  printf("b = \n");
-  for (size_t i = 0; i < 4; i++) printf("%1.15f\n", b[i]);
-
-  const double c0 = a[0] * b[0];
-  const double c1 = 2. * (a[1] - a[0]) * b[0];
-  const double c2 =
-      -a[0] * (b[1] + b[2]) + 3. * b[0] * (a[2] - a[1]) + a[1] * b[1];
-  const double c3 =
-      2. * (b[1] * (a[2] - a[1]) - a[0] * b[3]) - 4. * a[2] * b[0];
-  const double c4 =
-      (a[0] - a[1]) * b[3] + (a[2] - a[1]) * b[2] - 3. * a[2] * b[1];
-  const double c5 = -2. * a[2] * b[2];
-  const double c6 = -a[2] * b[3];
-  double xl = 0.;
-  double yl = c0;
-  double xr = 1.;
-  double yr = c0 + c1 + c2 + c3 + c4 + c5 + c6;
-  double x, y;
-  while (fabs(xr - xl) > 1E-12) {
-    x = 0.5 * (xl + xr);
-    y = c0 + x * (c1 + x * (c2 + x * (c3 + x * (c4 + x * (c5 + x * c6)))));
-    if (y == 0.0) {
-      break;
-    } else {
-      if (yl * y < 0) {
-        xr = x;
-        yr = y;
-      } else {
-        xl = x;
-        yl = y;
-      }
-    }
-  }
-  y = x * (1. - x) * (a[0] + x * (a[1] + x * a[2])) /
-      (b[0] + x * (b[1] + x * (b[2] + x * b[3])));
-  if (out != NULL) {
-    out[0] = y;
-    out[1] = x;
-  }
-  return y;
-}
-
 double pw85_f(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
               double q2[PW85_SYM], double *out) {
   double q[PW85_SYM], q12[PW85_SYM];
@@ -219,5 +161,101 @@ double pw85_f_alt(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
                    (a[0] + lambda * (a[1] + lambda * a[2])) /
                    (b[0] + lambda * (b[1] + lambda * (b[2] + lambda * b[3])));
   if (out) out[0] = y;
+  return y;
+}
+
+double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM],
+                             double q2[PW85_SYM], double *out) {
+  double f[3];
+  /* Lower-bound for the root. */
+  double a = 0., f_prime_a;
+  pw85_f(a, r12, q1, q2, f);
+  f_prime_a = f[1];
+  /* Upper-bound for the root. */
+  double b = 1., f_prime_b;
+  pw85_f(b, r12, q1, q2, f);
+  f_prime_b = f[1];
+  printf("%g\t%g\n", f_prime_a, f_prime_b);
+  /* Current estimate of the root f'(x) == 0. */
+  double x = (a * f_prime_b - b * f_prime_a) / (f_prime_b - f_prime_a);
+  for (int i = 0; i < 1000; i++) {
+    pw85_f(x, r12, q1, q2, f);
+    if (f[1] * f_prime_a < 0.) {
+      b = x;
+      f_prime_b = f[1];
+    } else {
+      a = x;
+      f_prime_a = f[1];
+    }
+    printf("%g %g %g %g\n", x, f[0], f[1], f[2]);
+    double x_new = x - f[2] / f[1];
+    if ((x_new < a) || (x_new > b)) {
+      x_new = (a * f_prime_b - b * f_prime_a) / (f_prime_b - f_prime_a);
+    }
+    x = x_new;
+  }
+  pw85_f(x, r12, q1, q2, f);
+  if (out) {
+    out[0] = f[0];
+    out[1] = x;
+  }
+  return f[0];
+}
+
+double pw85_contact_function_alt(double r12[PW85_DIM], double q1[PW85_SYM],
+                                 double q2[PW85_SYM], double *out) {
+  double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
+  double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
+  for (int i = 0; i < PW85_SYM; i++) {
+    q3[i] = 2. * q1[i] - q2[i];
+    q4[i] = 0.5 * (q1[i] + q2[i]);
+  }
+
+  double a[3];
+  pw85__rT_adjQ_r_as_poly(r12, q1, q2, q3, a);
+  printf("a = \n");
+  for (size_t i = 0; i < 3; i++) printf("%1.15f\n", a[i]);
+
+  double b[4];
+  pw85__detQ_as_poly(q1, q2, q3, q4, b);
+  printf("b = \n");
+  for (size_t i = 0; i < 4; i++) printf("%1.15f\n", b[i]);
+
+  const double c0 = a[0] * b[0];
+  const double c1 = 2. * (a[1] - a[0]) * b[0];
+  const double c2 =
+      -a[0] * (b[1] + b[2]) + 3. * b[0] * (a[2] - a[1]) + a[1] * b[1];
+  const double c3 =
+      2. * (b[1] * (a[2] - a[1]) - a[0] * b[3]) - 4. * a[2] * b[0];
+  const double c4 =
+      (a[0] - a[1]) * b[3] + (a[2] - a[1]) * b[2] - 3. * a[2] * b[1];
+  const double c5 = -2. * a[2] * b[2];
+  const double c6 = -a[2] * b[3];
+  double xl = 0.;
+  double yl = c0;
+  double xr = 1.;
+  double yr = c0 + c1 + c2 + c3 + c4 + c5 + c6;
+  double x, y;
+  while (fabs(xr - xl) > 1E-12) {
+    x = 0.5 * (xl + xr);
+    y = c0 + x * (c1 + x * (c2 + x * (c3 + x * (c4 + x * (c5 + x * c6)))));
+    if (y == 0.0) {
+      break;
+    } else {
+      if (yl * y < 0) {
+        xr = x;
+        yr = y;
+      } else {
+        xl = x;
+        yl = y;
+      }
+    }
+  }
+  y = x * (1. - x) * (a[0] + x * (a[1] + x * a[2])) /
+      (b[0] + x * (b[1] + x * (b[2] + x * b[3])));
+  if (out != NULL) {
+    out[0] = y;
+    out[1] = x;
+  }
   return y;
 }
