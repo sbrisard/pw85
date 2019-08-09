@@ -66,23 +66,23 @@ shorthand for <code class="docutils literal notranslate"><span class="pre">r₁�
 <p>In order to solve <code class="docutils literal notranslate"><span class="pre">f′(λ)</span> <span class="pre">=</span> <span class="pre">0</span></code> numerically, we use a <a class="reference external" href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton–Raphson</a> procedure, which
 requires the first and second derivatives of <code class="docutils literal notranslate"><span class="pre">f</span></code>. It is readily
 found that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(5)    s′ = Q⁻¹⋅Q′⋅Q⁻¹⋅r = Q⁻¹⋅u    and    rᵀ⋅s′ = rᵀ⋅Q⁻¹⋅u = sᵀ⋅u,
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(5)    s′ = -Q⁻¹⋅Q′⋅Q⁻¹⋅r = -Q⁻¹⋅u    and    rᵀ⋅s′ = -rᵀ⋅Q⁻¹⋅u = -sᵀ⋅u,
 </pre></div>
 </div>
 <p>with <code class="docutils literal notranslate"><span class="pre">u</span> <span class="pre">=</span> <span class="pre">Q₁₂⋅s</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₁₂</span> <span class="pre">=</span> <span class="pre">Q₂-Q₁</span></code>. Therefore:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(6)    f′(λ) = (1-2λ)rᵀ⋅s + λ(1-λ)sᵀ⋅u.
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(6)    f′(λ) = (1-2λ)rᵀ⋅s - λ(1-λ)sᵀ⋅u.
 </pre></div>
 </div>
 <p>Similarly, introducing <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">=</span> <span class="pre">Q⁻¹⋅u</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(7)    sᵀ⋅u′ = sᵀ⋅Q₁₂⋅s′ = sᵀ⋅Q₁₂⋅Q⁻¹⋅u = uᵀ⋅v,
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(7)    sᵀ⋅u′ = sᵀ⋅Q₁₂⋅s′ = -sᵀ⋅Q₁₂⋅Q⁻¹⋅u = -uᵀ⋅v,
 </pre></div>
 </div>
 <p>and:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(8)    uᵀ⋅s′ = uᵀ⋅Q⁻¹⋅u = uᵀ⋅v.
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(8)    uᵀ⋅s′ = -uᵀ⋅Q⁻¹⋅u = -uᵀ⋅v.
 </pre></div>
 </div>
 <p>Therefore:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(9)    f″(λ) = -2rᵀ⋅s + 2(1-2λ)sᵀ⋅u + λ(1-λ)(uᵀ⋅v+sᵀ⋅v).
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(9)    f″(λ) = -2rᵀ⋅s - 2(1-2λ)sᵀ⋅u + 2λ(1-λ)uᵀ⋅v.
 </pre></div>
 </div>
 </div>

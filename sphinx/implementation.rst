@@ -48,23 +48,23 @@ In order to solve ``f′(λ) = 0`` numerically, we use a `Newton–Raphson
 requires the first and second derivatives of ``f``. It is readily
 found that::
 
-  (5)    s′ = Q⁻¹⋅Q′⋅Q⁻¹⋅r = Q⁻¹⋅u    and    rᵀ⋅s′ = rᵀ⋅Q⁻¹⋅u = sᵀ⋅u,
+  (5)    s′ = -Q⁻¹⋅Q′⋅Q⁻¹⋅r = -Q⁻¹⋅u    and    rᵀ⋅s′ = -rᵀ⋅Q⁻¹⋅u = -sᵀ⋅u,
 
 with ``u = Q₁₂⋅s`` and ``Q₁₂ = Q₂-Q₁``. Therefore::
 
-  (6)    f′(λ) = (1-2λ)rᵀ⋅s + λ(1-λ)sᵀ⋅u.
+  (6)    f′(λ) = (1-2λ)rᵀ⋅s - λ(1-λ)sᵀ⋅u.
 
 Similarly, introducing ``v = Q⁻¹⋅u``::
 
-  (7)    sᵀ⋅u′ = sᵀ⋅Q₁₂⋅s′ = sᵀ⋅Q₁₂⋅Q⁻¹⋅u = uᵀ⋅v,
+  (7)    sᵀ⋅u′ = sᵀ⋅Q₁₂⋅s′ = -sᵀ⋅Q₁₂⋅Q⁻¹⋅u = -uᵀ⋅v,
 
 and::
 
-  (8)    uᵀ⋅s′ = uᵀ⋅Q⁻¹⋅u = uᵀ⋅v.
+  (8)    uᵀ⋅s′ = -uᵀ⋅Q⁻¹⋅u = -uᵀ⋅v.
 
 Therefore::
 
-  (9)    f″(λ) = -2rᵀ⋅s + 2(1-2λ)sᵀ⋅u + λ(1-λ)(uᵀ⋅v+sᵀ⋅v).
+  (9)    f″(λ) = -2rᵀ⋅s - 2(1-2λ)sᵀ⋅u + 2λ(1-λ)uᵀ⋅v.
 
 
 .. _implementation-rational-functions:
