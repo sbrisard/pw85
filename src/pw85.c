@@ -175,10 +175,11 @@ double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM],
   double b = 1., f_prime_b;
   pw85_f(b, r12, q1, q2, f);
   f_prime_b = f[1];
+  printf("--------------------\n");
   printf("%g\t%g\n", f_prime_a, f_prime_b);
   /* Current estimate of the root f'(x) == 0. */
   double x = (a * f_prime_b - b * f_prime_a) / (f_prime_b - f_prime_a);
-  for (int i = 0; i < 1000; i++) {
+  for (int i = 0; i < 100; i++) {
     pw85_f(x, r12, q1, q2, f);
     if (f[1] * f_prime_a < 0.) {
       b = x;
@@ -187,7 +188,7 @@ double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM],
       a = x;
       f_prime_a = f[1];
     }
-    printf("%g %g %g %g\n", x, f[0], f[1], f[2]);
+    printf("%d %g %g %g %g\n", i, x, f[0], f[1], f[2]);
     double x_new = x - f[2] / f[1];
     if ((x_new < a) || (x_new > b)) {
       x_new = (a * f_prime_b - b * f_prime_a) / (f_prime_b - f_prime_a);
