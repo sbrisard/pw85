@@ -142,7 +142,14 @@ def spheroid(a, c, n, q=None):
     return q
 
 
-def f(lambda_, r12, q1, q2, out=None):
+def f(lambda_, r12, q1, q2):
+    params = np.empty((15,), dtype=np.float64)
+    params[0:3] = r12
+    params[3:9] = q1
+    params[9:15] = q2
+    return _ll.f(lambda_, params.ctypes.data_as(_ll.c_double_p))
+
+def f1(lambda_, r12, q1, q2, out=None):
     """Return the value of the function ``f`` defined as::
 
         f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
@@ -177,14 +184,14 @@ def f(lambda_, r12, q1, q2, out=None):
     <implementation-cholesky>`.
 
     """
-    return _ll.f(lambda_,
-                 r12.ctypes.data_as(_ll.c_double_p),
-                 q1.ctypes.data_as(_ll.c_double_p),
-                 q2.ctypes.data_as(_ll.c_double_p),
-                 out if out is None else out.ctypes.data_as(_ll.c_double_p))
+    return _ll.f1(lambda_,
+                  r12.ctypes.data_as(_ll.c_double_p),
+                  q1.ctypes.data_as(_ll.c_double_p),
+                  q2.ctypes.data_as(_ll.c_double_p),
+                  out if out is None else out.ctypes.data_as(_ll.c_double_p))
 
 
-def f_alt(lambda_, r12, q1, q2, out=None):
+def f2(lambda_, r12, q1, q2, out=None):
     """Alternative implementation of :py:func:`f`.
 
     See :py:func:`f` for the meaning of the parameters `lambda`,
@@ -198,11 +205,11 @@ def f_alt(lambda_, r12, q1, q2, out=None):
     <implementation-rational-functions>`.
 
     """
-    return _ll.f_alt(lambda_,
-                     r12.ctypes.data_as(_ll.c_double_p),
-                     q1.ctypes.data_as(_ll.c_double_p),
-                     q2.ctypes.data_as(_ll.c_double_p),
-                     out if out is None else out.ctypes.data_as(_ll.c_double_p))
+    return _ll.f2(lambda_,
+                  r12.ctypes.data_as(_ll.c_double_p),
+                  q1.ctypes.data_as(_ll.c_double_p),
+                  q2.ctypes.data_as(_ll.c_double_p),
+                  out if out is None else out.ctypes.data_as(_ll.c_double_p))
 
 
 def contact_function(r12, q1, q2, out=None):

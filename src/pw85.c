@@ -85,8 +85,33 @@ void pw85_spheroid(double a, double c, double n[PW85_DIM], double q[PW85_SYM]) {
   q[1] = nx * ny * c2_minus_a2;
 }
 
-double pw85_f(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
-              double q2[PW85_SYM], double *out) {
+double pw85_f(double lambda, double *params) {
+  double *r12 = params;
+  double *q1_i = params + PW85_DIM;
+  double *q2_i = q1_i + PW85_SYM;
+  double q[PW85_SYM];
+  double *q_i = q;
+  double q12[PW85_SYM];
+  double *q12_i = q12;
+  for (size_t i = 0; i < PW85_SYM; i++, q1_i++, q2_i++, q_i++, q12_i++) {
+    *q_i = (1 - lambda) * (*q1_i) + lambda * (*q2_i);
+    *q12_i = (*q2_i) - (*q1_i);
+  }
+  double l[PW85_SYM];
+  pw85__cholesky_decomp(q, l);
+  double s[PW85_DIM];
+  pw85__cholesky_solve(l, r12, s);
+  double *r_i = r12, *s_i = s;
+  double rs = 0.;
+  for (size_t i = 0; i < PW85_DIM; i++, r_i++, s_i++) {
+    rs += (*r_i) * (*s_i);
+  }
+
+  return lambda * (1. - lambda) * rs;
+}
+
+double pw85_f1(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
+               double q2[PW85_SYM], double *out) {
   double q[PW85_SYM], q12[PW85_SYM];
   double *q1_i = q1, *q2_i = q2, *q_i = q, *q12_i = q12;
   for (size_t i = 0; i < PW85_SYM; i++) {
@@ -132,8 +157,8 @@ double pw85_f(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
   }
 }
 
-double pw85_f_alt(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
-                  double q2[PW85_SYM], double *out) {
+double pw85_f2(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
+               double q2[PW85_SYM], double *out) {
   double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
   double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
   for (int i = 0; i < PW85_SYM; i++) {
@@ -169,18 +194,18 @@ double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM],
   double f[3];
   /* Lower-bound for the root. */
   double a = 0., f_prime_a;
-  pw85_f(a, r12, q1, q2, f);
+  pw85_f1(a, r12, q1, q2, f);
   f_prime_a = f[1];
   /* Upper-bound for the root. */
   double b = 1., f_prime_b;
-  pw85_f(b, r12, q1, q2, f);
+  pw85_f1(b, r12, q1, q2, f);
   f_prime_b = f[1];
   printf("--------------------\n");
   printf("%g\t%g\n", f_prime_a, f_prime_b);
   /* Current estimate of the root f'(x) == 0. */
   double x = (a * f_prime_b - b * f_prime_a) / (f_prime_b - f_prime_a);
   for (int i = 0; i < 100; i++) {
-    pw85_f(x, r12, q1, q2, f);
+    pw85_f1(x, r12, q1, q2, f);
     if (f[1] * f_prime_a < 0.) {
       b = x;
       f_prime_b = f[1];
@@ -195,7 +220,7 @@ double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM],
     }
     x = x_new;
   }
-  pw85_f(x, r12, q1, q2, f);
+  pw85_f1(x, r12, q1, q2, f);
   if (out) {
     out[0] = f[0];
     out[1] = x;
