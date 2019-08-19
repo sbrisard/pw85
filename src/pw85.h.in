@@ -26,13 +26,18 @@ DllExport void pw85__cholesky_solve(double l[PW85_SYM], double b[PW85_DIM],
                                     double x[PW85_DIM]);
 DllExport void pw85_spheroid(double a, double c, double n[PW85_DIM],
                              double q[PW85_SYM]);
+DllExport double pw85_f(double lambda, double* params);
 DllExport double pw85_contact_function(double r12[PW85_DIM],
                                        double q1[PW85_SYM], double q2[PW85_SYM],
                                        double* out);
-DllExport double pw85_f(double lambda, double* params);
 DllExport double pw85_f1(double lambda, double r12[PW85_DIM],
                          double q1[PW85_SYM], double q2[PW85_SYM], double* out);
+DllExport double pw85_contact_function1(double r12[PW85_DIM],
+                                       double q1[PW85_SYM], double q2[PW85_SYM],
+                                       double* out);
 DllExport double pw85_f2(double lambda, double r12[PW85_DIM],
                          double q1[PW85_SYM], double q2[PW85_SYM], double* out);
-
+DllExport double pw85_contact_function2(double r12[PW85_DIM],
+                                       double q1[PW85_SYM], double q2[PW85_SYM],
+                                       double* out);
 #endif

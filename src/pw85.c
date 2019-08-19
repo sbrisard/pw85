@@ -157,40 +157,8 @@ double pw85_f1(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
   }
 }
 
-double pw85_f2(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
-               double q2[PW85_SYM], double *out) {
-  double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
-  double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
-  for (int i = 0; i < PW85_SYM; i++) {
-    q3[i] = 2. * q1[i] - q2[i];
-    q4[i] = 0.5 * (q1[i] + q2[i]);
-  }
-
-  double a[3];
-  pw85__rT_adjQ_r_as_poly(r12, q1, q2, q3, a);
-
-  double b[4];
-  pw85__detQ_as_poly(q1, q2, q3, q4, b);
-
-  const double c0 = a[0] * b[0];
-  const double c1 = 2. * (a[1] - a[0]) * b[0];
-  const double c2 =
-      -a[0] * (b[1] + b[2]) + 3. * b[0] * (a[2] - a[1]) + a[1] * b[1];
-  const double c3 =
-      2. * (b[1] * (a[2] - a[1]) - a[0] * b[3]) - 4. * a[2] * b[0];
-  const double c4 =
-      (a[0] - a[1]) * b[3] + (a[2] - a[1]) * b[2] - 3. * a[2] * b[1];
-  const double c5 = -2. * a[2] * b[2];
-  const double c6 = -a[2] * b[3];
-  const double y = lambda * (1. - lambda) *
-                   (a[0] + lambda * (a[1] + lambda * a[2])) /
-                   (b[0] + lambda * (b[1] + lambda * (b[2] + lambda * b[3])));
-  if (out) out[0] = y;
-  return y;
-}
-
-double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM],
-                             double q2[PW85_SYM], double *out) {
+double pw85_contact_function1(double r12[PW85_DIM], double q1[PW85_SYM],
+			      double q2[PW85_SYM], double *out) {
   double f[3];
   /* Lower-bound for the root. */
   double a = 0., f_prime_a;
@@ -228,8 +196,40 @@ double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM],
   return f[0];
 }
 
-double pw85_contact_function_alt(double r12[PW85_DIM], double q1[PW85_SYM],
-                                 double q2[PW85_SYM], double *out) {
+double pw85_f2(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
+               double q2[PW85_SYM], double *out) {
+  double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
+  double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
+  for (int i = 0; i < PW85_SYM; i++) {
+    q3[i] = 2. * q1[i] - q2[i];
+    q4[i] = 0.5 * (q1[i] + q2[i]);
+  }
+
+  double a[3];
+  pw85__rT_adjQ_r_as_poly(r12, q1, q2, q3, a);
+
+  double b[4];
+  pw85__detQ_as_poly(q1, q2, q3, q4, b);
+
+  const double c0 = a[0] * b[0];
+  const double c1 = 2. * (a[1] - a[0]) * b[0];
+  const double c2 =
+      -a[0] * (b[1] + b[2]) + 3. * b[0] * (a[2] - a[1]) + a[1] * b[1];
+  const double c3 =
+      2. * (b[1] * (a[2] - a[1]) - a[0] * b[3]) - 4. * a[2] * b[0];
+  const double c4 =
+      (a[0] - a[1]) * b[3] + (a[2] - a[1]) * b[2] - 3. * a[2] * b[1];
+  const double c5 = -2. * a[2] * b[2];
+  const double c6 = -a[2] * b[3];
+  const double y = lambda * (1. - lambda) *
+                   (a[0] + lambda * (a[1] + lambda * a[2])) /
+                   (b[0] + lambda * (b[1] + lambda * (b[2] + lambda * b[3])));
+  if (out) out[0] = y;
+  return y;
+}
+
+double pw85_contact_function2(double r12[PW85_DIM], double q1[PW85_SYM],
+			      double q2[PW85_SYM], double *out) {
   double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
   double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
   for (int i = 0; i < PW85_SYM; i++) {
