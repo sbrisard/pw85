@@ -13,7 +13,9 @@ pw85_h = custom_target('pw85.h',
 		       install: true,
 		       install_dir: 'include')
 
+math = meson.get_compiler('c').find_library('m', required : false)
+
 pw85_lib = library('pw85',
 		   ['pw85.c', pw85_h],
-		   dependencies: gsl,
+		   dependencies: [math, gsl],
 		   install: true)
