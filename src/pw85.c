@@ -90,7 +90,7 @@ void pw85_spheroid(double a, double c, double n[PW85_DIM], double q[PW85_SYM]) {
   q[1] = nx * ny * c2_minus_a2;
 }
 
-double pw85_f(double lambda, double *params) {
+double pw85_f_neg(double lambda, double *params) {
   double *r12 = params;
   double *q1_i = params + PW85_DIM;
   double *q2_i = q1_i + PW85_SYM;
@@ -122,7 +122,7 @@ double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM],
                            q1[2],  q1[3],  q1[4],  q1[5], q2[0],
                            q2[1],  q2[2],  q2[3],  q2[4], q2[5]};
 
-  const gsl_function f = {.function = &pw85_f, .params = params};
+  const gsl_function f = {.function = &pw85_f_neg, .params = params};
   gsl_min_fminimizer *s = gsl_min_fminimizer_alloc(gsl_min_fminimizer_brent);
 
   gsl_min_fminimizer_set(s, &f, 0.5, 0., 1.);
