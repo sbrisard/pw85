@@ -1,6 +1,11 @@
-#include "pw85.h"
 #include <math.h>
 #include <stdio.h>
+
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_min.h>
+
+#include "pw85.h"
 
 /* Private functions */
 /* ================= */
@@ -109,6 +114,36 @@ double pw85_f(double lambda, double *params) {
   return -lambda * (1. - lambda) * rs;
 }
 
+double pw85_contact_function(double r12[PW85_DIM], double q1[PW85_SYM],
+                             double q2[PW85_SYM], double *out) {
+  const size_t max_iter = 100;
+
+  const double params[] = {r12[0], r12[1], r12[2], q1[0], q1[1],
+                           q1[2],  q1[3],  q1[4],  q1[5], q2[0],
+                           q2[1],  q2[2],  q2[3],  q2[4], q2[5]};
+
+  const gsl_function f = {.function = &pw85_f, .params = params};
+  gsl_min_fminimizer *s = gsl_min_fminimizer_alloc(gsl_min_fminimizer_brent);
+
+  gsl_min_fminimizer_set(s, &f, 0.5, 0., 1.);
+
+  for (size_t iter = 0; iter < max_iter; iter++) {
+    gsl_min_fminimizer_iterate(s);
+    const double a = gsl_min_fminimizer_x_lower(s);
+    const double b = gsl_min_fminimizer_x_upper(s);
+
+    if (gsl_min_test_interval(a, b, 1e-8, 0.0) == GSL_SUCCESS) break;
+  }
+
+  const double ret = -gsl_min_fminimizer_f_minimum(s);
+  if (out) {
+    out[0] = ret;
+    out[1] = gsl_min_fminimizer_x_minimum(s);
+  }
+  gsl_min_fminimizer_free(s);
+  return ret;
+}
+
 double pw85_f1(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
                double q2[PW85_SYM], double *out) {
   double q[PW85_SYM], q12[PW85_SYM];
@@ -157,7 +192,7 @@ double pw85_f1(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
 }
 
 double pw85_contact_function1(double r12[PW85_DIM], double q1[PW85_SYM],
-			      double q2[PW85_SYM], double *out) {
+                              double q2[PW85_SYM], double *out) {
   double f[3];
   /* Lower-bound for the root. */
   double a = 0., f_prime_a;
@@ -228,7 +263,7 @@ double pw85_f2(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
 }
 
 double pw85_contact_function2(double r12[PW85_DIM], double q1[PW85_SYM],
-			      double q2[PW85_SYM], double *out) {
+                              double q2[PW85_SYM], double *out) {
   double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
   double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
   for (int i = 0; i < PW85_SYM; i++) {
