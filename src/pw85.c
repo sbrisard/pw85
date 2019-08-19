@@ -106,8 +106,7 @@ double pw85_f(double lambda, double *params) {
   for (size_t i = 0; i < PW85_DIM; i++, r_i++, s_i++) {
     rs += (*r_i) * (*s_i);
   }
-
-  return lambda * (1. - lambda) * rs;
+  return -lambda * (1. - lambda) * rs;
 }
 
 double pw85_f1(double lambda, double r12[PW85_DIM], double q1[PW85_SYM],
