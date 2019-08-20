@@ -142,7 +142,7 @@ def spheroid(a, c, n, q=None):
     return q
 
 
-def f(lambda_, r12, q1, q2):
+def f_neg(lambda_, r12, q1, q2):
     params = np.empty((15,), dtype=np.float64)
     params[0:3] = r12
     params[3:9] = q1
