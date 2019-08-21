@@ -142,12 +142,12 @@ def spheroid(a, c, n, q=None):
     return q
 
 
-def f_neg(lambda_, r12, q1, q2):
+def f(lambda_, r12, q1, q2):
     params = np.empty((15,), dtype=np.float64)
     params[0:3] = r12
     params[3:9] = q1
     params[9:15] = q2
-    return _ll.f(lambda_, params.ctypes.data_as(_ll.c_double_p))
+    return -_ll.f_neg(lambda_, params.ctypes.data_as(_ll.c_double_p))
 
 def f1(lambda_, r12, q1, q2, out=None):
     """Return the value of the function ``f`` defined as::
