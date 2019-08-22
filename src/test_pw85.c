@@ -3,30 +3,73 @@
 #include <pw85.h>
 #include <stdio.h>
 
-void gen_directions(double *out) {
-  const double u_abs = sqrt(2. / (5. + sqrt(5.)));
-  const double v_abs = sqrt((3 + sqrt(5.)) / (5. + sqrt(5.)));
-  const double u_values[] = {-u_abs, u_abs};
-  const double v_values[] = {-v_abs, v_abs};
-  double *n = out;
+double *gen_directions() {
+  double *directions = g_new(double, 12 * PW85_DIM);
+  double u_abs = sqrt(2. / (5. + sqrt(5.)));
+  double v_abs = sqrt((3 + sqrt(5.)) / (5. + sqrt(5.)));
+  double u_values[] = {-u_abs, u_abs};
+  double v_values[] = {-v_abs, v_abs};
+  double *n = directions;
   for (size_t i = 0; i < 2; i++) {
-    const double u = u_values[i];
+    double u = u_values[i];
     for (size_t j = 0; j < 2; j++) {
-      const double v = v_values[j];
+      double v = v_values[j];
       n[0] = 0.;
       n[1] = u;
       n[2] = v;
-      n += 3;
+      n += PW85_DIM;
       n[0] = v;
       n[1] = 0.;
       n[2] = u;
-      n += 3;
+      n += PW85_DIM;
       n[0] = u;
       n[1] = v;
       n[2] = 0.;
-      n += 3;
+      n += PW85_DIM;
     }
   }
+  return directions;
+}
+
+double *gen_radius_vectors(size_t num_distances, double *distances,
+                           size_t num_directions, double *directions) {
+  size_t num_radius_vectors = num_distances * num_directions;
+  size_t num_doubles = num_radius_vectors * PW85_DIM;
+  double *radius_vectors = g_new(double, num_doubles);
+  double *r12 = radius_vectors;
+  for (size_t i = 0; i < num_distances; i++) {
+    double r = distances[i];
+    double *n = directions;
+    for (size_t j = 0; j < num_directions; j++) {
+      for (size_t k = 0; k < PW85_DIM; k++) {
+        r12[k] = r * n[k];
+      }
+      n += PW85_DIM;
+      r12 += PW85_DIM;
+    }
+  }
+  return radius_vectors;
+}
+
+double *gen_spheroids(size_t num_radii, double *radii, size_t num_directions,
+                      double *directions) {
+  size_t num_spheroids = num_radii * num_radii * num_directions;
+  size_t num_doubles = num_spheroids * PW85_SYM;
+  double *spheroids = g_new(double, num_doubles);
+  double *q = spheroids;
+  for (size_t i = 0; i < num_radii; i++) {
+    double a = radii[i];
+    for (size_t j = 0; j < num_radii; j++) {
+      double c = radii[j];
+      double *n = directions;
+      for (size_t k = 0; k < num_directions; k++) {
+        pw85_spheroid(a, c, n, q);
+        n += PW85_DIM;
+        q += PW85_SYM;
+      }
+    }
+  }
+  return spheroids;
 }
 
 void test_pw85_spheroid(const double *data) {
@@ -34,17 +77,17 @@ void test_pw85_spheroid(const double *data) {
    * Relative and absolute tolerance on the coefficients of the matrix
    * q to be computed and tested.
    */
-  const double rtol = 1e-15;
-  const double atol = 1e-15;
+  double rtol = 1e-15;
+  double atol = 1e-15;
 
   double exp, act, tol;
 
-  const double a = data[0];
-  const double c = data[1];
-  const double a2 = a * a;
-  const double c2 = c * c;
+  double a = data[0];
+  double c = data[1];
+  double a2 = a * a;
+  double c2 = c * c;
 
-  const double *n = data + 2;
+  double *n = data + 2;
   double abs_n[PW85_DIM];
   for (size_t i = 0; i < PW85_DIM; i++) {
     abs_n[i] = fabs(n[i]);
@@ -107,23 +150,41 @@ void test_pw85_spheroid(const double *data) {
   g_assert_cmpfloat(fabs(act - exp), <=, tol);
 }
 
+void test_pw85_contact_function(const double *data) {
+  double *r12 = data;
+  double *q1 = data + PW85_DIM;
+  double *q2 = data + PW85_DIM + PW85_SYM;
+  double out[2];
+  double mu2 = pw85_contact_function(r12, q1, q2, out);
+  g_assert_cmpfloat(mu2, ==, out[0]);
+}
+
 int main(int argc, char **argv) {
   g_test_init(&argc, &argv, NULL);
-
-  const size_t num_directions = 12;
-  double *directions =
-      (double *)malloc(num_directions * PW85_DIM * sizeof(double));
-  gen_directions(directions);
 
   const size_t num_radii = 3;
   const double radii[] = {0.0199, 1.999, 9.999};
 
+  size_t num_distances = 3;
+  double distances[] = {0.15, 1.1, 11.};
+
+  size_t num_directions = 12;
+  double *directions = gen_directions();
+
+  size_t num_radius_vectors = num_distances * num_directions;
+  double *radius_vectors =
+      gen_radius_vectors(num_distances, distances, num_directions, directions);
+
+  size_t num_spheroids = num_radii * num_radii * num_directions;
+  double *spheroids =
+      gen_spheroids(num_radii, radii, num_directions, directions);
+
   for (size_t i = 0; i < num_radii; i++) {
-    const double a = radii[i];
+    double a = radii[i];
     for (size_t j = 0; j < num_radii; j++) {
-      const double c = radii[j];
+      double c = radii[j];
+      double *n = directions;
       for (size_t k = 0; k < num_directions; k++) {
-        const double *n = directions + (k * PW85_DIM);
         double *data = g_new(double, 2 + PW85_SYM);
         data[0] = a;
         data[1] = c;
@@ -134,9 +195,45 @@ int main(int argc, char **argv) {
         sprintf(path, "/pw85/spheroid/a=%g,c=%g,n=[%g,%g,%g]", a, c, n[0], n[1],
                 n[2]);
         g_test_add_data_func_full(path, data, test_pw85_spheroid, g_free);
+
+        n += PW85_DIM;
       }
     }
   }
+
+  num_radius_vectors = 1;
+
+  double *r12 = radius_vectors;
+  for (size_t i = 0; i < num_radius_vectors; i++) {
+    double *q1 = spheroids;
+    for (size_t j1 = 0; j1 < num_spheroids; j1++) {
+      double *q2 = spheroids;
+      for (size_t j2 = 0; j2 < num_spheroids; j2++) {
+        double *data = g_new(double, PW85_DIM + 2 * PW85_SYM);
+        for (size_t k = 0; k < PW85_DIM; k++) {
+          data[k] = r12[k];
+        }
+        for (size_t k = 0; k < PW85_SYM; k++) {
+          data[PW85_DIM + k] = q1[k];
+          data[PW85_DIM + PW85_SYM + k] = q2[k];
+        }
+
+        char path[255];
+        sprintf(path, "/pw85/contact_function(r12[%llu],q1[%llu],q2[%llu])", i, j1,
+                j2);
+        g_test_add_data_func_full(path, data, test_pw85_contact_function,
+                                  g_free);
+
+        q2 += PW85_SYM;
+      }
+      q1 += PW85_SYM;
+    }
+    r12 += PW85_DIM;
+  }
+
+  g_free(directions);
+  g_free(radius_vectors);
+  g_free(spheroids);
 
   return g_test_run();
 }
