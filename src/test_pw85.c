@@ -30,23 +30,81 @@ void gen_directions(double *out) {
 }
 
 void test_pw85_spheroid(const double *data) {
+  /*
+   * Relative and absolute tolerance on the coefficients of the matrix
+   * q to be computed and tested.
+   */
+  const double rtol = 1e-15;
+  const double atol = 1e-15;
+
+  double exp, act, tol;
+
   const double a = data[0];
   const double c = data[1];
+  const double a2 = a * a;
+  const double c2 = c * c;
+
   const double *n = data + 2;
+  double abs_n[PW85_DIM];
+  for (size_t i = 0; i < PW85_DIM; i++) {
+    abs_n[i] = fabs(n[i]);
+  }
+
   double q[PW85_SYM];
   pw85_spheroid(a, c, n, q);
+  double abs_q[PW85_SYM], delta_q[PW85_SYM];
+  for (size_t i = 0; i < PW85_SYM; i++) {
+    abs_q[i] = fabs(q[i]);
+    delta_q[i] = rtol * fabs(q[i]) + atol;
+  }
 
   /* Check that n is an eigenvector. */
   double qn[] = {q[0] * n[0] + q[1] * n[1] + q[2] * n[2],
                  q[1] * n[0] + q[3] * n[1] + q[4] * n[2],
                  q[2] * n[0] + q[4] * n[1] + q[5] * n[2]};
+  double delta_qn[] = {
+      delta_q[0] * abs_n[0] + delta_q[1] * abs_n[1] + delta_q[2] * abs_n[2],
+      delta_q[1] * abs_n[0] + delta_q[3] * abs_n[1] + delta_q[4] * abs_n[2],
+      delta_q[2] * abs_n[0] + delta_q[4] * abs_n[1] + delta_q[5] * abs_n[2]};
   for (size_t i = 0; i < PW85_DIM; i++) {
-    const double act = qn[i];
-    const double exp = c * c * n[i];
-    const double rtol = 1e-10;
-    const double atol = 1e-15;
-    g_assert_cmpfloat(fabs(act - exp), <=, rtol * fabs(exp) + atol);
+    g_assert_cmpfloat(fabs(qn[i] - c2 * n[i]), <=, delta_qn[i]);
   }
+
+  /*
+   * Check that the eigenvalues are [a, a, c]. It is sufficient to
+   * compute the characteristic polynomial of the matrix q.
+   */
+
+  /* Check tr(q). */
+  exp = 2. * a2 + c2;
+  act = q[0] + q[3] + q[5];
+  tol = delta_q[0] + delta_q[3] + delta_q[5];
+  g_assert_cmpfloat(fabs(act - exp), <=, tol);
+
+  /* Check det(q). */
+  exp = a2 * a2 * c2;
+  act = q[0] * q[3] * q[5] + 2. * q[1] * q[2] * q[4] - q[0] * q[4] * q[4] -
+        q[3] * q[2] * q[2] - q[5] * q[1] * q[1];
+  tol =
+      delta_q[0] * abs_q[3] * abs_q[5] + 2. * delta_q[1] * abs_q[2] * abs_q[4] +
+      delta_q[0] * abs_q[4] * abs_q[4] + delta_q[3] * abs_q[2] * abs_q[2] +
+      delta_q[5] * abs_q[1] * abs_q[1] + abs_q[0] * delta_q[3] * abs_q[5] +
+      +abs_q[0] * abs_q[3] * delta_q[5] +
+      2. *
+          (abs_q[1] * delta_q[2] * abs_q[4] + abs_q[0] * delta_q[4] * abs_q[4] +
+           abs_q[3] * delta_q[2] * abs_q[2] + abs_q[5] * delta_q[1] * abs_q[1] +
+           abs_q[1] * abs_q[2] * delta_q[4]);
+  g_assert_cmpfloat(fabs(act - exp), <=, tol);
+
+  /* Check [tr(q)^2 - tr(q^2)]/2 */
+  exp = a2 * (a2 + 2. * c2);
+  act = q[0] * q[3] + q[3] * q[5] + q[5] * q[0] - q[1] * q[1] - q[2] * q[2] -
+        q[4] * q[4];
+  tol = delta_q[0] * abs_q[3] + abs_q[0] * delta_q[3] + delta_q[3] * abs_q[5] +
+        abs_q[3] * delta_q[5] + delta_q[5] * abs_q[0] + abs_q[5] * delta_q[0] +
+        2. * delta_q[1] * abs_q[1] + 2. * delta_q[2] * abs_q[2] +
+        2. * delta_q[4] * abs_q[4];
+  g_assert_cmpfloat(fabs(act - exp), <=, tol);
 }
 
 int main(int argc, char **argv) {
