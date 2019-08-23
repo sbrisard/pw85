@@ -238,8 +238,8 @@ int main(int argc, char **argv) {
         }
 
         char path[255];
-        sprintf(path, "/pw85/contact_function(r12[%llu],q1[%llu],q2[%llu])", i,
-                j1, j2);
+        sprintf(path, "/pw85/contact_function(r12[%d],q1[%d],q2[%d])", (int)i,
+                (int)j1, (int)j2);
         g_test_add_data_func_full(path, data, test_pw85_contact_function_test,
                                   g_free);
 
