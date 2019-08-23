@@ -3,8 +3,10 @@
 #include <pw85.h>
 #include <stdio.h>
 
+#define TEST_PW85_NUM_DIRECTIONS 12
+
 double *gen_directions() {
-  double *directions = g_new(double, 12 * PW85_DIM);
+  double *directions = g_new(double, TEST_PW85_NUM_DIRECTIONS * PW85_DIM);
   double u_abs = sqrt(2. / (5. + sqrt(5.)));
   double v_abs = sqrt((3 + sqrt(5.)) / (5. + sqrt(5.)));
   double u_values[] = {-u_abs, u_abs};
@@ -168,7 +170,7 @@ int main(int argc, char **argv) {
   size_t num_distances = 3;
   double distances[] = {0.15, 1.1, 11.};
 
-  size_t num_directions = 12;
+  size_t num_directions = TEST_PW85_NUM_DIRECTIONS;
   double *directions = gen_directions();
 
   size_t num_radius_vectors = num_distances * num_directions;
