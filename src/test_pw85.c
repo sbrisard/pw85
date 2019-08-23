@@ -93,7 +93,7 @@ double *test_pw85_gen_spheroids(size_t num_radii, double *radii,
   return spheroids;
 }
 
-void test_pw85_spheroid_test(const double *data) {
+void test_pw85_spheroid_test(double const *data) {
   /*
    * Relative and absolute tolerance on the coefficients of the matrix
    * q to be computed and tested.
@@ -108,7 +108,7 @@ void test_pw85_spheroid_test(const double *data) {
   double a2 = a * a;
   double c2 = c * c;
 
-  const double *n = data + 2;
+  double const *n = data + 2;
   double abs_n[PW85_DIM];
   for (size_t i = 0; i < PW85_DIM; i++) {
     abs_n[i] = fabs(n[i]);
@@ -171,10 +171,10 @@ void test_pw85_spheroid_test(const double *data) {
   g_assert_cmpfloat(fabs(act - exp), <=, tol);
 }
 
-void test_pw85_contact_function_test(const double *data) {
-  const double *r12 = data;
-  const double *q1 = data + PW85_DIM;
-  const double *q2 = data + PW85_DIM + PW85_SYM;
+void test_pw85_contact_function_test(double const *data) {
+  double const *r12 = data;
+  double const *q1 = data + PW85_DIM;
+  double const *q2 = data + PW85_DIM + PW85_SYM;
   double out[2];
   double mu2 = pw85_contact_function(r12, q1, q2, out);
   g_assert_cmpfloat(mu2, ==, -out[0]);
