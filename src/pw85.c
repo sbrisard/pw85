@@ -120,8 +120,6 @@ double pw85_f_neg(double lambda, double const *params) {
 double pw85_contact_function(double const r12[PW85_DIM],
                              double const q1[PW85_SYM],
                              double const q2[PW85_SYM], double *out) {
-  const size_t max_iter = 100;
-
   double const params[] = {r12[0], r12[1], r12[2], q1[0], q1[1],
                            q1[2],  q1[3],  q1[4],  q1[5], q2[0],
                            q2[1],  q2[2],  q2[3],  q2[4], q2[5]};
@@ -131,7 +129,7 @@ double pw85_contact_function(double const r12[PW85_DIM],
 
   gsl_min_fminimizer_set(s, &f, 0.5, 0., 1.);
 
-  for (size_t iter = 0; iter < max_iter; iter++) {
+  for (size_t iter = 0; iter < PW85_MAX_ITER; iter++) {
     gsl_min_fminimizer_iterate(s);
     double const a = gsl_min_fminimizer_x_lower(s);
     double const b = gsl_min_fminimizer_x_upper(s);

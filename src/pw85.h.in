@@ -6,7 +6,19 @@
 #define PW85_VERSION "@project_version@"
 #define PW85_DIM 3
 #define PW85_SYM 6
-#define PW85_LAMBDA_ATOL 1e-7
+
+/*
+ * For the Brent algorithm, these two constants should be such that
+ *
+ * [(3 - sqrt(5)) / 2] ** n < eps
+ *
+ * where
+ *
+ *     n = PW85_MAX_ITER
+ *     eps = PW85_LAMBDA_ATOL
+ */
+#define PW85_LAMBDA_ATOL 1e-6
+#define PW85_MAX_ITER 25
 
 #if _WIN32
 #define DllExport __declspec(dllexport)

@@ -298,7 +298,7 @@ void test_pw85_contact_function_test(double const *data) {
   double f2 = -2. * rs - 2. * (1. - 2. * lambda) * su +
               2. * lambda * (1. - lambda) * uv;
 
-  g_assert_cmpfloat(fabs(f1), <=, 1000. * PW85_LAMBDA_ATOL * fabs(f2));
+  g_assert_cmpfloat(fabs(f1), <=, 2 * PW85_LAMBDA_ATOL * fabs(f2));
 
   gsl_vector_free(r);
   gsl_vector_free(s);
