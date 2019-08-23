@@ -1,7 +1,14 @@
-#include <glib.h>
 #include <math.h>
-#include <pw85.h>
 #include <stdio.h>
+
+#include <glib.h>
+
+#include <gsl/gsl_blas.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_vector.h>
+
+#include <pw85.h>
 
 /* #define TEST_PW85_NUM_DIRECTIONS 12 */
 
@@ -172,12 +179,137 @@ void test_pw85_spheroid_test(double const *data) {
 }
 
 void test_pw85_contact_function_test(double const *data) {
+  double atol = 1e-15;
+  double rtol = 1e-10;
+
   double const *r12 = data;
   double const *q1 = data + PW85_DIM;
   double const *q2 = data + PW85_DIM + PW85_SYM;
   double out[2];
   double mu2 = pw85_contact_function(r12, q1, q2, out);
-  g_assert_cmpfloat(mu2, ==, -out[0]);
+  g_assert_cmpfloat(mu2, ==, out[0]);
+  double lambda = out[1];
+
+  gsl_vector *r = gsl_vector_calloc(PW85_DIM);
+  gsl_vector *s = gsl_vector_calloc(PW85_DIM);
+  gsl_vector *u = gsl_vector_calloc(PW85_DIM);
+  gsl_vector *v = gsl_vector_calloc(PW85_DIM);
+  gsl_vector *dx0 = gsl_vector_calloc(PW85_DIM);
+  gsl_vector *c1x0 = gsl_vector_calloc(PW85_DIM);
+  gsl_vector *c2x0 = gsl_vector_calloc(PW85_DIM);
+
+  gsl_matrix *Q1 = gsl_matrix_alloc(PW85_DIM, PW85_DIM);
+  gsl_matrix *Q2 = gsl_matrix_alloc(PW85_DIM, PW85_DIM);
+  gsl_matrix *Q = gsl_matrix_alloc(PW85_DIM, PW85_DIM);
+
+  for (size_t i = 0, ij = 0; i < PW85_DIM; i++) {
+    gsl_vector_set(r, i, r12[i]);
+    for (size_t j = i; j < PW85_DIM; j++, ij++) {
+      gsl_matrix_set(Q1, i, j, q1[ij]);
+      gsl_matrix_set(Q1, j, i, q1[ij]);
+      gsl_matrix_set(Q2, i, j, q2[ij]);
+      gsl_matrix_set(Q2, j, i, q2[ij]);
+      gsl_matrix_set(Q, i, j, (1 - lambda) * q1[ij] + lambda * q2[ij]);
+      gsl_matrix_set(Q, j, i, (1 - lambda) * q1[ij] + lambda * q2[ij]);
+    }
+  }
+
+  /*
+   * Let x0 be the contact point. It is found from the following
+   * identities
+   *
+   *     c1x0 = (1-lambda) Q1.s,
+   *     c2x0 = -lambda Q2.s,
+   *
+   * where r = Q.s.
+   *
+   * We comupte dx0, which is the difference between the coordinates
+   * of x0 found from the above two formulas:
+   *
+   *     dx0 = r12 - c1x0 + c2x0
+   *         = r12 - (1-lambda) Q1.s - lambda Q2.s.
+   */
+
+  gsl_linalg_cholesky_decomp1(Q);
+  gsl_linalg_cholesky_solve(Q, r, s);
+
+  gsl_blas_dgemv(CblasNoTrans, 1. - lambda, Q1, s, 0., c1x0);
+  gsl_blas_dgemv(CblasNoTrans, -lambda, Q2, s, 0., c2x0);
+
+  gsl_vector_memcpy(dx0, r);
+  gsl_blas_dgemv(CblasNoTrans, -1. + lambda, Q1, s, 1., dx0);
+  gsl_blas_dgemv(CblasNoTrans, -lambda, Q2, s, 1., dx0);
+
+  /*
+   * We first assert that dx0 is small compared to r12.
+   */
+  g_assert_cmpfloat(gsl_blas_dnrm2(dx0), <=, rtol * gsl_blas_dnrm2(r) + atol);
+
+  /*
+   * We could also check that x0 belong to both (scaled) ellipsoids:
+   *
+   *     mu^2 = c1x0.Q1^(-1).c1x0 = (1-lambda) c1x0.s
+   *
+   * and
+   *
+   *     mu^2 = c2x0.Q2^(-1).c2x0 = -lambda c2x0.s.
+   *
+   * The code is provided below. However, the accuracy seems to be
+   * quite poor.
+   */
+  double rtol_mu2 = 1e-4;
+  double atol_mu2 = 1e-15;
+
+  double mu2_1;
+  gsl_blas_ddot(c1x0, s, &mu2_1);
+  mu2_1 *= 1. - lambda;
+
+  g_assert_cmpfloat(fabs(mu2_1 - mu2), <=, rtol_mu2 * mu2 + atol_mu2);
+
+  double mu2_2;
+  gsl_blas_ddot(c2x0, s, &mu2_2);
+  mu2_2 *= -lambda;
+  g_assert_cmpfloat(fabs(mu2_2 - mu2), <=, rtol_mu2 * mu2 + atol_mu2);
+
+  /*
+   * Finally, we check that f'(lambda) = 0.
+   *
+   * The tolerance is given by the tolerance eps on lambda (defined in
+   * the call to gsl_min_test_interval in the function
+   * pw85_contact_function.
+   *
+   * The test therefore reads
+   *
+   *     |f'(lambda)| <= eps * f"(lambda).
+   *
+   * We first compute f' and f".
+   */
+
+  gsl_blas_dgemv(CblasNoTrans, 1., Q2, s, 0., u);
+  gsl_blas_dgemv(CblasNoTrans, -1., Q1, s, 1., u);
+  gsl_linalg_cholesky_solve(Q, u, v);
+
+  double rs, su, uv;
+  gsl_blas_ddot(r, s, &rs);
+  gsl_blas_ddot(s, u, &su);
+  gsl_blas_ddot(u, v, &uv);
+
+  double f1 = (1. - 2. * lambda) * rs - lambda * (1. - lambda) * su;
+  double f2 = -2. * rs - 2. * (1. - 2. * lambda) * su +
+              2. * lambda * (1. - lambda) * uv;
+
+  g_assert_cmpfloat(fabs(f1), <=, 1000. * 1e-8 * fabs(f2));
+
+  gsl_vector_free(r);
+  gsl_vector_free(s);
+  gsl_vector_free(u);
+  gsl_vector_free(v);
+  gsl_vector_free(dx0);
+  gsl_vector_free(c1x0);
+  gsl_vector_free(c2x0);
+  gsl_matrix_free(Q1);
+  gsl_matrix_free(Q2);
+  gsl_matrix_free(Q);
 }
 
 int main(int argc, char **argv) {
