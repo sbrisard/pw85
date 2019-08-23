@@ -3,33 +3,51 @@
 #include <pw85.h>
 #include <stdio.h>
 
-#define TEST_PW85_NUM_DIRECTIONS 12
+/* #define TEST_PW85_NUM_DIRECTIONS 12 */
+
+/* double *test_pw85_gen_directions() { */
+/*   double *directions = g_new(double, TEST_PW85_NUM_DIRECTIONS *PW85_DIM); */
+/*   double u_abs = sqrt(2. / (5. + sqrt(5.))); */
+/*   double v_abs = sqrt((3 + sqrt(5.)) / (5. + sqrt(5.))); */
+/*   double u_values[] = {-u_abs, u_abs}; */
+/*   double v_values[] = {-v_abs, v_abs}; */
+/*   double *n = directions; */
+/*   for (size_t i = 0; i < 2; i++) { */
+/*     double u = u_values[i]; */
+/*     for (size_t j = 0; j < 2; j++) { */
+/*       double v = v_values[j]; */
+/*       n[0] = 0.; */
+/*       n[1] = u; */
+/*       n[2] = v; */
+/*       n += PW85_DIM; */
+/*       n[0] = v; */
+/*       n[1] = 0.; */
+/*       n[2] = u; */
+/*       n += PW85_DIM; */
+/*       n[0] = u; */
+/*       n[1] = v; */
+/*       n[2] = 0.; */
+/*       n += PW85_DIM; */
+/*     } */
+/*   } */
+/*   return directions; */
+/* } */
+
+#define TEST_PW85_NUM_DIRECTIONS 3
 
 double *test_pw85_gen_directions() {
   double *directions = g_new(double, TEST_PW85_NUM_DIRECTIONS *PW85_DIM);
-  double u_abs = sqrt(2. / (5. + sqrt(5.)));
-  double v_abs = sqrt((3 + sqrt(5.)) / (5. + sqrt(5.)));
-  double u_values[] = {-u_abs, u_abs};
-  double v_values[] = {-v_abs, v_abs};
-  double *n = directions;
-  for (size_t i = 0; i < 2; i++) {
-    double u = u_values[i];
-    for (size_t j = 0; j < 2; j++) {
-      double v = v_values[j];
-      n[0] = 0.;
-      n[1] = u;
-      n[2] = v;
-      n += PW85_DIM;
-      n[0] = v;
-      n[1] = 0.;
-      n[2] = u;
-      n += PW85_DIM;
-      n[0] = u;
-      n[1] = v;
-      n[2] = 0.;
-      n += PW85_DIM;
-    }
-  }
+  double u = sqrt(2. / (5. + sqrt(5.)));
+  double v = sqrt((3 + sqrt(5.)) / (5. + sqrt(5.)));
+  directions[0] = 0.;
+  directions[1] = -u;
+  directions[2] = -v;
+  directions[3] = -v;
+  directions[4] = 0.;
+  directions[5] = u;
+  directions[6] = u;
+  directions[7] = -v;
+  directions[8] = 0.;
   return directions;
 }
 
@@ -203,8 +221,6 @@ int main(int argc, char **argv) {
       }
     }
   }
-
-  num_radius_vectors = 1;
 
   double *r12 = radius_vectors;
   for (size_t i = 0; i < num_radius_vectors; i++) {
