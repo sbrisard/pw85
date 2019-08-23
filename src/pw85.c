@@ -257,16 +257,6 @@ double pw85_f2(double lambda, double const r12[PW85_DIM],
   double b[4];
   pw85__detQ_as_poly(q1, q2, q3, q4, b);
 
-  double const c0 = a[0] * b[0];
-  double const c1 = 2. * (a[1] - a[0]) * b[0];
-  double const c2 =
-      -a[0] * (b[1] + b[2]) + 3. * b[0] * (a[2] - a[1]) + a[1] * b[1];
-  double const c3 =
-      2. * (b[1] * (a[2] - a[1]) - a[0] * b[3]) - 4. * a[2] * b[0];
-  double const c4 =
-      (a[0] - a[1]) * b[3] + (a[2] - a[1]) * b[2] - 3. * a[2] * b[1];
-  double const c5 = -2. * a[2] * b[2];
-  double const c6 = -a[2] * b[3];
   double const y = lambda * (1. - lambda) *
                    (a[0] + lambda * (a[1] + lambda * a[2])) /
                    (b[0] + lambda * (b[1] + lambda * (b[2] + lambda * b[3])));
