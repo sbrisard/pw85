@@ -13,31 +13,40 @@
 #define DllExport
 #endif
 
-DllExport double pw85__det_sym(double a[PW85_SYM]);
-DllExport double pw85__xT_adjA_x(double x[PW85_DIM], double a[PW85_SYM]);
-DllExport void pw85__rT_adjQ_r_as_poly(double r[PW85_DIM], double q1[PW85_SYM],
-                                       double q2[PW85_SYM], double q3[PW85_SYM],
+DllExport double pw85__det_sym(double const a[PW85_SYM]);
+DllExport double pw85__xT_adjA_x(double const x[PW85_DIM],
+                                 double const a[PW85_SYM]);
+DllExport void pw85__rT_adjQ_r_as_poly(double const r[PW85_DIM],
+                                       double const q1[PW85_SYM],
+                                       double const q2[PW85_SYM],
+                                       double const q3[PW85_SYM],
                                        double a[PW85_DIM]);
-DllExport void pw85__detQ_as_poly(double q1[PW85_SYM], double q2[PW85_SYM],
-                                  double q3[PW85_SYM], double q4[PW85_SYM],
+DllExport void pw85__detQ_as_poly(double const q1[PW85_SYM],
+                                  double const q2[PW85_SYM],
+                                  double const q3[PW85_SYM],
+                                  double const q4[PW85_SYM],
                                   double b[PW85_DIM + 1]);
-DllExport void pw85__cholesky_decomp(double a[PW85_SYM], double l[PW85_SYM]);
-DllExport void pw85__cholesky_solve(double l[PW85_SYM], double b[PW85_DIM],
+DllExport void pw85__cholesky_decomp(double const a[PW85_SYM],
+                                     double l[PW85_SYM]);
+DllExport void pw85__cholesky_solve(double const l[PW85_SYM],
+                                    double const b[PW85_DIM],
                                     double x[PW85_DIM]);
-DllExport void pw85_spheroid(double a, double c, double n[PW85_DIM],
+DllExport void pw85_spheroid(double a, double c, double const n[PW85_DIM],
                              double q[PW85_SYM]);
-DllExport double pw85_f_neg(double lambda, double* params);
-DllExport double pw85_contact_function(double r12[PW85_DIM],
-                                       double q1[PW85_SYM], double q2[PW85_SYM],
-                                       double* out);
-DllExport double pw85_f1(double lambda, double r12[PW85_DIM],
-                         double q1[PW85_SYM], double q2[PW85_SYM], double* out);
-DllExport double pw85_contact_function1(double r12[PW85_DIM],
-                                       double q1[PW85_SYM], double q2[PW85_SYM],
-                                       double* out);
-DllExport double pw85_f2(double lambda, double r12[PW85_DIM],
-                         double q1[PW85_SYM], double q2[PW85_SYM], double* out);
-DllExport double pw85_contact_function2(double r12[PW85_DIM],
-                                       double q1[PW85_SYM], double q2[PW85_SYM],
-                                       double* out);
+DllExport double pw85_f_neg(double lambda, double const* params);
+DllExport double pw85_contact_function(double const r12[PW85_DIM],
+                                       double const q1[PW85_SYM],
+                                       double const q2[PW85_SYM], double* out);
+DllExport double pw85_f1(double lambda, double const r12[PW85_DIM],
+                         double const q1[PW85_SYM], double const q2[PW85_SYM],
+                         double* out);
+DllExport double pw85_contact_function1(double const r12[PW85_DIM],
+                                        double const q1[PW85_SYM],
+                                        double const q2[PW85_SYM], double* out);
+DllExport double pw85_f2(double lambda, double const r12[PW85_DIM],
+                         double const q1[PW85_SYM], double const q2[PW85_SYM],
+                         double* out);
+DllExport double pw85_contact_function2(double const r12[PW85_DIM],
+                                        double const q1[PW85_SYM],
+                                        double const q2[PW85_SYM], double* out);
 #endif
