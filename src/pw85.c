@@ -136,7 +136,8 @@ double pw85_contact_function(double const r12[PW85_DIM],
     double const a = gsl_min_fminimizer_x_lower(s);
     double const b = gsl_min_fminimizer_x_upper(s);
 
-    if (gsl_min_test_interval(a, b, 1e-8, 0.0) == GSL_SUCCESS) break;
+    if (gsl_min_test_interval(a, b, PW85_LAMBDA_ATOL, 0.0) == GSL_SUCCESS)
+      break;
   }
 
   double const ret = -gsl_min_fminimizer_f_minimum(s);

@@ -6,6 +6,7 @@
 #define PW85_VERSION "@project_version@"
 #define PW85_DIM 3
 #define PW85_SYM 6
+#define PW85_LAMBDA_ATOL 1e-8
 
 #if _WIN32
 #define DllExport __declspec(dllexport)
