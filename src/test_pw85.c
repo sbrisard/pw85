@@ -5,8 +5,8 @@
 
 #define TEST_PW85_NUM_DIRECTIONS 12
 
-double *gen_directions() {
-  double *directions = g_new(double, TEST_PW85_NUM_DIRECTIONS * PW85_DIM);
+double *test_pw85_gen_directions() {
+  double *directions = g_new(double, TEST_PW85_NUM_DIRECTIONS *PW85_DIM);
   double u_abs = sqrt(2. / (5. + sqrt(5.)));
   double v_abs = sqrt((3 + sqrt(5.)) / (5. + sqrt(5.)));
   double u_values[] = {-u_abs, u_abs};
@@ -33,8 +33,9 @@ double *gen_directions() {
   return directions;
 }
 
-double *gen_radius_vectors(size_t num_distances, double *distances,
-                           size_t num_directions, double *directions) {
+double *test_pw85_gen_radius_vectors(size_t num_distances, double *distances,
+                                     size_t num_directions,
+                                     double *directions) {
   size_t num_radius_vectors = num_distances * num_directions;
   size_t num_doubles = num_radius_vectors * PW85_DIM;
   double *radius_vectors = g_new(double, num_doubles);
@@ -53,8 +54,8 @@ double *gen_radius_vectors(size_t num_distances, double *distances,
   return radius_vectors;
 }
 
-double *gen_spheroids(size_t num_radii, double *radii, size_t num_directions,
-                      double *directions) {
+double *test_pw85_gen_spheroids(size_t num_radii, double *radii,
+                                size_t num_directions, double *directions) {
   size_t num_spheroids = num_radii * num_radii * num_directions;
   size_t num_doubles = num_spheroids * PW85_SYM;
   double *spheroids = g_new(double, num_doubles);
@@ -171,15 +172,15 @@ int main(int argc, char **argv) {
   double distances[] = {0.15, 1.1, 11.};
 
   size_t num_directions = TEST_PW85_NUM_DIRECTIONS;
-  double *directions = gen_directions();
+  double *directions = test_pw85_gen_directions();
 
   size_t num_radius_vectors = num_distances * num_directions;
-  double *radius_vectors =
-      gen_radius_vectors(num_distances, distances, num_directions, directions);
+  double *radius_vectors = test_pw85_gen_radius_vectors(
+      num_distances, distances, num_directions, directions);
 
   size_t num_spheroids = num_radii * num_radii * num_directions;
   double *spheroids =
-      gen_spheroids(num_radii, radii, num_directions, directions);
+      test_pw85_gen_spheroids(num_radii, radii, num_directions, directions);
 
   for (size_t i = 0; i < num_radii; i++) {
     double a = radii[i];
@@ -221,8 +222,8 @@ int main(int argc, char **argv) {
         }
 
         char path[255];
-        sprintf(path, "/pw85/contact_function(r12[%llu],q1[%llu],q2[%llu])", i, j1,
-                j2);
+        sprintf(path, "/pw85/contact_function(r12[%llu],q1[%llu],q2[%llu])", i,
+                j1, j2);
         g_test_add_data_func_full(path, data, test_pw85_contact_function,
                                   g_free);
 
