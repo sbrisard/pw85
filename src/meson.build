@@ -24,5 +24,5 @@ pw85_lib = library('pw85',
 
 pw85_test = executable('test_pw85', 'test_pw85.c',
 		       link_with: pw85_lib,
-		       dependencies: glib)
+		       dependencies: [glib, gsl])
 test('GTest tests of PW85', pw85_test)
