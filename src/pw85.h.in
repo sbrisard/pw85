@@ -19,6 +19,7 @@
  */
 #define PW85_LAMBDA_ATOL 1e-6
 #define PW85_MAX_ITER 25
+#define PW85_NR_ITER 3
 
 #if _WIN32
 #define DllExport __declspec(dllexport)
@@ -47,9 +48,9 @@ DllExport void pw85__cholesky_solve(double const l[PW85_SYM],
 DllExport void pw85_spheroid(double a, double c, double const n[PW85_DIM],
                              double q[PW85_SYM]);
 DllExport double pw85_f_neg(double lambda, double const* params);
-DllExport double pw85_contact_function(double const r12[PW85_DIM],
-                                       double const q1[PW85_SYM],
-                                       double const q2[PW85_SYM], double* out);
+DllExport void pw85_contact_function(double const r12[PW85_DIM],
+                                     double const q1[PW85_SYM],
+                                     double const q2[PW85_SYM], double out[2]);
 DllExport double pw85_f1(double lambda, double const r12[PW85_DIM],
                          double const q1[PW85_SYM], double const q2[PW85_SYM],
                          double* out);
