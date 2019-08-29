@@ -117,9 +117,37 @@ double pw85_f_neg(double lambda, double const *params) {
   return -lambda * (1. - lambda) * rs;
 }
 
-double pw85_contact_function(double const r12[PW85_DIM],
-                             double const q1[PW85_SYM],
-                             double const q2[PW85_SYM], double *out) {
+void residual(double lambda, double const r12[PW85_DIM],
+              double const q1[PW85_SYM], double const q2[PW85_SYM],
+              double out[3]) {
+  double q[PW85_SYM];
+  double q12[PW85_SYM];
+  for (size_t i = 0; i < PW85_SYM; i++) {
+    q[i] = (1. - lambda) * q1[i] + lambda * q2[i];
+    q12[i] = q2[i] - q1[i];
+  }
+  double l[PW85_SYM];
+  pw85__cholesky_decomp(q, l);
+  double s[PW85_DIM];
+  pw85__cholesky_solve(l, r12, s);
+  double u[] = {q12[0] * s[0] + q12[1] * s[1] + q12[2] * s[2],
+                q12[1] * s[0] + q12[3] * s[1] + q12[4] * s[2],
+                q12[2] * s[0] + q12[4] * s[1] + q12[5] * s[2]};
+  double v[PW85_DIM];
+  pw85__cholesky_solve(l, u, v);
+  double rs = r12[0] * s[0] + r12[1] * s[1] + r12[2] * s[2];
+  double su = s[0] * u[0] + s[1] * u[1] + s[2] * u[2];
+  double uv = u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
+
+  out[0] = lambda * (1. - lambda) * rs;
+  out[1] = (2 * lambda - 1.) * rs + lambda * (1. - lambda) * su;
+  out[2] =
+      2. * rs + 2. * (1. - 2. * lambda) * su - 2. * lambda * (1. - lambda) * uv;
+}
+
+void pw85_contact_function(double const r12[PW85_DIM],
+                           double const q1[PW85_SYM], double const q2[PW85_SYM],
+                           double out[2]) {
   double const params[] = {r12[0], r12[1], r12[2], q1[0], q1[1],
                            q1[2],  q1[3],  q1[4],  q1[5], q2[0],
                            q2[1],  q2[2],  q2[3],  q2[4], q2[5]};
@@ -138,13 +166,26 @@ double pw85_contact_function(double const r12[PW85_DIM],
       break;
   }
 
-  double const ret = -gsl_min_fminimizer_f_minimum(s);
-  if (out) {
-    out[0] = ret;
-    out[1] = gsl_min_fminimizer_x_minimum(s);
-  }
+  double mu2 = -gsl_min_fminimizer_f_minimum(s);
+  double lambda = gsl_min_fminimizer_x_minimum(s);
+
   gsl_min_fminimizer_free(s);
-  return ret;
+
+  /* Try to refine the estimate. */
+  double out_res[3];
+  residual(lambda, r12, q1, q2, out_res);
+  double res = out_res[1];
+  for (size_t i = 0; i < PW85_NR_ITER; i++) {
+    double lambda_trial = lambda - out_res[1] / out_res[2];
+    residual(lambda_trial, r12, q1, q2, out_res);
+    if (out_res[1] > res) {
+      break;
+    }
+    lambda = lambda_trial;
+  }
+
+  out[0] = out_res[0];
+  out[1] = lambda;
 }
 
 double pw85_f1(double lambda, double const r12[PW85_DIM],
