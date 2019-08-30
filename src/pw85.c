@@ -166,26 +166,37 @@ void pw85_contact_function(double const r12[PW85_DIM],
       break;
   }
 
-  double mu2 = -gsl_min_fminimizer_f_minimum(s);
-  double lambda = gsl_min_fminimizer_x_minimum(s);
+  double out_res[3];
+  double mu2_brent = -gsl_min_fminimizer_f_minimum(s);
+  double lambda_brent = gsl_min_fminimizer_x_minimum(s);
+  residual(lambda_brent, r12, q1, q2, out_res);
+  double res_brent = fabs(out_res[1]);
 
   gsl_min_fminimizer_free(s);
 
   /* Try to refine the estimate. */
-  double out_res[3];
-  residual(lambda, r12, q1, q2, out_res);
-  double res = out_res[1];
+  double lambda_nr = lambda_brent;
+  double mu2_nr = mu2_brent;
+  double res_nr = res_brent;
+
   for (size_t i = 0; i < PW85_NR_ITER; i++) {
-    double lambda_trial = lambda - out_res[1] / out_res[2];
-    residual(lambda_trial, r12, q1, q2, out_res);
-    if (out_res[1] > res) {
+    double lambda_trial = lambda_nr - out_res[1] / out_res[2];
+    if ((lambda_trial < 0.) || (lambda_trial > 1.)) {
       break;
     }
-    lambda = lambda_trial;
+    residual(lambda_trial, r12, q1, q2, out_res);
+    lambda_nr = lambda_trial;
+    mu2_nr = out_res[0];
+    res_nr = fabs(out_res[1]);
   }
 
-  out[0] = out_res[0];
-  out[1] = lambda;
+  if (res_nr < res_brent) {
+    out[0] = mu2_nr;
+    out[1] = lambda_nr;
+  } else {
+    out[0] = mu2_brent;
+    out[1] = lambda_brent;
+  }
 }
 
 double pw85_f1(double lambda, double const r12[PW85_DIM],
