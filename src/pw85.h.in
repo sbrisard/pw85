@@ -1,7 +1,12 @@
 #ifndef __PW85_H__
 #define __PW85_H__
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
+
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_min.h>
 
 #define PW85_VERSION "@project_version@"
 #define PW85_DIM 3
@@ -27,19 +32,6 @@
 #define DllExport
 #endif
 
-DllExport double pw85__det_sym(double const a[PW85_SYM]);
-DllExport double pw85__xT_adjA_x(double const x[PW85_DIM],
-                                 double const a[PW85_SYM]);
-DllExport void pw85__rT_adjQ_r_as_poly(double const r[PW85_DIM],
-                                       double const q1[PW85_SYM],
-                                       double const q2[PW85_SYM],
-                                       double const q3[PW85_SYM],
-                                       double a[PW85_DIM]);
-DllExport void pw85__detQ_as_poly(double const q1[PW85_SYM],
-                                  double const q2[PW85_SYM],
-                                  double const q3[PW85_SYM],
-                                  double const q4[PW85_SYM],
-                                  double b[PW85_DIM + 1]);
 DllExport void pw85__cholesky_decomp(double const a[PW85_SYM],
                                      double l[PW85_SYM]);
 DllExport void pw85__cholesky_solve(double const l[PW85_SYM],
@@ -51,16 +43,4 @@ DllExport double pw85_f_neg(double lambda, double const* params);
 DllExport void pw85_contact_function(double const r12[PW85_DIM],
                                      double const q1[PW85_SYM],
                                      double const q2[PW85_SYM], double out[2]);
-DllExport double pw85_f1(double lambda, double const r12[PW85_DIM],
-                         double const q1[PW85_SYM], double const q2[PW85_SYM],
-                         double* out);
-DllExport double pw85_contact_function1(double const r12[PW85_DIM],
-                                        double const q1[PW85_SYM],
-                                        double const q2[PW85_SYM], double* out);
-DllExport double pw85_f2(double lambda, double const r12[PW85_DIM],
-                         double const q1[PW85_SYM], double const q2[PW85_SYM],
-                         double* out);
-DllExport double pw85_contact_function2(double const r12[PW85_DIM],
-                                        double const q1[PW85_SYM],
-                                        double const q2[PW85_SYM], double* out);
 #endif
