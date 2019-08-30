@@ -90,9 +90,8 @@ void residual(double lambda, double const r12[PW85_DIM],
       2. * rs + 2. * (1. - 2. * lambda) * su - 2. * lambda * (1. - lambda) * uv;
 }
 
-void pw85_contact_function(double const r12[PW85_DIM],
-                           double const q1[PW85_SYM], double const q2[PW85_SYM],
-                           double out[2]) {
+int pw85_contact_function(double const r12[PW85_DIM], double const q1[PW85_SYM],
+                          double const q2[PW85_SYM], double out[2]) {
   double const params[] = {r12[0], r12[1], r12[2], q1[0], q1[1],
                            q1[2],  q1[3],  q1[4],  q1[5], q2[0],
                            q2[1],  q2[2],  q2[3],  q2[4], q2[5]};
@@ -142,4 +141,7 @@ void pw85_contact_function(double const r12[PW85_DIM],
     out[0] = mu2_brent;
     out[1] = lambda_brent;
   }
+
+  /* TODO: return error code. */
+  return 0;
 }

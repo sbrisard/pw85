@@ -40,7 +40,7 @@ DllExport void pw85__cholesky_solve(double const l[PW85_SYM],
 DllExport void pw85_spheroid(double a, double c, double const n[PW85_DIM],
                              double q[PW85_SYM]);
 DllExport double pw85_f_neg(double lambda, double const* params);
-DllExport void pw85_contact_function(double const r12[PW85_DIM],
-                                     double const q1[PW85_SYM],
-                                     double const q2[PW85_SYM], double out[2]);
+DllExport int pw85_contact_function(double const r12[PW85_DIM],
+                                    double const q1[PW85_SYM],
+                                    double const q2[PW85_SYM], double out[2]);
 #endif
