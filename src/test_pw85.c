@@ -185,6 +185,7 @@ void test_pw85_contact_function_test(double const *data) {
   double const *r12 = data;
   double const *q1 = data + PW85_DIM;
   double const *q2 = data + PW85_DIM + PW85_SYM;
+
   double out[2];
   pw85_contact_function(r12, q1, q2, out);
   double mu2 = out[0];
@@ -222,13 +223,13 @@ void test_pw85_contact_function_test(double const *data) {
    * The code is provided below. However, the accuracy seems to be
    * quite poor.
    */
-  double rtol_mu2 = 2e-5;
+  double rtol_mu2 = 1e-10;
   double atol_mu2 = 1e-15;
 
   double mu2_1 = (1. - lambda) * (1. - lambda) * (rs - lambda * su);
-  g_assert_cmpfloat(fabs(mu2_1 - mu2), <=, rtol_mu2 * mu2 + atol_mu2);
-
   double mu2_2 = lambda * lambda * (rs + (1. - lambda) * su);
+
+  g_assert_cmpfloat(fabs(mu2_1 - mu2), <=, rtol_mu2 * mu2 + atol_mu2);
   g_assert_cmpfloat(fabs(mu2_2 - mu2), <=, rtol_mu2 * mu2 + atol_mu2);
 
   /*
