@@ -41,15 +41,32 @@ array ``a`` such that::
 These function and macros form the public API of the library.
 
 
+.. c:macro:: PW85_VERSION
+
+  The current version of the library.
+
 .. c:macro:: PW85_DIM
 
   The dimension of the physical space (3).
-
 
 .. c:macro:: PW85_SYM
 
   The dimension of the space of symmetric matrices (6).
 
+.. c:macro:: PW85_LAMBDA_ATOL
+
+  The absolute tolerance for the stopping criterion of Brent’s method (in
+  function :c:func:`pw85_contact_function`).
+
+.. c:macro:: PW85_MAX_ITER
+
+  The maximum number of iterations of Brent’s method (in function
+  :c:func:`pw85_contact_function`).
+
+.. c:macro:: PW85_NR_ITER
+
+  The total number of iterations of the Newton–Raphson refinement phase (in
+  function :c:func:`pw85_contact_function`).
 
 .. c:function:: void pw85_spheroid(double a, double c, double n[PW85_DIM], double q[PW85_SYM])
 
