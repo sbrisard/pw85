@@ -190,56 +190,25 @@ void test_pw85_contact_function_test(double const *data) {
   double mu2 = out[0];
   double lambda = out[1];
 
-  double u[PW85_DIM];
-  double v[PW85_DIM];
-
   double q[PW85_SYM];
+  double q12[PW85_SYM];
   for (size_t i = 0; i < PW85_SYM; i++) {
     q[i] = (1. - lambda) * q1[i] + lambda * q2[i];
+    q12[i] = q2[i] - q1[i];
   }
-
-  /*
-   * Let x0 be the contact point. It is found from the following
-   * identities
-   *
-   *     c1x0 = (1-lambda) Q1.s,
-   *     c2x0 = -lambda Q2.s,
-   *
-   * where r = Q.s.
-   *
-   * We comupte dx0, which is the difference between the coordinates
-   * of x0 found from the above two formulas:
-   *
-   *     dx0 = r12 - c1x0 + c2x0
-   *         = r12 - (1-lambda) Q1.s - lambda Q2.s.
-   */
 
   double l[PW85_SYM];
   pw85__cholesky_decomp(q, l);
   double s[PW85_DIM];
   pw85__cholesky_solve(l, r12, s);
-
-  double q1s[PW85_DIM] = {q1[0] * s[0] + q1[1] * s[1] + q1[2] * s[2],
-                          q1[1] * s[0] + q1[3] * s[1] + q1[4] * s[2],
-                          q1[2] * s[0] + q1[4] * s[1] + q1[5] * s[2]};
-  double q2s[PW85_DIM] = {q2[0] * s[0] + q2[1] * s[1] + q2[2] * s[2],
-                          q2[1] * s[0] + q2[3] * s[1] + q2[4] * s[2],
-                          q2[2] * s[0] + q2[4] * s[1] + q2[5] * s[2]};
-  double c1x0[PW85_DIM];
-  double c2x0[PW85_DIM];
-  double dx0[PW85_DIM];
-  double dx0_norm = 0.;
-  double r12_norm = 0.;
-  for (size_t i = 0; i < PW85_DIM; i++) {
-    c1x0[i] = (1. - lambda) * q1s[i];
-    c2x0[i] = -lambda * q2s[i];
-    dx0[i] = r12[i] - c1x0[i] + c2x0[i];
-    r12_norm += r12[i] * r12[i];
-    dx0_norm += dx0[i] * dx0[i];
-  }
-  dx0_norm = sqrt(dx0_norm);
-  r12_norm = sqrt(r12_norm);
-  g_assert_cmpfloat(dx0_norm, <=, rtol * r12_norm + atol);
+  double u[] = {q12[0] * s[0] + q12[1] * s[1] + q12[2] * s[2],
+                q12[1] * s[0] + q12[3] * s[1] + q12[4] * s[2],
+                q12[2] * s[0] + q12[4] * s[1] + q12[5] * s[2]};
+  double v[PW85_DIM];
+  pw85__cholesky_solve(l, u, v);
+  double rs = r12[0] * s[0] + r12[1] * s[1] + r12[2] * s[2];
+  double su = s[0] * u[0] + s[1] * u[1] + s[2] * u[2];
+  double uv = u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
 
   /*
    * We could also check that x0 belong to both (scaled) ellipsoids:
@@ -256,16 +225,11 @@ void test_pw85_contact_function_test(double const *data) {
   double rtol_mu2 = 2e-5;
   double atol_mu2 = 1e-15;
 
-  double mu2_1 = (1. - lambda) * (1. - lambda) *
-                 (s[0] * q1s[0] + s[1] * q1s[1] + s[2] * q1s[2]);
-
+  double mu2_1 = (1. - lambda) * (1. - lambda) * (rs - lambda * su);
   g_assert_cmpfloat(fabs(mu2_1 - mu2), <=, rtol_mu2 * mu2 + atol_mu2);
 
-  double mu2_2 =
-      lambda * lambda * (s[0] * q2s[0] + s[1] * q2s[1] + s[2] * q2s[2]);
+  double mu2_2 = lambda * lambda * (rs + (1. - lambda) * su);
   g_assert_cmpfloat(fabs(mu2_2 - mu2), <=, rtol_mu2 * mu2 + atol_mu2);
-
-  g_assert_cmpfloat(fabs(mu2_2 - mu2_1), <=, rtol_mu2 * mu2 + atol_mu2);
 
   /*
    * Finally, we check that f'(lambda) = 0.
@@ -276,25 +240,15 @@ void test_pw85_contact_function_test(double const *data) {
    *
    * The test therefore reads
    *
-   *     |f'(lambda)| <= eps * f"(lambda).
+   *     |f'(lambda)| <= eps * |f"(lambda)|.
    *
    * We first compute f' and f".
    */
 
-  /* gsl_blas_dgemv(CblasNoTrans, 1., Q2, s, 0., u); */
-  /* gsl_blas_dgemv(CblasNoTrans, -1., Q1, s, 1., u); */
-  /* gsl_linalg_cholesky_solve(Q, u, v); */
-
-  /* double rs, su, uv; */
-  /* gsl_blas_ddot(r, s, &rs); */
-  /* gsl_blas_ddot(s, u, &su); */
-  /* gsl_blas_ddot(u, v, &uv); */
-
-  /* double f1 = (1. - 2. * lambda) * rs - lambda * (1. - lambda) * su; */
-  /* double f2 = -2. * rs - 2. * (1. - 2. * lambda) * su + */
-  /*             2. * lambda * (1. - lambda) * uv; */
-
-  /* g_assert_cmpfloat(fabs(f1), <=, 2 * PW85_LAMBDA_ATOL * fabs(f2)); */
+  double f1 = (1. - 2. * lambda) * rs - lambda * (1. - lambda) * su;
+  double f2 = -2. * rs - 2. * (1. - 2. * lambda) * su +
+              2. * lambda * (1. - lambda) * uv;
+  g_assert_cmpfloat(fabs(f1), <=, PW85_LAMBDA_ATOL * fabs(f2));
 }
 
 int main(int argc, char **argv) {
