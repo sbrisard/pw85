@@ -61,6 +61,8 @@ define::
 
   (5)    f(λ) = min{ F(x, λ), x ∈ ℝ³ }, 0 ≤ λ ≤ 1.
 
+.. _theory-eq-6:
+
 Now, the function ``f`` has a unique maximum over ``[0, 1]``, and the“contact
 function” ``F(r₁₂, Q₁, Q₂)`` of ellipsoids ``E₁`` and ``E₂`` is defined as::
 

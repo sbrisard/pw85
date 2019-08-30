@@ -19,5 +19,6 @@ Documentation of the PW85 library
    tutorial
    theory
    implementation
+   optimization
    c_api
    py_api
