@@ -11,25 +11,24 @@ The C API
 Representation of vectors and matrices
 ======================================
 
-An ellipsoid is defined from its center ``c`` (a 3×1, column-vector)
-and quadratic form ``Q`` (a 3×3, symmetric, positive definite matrix)
-as the set of points ``m`` such that::
+An ellipsoid is defined from its center ``c`` (a 3×1, column-vector) and
+quadratic form ``Q`` (a 3×3, symmetric, positive definite matrix) as the set of
+points ``m`` such that::
 
   (m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
 
-In this module, objects referred to as “vectors” are ``double[3]``
-arrays of coordinates. In other words, the representation of the
-vector ``x`` is the ``double[3]`` array ``x`` such that::
+In this module, objects referred to as “vectors” are ``double[3]`` arrays of
+coordinates. In other words, the representation of the vector ``x`` is the
+``double[3]`` array ``x`` such that::
 
       ⎡ x[0] ⎤
   x = ⎢ x[1] ⎥.
       ⎣ x[2] ⎦
 
-Objects referred to as “symmetric matrices” (or “quadratic forms”) are
-of type ``double[6]``. Such arrays list in row-major order the
-coefficients of the triangular upper part. In other words, the
-representation of a the symmetric matrix ``A`` is the ``double[6]``
-array ``a`` such that::
+Objects referred to as “symmetric matrices” (or “quadratic forms”) are of type
+``double[6]``. Such arrays list in row-major order the coefficients of the
+triangular upper part. In other words, the representation of a the symmetric
+matrix ``A`` is the ``double[6]`` array ``a`` such that::
 
       ⎡ a[0] a[1] a[2] ⎤
   A = ⎢      a[3] a[4] ⎥.
@@ -49,7 +48,8 @@ The new API
 ===========
 
 The functions and macros gathered below form the new API that should be invoked
-by most users. To use these functions and macros in your code, you must include the following header:
+by most users. To use these functions and macros in your code, you must include
+the following header:
 
 .. code-block:: C
 
@@ -198,7 +198,10 @@ and use the following link directive::
 The “legacy” API
 ================
 
-The functions described below belong to the legacy API. These are functions that have been superseded by equivalent (more accurate or more efficient) implementations in the core library. To use these functions in your code, you must include the following header:
+The functions described below belong to the legacy API. These are functions
+that have been superseded by equivalent (more accurate or more efficient)
+implementations in the core library. To use these functions in your code, you
+must include the following header:
 
 .. code-block:: C
 
@@ -266,8 +269,7 @@ The coefficients ``aᵢ`` are stored in `a` in *increasing* order: ``a[i] = aᵢ
 
 .. c:function:: double pw85_legacy_f1(double lambda, double const r12[PW85_DIM], double const q1[PW85_SYM], double const q2[PW85_SYM], double* out)
 
-  Return the value of the function ``f`` defined as (see
-  :ref:`theory`)::
+  Return the value of the function ``f`` defined as (see :ref:`theory`)::
 
     f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
 
@@ -280,16 +282,16 @@ The coefficients ``aᵢ`` are stored in `a` in *increasing* order: ``a[i] = aᵢ
 
     (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
 
-  In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is
-  the center-to-center radius-vector, represented by the ``double[3]``
-  array `r12`. The symmetric, positive-definite matrices ``Q₁`` and
-  ``Q₂`` are specified through the ``double[6]`` arrays `q1` and `q2`.
+  In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is the
+  center-to-center radius-vector, represented by the ``double[3]`` array
+  `r12`. The symmetric, positive-definite matrices ``Q₁`` and ``Q₂`` are
+  specified through the ``double[6]`` arrays `q1` and `q2`.
 
   The value of ``λ`` is specified through the parameter `lambda`.
 
-  This function returns the value of ``f(λ)``. If `out` is not
-  ``NULL``, then it must be a pre-allocated ``double[3]`` array which
-  is updated with the values of the first and second derivatives::
+  This function returns the value of ``f(λ)``. If `out` is not ``NULL``, then
+  it must be a pre-allocated ``double[3]`` array which is updated with the
+  values of the first and second derivatives::
 
     out[0] = f(λ),    out[1] = f'(λ)    and    out[2] = f″(λ).
 
@@ -304,26 +306,24 @@ The coefficients ``aᵢ`` are stored in `a` in *increasing* order: ``a[i] = aᵢ
   See :c:func:`pw85_legacy_f1` for the meaning of the parameters ``lambda``,
   ``r12``, ``q1`` and ``q2``.
 
-  This function returns the value of ``f(λ)``. If ``out`` is not
-  ``NULL``, then it must be a pre-allocated ``double[1]`` array which
-  is updated with the value of ``f(λ)``.
+  This function returns the value of ``f(λ)``. If ``out`` is not ``NULL``, then
+  it must be a pre-allocated ``double[1]`` array which is updated with the
+  value of ``f(λ)``.
 
   This implementation uses :ref:`rational fractions
   <implementation-rational-functions>`.
 
-.. todo:: This function should also compute the first and second
-          derivatives.
+.. todo:: This function should also compute the first and second derivatives.
 
 
 .. c:function:: int pw85_legacy_contact_function1(double const r12[PW85_DIM], double const q1[PW85_SYM], double const q2[PW85_SYM], double out[2])
 
   Compute the value of the contact function of two ellipsoids.
 
-  See :c:func:`pw85_contact_function` for the invocation of this
-  function.
+  See :c:func:`pw85_contact_function` for the invocation of this function.
 
-  Implementation of this function relies on Newton–Raphson iterations
-  on ``f``; it is not robust.
+  Implementation of this function relies on Newton–Raphson iterations on ``f``;
+  it is not robust.
 
   This function returns ``0``
 
@@ -337,13 +337,16 @@ The coefficients ``aᵢ`` are stored in `a` in *increasing* order: ``a[i] = aᵢ
   See :c:func:`pw85_contact_function` for the invocation of this
   function.
 
-  This implementation uses the representation of ``f`` as
-  :ref:`rational fractions
-  <implementation-rational-functions>`. Finding the maximum of ``f``
-  is then equivalent to finding the root of the numerator of the
-  rational fraction of ``f'``. For the sake of robustness, bisection
-  is used to compute this root.
+  This implementation uses the representation of ``f`` as :ref:`rational
+  fractions <implementation-rational-functions>`. Finding the maximum of ``f``
+  is then equivalent to finding the root of the numerator of the rational
+  fraction of ``f'``. For the sake of robustness, bisection is used to compute
+  this root.
 
   This function returns ``0``
 
 .. todo:: This function should return an error code.
+
+.. Local Variables:
+.. fill-column: 79
+.. End:
