@@ -21,12 +21,12 @@ DllExport double pw85_legacy_f1(double lambda, double const r12[PW85_DIM],
 DllExport double pw85_legacy_f2(double lambda, double const r12[PW85_DIM],
                                 double const q1[PW85_SYM],
                                 double const q2[PW85_SYM], double* out);
-DllExport double pw85_legacy_contact_function1(double const r12[PW85_DIM],
-                                               double const q1[PW85_SYM],
-                                               double const q2[PW85_SYM],
-                                               double* out);
-DllExport double pw85_legacy_contact_function2(double const r12[PW85_DIM],
-                                               double const q1[PW85_SYM],
-                                               double const q2[PW85_SYM],
-                                               double* out);
+DllExport int pw85_legacy_contact_function1(double const r12[PW85_DIM],
+                                            double const q1[PW85_SYM],
+                                            double const q2[PW85_SYM],
+                                            double out[2]);
+DllExport int pw85_legacy_contact_function2(double const r12[PW85_DIM],
+                                            double const q1[PW85_SYM],
+                                            double const q2[PW85_SYM],
+                                            double out[2]);
 #endif

@@ -122,9 +122,9 @@ double pw85_legacy_f2(double lambda, double const r12[PW85_DIM],
   return y;
 }
 
-double pw85_legacy_contact_function1(double const r12[PW85_DIM],
-                                     double const q1[PW85_SYM],
-                                     double const q2[PW85_SYM], double *out) {
+int pw85_legacy_contact_function1(double const r12[PW85_DIM],
+                                  double const q1[PW85_SYM],
+                                  double const q2[PW85_SYM], double out[2]) {
   double f[3];
   /* Lower-bound for the root. */
   double a = 0., f_prime_a;
@@ -155,16 +155,14 @@ double pw85_legacy_contact_function1(double const r12[PW85_DIM],
     x = x_new;
   }
   pw85_legacy_f1(x, r12, q1, q2, f);
-  if (out) {
-    out[0] = f[0];
-    out[1] = x;
-  }
-  return f[0];
+  out[0] = f[0];
+  out[1] = x;
+  return 0;
 }
 
-double pw85_legacy_contact_function2(double const r12[PW85_DIM],
-                                     double const q1[PW85_SYM],
-                                     double const q2[PW85_SYM], double *out) {
+int pw85_legacy_contact_function2(double const r12[PW85_DIM],
+                                  double const q1[PW85_SYM],
+                                  double const q2[PW85_SYM], double out[2]) {
   double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
   double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
   for (int i = 0; i < PW85_SYM; i++) {
@@ -212,11 +210,8 @@ double pw85_legacy_contact_function2(double const r12[PW85_DIM],
       }
     }
   }
-  y = x * (1. - x) * (a[0] + x * (a[1] + x * a[2])) /
-      (b[0] + x * (b[1] + x * (b[2] + x * b[3])));
-  if (out != NULL) {
-    out[0] = y;
-    out[1] = x;
-  }
-  return y;
+  out[0] = x * (1. - x) * (a[0] + x * (a[1] + x * a[2])) /
+           (b[0] + x * (b[1] + x * (b[2] + x * b[3])));
+  out[1] = x;
+  return 0;
 }
