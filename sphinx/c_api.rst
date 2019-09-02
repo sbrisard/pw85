@@ -216,7 +216,7 @@ and use the following link directive::
 
   Return the determinant of ``A``.
 
-  The symmetric matrix ``A`` is specified through the ``double[6]`` array `a`.
+  The symmetric matrix ``A`` is specified through the ``double[6]`` array ``a``.
 
 
 .. c:function:: double pw85_legacy__xT_adjA_x(double x[PW85_DIM], double a[PW85_SYM])
@@ -224,8 +224,8 @@ and use the following link directive::
   Return the product ``xᵀ⋅adj(A)⋅x``.
 
   The column vector ``x`` is specified through the ``double[3]`` array
-  `x`.  The symmetric matrix ``A`` is specified trough the
-  ``double[6]`` array `a`.
+  ``x``.  The symmetric matrix ``A`` is specified trough the
+  ``double[6]`` array ``a``.
 
   ``adj(A)`` denotes the adjugate matrix of ``A`` (transpose of its
   cofactor matrix), see e.g `Wikipedia
@@ -237,8 +237,8 @@ and use the following link directive::
 Compute the coefficients of the polynomial ``λ ↦ det[(1-λ)Q₁+λQ₂]``.
 
 The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are specified
-as arrays `q1` and `q2`. The arrays `q3` and `q4` must hold the difference
-``2Q₁-Q₂`` and average ``(Q₁+Q₂)/2``, respectively::
+as arrays ``q1`` and ``q2``. The arrays ``q3`` and ``q4`` must hold the
+difference ``2Q₁-Q₂`` and average ``(Q₁+Q₂)/2``, respectively::
 
   q3[i] = 2*q1[i] - q2[i]  and  q4[i] = 0.5*(q1[i] + q2[i]),
 
@@ -247,7 +247,8 @@ for ``i = 0, …, PW85_SYM-1``. The returned polynomial has degree
 
   det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³.
 
-The coefficients ``bᵢ`` are stored in `b` in *increasing* order: ``b[i] = bᵢ``.
+The coefficients ``bᵢ`` are stored in ``b`` in *increasing* order: ``b[i] =
+bᵢ``.
 
 
 .. c:function:: double pw85__rT_adjQ_r_as_poly(double r[PW85_DIM], double q1[PW85_SYM], double q2[PW85_SYM], double q3[PW85_SYM], double a[PW85_DIM])
@@ -255,7 +256,8 @@ The coefficients ``bᵢ`` are stored in `b` in *increasing* order: ``b[i] = bᵢ
 Compute the coefficients of the polynomial ``λ ↦ rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r``.
 
 The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are specified
-as arrays `q1` and `q2`. The array `q3` must hold the difference ``2Q₁-Q₂``::
+as arrays ``q1`` and ``q2``. The array ``q3`` must hold the difference
+``2Q₁-Q₂``::
 
   q3[i] = 2*q1[i] - q2[i],
 
@@ -264,7 +266,7 @@ for ``i = 0, …, PW85_SYM-1``. The returned polynomial has degree
 
   rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².
 
-The coefficients ``aᵢ`` are stored in `a` in *increasing* order: ``a[i] = aᵢ``.
+The coefficients ``aᵢ`` are stored in ``a`` in *increasing* order: ``a[i] = aᵢ``.
 
 
 .. c:function:: double pw85_legacy_f1(double lambda, double const r12[PW85_DIM], double const q1[PW85_SYM], double const q2[PW85_SYM], double* out)
@@ -284,12 +286,12 @@ The coefficients ``aᵢ`` are stored in `a` in *increasing* order: ``a[i] = aᵢ
 
   In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is the
   center-to-center radius-vector, represented by the ``double[3]`` array
-  `r12`. The symmetric, positive-definite matrices ``Q₁`` and ``Q₂`` are
-  specified through the ``double[6]`` arrays `q1` and `q2`.
+  ``r12``. The symmetric, positive-definite matrices ``Q₁`` and ``Q₂`` are
+  specified through the ``double[6]`` arrays ``q1`` and ``q2``.
 
-  The value of ``λ`` is specified through the parameter `lambda`.
+  The value of ``λ`` is specified through the parameter ``lambda``.
 
-  This function returns the value of ``f(λ)``. If `out` is not ``NULL``, then
+  This function returns the value of ``f(λ)``. If ``out`` is not ``NULL``, then
   it must be a pre-allocated ``double[3]`` array which is updated with the
   values of the first and second derivatives::
 
