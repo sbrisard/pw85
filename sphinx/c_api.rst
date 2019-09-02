@@ -48,11 +48,13 @@ The new API
 ===========
 
 The functions and macros gathered below form the new API that should be invoked
-by most users. To use it, you should include the following header::
+by most users. To use these functions and macros in your code, you must include the following header:
 
-  #indlude <pw85.h>
+.. code-block:: C
 
-and use the following link ddirective::
+  #include <pw85.h>
+
+and use the following link directive::
 
   -lpw85
 
@@ -185,64 +187,25 @@ and use the following link ddirective::
 The “legacy” API
 ================
 
-.. c:function:: double pw85_f(double lambda, double r12[PW85_DIM], double q1[PW85_SYM], double q2[PW85_SYM], double* out)
+The functions described below belong to the legacy API. These are functions that have been superseded by equivalent (more accurate or more efficient) implementations in the core library. To use these functions in your code, you must include the following header:
 
-  Return the value of the function ``f`` defined as (see
-  :ref:`theory`)::
+.. code-block:: C
 
-    f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
+  #include <pw85_legacy.h>
 
-  with::
+and use the following link directive::
 
-    Q = (1-λ)Q₁ + λQ₂,
-
-  where ellipsoids 1 and 2 are defined as the sets of points ``m``
-  (column-vector) such that::
-
-    (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
-
-  In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is
-  the center-to-center radius-vector, represented by the ``double[3]``
-  array `r12`. The symmetric, positive-definite matrices ``Q₁`` and
-  ``Q₂`` are specified through the ``double[6]`` arrays `q1` and `q2`.
-
-  The value of ``λ`` is specified through the parameter `lambda`.
-
-  This function returns the value of ``f(λ)``. If `out` is not
-  ``NULL``, then it must be a pre-allocated ``double[3]`` array which
-  is updated with the values of the first and second derivatives::
-
-    out[0] = f(λ),    out[1] = f'(λ)    and    out[2] = f″(λ).
-
-  This implementation uses :ref:`Cholesky decompositions
-  <implementation-cholesky>`.
+  -lpw85_legacy
 
 
-.. c:function:: double pw85_f_alt(double lambda, double r12[PW85_DIM], double q1[PW85_SYM], double q2[PW85_SYM], double* out)
-
-  Alternative implementation of :c:func:`pw85_f`.
-
-  See :c:func:`pw85_f` for the meaning of the parameters `lambda`,
-  `r12`, `q1` and `q2`.
-
-  This function returns the value of ``f(λ)``. If `out` is not
-  ``NULL``, then it must be a pre-allocated ``double[1]`` array which
-  is updated with the value of ``f(λ)``.
-
-  This implementation uses :ref:`rational fractions
-  <implementation-rational-functions>`.
-
-.. todo:: This function should also compute the first and second
-          derivatives.
-
-.. c:function:: double pw85__det_sym(double a[PW85_SYM])
+.. c:function:: double pw85_legacy__det_sym(double a[PW85_SYM])
 
   Return the determinant of ``A``.
 
   The symmetric matrix ``A`` is specified through the ``double[6]`` array `a`.
 
 
-.. c:function:: double pw85__xT_adjA_x(double x[PW85_DIM], double a[PW85_SYM])
+.. c:function:: double pw85_legacy__xT_adjA_x(double x[PW85_DIM], double a[PW85_SYM])
 
   Return the product ``xᵀ⋅adj(A)⋅x``.
 
@@ -255,7 +218,7 @@ The “legacy” API
   <https://en.wikipedia.org/wiki/Adjugate_matrix>`_.
 
 
-.. c:function:: void pw85__detQ_as_poly(double q1[PW85_SYM], double q2[PW85_SYM], double q3[PW85_SYM], double q4[PW85_SYM], double b[PW85_DIM+1])
+.. c:function:: void pw85_legacy__detQ_as_poly(double q1[PW85_SYM], double q2[PW85_SYM], double q3[PW85_SYM], double q4[PW85_SYM], double b[PW85_DIM+1])
 
 Compute the coefficients of the polynomial ``λ ↦ det[(1-λ)Q₁+λQ₂]``.
 
@@ -288,3 +251,88 @@ for ``i = 0, …, PW85_SYM-1``. The returned polynomial has degree
   rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².
 
 The coefficients ``aᵢ`` are stored in `a` in *increasing* order: ``a[i] = aᵢ``.
+
+
+.. c:function:: double pw85_legacy_f1(double lambda, double const r12[PW85_DIM], double const q1[PW85_SYM], double const q2[PW85_SYM], double* out)
+
+  Return the value of the function ``f`` defined as (see
+  :ref:`theory`)::
+
+    f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
+
+  with::
+
+    Q = (1-λ)Q₁ + λQ₂,
+
+  where ellipsoids 1 and 2 are defined as the sets of points ``m``
+  (column-vector) such that::
+
+    (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
+
+  In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is
+  the center-to-center radius-vector, represented by the ``double[3]``
+  array `r12`. The symmetric, positive-definite matrices ``Q₁`` and
+  ``Q₂`` are specified through the ``double[6]`` arrays `q1` and `q2`.
+
+  The value of ``λ`` is specified through the parameter `lambda`.
+
+  This function returns the value of ``f(λ)``. If `out` is not
+  ``NULL``, then it must be a pre-allocated ``double[3]`` array which
+  is updated with the values of the first and second derivatives::
+
+    out[0] = f(λ),    out[1] = f'(λ)    and    out[2] = f″(λ).
+
+  This implementation uses :ref:`Cholesky decompositions
+  <implementation-cholesky>`.
+
+
+.. c:function:: double pw85_legacy_f2(double lambda, double const r12[PW85_DIM], double const q1[PW85_SYM], double const q2[PW85_SYM], double* out)
+
+  Alternative implementation of :c:func:`pw85_legacy_f1`.
+
+  See :c:func:`pw85_legacy_f1` for the meaning of the parameters ``lambda``,
+  ``r12``, ``q1`` and ``q2``.
+
+  This function returns the value of ``f(λ)``. If ``out`` is not
+  ``NULL``, then it must be a pre-allocated ``double[1]`` array which
+  is updated with the value of ``f(λ)``.
+
+  This implementation uses :ref:`rational fractions
+  <implementation-rational-functions>`.
+
+.. todo:: This function should also compute the first and second
+          derivatives.
+
+
+.. c:function:: int pw85_legacy_contact_function1(double const r12[PW85_DIM], double const q1[PW85_SYM], double const q2[PW85_SYM], double out[2])
+
+  Compute the value of the contact function of two ellipsoids.
+
+  See :c:func:`pw85_contact_function` for the invocation of this
+  function.
+
+  Implementation of this function relies on Newton–Raphson iterations
+  on ``f``; it is not robust.
+
+  This function returns ``0``
+
+.. todo:: This function should return an error code.
+
+
+.. c:function:: int pw85_legacy_contact_function2(double const r12[PW85_DIM], double const q1[PW85_SYM], double const q2[PW85_SYM], double out[2])
+
+  Compute the value of the contact function of two ellipsoids.
+
+  See :c:func:`pw85_contact_function` for the invocation of this
+  function.
+
+  This implementation uses the representation of ``f`` as
+  :ref:`rational fractions
+  <implementation-rational-functions>`. Finding the maximum of ``f``
+  is then equivalent to finding the root of the numerator of the
+  rational fraction of ``f'``. For the sake of robustness, bisection
+  is used to compute this root.
+
+  This function returns ``0``
+
+.. todo:: This function should return an error code.
