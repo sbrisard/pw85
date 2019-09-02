@@ -99,6 +99,29 @@ double pw85_legacy_f1(double lambda, double const r12[PW85_DIM],
   }
 }
 
+double pw85_legacy_f2(double lambda, double const r12[PW85_DIM],
+                      double const q1[PW85_SYM], double const q2[PW85_SYM],
+                      double *out) {
+  double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
+  double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
+  for (int i = 0; i < PW85_SYM; i++) {
+    q3[i] = 2. * q1[i] - q2[i];
+    q4[i] = 0.5 * (q1[i] + q2[i]);
+  }
+
+  double a[3];
+  pw85_legacy__rT_adjQ_r_as_poly(r12, q1, q2, q3, a);
+
+  double b[4];
+  pw85_legacy__detQ_as_poly(q1, q2, q3, q4, b);
+
+  double const y = lambda * (1. - lambda) *
+                   (a[0] + lambda * (a[1] + lambda * a[2])) /
+                   (b[0] + lambda * (b[1] + lambda * (b[2] + lambda * b[3])));
+  if (out) out[0] = y;
+  return y;
+}
+
 double pw85_legacy_contact_function1(double const r12[PW85_DIM],
                                      double const q1[PW85_SYM],
                                      double const q2[PW85_SYM], double *out) {
@@ -137,29 +160,6 @@ double pw85_legacy_contact_function1(double const r12[PW85_DIM],
     out[1] = x;
   }
   return f[0];
-}
-
-double pw85_legacy_f2(double lambda, double const r12[PW85_DIM],
-                      double const q1[PW85_SYM], double const q2[PW85_SYM],
-                      double *out) {
-  double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
-  double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
-  for (int i = 0; i < PW85_SYM; i++) {
-    q3[i] = 2. * q1[i] - q2[i];
-    q4[i] = 0.5 * (q1[i] + q2[i]);
-  }
-
-  double a[3];
-  pw85_legacy__rT_adjQ_r_as_poly(r12, q1, q2, q3, a);
-
-  double b[4];
-  pw85_legacy__detQ_as_poly(q1, q2, q3, q4, b);
-
-  double const y = lambda * (1. - lambda) *
-                   (a[0] + lambda * (a[1] + lambda * a[2])) /
-                   (b[0] + lambda * (b[1] + lambda * (b[2] + lambda * b[3])));
-  if (out) out[0] = y;
-  return y;
 }
 
 double pw85_legacy_contact_function2(double const r12[PW85_DIM],
