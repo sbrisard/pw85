@@ -7,6 +7,7 @@ The C API
 
 .. highlight:: none
 
+
 Representation of vectors and matrices
 ======================================
 
@@ -63,28 +64,34 @@ and use the following link directive::
 
   The current version of the library.
 
+
 .. c:macro:: PW85_DIM
 
   The dimension of the physical space (3).
 
+
 .. c:macro:: PW85_SYM
 
   The dimension of the space of symmetric matrices (6).
+
 
 .. c:macro:: PW85_LAMBDA_ATOL
 
   The absolute tolerance for the stopping criterion of Brent’s method (in
   function :c:func:`pw85_contact_function`).
 
+
 .. c:macro:: PW85_MAX_ITER
 
   The maximum number of iterations of Brent’s method (in function
   :c:func:`pw85_contact_function`).
 
+
 .. c:macro:: PW85_NR_ITER
 
   The total number of iterations of the Newton–Raphson refinement phase (in
   function :c:func:`pw85_contact_function`).
+
 
 .. c:function:: void pw85__cholesky_decomp(double const a[PW85_SYM], double l[PW85_SYM])
 
@@ -101,6 +108,7 @@ and use the following link directive::
     L = ⎢ l[1] l[3]    0 ⎥.
         ⎣ l[2] l[4] l[5] ⎦
 
+
 .. c:function:: void pw85__cholesky_solve(double const l[PW85_SYM], double const b[PW85_DIM], double x[PW85_DIM])
 
   Compute the solution to a previously Cholesky decoposed linear system.
@@ -111,6 +119,7 @@ and use the following link directive::
   ``Lᵀ⋅L⋅x = b``, where the vectors ``x`` and ``b`` are specfied through their
   ``double[3]`` array of coordinates; ``x`` is modified by this function.
 
+
 .. c:function:: void pw85_spheroid(double a, double c, double n[PW85_DIM], double q[PW85_SYM])
 
   Compute the quadratic form associated to a spheroid.
@@ -120,6 +129,7 @@ and use the following link directive::
 
   ``q`` is the representation of a symmetric matrix as a ``double[6]``
   array. It is modified in-place.
+
 
 .. c:function:: double pw85_f_neg(double lambda, double cons* params)
 
@@ -157,6 +167,7 @@ and use the following link directive::
   This implementation uses :ref:`Cholesky decompositions
   <implementation-cholesky>`. Its somewhat awkward signature is defined in
   accordance with ``gsl_min.h`` from the GNU Scientific Library.
+
 
 .. c:function:: int pw85_contact_function(double const r12[PW85_DIM], double const q1[PW85_SYM], double const q2[PW85_SYM], double out[2])
 
