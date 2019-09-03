@@ -225,45 +225,41 @@ C tutorial
 ==========
 
 The Python interface to PW85 has been kept close to the undelying C API. The
-following C program (:download:`download source file <./c_tutorial/tutorial.c>`)
-defines the two ellipsoids, then computes ``μ²`` (simplified output) and ``λ``
-(full output):
+following C program (:download:`download source file
+<./c_tutorial/tutorial.c>`) defines the two ellipsoids, then computes ``μ²``
+and ``λ``:
 
 .. literalinclude:: ./c_tutorial/tutorial.c
    :language: c
 
-A ``CMakeLists.txt`` file is provided for the compilation of the
-tutorial using CMake. You can copy and paste its contents for reuse in
-one of your own projects:
+A ``meson.build`` file is provided for the compilation of the tutorial using
+the `Meson build system <https://mesonbuild.com>`_. You can reuse it in one of
+your own projects (:download:`download <./c_tutorial/meson.build>`):
 
-.. literalinclude:: ./c_tutorial/CMakeLists.txt
-   :language: CMake
+.. literalinclude:: ./c_tutorial/meson.build
+   :language: none
 
-The compilation procedure is similar to that in the :ref:`installation`
-section. It produces an executable called (depending on the platform):
-``tutorial.exe`` or ``tutorial``. On execution, it prints the following lines
-to ``stdout``:
+The location of the PW85 dynamic library and header files is specified through
+two options that are defined in the ``meson_options.txt`` file
+(:download:`download <./c_tutorial/meson_options.txt>`):
+
+.. literalinclude:: ./c_tutorial/meson_options.txt
+   :language: none
+
+Compilation proceeds as follows::
+
+  meson setup -Dpw85_include=/c/opt/pw85/include/ -Dpw85_lib=/c/opt/pw85/bin/ build
+  cd build/
+  ninja
+
+It produces an executable called (depending on the platform): ``tutorial.exe``
+or ``tutorial``. On execution, it prints the following lines to ``stdout``:
 
 .. code-block:: none
 
-  Simplified output
-  -----------------
-  mu^2 = 3.36271
-
-  Full output
-  -----------
   mu^2 = 3.36271
   lambda = 0.166859
 
-.. note:: On calling ``cmake``, you might get the following error message:
-          ``“Could not find a package configuration file provided by "pw85"
-          (requested version 1.0) with any of the following names:
-          pw85Config.cmake, pw85-config.cmake.”`` If that is the case, add the
-          following command-line argument to your call to ``cmake``:
-          ``-Dpw85_DIR=/prefix/to/pw85/lib/pw85-1.0``.
-
-.. note:: On Windows/Visual C++ platforms, the system might complain about a
-          missing ``ucrtbased.dll`` file. Make sure that you compiled both the
-          tutorial and the library using the
-          ``-DCMAKE_BUILD_TYPE:STRING=Release`` option, rather than
-          ``-DCMAKE_BUILD_TYPE:STRING=Debug`` (the default).
+.. Local Variables:
+.. fill-column: 79
+.. End:
