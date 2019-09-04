@@ -1,7 +1,0 @@
-set (PACKAGE_VERSION "@project_version@")
-if (NOT "${PACKAGE_FIND_VERSION}" VERSION_GREATER "@project_version@")
-  set (PACKAGE_VERSION_COMPATIBLE 1)
-  if ("${PACKAGE_FIND_VERSION}" VERSION_EQUAL "@project_version@")
-    set (PACKAGE_VERSION_EXACT 1)
-  endif ()
-endif ()
