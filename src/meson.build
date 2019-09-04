@@ -1,7 +1,5 @@
 project('PW85', 'c', default_options: ['default_library=both'])
 
-# Find dependencies
-
 math = meson.get_compiler('c').find_library('m', required : false)
 gsl = dependency('gsl')
 glib = dependency('glib-2.0')
