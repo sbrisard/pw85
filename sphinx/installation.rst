@@ -17,78 +17,42 @@ bindings. The first step is to clone the Git repository::
 Building and installing the C library
 =====================================
 
-The C library has no dependency per se. However, regardless of the platform,
-the building process relies on `CMake <https://cmake.org/>`_, which you are
-required to install. The instructions below use the command-line
-exclusively. However, you can of course reach the same results from the
-interfaces ``ccmake`` or ``cmake-gui``.
+PW85 requires a POSIX system. On Windows platforms, it is recommended that you
+install `MSYS2 <https://www.msys2.org/The>`_.
 
-.. note:: The minimum required version of CMake is 3.0. Older versions of CMake
-          have not been tested. Please report any success!
+.. note:: Meson supports MSVC compilers. However, at the time of writing,
+          MSVC-based installation has not been tested. Contributions are most
+          welcome!
 
-For all platforms, we will assume that the project is built in the
-``src/build/`` directory (that you should first create)::
+The C library depends on
+
+1. `GLib <https://developer.gnome.org/glib/>`_ (for testing purposes)
+2. The `GNU Scientific Library (GSL) <https://www.gnu.org/software/gsl/>`_ (for
+   the implementation of the Brent algorithm).
+
+For installation, we use the `Meson build system
+<https://mesonbuild.com/>`_. We assume that GLib, GSL and Meson are installed
+on your system. Assuming that the project is built in the ``src/build/``
+directory (no need to create it first), here is the whole installation
+procedure (you must first ``cd`` into the root directory of the PW85 project)::
 
   cd pw85/src
-  mkdir build
+  meson build
   cd build
+  ninja install
 
-Windows + Visual C++ platforms
-------------------------------
+A prefix can be specified in order for PW85 to be installed in a custom
+directory, like so::
 
-Open the ``Visual C++ 2015 x64 Native Buld Tools Command Prompt`` (or
-equivalent). This ensures that all native build tools will be correctly
-discovered by CMake. ``cd`` into the ``src/build/`` directory. Issue the
-following call to cmake::
+  cd pw85/src
+  meson build --prefix=C:/opt/pw85
+  cd build
+  ninja install
 
-  C:\path\to\pw85\src\build>C:\path\to\cmake\cmake.exe .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=C:/opt/pw85
+Congratulations, ``PW85`` is now built and installed! You can then test the
+installation (stay in the ``src/build`` directory)::
 
-(feel free to modify the install prefix). Then, build and install the project::
-
-  C:\path\to\pw85\src\build>nmake
-  C:\path\to\pw85\src\build>nmake install
-
-Go to :ref:`finalize-your-installation`.
-
-Windows + MinGW platforms
--------------------------
-
-Open the command prompt and ``cd`` into the ``src/build/`` directory. Issue the
-following call to cmake::
-
-  C:\path\to\cmake\bin\cmake.exe .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=C:/opt/pw85
-
-(feel free to modify the install prefix). Then, build and install the project::
-
-  C:\path\to\pw85\src\build>mingw32-make
-  C:\path\to\pw85\src\build>mingw32-make install
-
-Go to :ref:`finalize-your-installation`.
-
-Linux platforms
----------------
-
-Open a terminal and ``cd`` into the ``src/build/`` directory. Issue the
-following call to cmake::
-
-  cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=~/local
-
-(feel free to modify the install prefix). Then, build and install the project::
-
-  make
-  make install
-
-Go to :ref:`finalize-your-installation`.
-
-MacOS + HomeBrew platforms
---------------------------
-
-.. _finalize-your-installation:
-
-Finalize your installation
---------------------------
-
-Congratulations, ``PW85`` is now built and installed!
+  meson test
 
 If you intend to use ``PW85`` from within Python only, then go to
 :ref:`installation-of-the-python-bindings`.
@@ -100,12 +64,7 @@ your system about the location of the library.
   ``PATH`` environment variable.
 - On Linux or MacOS platforms, no further operation is required.
 
-To test your installation, build the example in the :ref:`c-tutorial`.
-
-.. todo::
-   Check that CMake will indeed be able to retrieve the various ``*.cmake``
-   configuration files
-
+To further test your installation, build the example in the :ref:`c-tutorial`.
 
 .. _installation-of-the-python-bindings:
 
@@ -133,19 +92,17 @@ The contents of this file should be::
 
 where the ``FullPath`` entry is the full path to the dynamic library
 (``*.dll``, ``*.so`` or ``*.dylib``) *including its name*. It can be retrieved
-from the output of ``cmake install``. For example, on a Windows machine, where
+from the output of ``ninja install``. For example, on a Windows machine, where
 the output was::
 
-  [100%] Built target pw85
-  Install the project...
-  -- Install configuration: "Release"
-  -- Installing: C:/opt/pw85/lib/pw85-1.0/pw85-config.cmake
-  -- Installing: C:/opt/pw85/lib/pw85-1.0/pw85-config-version.cmake
-  -- Installing: C:/opt/pw85/lib/libpw85.dll.a
-  -- Installing: C:/opt/pw85/bin/libpw85.dll
-  -- Installing: C:/opt/pw85/lib/pw85-1.0/pw85-targets.cmake
-  -- Installing: C:/opt/pw85/lib/pw85-1.0/pw85-targets-release.cmake
-  -- Installing: C:/opt/pw85/include/pw85.h
+  Installing libpw85.dll to C:/opt/pw85/bin
+  Installing libpw85.dll.a to C:/opt/pw85/lib
+  Installing libpw85.a to C:/opt/pw85/lib
+  Installing libpw85_legacy.dll to C:/opt/pw85/bin
+  Installing libpw85_legacy.dll.a to C:/opt/pw85/lib
+  Installing libpw85_legacy.a to C:/opt/pw85/lib
+  Installing C:/path/to/project/pw85/src/pw85_legacy.h to C:/opt/pw85/include
+  Installing C:/path/to/project/pw85/src/buid/pw85.h to C:/opt/pw85/include
 
 the contents of ``pw85.ini`` is::
 
@@ -157,5 +114,3 @@ machine, you can run the tests as follows (from the ``wrappers/python-ctypes``
 drectory)::
 
   $PYTHON_EXEC -m pytest tests
-
-Beware! Tests take a while to run…
