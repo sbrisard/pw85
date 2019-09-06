@@ -70,9 +70,11 @@ array([25.  ,  0.  ,  0.  ,  0.25,  0.  ,  0.25])
 We can now compute the value of the contact function — see the documentation of
 :py:func:`pypw85.contact_function`:
 
->>> mu2 = pypw85.contact_function(r12, q1, q2)
+>>> mu2, lambda_ = pypw85.contact_function(r12, q1, q2)
 >>> print('μ² = {}'.format(mu2))
+>>> print('λ = {}'.format(lambda_))
 μ² = 3.362706040638343
+λ = 0.1668589553405904
 
 We find that ``μ² > 1``, hence ``μ > 1``. In other words, both ellipsoids must
 be *swollen* in order to bring them in contact: the ellipsoids do not overlap!
@@ -152,24 +154,15 @@ understand this derivation. What really matters is to check that the resulting
 point ``x₀`` is indeed the contact point of the two scaled ellipsoids; how the
 coordinates of this point were found is irrelevant.
 
-It is possible to ask a *full output* from the function
-:py:func:`pw85.contact_function`. Besides ``μ²``, it then also returns the
-maximizer ``λ`` of the function ``f`` defined by Eq. :ref:`(5) <theory-eq-5>` in
-section :ref:`theory` like so
-
->>> out = np.zeros((2,), dtype=np.float64)
->>> mu2 = pypw85.contact_function(r12, q1, q2, out)
->>> lambda_ = out[1]
->>> print('λ = {}'.format(lambda_))
-λ = 0.16685895534010342
-
-From the value of ``λ``, we compute ``Q`` defined by Eq. :ref:`(10)
+From the value of ``λ`` returned by the function
+:py:func:`pw85.contact_function`, we compute ``Q`` defined by Eq. :ref:`(10)
 <theory-eq-10>` in section :ref:`theory`, as well as ``x = Q⁻¹⋅r₁₂``
 
 >>> Q = (1-lambda_)*Q1+lambda_*Q2
 >>> x = np.linalg.solve(Q, r12)
 
-From which we find ``x₀``, using either Eq. :ref:`(9a) <theory-eq-9>` or Eq. :ref:`(9b) <theory-eq-9>` (and we can check that both give the same result)
+From which we find ``x₀``, using either Eq. :ref:`(9a) <theory-eq-9>` or
+Eq. :ref:`(9b) <theory-eq-9>` (and we can check that both give the same result)
 
 >>> x0a = x1+(1-lambda_)*np.dot(Q1, x)
 >>> x0a
@@ -217,7 +210,7 @@ We find that ``n₁ = -n₂``. Therefore, ``E₁`` and ``E₂`` are in external
 contact. QED
 
 Follow this link to
-:download:`download the above Python script<./tutorial.py>`.
+:download:`download the above Python script<./py_tutorial/tutorial.py>`.
 
 .. _c-tutorial:
 

@@ -16,8 +16,9 @@ if __name__ == '__main__':
     q2 = pypw85.spheroid(a2, c2, n2)
     print(repr(q2))
 
-    mu2 = pypw85.contact_function(r12, q1, q2)
+    mu2, lambda_ = pypw85.contact_function(r12, q1, q2)
     print('μ² = {}'.format(mu2))
+    print('λ = {}'.format(lambda_))
 
     Q1 = np.zeros((3, 3), dtype=np.float64)
     i, j = np.triu_indices_from(Q1)
@@ -49,11 +50,6 @@ if __name__ == '__main__':
     print(f2((0., -a2, 0.)))
     print(f2((0., 0., a2)))
     print(f2((0., 0., -a2)))
-
-    out = np.zeros((2,), dtype=np.float64)
-    mu2 = pypw85.contact_function(r12, q1, q2, out)
-    lambda_ = out[1]
-    print('λ = {}'.format(lambda_))
 
     Q = (1-lambda_)*Q1+lambda_*Q2
     x = np.linalg.solve(Q, r12)
