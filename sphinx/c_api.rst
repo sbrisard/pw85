@@ -120,6 +120,24 @@ and use the following link directive::
   ``double[3]`` array of coordinates; ``x`` is modified by this function.
 
 
+.. c:function:: void pw85__residual(double lambda, double const r12[PW85_DIM], double const q1[PW85_SYM], double const q2[PW85_SYM], double out[3])
+
+   Compute the residual ``g(λ) = μ₂² - μ₁²``.
+
+   See :ref:`optimization` for the definition of ``g``. The value of ``λ`` is
+   specified through the parameter
+   ``lambda``. See :c:func:`pw85_contact_function` for the definition of the
+   parameters ``r12``, ``q1`` and ``q2``.
+
+   The preallocated ``double[3]`` array ``out`` is updated with the values of
+   ``f(λ)``, ``g(λ)`` and ``g’(λ)``::
+
+     out[0] = f(λ),    out[1] = g(λ)    and    out[2] = g’(λ).
+
+   This function is used in function :c:func:`pw85_contact_function` for the
+   final Newton–Raphson refinement step.
+
+
 .. c:function:: void pw85_spheroid(double a, double c, double n[PW85_DIM], double q[PW85_SYM])
 
   Compute the quadratic form associated to a spheroid.
