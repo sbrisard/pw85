@@ -62,9 +62,9 @@ double pw85_f_neg(double lambda, double const *params) {
   return -lambda * (1. - lambda) * rs;
 }
 
-void residual(double lambda, double const r12[PW85_DIM],
-              double const q1[PW85_SYM], double const q2[PW85_SYM],
-              double out[3]) {
+void pw85__residual(double lambda, double const r12[PW85_DIM],
+                    double const q1[PW85_SYM], double const q2[PW85_SYM],
+                    double out[3]) {
   double q[PW85_SYM];
   double q12[PW85_SYM];
   for (size_t i = 0; i < PW85_SYM; i++) {
@@ -113,7 +113,7 @@ int pw85_contact_function(double const r12[PW85_DIM], double const q1[PW85_SYM],
   double out_res[3];
   double mu2_brent = -gsl_min_fminimizer_f_minimum(s);
   double lambda_brent = gsl_min_fminimizer_x_minimum(s);
-  residual(lambda_brent, r12, q1, q2, out_res);
+  pw85__residual(lambda_brent, r12, q1, q2, out_res);
   double res_brent = fabs(out_res[1]);
 
   gsl_min_fminimizer_free(s);
@@ -128,7 +128,7 @@ int pw85_contact_function(double const r12[PW85_DIM], double const q1[PW85_SYM],
     if ((lambda_trial < 0.) || (lambda_trial > 1.)) {
       break;
     }
-    residual(lambda_trial, r12, q1, q2, out_res);
+    pw85__residual(lambda_trial, r12, q1, q2, out_res);
     lambda_nr = lambda_trial;
     mu2_nr = out_res[0];
     res_nr = fabs(out_res[1]);
