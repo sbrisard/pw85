@@ -49,79 +49,182 @@ __version__ = '${version}'
 __author__ = '${author}'
 
 
-def _det_sym(a):
-    """Return ``det(A)``.
+# def _det_sym(a):
+#     """Return ``det(A)``.
 
-    ``A`` is a symmetric matrix represented by the array `a`.
+#     ``A`` is a symmetric matrix represented by the array `a`.
+
+#     """
+#     return _ll._det_sym(a.ctypes.data_as(_ll.c_double_p))
+
+
+# def _xT_adjA_x(x, a):
+#     """Return ``xᵀ⋅adj(A)⋅x``.
+
+#     ``x`` is a vector, represented by the array `x`. ``A`` is a
+#     symmetric matrix, represented by the array `a`.
+
+#     """
+#     return _ll._xT_adjA_x(x.ctypes.data_as(_ll.c_double_p),
+#                           a.ctypes.data_as(_ll.c_double_p))
+
+
+# def _rT_adjQ_r_as_poly(r, q1, q2, q3=None, a=None):
+#     """Compute the coefficients of the polynomial ``λ ↦ rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r``.
+
+#     The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are
+#     specified as arrays `q1` and `q2`. If specified, the array `q3` must hold
+#     the difference ``2Q₁-Q₂``::
+
+#       q3[i] = 2*q1[i] - q2[i],
+
+#     for ``i = 0, …, 5``. The returned polynomial has degree 2::
+
+#       rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².
+
+#     The coefficients ``aᵢ`` are stored in `a` in *increasing* order:
+#     ``a[i] = aᵢ``.
+
+#     """
+#     if q3 is None:
+#         q3 = 2*q1-q2
+#     if a is None:
+#         a = np.empty((3,), dtype=np.float64, order='C')
+#     args = [arg.ctypes.data_as(_ll.c_double_p) for arg in (r, q1, q2, q3, a)]
+#     _ll._rT_adjQ_r_as_poly(*args)
+#     return a
+
+
+# def _detQ_as_poly(q1, q2, q3=None, q4=None, b=None):
+#     """Compute the coefficients of the polynomial ``λ ↦ det[(1-λ)Q₁+λQ₂]``.
+
+#     The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are
+#     specified as arrays `q1` and `q2`. If specified, the arrays `q3` and `q4`
+#     must hold the difference ``2Q₁-Q₂`` and average ``(Q₁+Q₂)/2``,
+#     respectively::
+
+#       q3[i] = 2*q1[i] - q2[i]  and  q4[i] = 0.5*(q1[i] + q2[i]),
+
+#     for ``i = 0, …, 5``. The returned polynomial has degree 3::
+
+#       det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³.
+
+#     The coefficients ``bᵢ`` are stored in `b` in *increasing* order:
+#     ``b[i] = bᵢ``.
+
+#     """
+#     if q3 is None:
+#         q3 = 2*q1-q2
+#     if q4 is None:
+#         q4 = 0.5*(q1+q2)
+#     if b is None:
+#         b = np.empty((4,), dtype=np.float64, order='C')
+#     args = [arg.ctypes.data_as(_ll.c_double_p) for arg in (q1, q2, q3, q4, b)]
+#     _ll._detQ_as_poly(*args)
+#     return b
+
+
+
+
+
+
+# def f1(lambda_, r12, q1, q2, out=None):
+#     """Return the value of the function ``f`` defined as::
+
+#         f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
+
+#     with::
+
+#         Q = (1-λ)Q₁ + λQ₂,
+
+#     where ellipsoids 1 and 2 are defined as the sets of points ``m``
+#     (column-vector) such that::
+
+#         (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
+
+#     In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is
+#     the center-to-center radius-vector, represented by the
+#     ``double[3]`` array `r12`. The symmetric, positive-definite
+#     matrices ``Q₁`` and ``Q₂`` are specified through the ``double[6]``
+#     arrays `q1` and `q2`.
+
+#     The value of ``λ`` is specified through the parameter `lambda`.
+
+#     This function returns the value of ``f(λ)``. If `out` is not
+#     ``None``, then it must be a pre-allocated ``double[3]`` array
+#     which is updated with the values of the first and second
+#     derivatives:
+
+#     .. code-block:: none
+
+#        out[0] = f(λ),    out[1] = f'(λ)    and    out[2] = f″(λ).
+
+#     This implementation uses :ref:`Cholesky decompositions
+#     <implementation-cholesky>`.
+
+#     """
+#     return _ll.f1(lambda_,
+#                   r12.ctypes.data_as(_ll.c_double_p),
+#                   q1.ctypes.data_as(_ll.c_double_p),
+#                   q2.ctypes.data_as(_ll.c_double_p),
+#                   out if out is None else out.ctypes.data_as(_ll.c_double_p))
+
+
+# def f2(lambda_, r12, q1, q2, out=None):
+#     """Alternative implementation of :py:func:`f`.
+
+#     See :py:func:`f` for the meaning of the parameters `lambda`,
+#     `r12`, `q1` and `q2`.
+
+#     This function returns the value of ``f(λ)``. If `out` is not
+#     ``None``, then it must be a pre-allocated ``double[1]`` array
+#     which is updated with the value of ``f(λ)``.
+
+#     This implementation uses :ref:`rational fractions
+#     <implementation-rational-functions>`.
+
+#     """
+#     return _ll.f2(lambda_,
+#                   r12.ctypes.data_as(_ll.c_double_p),
+#                   q1.ctypes.data_as(_ll.c_double_p),
+#                   q2.ctypes.data_as(_ll.c_double_p),
+#                   out if out is None else out.ctypes.data_as(_ll.c_double_p))
+
+
+def _cholesky_decomp(a, l=None):
+    """Compute the Cholesky decomposition A = L⋅Lᵀ of a 3×3 matrix.
+
+    ``A`` is a symmetric matrix, represented by the array `a`, ``L``
+    is a lower matrix, represented by the array `l`.
+
+    This function returns `l`, suitably updated with the coefficients
+    of the Cholesky decomposition. If `l` is ``None``, then a new
+    array is allocated.
 
     """
-    return _ll._det_sym(a.ctypes.data_as(_ll.c_double_p))
+    if l is None:
+        l = np.empty((6,), dtype=np.float64, order='C')
+    _ll.cpw85.pw85__cholesky_decomp(a.ctypes.data_as(_ll.c_double_p),
+                                    l.ctypes.data_as(_ll.c_double_p))
+    return l
 
 
-def _xT_adjA_x(x, a):
-    """Return ``xᵀ⋅adj(A)⋅x``.
+def _cholesky_solve(l, b, x=None):
+    """Compute the solution of the 3×3 linear system L⋅Lᵀ⋅x = b.
 
-    ``x`` is a vector, represented by the array `x`. ``A`` is a
-    symmetric matrix, represented by the array `a`.
+    ``L`` is a lower matrix, represented by the array `l`. ``x`` and
+    ``b`` are vectors, represented by the arrays `x` and `b`.
 
-    """
-    return _ll._xT_adjA_x(x.ctypes.data_as(_ll.c_double_p),
-                          a.ctypes.data_as(_ll.c_double_p))
-
-
-def _rT_adjQ_r_as_poly(r, q1, q2, q3=None, a=None):
-    """Compute the coefficients of the polynomial ``λ ↦ rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r``.
-
-    The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are
-    specified as arrays `q1` and `q2`. If specified, the array `q3` must hold
-    the difference ``2Q₁-Q₂``::
-
-      q3[i] = 2*q1[i] - q2[i],
-
-    for ``i = 0, …, 5``. The returned polynomial has degree 2::
-
-      rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².
-
-    The coefficients ``aᵢ`` are stored in `a` in *increasing* order:
-    ``a[i] = aᵢ``.
+    This function returns `x`, suitably updated with the solution to
+    the system. If `x` is ``None``, then a new array is allocated.
 
     """
-    if q3 is None:
-        q3 = 2*q1-q2
-    if a is None:
-        a = np.empty((3,), dtype=np.float64, order='C')
-    args = [arg.ctypes.data_as(_ll.c_double_p) for arg in (r, q1, q2, q3, a)]
-    _ll._rT_adjQ_r_as_poly(*args)
-    return a
-
-
-def _detQ_as_poly(q1, q2, q3=None, q4=None, b=None):
-    """Compute the coefficients of the polynomial ``λ ↦ det[(1-λ)Q₁+λQ₂]``.
-
-    The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are
-    specified as arrays `q1` and `q2`. If specified, the arrays `q3` and `q4`
-    must hold the difference ``2Q₁-Q₂`` and average ``(Q₁+Q₂)/2``,
-    respectively::
-
-      q3[i] = 2*q1[i] - q2[i]  and  q4[i] = 0.5*(q1[i] + q2[i]),
-
-    for ``i = 0, …, 5``. The returned polynomial has degree 3::
-
-      det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³.
-
-    The coefficients ``bᵢ`` are stored in `b` in *increasing* order:
-    ``b[i] = bᵢ``.
-
-    """
-    if q3 is None:
-        q3 = 2*q1-q2
-    if q4 is None:
-        q4 = 0.5*(q1+q2)
-    if b is None:
-        b = np.empty((4,), dtype=np.float64, order='C')
-    args = [arg.ctypes.data_as(_ll.c_double_p) for arg in (q1, q2, q3, q4, b)]
-    _ll._detQ_as_poly(*args)
-    return b
+    if x is None:
+        x = np.empty((3,), dtype=np.float64, order='C')
+    _ll.cpw85.pw85__cholesky_solve(l.ctypes.data_as(_ll.c_double_p),
+                                   b.ctypes.data_as(_ll.c_double_p),
+                                   x.ctypes.data_as(_ll.c_double_p))
+    return x
 
 
 def spheroid(a, c, n, q=None):
@@ -137,19 +240,12 @@ def spheroid(a, c, n, q=None):
     """
     if q is None:
         q = np.empty((6,), dtype=np.float64, order='C')
-    _ll.spheroid(a, c, n.ctypes.data_as(_ll.c_double_p),
-                 q.ctypes.data_as(_ll.c_double_p))
+    _ll.cpw85.pw85_spheroid(a, c, n.ctypes.data_as(_ll.c_double_p),
+                            q.ctypes.data_as(_ll.c_double_p))
     return q
 
 
 def f(lambda_, r12, q1, q2):
-    params = np.empty((15,), dtype=np.float64)
-    params[0:3] = r12
-    params[3:9] = q1
-    params[9:15] = q2
-    return -_ll.f_neg(lambda_, params.ctypes.data_as(_ll.c_double_p))
-
-def f1(lambda_, r12, q1, q2, out=None):
     """Return the value of the function ``f`` defined as::
 
         f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
@@ -169,47 +265,19 @@ def f1(lambda_, r12, q1, q2, out=None):
     matrices ``Q₁`` and ``Q₂`` are specified through the ``double[6]``
     arrays `q1` and `q2`.
 
-    The value of ``λ`` is specified through the parameter `lambda`.
+    The value of ``λ`` is specified through the parameter `lambda_`.
 
     This function returns the value of ``f(λ)``. If `out` is not
     ``None``, then it must be a pre-allocated ``double[3]`` array
     which is updated with the values of the first and second
     derivatives:
 
-    .. code-block:: none
-
-       out[0] = f(λ),    out[1] = f'(λ)    and    out[2] = f″(λ).
-
-    This implementation uses :ref:`Cholesky decompositions
-    <implementation-cholesky>`.
-
     """
-    return _ll.f1(lambda_,
-                  r12.ctypes.data_as(_ll.c_double_p),
-                  q1.ctypes.data_as(_ll.c_double_p),
-                  q2.ctypes.data_as(_ll.c_double_p),
-                  out if out is None else out.ctypes.data_as(_ll.c_double_p))
-
-
-def f2(lambda_, r12, q1, q2, out=None):
-    """Alternative implementation of :py:func:`f`.
-
-    See :py:func:`f` for the meaning of the parameters `lambda`,
-    `r12`, `q1` and `q2`.
-
-    This function returns the value of ``f(λ)``. If `out` is not
-    ``None``, then it must be a pre-allocated ``double[1]`` array
-    which is updated with the value of ``f(λ)``.
-
-    This implementation uses :ref:`rational fractions
-    <implementation-rational-functions>`.
-
-    """
-    return _ll.f2(lambda_,
-                  r12.ctypes.data_as(_ll.c_double_p),
-                  q1.ctypes.data_as(_ll.c_double_p),
-                  q2.ctypes.data_as(_ll.c_double_p),
-                  out if out is None else out.ctypes.data_as(_ll.c_double_p))
+    params = np.empty((15,), dtype=np.float64)
+    params[0:3] = r12
+    params[3:9] = q1
+    params[9:15] = q2
+    return -_ll.cpw85.pw85_f_neg(lambda_, params.ctypes.data_as(_ll.c_double_p))
 
 
 def contact_function(r12, q1, q2, out=None):
@@ -218,61 +286,29 @@ def contact_function(r12, q1, q2, out=None):
     See :py:func:`f` for the meaning of the parameters `r12`, `q1` and
     `q2`.
 
-    This function returns the value of ``μ²``, defined as (see
+    This function returns the pair ``(μ², λ)``, defined as (see
     :ref:`theory`)::
 
-        μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }.
+        μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }
+
+    (the returned value of ``λ`` is the actual maximizer).
 
     ``μ`` is the common factor by which the two ellipsoids must be
     scaled (their centers being fixed) in order to be tangentially in
     contact.
 
-    If `out` is not ``None``, then a full-output is produced:
-    ``out[0]`` is updated with the value of ``μ²``, while ``out[1]``
-    is updated with the maximizer ``λ`` .
+    If `out` is not ``None``, it must be a pre-allocated ``double[2]``
+    array. It is updated with the values of ``μ²``, and the maximizer
+    ``λ``::
+
+        out[0] = μ²    and    out[1] = λ.
 
     """
-    if out is not None:
-        out = out.ctypes.data_as(_ll.c_double_p)
+    if out is None:
+        out = np.empty((2,), dtype=np.float64)
 
-    return _ll.contact_function(r12.ctypes.data_as(_ll.c_double_p),
-                                q1.ctypes.data_as(_ll.c_double_p),
-                                q2.ctypes.data_as(_ll.c_double_p),
-                                out)
-
-
-
-def _cholesky_decomp(a, l=None):
-    """Compute the Cholesky decomposition A = L⋅Lᵀ of a 3×3 matrix.
-
-    ``A`` is a symmetric matrix, represented by the array `a`, ``L``
-    is a lower matrix, represented by the array `l`.
-
-    This function returns `l`, suitably updated with the coefficients
-    of the Cholesky decomposition. If `l` is ``None``, then a new
-    array is allocated.
-
-    """
-    if l is None:
-        l = np.empty((6,), dtype=np.float64, order='C')
-    _ll._cholesky_decomp(a.ctypes.data_as(_ll.c_double_p),
-                         l.ctypes.data_as(_ll.c_double_p))
-    return l
-
-
-def _cholesky_solve(l, b, x=None):
-    """Compute the solution of the 3×3 linear system L⋅Lᵀ⋅x = b.
-
-    ``L`` is a lower matrix, represented by the array `l`. ``x`` and
-    ``b`` are vectors, represented by the arrays `x` and `b`.
-
-    This function returns `x`, suitably updated with the solution to
-    the system. If `x` is ``None``, then a new array is allocated.
-
-    """
-    if x is None:
-        x = np.empty((3,), dtype=np.float64, order='C')
-    _ll._cholesky_solve(l.ctypes.data_as(_ll.c_double_p),
-                        b.ctypes.data_as(_ll.c_double_p),
-                        x.ctypes.data_as(_ll.c_double_p))
-    return x
+    _ll.cpw85.pw85_contact_function(r12.ctypes.data_as(_ll.c_double_p),
+                                    q1.ctypes.data_as(_ll.c_double_p),
+                                    q2.ctypes.data_as(_ll.c_double_p),
+                                    out.ctypes.data_as(_ll.c_double_p))
+    return tuple(out[:2])
