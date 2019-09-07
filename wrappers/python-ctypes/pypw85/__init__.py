@@ -41,154 +41,49 @@ The present wrapper around the PW85 C library relies on the NumPy library.
 ``dtype == numpy.float64``.”
 
 """
-import numpy as np
+import configparser
+import ctypes
+import pathlib
 
-from pypw85 import lowlevel as _ll
+from ctypes import c_double
+
+import numpy as np
 
 __version__ = '${version}'
 __author__ = '${author}'
 
-
-# def _det_sym(a):
-#     """Return ``det(A)``.
-
-#     ``A`` is a symmetric matrix represented by the array `a`.
-
-#     """
-#     return _ll._det_sym(a.ctypes.data_as(_ll.c_double_p))
+c_double_p = ctypes.POINTER(c_double)
 
 
-# def _xT_adjA_x(x, a):
-#     """Return ``xᵀ⋅adj(A)⋅x``.
-
-#     ``x`` is a vector, represented by the array `x`. ``A`` is a
-#     symmetric matrix, represented by the array `a`.
-
-#     """
-#     return _ll._xT_adjA_x(x.ctypes.data_as(_ll.c_double_p),
-#                           a.ctypes.data_as(_ll.c_double_p))
-
-
-# def _rT_adjQ_r_as_poly(r, q1, q2, q3=None, a=None):
-#     """Compute the coefficients of the polynomial ``λ ↦ rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r``.
-
-#     The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are
-#     specified as arrays `q1` and `q2`. If specified, the array `q3` must hold
-#     the difference ``2Q₁-Q₂``::
-
-#       q3[i] = 2*q1[i] - q2[i],
-
-#     for ``i = 0, …, 5``. The returned polynomial has degree 2::
-
-#       rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².
-
-#     The coefficients ``aᵢ`` are stored in `a` in *increasing* order:
-#     ``a[i] = aᵢ``.
-
-#     """
-#     if q3 is None:
-#         q3 = 2*q1-q2
-#     if a is None:
-#         a = np.empty((3,), dtype=np.float64, order='C')
-#     args = [arg.ctypes.data_as(_ll.c_double_p) for arg in (r, q1, q2, q3, a)]
-#     _ll._rT_adjQ_r_as_poly(*args)
-#     return a
+def __load_library():
+    path = pathlib.Path.home()/'pw85.ini'
+    if path.is_file():
+        cfg = configparser.ConfigParser()
+        cfg.read(str(path))
+        return ctypes.cdll.LoadLibrary(cfg['pw85']['FullPath'])
+    else:
+        raise RuntimeError('Cannot file configuration file: {}'.format(path))
 
 
-# def _detQ_as_poly(q1, q2, q3=None, q4=None, b=None):
-#     """Compute the coefficients of the polynomial ``λ ↦ det[(1-λ)Q₁+λQ₂]``.
+cpw85 = __load_library()
 
-#     The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are
-#     specified as arrays `q1` and `q2`. If specified, the arrays `q3` and `q4`
-#     must hold the difference ``2Q₁-Q₂`` and average ``(Q₁+Q₂)/2``,
-#     respectively::
+cpw85.pw85__cholesky_decomp.argtypes = 2*[c_double_p]
+cpw85.pw85__cholesky_decomp.restype = None
 
-#       q3[i] = 2*q1[i] - q2[i]  and  q4[i] = 0.5*(q1[i] + q2[i]),
+cpw85.pw85__cholesky_solve.argtypes = 3*[c_double_p]
+cpw85.pw85__cholesky_solve.restype = None
 
-#     for ``i = 0, …, 5``. The returned polynomial has degree 3::
+cpw85.pw85_spheroid.argtypes = [c_double, c_double, c_double_p, c_double_p]
+cpw85.pw85_spheroid.restype = None
 
-#       det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³.
+cpw85.pw85_f_neg.argtypes = [c_double, c_double_p]
+cpw85.pw85_f_neg.restype = c_double
 
-#     The coefficients ``bᵢ`` are stored in `b` in *increasing* order:
-#     ``b[i] = bᵢ``.
+cpw85.pw85__residual.argtypes = [c_double]+4*[c_double_p]
+cpw85.pw85__residual.restype = None
 
-#     """
-#     if q3 is None:
-#         q3 = 2*q1-q2
-#     if q4 is None:
-#         q4 = 0.5*(q1+q2)
-#     if b is None:
-#         b = np.empty((4,), dtype=np.float64, order='C')
-#     args = [arg.ctypes.data_as(_ll.c_double_p) for arg in (q1, q2, q3, q4, b)]
-#     _ll._detQ_as_poly(*args)
-#     return b
-
-
-
-
-
-
-# def f1(lambda_, r12, q1, q2, out=None):
-#     """Return the value of the function ``f`` defined as::
-
-#         f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
-
-#     with::
-
-#         Q = (1-λ)Q₁ + λQ₂,
-
-#     where ellipsoids 1 and 2 are defined as the sets of points ``m``
-#     (column-vector) such that::
-
-#         (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
-
-#     In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is
-#     the center-to-center radius-vector, represented by the
-#     ``double[3]`` array `r12`. The symmetric, positive-definite
-#     matrices ``Q₁`` and ``Q₂`` are specified through the ``double[6]``
-#     arrays `q1` and `q2`.
-
-#     The value of ``λ`` is specified through the parameter `lambda`.
-
-#     This function returns the value of ``f(λ)``. If `out` is not
-#     ``None``, then it must be a pre-allocated ``double[3]`` array
-#     which is updated with the values of the first and second
-#     derivatives:
-
-#     .. code-block:: none
-
-#        out[0] = f(λ),    out[1] = f'(λ)    and    out[2] = f″(λ).
-
-#     This implementation uses :ref:`Cholesky decompositions
-#     <implementation-cholesky>`.
-
-#     """
-#     return _ll.f1(lambda_,
-#                   r12.ctypes.data_as(_ll.c_double_p),
-#                   q1.ctypes.data_as(_ll.c_double_p),
-#                   q2.ctypes.data_as(_ll.c_double_p),
-#                   out if out is None else out.ctypes.data_as(_ll.c_double_p))
-
-
-# def f2(lambda_, r12, q1, q2, out=None):
-#     """Alternative implementation of :py:func:`f`.
-
-#     See :py:func:`f` for the meaning of the parameters `lambda`,
-#     `r12`, `q1` and `q2`.
-
-#     This function returns the value of ``f(λ)``. If `out` is not
-#     ``None``, then it must be a pre-allocated ``double[1]`` array
-#     which is updated with the value of ``f(λ)``.
-
-#     This implementation uses :ref:`rational fractions
-#     <implementation-rational-functions>`.
-
-#     """
-#     return _ll.f2(lambda_,
-#                   r12.ctypes.data_as(_ll.c_double_p),
-#                   q1.ctypes.data_as(_ll.c_double_p),
-#                   q2.ctypes.data_as(_ll.c_double_p),
-#                   out if out is None else out.ctypes.data_as(_ll.c_double_p))
+cpw85.pw85_contact_function.argtypes = 4*[c_double_p]
+cpw85.pw85_contact_function.restype = ctypes.c_int
 
 
 def _cholesky_decomp(a, l=None):
@@ -204,8 +99,8 @@ def _cholesky_decomp(a, l=None):
     """
     if l is None:
         l = np.empty((6,), dtype=np.float64, order='C')
-    _ll.cpw85.pw85__cholesky_decomp(a.ctypes.data_as(_ll.c_double_p),
-                                    l.ctypes.data_as(_ll.c_double_p))
+    cpw85.pw85__cholesky_decomp(a.ctypes.data_as(c_double_p),
+                                    l.ctypes.data_as(c_double_p))
     return l
 
 
@@ -221,9 +116,9 @@ def _cholesky_solve(l, b, x=None):
     """
     if x is None:
         x = np.empty((3,), dtype=np.float64, order='C')
-    _ll.cpw85.pw85__cholesky_solve(l.ctypes.data_as(_ll.c_double_p),
-                                   b.ctypes.data_as(_ll.c_double_p),
-                                   x.ctypes.data_as(_ll.c_double_p))
+    cpw85.pw85__cholesky_solve(l.ctypes.data_as(c_double_p),
+                                   b.ctypes.data_as(c_double_p),
+                                   x.ctypes.data_as(c_double_p))
     return x
 
 
@@ -240,8 +135,8 @@ def spheroid(a, c, n, q=None):
     """
     if q is None:
         q = np.empty((6,), dtype=np.float64, order='C')
-    _ll.cpw85.pw85_spheroid(a, c, n.ctypes.data_as(_ll.c_double_p),
-                            q.ctypes.data_as(_ll.c_double_p))
+    cpw85.pw85_spheroid(a, c, n.ctypes.data_as(c_double_p),
+                            q.ctypes.data_as(c_double_p))
     return q
 
 
@@ -277,7 +172,7 @@ def f(lambda_, r12, q1, q2):
     params[0:3] = r12
     params[3:9] = q1
     params[9:15] = q2
-    return -_ll.cpw85.pw85_f_neg(lambda_, params.ctypes.data_as(_ll.c_double_p))
+    return -cpw85.pw85_f_neg(lambda_, params.ctypes.data_as(c_double_p))
 
 
 def contact_function(r12, q1, q2, out=None):
@@ -307,8 +202,8 @@ def contact_function(r12, q1, q2, out=None):
     if out is None:
         out = np.empty((2,), dtype=np.float64)
 
-    _ll.cpw85.pw85_contact_function(r12.ctypes.data_as(_ll.c_double_p),
-                                    q1.ctypes.data_as(_ll.c_double_p),
-                                    q2.ctypes.data_as(_ll.c_double_p),
-                                    out.ctypes.data_as(_ll.c_double_p))
+    cpw85.pw85_contact_function(r12.ctypes.data_as(c_double_p),
+                                    q1.ctypes.data_as(c_double_p),
+                                    q2.ctypes.data_as(c_double_p),
+                                    out.ctypes.data_as(c_double_p))
     return tuple(out[:2])
