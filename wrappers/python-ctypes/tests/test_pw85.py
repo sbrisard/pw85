@@ -86,34 +86,40 @@ def test__cholesky_solve(l, b, expected, rtol, atol=1e-15):
     assert_allclose(actual, expected, rtol=rtol, atol=atol)
 
 
-# @pytest.mark.parametrize("a", RADII)
-# @pytest.mark.parametrize("c", RADII)
-# @pytest.mark.parametrize("n", DIRECTIONS)
-# @pytest.mark.parametrize("in_place", [False, True])
-# def test_spheroid(a, c, n, in_place, rtol=1e-10, atol=1e-12):
-#     a2 = a ** 2
-#     c2 = c ** 2
-#     n = np.asarray(n)
-#     out = np.empty((6,), dtype=np.float64) if in_place else None
-#     q = pypw85.spheroid(a, c, n, out)
-#     if in_place:
-#         assert q is out
-#     q_mat = np.zeros((3, 3), dtype=np.float64)
-#     # scipy.linalg.eigh only needs the lower-part of the matrix to be filled
-#     q_mat[:, 0] = q[:3]
-#     q_mat[1:, 1] = q[3:5]
-#     q_mat[2, 2] = q[5]
-#     w_act, v_act = scipy.linalg.eigh(q_mat)
-#     if a2 <= c2:
-#         w_exp = (a2, a2, c2)
-#         n_act = v_act[:, -1]
-#     else:
-#         w_exp = (c2, a2, a2)
-#         n_act = v_act[:, 0]
-#     assert_allclose(w_act, w_exp, rtol, atol)
-#     if a != c:
-#         s = np.sign(np.dot(n_act, n))
-#         assert_allclose(s * n_act, n, rtol, atol)
+@pytest.mark.parametrize(
+    "a, c, n, expected, rtol",
+    [
+        (
+            9.9900000000000002e000,
+            1.0200000000000000e000,
+            np.array(
+                [
+                    0.0000000000000000e000,
+                    -5.2573111211913359e-001,
+                    -8.5065080835203988e-001,
+                ]
+            ),
+            np.array(
+                [
+                    9.9800100000000000e001,
+                    0.0000000000000000e000,
+                    0.0000000000000000e000,
+                    7.2503590263748606e001,
+                    -4.4166680527497185e001,
+                    2.8336909736251414e001,
+                ]
+            ),
+            1e-15,
+        )
+    ],
+)
+@pytest.mark.parametrize("in_place", [False, True])
+def test_spheroid(a, c, n, in_place, expected, rtol, atol=1e-15):
+    out = np.empty((6,), dtype=np.float64) if in_place else None
+    actual = pypw85.spheroid(a, c, n, out)
+    if in_place:
+        assert actual is out
+    assert_allclose(actual, expected, rtol=rtol, atol=atol)
 
 
 # def _test_contact_function(r, a1, c1, n1, a2, c2, n2, rtol=1e-9, atol=1e-11):
