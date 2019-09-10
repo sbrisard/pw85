@@ -65,18 +65,25 @@ def test__cholesky_decomp(a, expected, rtol, atol=1e-15):
 
 
 @pytest.mark.parametrize(
-    "l", [[1.0, 2.0, 3.0, 4.0, 5.0, 6.0], [1.0, -2.0, -3.0, 4.0, -5.0, 6.0]]
+    "l, b, expected, rtol",
+    [
+        (
+            np.array([1, 2, 3, 4, 5, 6], dtype=np.float64),
+            np.array([11.5, 82.6, 314.2]),
+            np.array([1.2, -3.4, 5.7]),
+            1e-15,
+        ),
+        (
+            np.array([1, -2, -3, 4, -5, 6], dtype=np.float64),
+            np.array([-9.1, -150.2, 443]),
+            np.array([1.2, -3.4, 5.7]),
+            4e-15,
+        ),
+    ],
 )
-@pytest.mark.parametrize("x", [[1.2, -3.4, 5.7]])
-def test__cholesky_solve(l, x, rtol=3e-15, atol=3e-15):
-    l = np.asarray(l)
-    x = np.asarray(x)
-    l_mat = np.array(
-        [[l[0], 0.0, 0.0], [l[1], l[3], 0.0], [l[2], l[4], l[5]]], dtype=np.float64
-    )
-    a_mat = l_mat.dot(l_mat.T)
-    b = a_mat.dot(x)
-    assert_allclose(pypw85._cholesky_solve(l, b), x, rtol=rtol, atol=atol)
+def test__cholesky_solve(l, b, expected, rtol, atol=1e-15):
+    actual = pypw85._cholesky_solve(l, b)
+    assert_allclose(actual, expected, rtol=rtol, atol=atol)
 
 
 # @pytest.mark.parametrize("a", RADII)
