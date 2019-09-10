@@ -1,42 +1,9 @@
-import os.path
-
-import h5py
 import numpy as np
 import pytest
-import scipy.linalg
-import scipy.optimize
 
 import pypw85
 
-from numpy.testing import assert_allclose
-
-
-def setup_module():
-    np.random.seed(20180813)
-
-
-def gen_directions():
-    # Use some vertices of icosahedron
-    golden_ratio = (1.0 + np.sqrt(5.0)) / 2.0
-    norm = np.sqrt(1 + golden_ratio ** 2)
-    u_abs = 1.0 / norm
-    v_abs = golden_ratio / norm
-    # out = []
-    # for u in (-u_abs, u_abs):
-    #     for v in (-v_abs, v_abs):
-    #         out += [np.array((0., u, v), dtype=np.float64),
-    #                 np.array((v, 0., u), dtype=np.float64),
-    #                 np.array((u, v, 0.), dtype=np.float64)]
-    out = [[0.0, u_abs, v_abs], [v_abs, 0.0, u_abs], [u_abs, v_abs, 0.0]]
-    return np.array(out, dtype=np.float64)
-
-
-RADII = np.array([0.0199, 1.999, 9.999], dtype=np.float64)
-DIRECTIONS = gen_directions()
-
-
-def to_array_2d(a):
-    return np.array([[a[0], a[1], a[2]], [a[1], a[3], a[4]], [a[2], a[4], a[5]]])
+from numpy.testing import assert_allclose, assert_equal
 
 
 @pytest.mark.parametrize(
@@ -122,79 +89,76 @@ def test_spheroid(a, c, n, in_place, expected, rtol, atol=1e-15):
     assert_allclose(actual, expected, rtol=rtol, atol=atol)
 
 
-# def _test_contact_function(r, a1, c1, n1, a2, c2, n2, rtol=1e-9, atol=1e-11):
-#     # Test contact function with full output (μ² and λ)
-#     q1 = pypw85.spheroid(a1, c1, n1)
-#     q2 = pypw85.spheroid(a2, c2, n2)
-
-#     out = np.empty((2,), dtype=np.float64)
-#     pypw85.contact_function(r, q1, q2, out)
-#     μ2, λ = out
-
-#     Q1, Q2 = to_array_2d(q1), to_array_2d(q2)
-#     Q = (1 - λ) * Q1 + λ * Q2
-
-#     # Check that stationarity condition
-#     #     λQ₁⁻¹⋅[x₀(λ)-c₁] + (1-λ)Q₂⁻¹⋅[x₀(λ)-c₂] = 0
-#     # is satisfied.
-#     y = np.linalg.solve(Q, r)
-#     c1_x0 = np.dot((1 - λ) * Q1, y)
-#     c2_x0 = -np.dot(λ * Q2, y)
-#     r_actual = c1_x0 - c2_x0
-#     assert_allclose(r_actual, r, rtol, atol)
-
-#     # Check that point x0 belongs to both scaled ellipsoids
-#     assert_allclose(μ2, np.linalg.solve(Q1, c1_x0).dot(c1_x0), 2e-5, 1e-6)
-#     assert_allclose(μ2, np.linalg.solve(Q2, c2_x0).dot(c2_x0), 2e-5, 1e-6)
-
-#     # Check that full and partial outputs are consistent
-#     assert_allclose(μ2, pypw85.contact_function(r, q1, q2), rtol, atol)
-
-
-# @pytest.mark.parametrize("r", DIRECTIONS)
-# @pytest.mark.parametrize("a1", RADII)
-# @pytest.mark.parametrize("c1", RADII)
-# @pytest.mark.parametrize("n1", DIRECTIONS)
-# @pytest.mark.parametrize("a2", RADII)
-# @pytest.mark.parametrize("c2", RADII)
-# @pytest.mark.parametrize("n2", DIRECTIONS)
-# def test_contact_function_fixed_cc_distance(r, a1, c1, n1, a2, c2, n2):
-#     _test_contact_function(r, a1, c1, n1, a2, c2, n2)
+@pytest.mark.parametrize(
+    "lambda_, r12, q1, q2, expected, rtol",
+    [
+        (
+            0.1234,
+            np.array([1, -2, 3], dtype=np.float64),
+            np.array(
+                [
+                    9.9800100000000000e001,
+                    0.0000000000000000e000,
+                    0.0000000000000000e000,
+                    7.2503590263748606e001,
+                    -4.4166680527497185e001,
+                    2.8336909736251414e001,
+                ]
+            ),
+            np.array(
+                [
+                    7.5286760167683042e001,
+                    -0.0000000000000000e000,
+                    -4.6523719335366117e001,
+                    9.8010000000000007e-003,
+                    0.0000000000000000e000,
+                    2.8763040832316932e001,
+                ]
+            ),
+            9.0045499998758230e-002,
+            1e-15,
+        )
+    ],
+)
+def test_f(lambda_, r12, q1, q2, expected, rtol, atol=1e-15):
+    actual = pypw85.f(lambda_, r12, q1, q2)
+    assert np.abs(actual - expected) <= rtol * np.abs(expected) + atol
 
 
-# @pytest.mark.parametrize("r", DIRECTIONS[0, :] * RADII[:, None])
-# @pytest.mark.parametrize("a1", RADII)
-# @pytest.mark.parametrize("c1", RADII)
-# @pytest.mark.parametrize("n1", [DIRECTIONS[1]])
-# @pytest.mark.parametrize("a2", RADII)
-# @pytest.mark.parametrize("c2", RADII)
-# @pytest.mark.parametrize("n2", [DIRECTIONS[2]])
-# def test_contact_function_variable_cc_distance(r, a1, c1, n1, a2, c2, n2):
-#     _test_contact_function(r, a1, c1, n1, a2, c2, n2)
-
-
-# @pytest.mark.parametrize("r12_dir", DIRECTIONS)
-# @pytest.mark.parametrize("a1", RADII)
-# @pytest.mark.parametrize("c1", RADII)
-# @pytest.mark.parametrize("n1", DIRECTIONS)
-# @pytest.mark.parametrize("a2", RADII)
-# @pytest.mark.parametrize("c2", RADII)
-# @pytest.mark.parametrize("n2", DIRECTIONS)
-# def test_f(r12_dir, a1, c1, n1, a2, c2, n2, num_lambdas=11, rtol=1e-10, atol=1e-10):
-#     q1 = pypw85.spheroid(a1, c1, n1)
-#     q2 = pypw85.spheroid(a2, c2, n2)
-#     q1_mat = to_array_2d(q1)
-#     q2_mat = to_array_2d(q2)
-#     expected = []
-#     actual = []
-#     for lambda_i in np.linspace(0.0, 1.0, num=num_lambdas):
-#         q_mat = (1.0 - lambda_i) * q1_mat + lambda_i * q2_mat
-#         exp_ref = (
-#             lambda_i
-#             * (1.0 - lambda_i)
-#             * np.dot(np.linalg.solve(q_mat, r12_dir), r12_dir)
-#         )
-#         for r12_norm_j in RADII:
-#             expected.append(r12_norm_j ** 2 * exp_ref)
-#             actual.append(pypw85.f(lambda_i, r12_norm_j * r12_dir, q1, q2))
-#     assert_allclose(actual, expected, rtol=rtol, atol=atol)
+@pytest.mark.parametrize(
+    "r12, q1, q2, expected, rtol",
+    [
+        (
+            np.array([1, -2, 3], dtype=np.float64),
+            np.array(
+                [
+                    9.9800100000000000e001,
+                    0.0000000000000000e000,
+                    0.0000000000000000e000,
+                    7.2503590263748606e001,
+                    -4.4166680527497185e001,
+                    2.8336909736251414e001,
+                ]
+            ),
+            np.array(
+                [
+                    7.5286760167683042e001,
+                    -0.0000000000000000e000,
+                    -4.6523719335366117e001,
+                    9.8010000000000007e-003,
+                    0.0000000000000000e000,
+                    2.8763040832316932e001,
+                ]
+            ),
+            np.array([1.9630383437733556e-001, 9.7798461290800798e-001]),
+            1e-15,
+        )
+    ],
+)
+@pytest.mark.parametrize("in_place", [False, True])
+def test_contact_function(r12, q1, q2, in_place, expected, rtol, atol=1e-15):
+    out = np.empty((2,), dtype=np.float64) if in_place else None
+    actual = np.array(pypw85.contact_function(r12, q1, q2, out))
+    assert_allclose(actual, expected, rtol=rtol, atol=atol)
+    if in_place:
+        assert_equal(out, actual)
