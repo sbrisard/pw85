@@ -12,6 +12,67 @@
 
 #include <pw85.h>
 
+void test_pw85_read_dataset_double(hid_t const hid, char const *dset_name,
+                                   size_t *size, double **buffer) {
+  int ndims;
+  H5LTget_dataset_ndims(hid, dset_name, &ndims);
+  hsize_t *dim = g_new(hsize_t, ndims);
+  H5LTget_dataset_info(hid, dset_name, dim, NULL, NULL);
+  *size = 1;
+  for (size_t i = 0; i < ndims; i++) {
+    *size *= dim[i];
+  }
+  *buffer = g_new(double, *size);
+  H5LTread_dataset_double(hid, dset_name, *buffer);
+  g_free(dim);
+}
+
+/* This is a global variable that holds the parameters used for most
+ * test-cases. */
+
+struct {
+  size_t num_radii;
+  double *radii;
+  size_t num_directions;
+  double *directions;
+  size_t num_spheroids;
+  double *spheroids;
+  size_t num_lambdas;
+  double *lambdas;
+  size_t num_f;
+  double *f;
+} test_pw85_context;
+
+void test_pw85_init_context(hid_t const hid) {
+  test_pw85_read_dataset_double(hid, "/directions",
+                                &(test_pw85_context.num_directions),
+                                &(test_pw85_context.directions));
+  test_pw85_context.num_directions /= PW85_DIM;
+
+  test_pw85_read_dataset_double(hid, "/radii", &(test_pw85_context.num_radii),
+                                &(test_pw85_context.radii));
+
+  test_pw85_read_dataset_double(hid, "/spheroids",
+                                &(test_pw85_context.num_spheroids),
+                                &(test_pw85_context.spheroids));
+  test_pw85_context.num_spheroids /= PW85_SYM;
+
+  test_pw85_read_dataset_double(hid, "/lambdas",
+                                &(test_pw85_context.num_lambdas),
+                                &(test_pw85_context.lambdas));
+
+  test_pw85_read_dataset_double(hid, "/F", &test_pw85_context.num_f,
+                                &test_pw85_context.f);
+}
+
+void test_pw85_free_context() {
+  g_free(test_pw85_context.directions);
+  g_free(test_pw85_context.radii);
+  g_free(test_pw85_context.spheroids);
+  g_free(test_pw85_context.lambdas);
+  g_free(test_pw85_context.f);
+}
+
 /* #define TEST_PW85_NUM_DIRECTIONS 12 */
 
 /* double *test_pw85_gen_directions() { */
@@ -104,7 +165,7 @@ double *test_pw85_gen_spheroids(size_t num_radii, double *radii,
 
 void test_pw85_cholesky_decomp_test(double const *data) {
   double const *a = data;
-  double const *exp = data+PW85_SYM;
+  double const *exp = data + PW85_SYM;
   double const rtol = exp[PW85_SYM];
 
   double act[PW85_SYM];
@@ -417,76 +478,35 @@ void pw85_test_add_cholesky_solve_test() {
   g_test_add_data_func_full(path, data2, test_pw85_cholesky_solve_test, g_free);
 }
 
-void test_pw85_read_dataset_double(hid_t const hid, char const *dset_name,
-                                   size_t *size, double **buffer) {
-  int ndims;
-  H5LTget_dataset_ndims(hid, dset_name, &ndims);
-  hsize_t *dim = g_new(hsize_t, ndims);
-  H5LTget_dataset_info(hid, dset_name, dim, NULL, NULL);
-  *size = 1;
-  for (size_t i = 0; i < ndims; i++) {
-    *size *= dim[i];
-  }
-  *buffer = g_new(double, *size);
-  H5LTread_dataset_double(hid, dset_name, *buffer);
-  g_free(dim);
-}
-
 void test_pw85_f_neg_test() {
-  hid_t const hid = H5Fopen("../pw85_ref_data.h5", H5F_ACC_RDONLY, H5P_DEFAULT);
-
-  size_t num_directions;
-  double *directions;
-  test_pw85_read_dataset_double(hid, "/directions", &num_directions,
-                                &directions);
-  num_directions /= PW85_DIM;
-
-  size_t num_lambdas;
-  double *lambdas;
-  test_pw85_read_dataset_double(hid, "/lambdas", &num_lambdas, &lambdas);
-
-  size_t num_radii;
-  double *radii;
-  test_pw85_read_dataset_double(hid, "/radii", &num_radii, &radii);
-
-  size_t num_spheroids;
-  double *spheroids;
-  test_pw85_read_dataset_double(hid, "/spheroids", &num_spheroids, &spheroids);
-  num_spheroids /= PW85_SYM;
-
-  size_t num_expecteds;
-  double *expecteds;
-  test_pw85_read_dataset_double(hid, "/F", &num_expecteds, &expecteds);
-
-  double *exp = expecteds;
   double params[2 * PW85_SYM + PW85_DIM];
   double rtol = 1e-10;
-  for (size_t i1 = 0; i1 < num_spheroids; i1++) {
-    memcpy(params + PW85_DIM, spheroids + PW85_SYM * i1,
+  double *exp = test_pw85_context.f;
+  for (size_t i1 = 0; i1 < test_pw85_context.num_spheroids; i1++) {
+    memcpy(params + PW85_DIM, test_pw85_context.spheroids + PW85_SYM * i1,
            PW85_SYM * sizeof(double));
-    for (size_t i2 = 0; i2 < num_spheroids; i2++) {
-      memcpy(params + PW85_DIM + PW85_SYM, spheroids + PW85_SYM * i2,
+    for (size_t i2 = 0; i2 < test_pw85_context.num_spheroids; i2++) {
+      memcpy(params + PW85_DIM + PW85_SYM,
+             test_pw85_context.spheroids + PW85_SYM * i2,
              PW85_SYM * sizeof(double));
-      for (size_t i = 0; i < num_directions; i++) {
-        memcpy(params, directions + PW85_DIM * i, PW85_DIM * sizeof(double));
-        for (size_t j = 0; j < num_lambdas; j++, exp++) {
-          double const act = -pw85_f_neg(lambdas[j], params);
-	  g_assert_cmpfloat(fabs(act-*exp), <=, rtol*(*exp));
+      for (size_t i = 0; i < test_pw85_context.num_directions; i++) {
+        memcpy(params, test_pw85_context.directions + PW85_DIM * i,
+               PW85_DIM * sizeof(double));
+        for (size_t j = 0; j < test_pw85_context.num_lambdas; j++, exp++) {
+          double const act = -pw85_f_neg(test_pw85_context.lambdas[j], params);
+          g_assert_cmpfloat(fabs(act - *exp), <=, rtol * (*exp));
         }
       }
     }
   }
-
-  g_free(spheroids);
-  g_free(radii);
-  g_free(lambdas);
-  g_free(directions);
-  H5Fclose(hid);
 }
-
 
 int main(int argc, char **argv) {
   g_test_init(&argc, &argv, NULL);
+
+  hid_t const hid = H5Fopen("../pw85_ref_data.h5", H5F_ACC_RDONLY, H5P_DEFAULT);
+  test_pw85_init_context(hid);
+  H5Fclose(hid);
 
   size_t num_radii = 3;
   double radii[] = {0.0199, 1.999, 9.999};
@@ -564,5 +584,8 @@ int main(int argc, char **argv) {
 
   g_test_add_func("/pw85/f_neg", test_pw85_f_neg_test);
 
-  return g_test_run();
+  int out = g_test_run();
+
+  test_pw85_free_context();
+  return out;
 }
