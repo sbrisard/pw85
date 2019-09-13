@@ -171,6 +171,21 @@ double *test_pw85_gen_spheroids(size_t num_radii, double *radii,
   return spheroids;
 }
 
+void test_pw85_cholesky_decomp_test(double const *data) {
+  double const *a = data;
+  double const *exp = data + PW85_SYM;
+  double const rtol = exp[PW85_SYM];
+
+  double act[PW85_SYM];
+  pw85__cholesky_decomp(data, act);
+
+  double *exp_i = exp;
+  double *act_i = act;
+  for (size_t i = 0; i < PW85_SYM; ++i, ++exp_i, ++act_i) {
+    g_assert_cmpfloat(fabs(*exp_i - *act_i), <=, rtol * fabs(*act_i));
+  }
+}
+
 void pw85_test_add_cholesky_decomp_test() {
   char path_template[] =
       "/pw85/cholesky_decomp/a=[%1.3e,%1.3e,%1.3e,%1.3e,%1.3e,%1.3e]";
@@ -235,17 +250,18 @@ void pw85_test_add_cholesky_decomp_test() {
                             g_free);
 }
 
-void test_pw85_cholesky_decomp_test(double const *data) {
-  double const *a = data;
-  double const *exp = data + PW85_SYM;
-  double const rtol = exp[PW85_SYM];
+void test_pw85_cholesky_solve_test(double const *data) {
+  double const *l = data;
+  double const *b = data + PW85_SYM;
+  double const *exp = b + PW85_DIM;
+  double const rtol = exp[PW85_DIM];
 
-  double act[PW85_SYM];
-  pw85__cholesky_decomp(data, act);
+  double const act[PW85_DIM];
+  pw85__cholesky_solve(l, b, act);
 
   double *exp_i = exp;
   double *act_i = act;
-  for (size_t i = 0; i < PW85_SYM; ++i, ++exp_i, ++act_i) {
+  for (size_t i = 0; i < PW85_DIM; ++i, ++exp_i, ++act_i) {
     g_assert_cmpfloat(fabs(*exp_i - *act_i), <=, rtol * fabs(*act_i));
   }
 }
@@ -299,22 +315,6 @@ void pw85_test_add_cholesky_solve_test() {
   sprintf(path, path_template, data2[0], data2[1], data2[2], data2[3], data2[4],
           data2[5], data2[6], data2[7], data2[8]);
   g_test_add_data_func_full(path, data2, test_pw85_cholesky_solve_test, g_free);
-}
-
-void test_pw85_cholesky_solve_test(double const *data) {
-  double const *l = data;
-  double const *b = data + PW85_SYM;
-  double const *exp = b + PW85_DIM;
-  double const rtol = exp[PW85_DIM];
-
-  double const act[PW85_DIM];
-  pw85__cholesky_solve(l, b, act);
-
-  double *exp_i = exp;
-  double *act_i = act;
-  for (size_t i = 0; i < PW85_DIM; ++i, ++exp_i, ++act_i) {
-    g_assert_cmpfloat(fabs(*exp_i - *act_i), <=, rtol * fabs(*act_i));
-  }
 }
 
 void test_pw85_spheroid_test() {
