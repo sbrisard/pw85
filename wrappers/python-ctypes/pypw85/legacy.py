@@ -1,10 +1,36 @@
-# def _det_sym(a):
-#     """Return ``det(A)``.
+import configparser
+import ctypes
+import pathlib
 
-#     ``A`` is a symmetric matrix represented by the array `a`.
+from ctypes import c_double
 
-#     """
-#     return _ll._det_sym(a.ctypes.data_as(_ll.c_double_p))
+import numpy as np
+
+c_double_p = ctypes.POINTER(c_double)
+
+
+def __load_library():
+    path = pathlib.Path.home() / "pw85.ini"
+    if path.is_file():
+        cfg = configparser.ConfigParser()
+        cfg.read(str(path))
+        return ctypes.cdll.LoadLibrary(cfg["pw85"]["legacy"])
+    else:
+        raise RuntimeError("Cannot file configuration file: {}".format(path))
+
+cpw85_legacy = __load_library()
+
+cpw85_legacy.pw85_legacy__det_sym.argtypes = [c_double_p]
+cpw85_legacy.pw85_legacy__det_sym.restype = c_double
+
+
+def _det_sym(a):
+    """Return ``det(A)``.
+
+    ``A`` is a symmetric matrix represented by the array ``a``.
+
+    """
+    return cpw85_legacy.pw85_legacy__det_sym(a.ctypes.data_as(c_double_p))
 
 
 # def _xT_adjA_x(x, a):
