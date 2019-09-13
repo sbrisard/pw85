@@ -26,6 +26,8 @@ __clib.pw85_legacy__det_sym.restype = c_double
 __clib.pw85_legacy__xT_adjA_x.argtypes = [c_double_p, c_double_p]
 __clib.pw85_legacy__xT_adjA_x.restype = c_double
 
+__clib.pw85_legacy__rT_adjQ_r_as_poly.argtypes=5*[c_double_p]
+
 
 def _det_sym(a):
     """Return ``det(A)``.
@@ -44,33 +46,33 @@ def _xT_adjA_x(x, a):
 
     """
     return __clib.pw85_legacy__xT_adjA_x(x.ctypes.data_as(c_double_p),
-                                               a.ctypes.data_as(c_double_p))
+                                         a.ctypes.data_as(c_double_p))
 
 
-# def _rT_adjQ_r_as_poly(r, q1, q2, q3=None, a=None):
-#     """Compute the coefficients of the polynomial ``λ ↦ rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r``.
+def _rT_adjQ_r_as_poly(r, q1, q2, q3=None, a=None):
+    """Compute the coefficients of the polynomial ``λ ↦ rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r``.
 
-#     The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are
-#     specified as arrays `q1` and `q2`. If specified, the array `q3` must hold
-#     the difference ``2Q₁-Q₂``::
+    The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are
+    specified as arrays `q1` and `q2`. If specified, the array `q3` must hold
+    the difference ``2Q₁-Q₂``::
 
-#       q3[i] = 2*q1[i] - q2[i],
+      q3[i] = 2*q1[i] - q2[i],
 
-#     for ``i = 0, …, 5``. The returned polynomial has degree 2::
+    for ``i = 0, …, 5``. The returned polynomial has degree 2::
 
-#       rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².
+      rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².
 
-#     The coefficients ``aᵢ`` are stored in `a` in *increasing* order:
-#     ``a[i] = aᵢ``.
+    The coefficients ``aᵢ`` are stored in `a` in *increasing* order:
+    ``a[i] = aᵢ``.
 
-#     """
-#     if q3 is None:
-#         q3 = 2*q1-q2
-#     if a is None:
-#         a = np.empty((3,), dtype=np.float64, order='C')
-#     args = [arg.ctypes.data_as(_ll.c_double_p) for arg in (r, q1, q2, q3, a)]
-#     _ll._rT_adjQ_r_as_poly(*args)
-#     return a
+    """
+    if q3 is None:
+        q3 = 2*q1-q2
+    if a is None:
+        a = np.empty((3,), dtype=np.float64, order='C')
+    args = [arg.ctypes.data_as(__clib.c_double_p) for arg in (r, q1, q2, q3, a)]
+    __clib.pw85_legacy__rT_adjQ_r_as_poly(*args)
+    return a
 
 
 # def _detQ_as_poly(q1, q2, q3=None, q4=None, b=None):
