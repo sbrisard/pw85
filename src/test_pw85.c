@@ -45,21 +45,21 @@ struct {
 
 void test_pw85_init_context(hid_t const hid) {
   test_pw85_read_dataset_double(hid, "/directions",
-                                &(test_pw85_context.num_directions),
-                                &(test_pw85_context.directions));
+                                &test_pw85_context.num_directions,
+                                &test_pw85_context.directions);
   test_pw85_context.num_directions /= PW85_DIM;
 
-  test_pw85_read_dataset_double(hid, "/radii", &(test_pw85_context.num_radii),
-                                &(test_pw85_context.radii));
+  test_pw85_read_dataset_double(hid, "/radii", &test_pw85_context.num_radii,
+                                &test_pw85_context.radii);
 
   test_pw85_read_dataset_double(hid, "/spheroids",
-                                &(test_pw85_context.num_spheroids),
-                                &(test_pw85_context.spheroids));
+                                &test_pw85_context.num_spheroids,
+                                &test_pw85_context.spheroids);
   test_pw85_context.num_spheroids /= PW85_SYM;
 
   test_pw85_read_dataset_double(hid, "/lambdas",
-                                &(test_pw85_context.num_lambdas),
-                                &(test_pw85_context.lambdas));
+                                &test_pw85_context.num_lambdas,
+                                &test_pw85_context.lambdas);
 
   test_pw85_read_dataset_double(hid, "/F", &test_pw85_context.num_f,
                                 &test_pw85_context.f);
@@ -194,7 +194,7 @@ void test_pw85_cholesky_solve_test(double const *data) {
   }
 }
 
-void test_pw85_spheroid_test(double const *data) {
+void test_pw85_spheroid_test(size_t const *data) {
   /*
    * Relative and absolute tolerance on the coefficients of the matrix
    * q to be computed and tested.
@@ -204,12 +204,12 @@ void test_pw85_spheroid_test(double const *data) {
 
   double exp, act, tol;
 
-  double a = data[0];
-  double c = data[1];
+  double a = test_pw85_context.radii[data[0]];
+  double c = test_pw85_context.radii[data[1]];
   double a2 = a * a;
   double c2 = c * c;
 
-  double const *n = data + 2;
+  double const *n = test_pw85_context.directions + PW85_DIM * data[2];
   double abs_n[PW85_DIM];
   for (size_t i = 0; i < PW85_DIM; i++) {
     abs_n[i] = fabs(n[i]);
@@ -508,6 +508,21 @@ int main(int argc, char **argv) {
   test_pw85_init_context(hid);
   H5Fclose(hid);
 
+  for (size_t i = 0; i < test_pw85_context.num_radii; i++) {
+    for (size_t j = 0; j < test_pw85_context.num_radii; j++) {
+      for (size_t k = 0; k < test_pw85_context.num_directions; k++) {
+        size_t *data = g_new(size_t, 3);
+        data[0] = i;
+        data[1] = j;
+        data[2] = k;
+        char path[255];
+        sprintf(path, "/pw85/spheroid/a=radii[%d],c=radii[%d],n=directions[%d]",
+                (int)i, (int)j, (int)k);
+        g_test_add_data_func_full(path, data, test_pw85_spheroid_test, g_free);
+      }
+    }
+  }
+
   size_t num_radii = 3;
   double radii[] = {0.0199, 1.999, 9.999};
 
@@ -524,28 +539,6 @@ int main(int argc, char **argv) {
   size_t num_spheroids = num_radii * num_radii * num_directions;
   double *spheroids =
       test_pw85_gen_spheroids(num_radii, radii, num_directions, directions);
-
-  for (size_t i = 0; i < num_radii; i++) {
-    double a = radii[i];
-    for (size_t j = 0; j < num_radii; j++) {
-      double c = radii[j];
-      double *n = directions;
-      for (size_t k = 0; k < num_directions; k++) {
-        double *data = g_new(double, 2 + PW85_SYM);
-        data[0] = a;
-        data[1] = c;
-        data[2] = n[0];
-        data[3] = n[1];
-        data[4] = n[2];
-        char path[255];
-        sprintf(path, "/pw85/spheroid/a=%g,c=%g,n=[%g,%g,%g]", a, c, n[0], n[1],
-                n[2]);
-        g_test_add_data_func_full(path, data, test_pw85_spheroid_test, g_free);
-
-        n += PW85_DIM;
-      }
-    }
-  }
 
   double *r12 = radius_vectors;
   for (size_t i = 0; i < num_radius_vectors; i++) {
