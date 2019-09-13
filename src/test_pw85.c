@@ -41,6 +41,8 @@ struct {
   double *lambdas;
   size_t num_f;
   double *f;
+  size_t num_distances;
+  double *distances;
 } test_pw85_context;
 
 void test_pw85_init_context(hid_t const hid) {
@@ -57,12 +59,17 @@ void test_pw85_init_context(hid_t const hid) {
                                 &test_pw85_context.spheroids);
   test_pw85_context.num_spheroids /= PW85_SYM;
 
-  test_pw85_read_dataset_double(hid, "/lambdas",
-                                &test_pw85_context.num_lambdas,
+  test_pw85_read_dataset_double(hid, "/lambdas", &test_pw85_context.num_lambdas,
                                 &test_pw85_context.lambdas);
 
   test_pw85_read_dataset_double(hid, "/F", &test_pw85_context.num_f,
                                 &test_pw85_context.f);
+
+  test_pw85_context.num_distances = 3;
+  test_pw85_context.distances = g_new(double, test_pw85_context.num_distances);
+  test_pw85_context.distances[0] = 0.15;
+  test_pw85_context.distances[1] = 1.1;
+  test_pw85_context.distances[2] = 11.;
 }
 
 void test_pw85_free_context() {
@@ -71,6 +78,7 @@ void test_pw85_free_context() {
   g_free(test_pw85_context.spheroids);
   g_free(test_pw85_context.lambdas);
   g_free(test_pw85_context.f);
+  g_free(test_pw85_context.distances);
 }
 
 /* #define TEST_PW85_NUM_DIRECTIONS 12 */
@@ -272,13 +280,28 @@ void test_pw85_spheroid_test(size_t const *data) {
   g_assert_cmpfloat(fabs(act - exp), <=, tol);
 }
 
-void test_pw85_contact_function_test(double const *data) {
+void test_pw85_contact_function_test() {
+  for (size_t i = 0; i < test_pw85_context.num_distances; i++) {
+    double const r = test_pw85_context.distances[i];
+    for (size_t j = 0; j < test_pw85_context.num_directions; j++) {
+      double const *n = test_pw85_context.directions + PW85_DIM * j;
+      double const r12[] = {r * n[0], r * n[1], r * n[2]};
+      for (size_t k1 = 0; k1 < test_pw85_context.num_spheroids; k1++) {
+        double const *q1 = test_pw85_context.spheroids + PW85_SYM * k1;
+        for (size_t k2 = 0; k2 < test_pw85_context.num_spheroids; k2++) {
+          double const *q2 = test_pw85_context.spheroids + PW85_SYM * k2;
+          test_pw85_contact_function_elementary_test(r12, q1, q2);
+        }
+      }
+    }
+  }
+}
+
+void test_pw85_contact_function_elementary_test(double r12[PW85_DIM],
+                                                double q1[PW85_SYM],
+                                                double q2[PW85_SYM]) {
   double atol = 1e-15;
   double rtol = 1e-10;
-
-  double const *r12 = data;
-  double const *q1 = data + PW85_DIM;
-  double const *q2 = data + PW85_DIM + PW85_SYM;
 
   double out[2];
   pw85_contact_function(r12, q1, q2, out);
@@ -523,59 +546,11 @@ int main(int argc, char **argv) {
     }
   }
 
-  size_t num_radii = 3;
-  double radii[] = {0.0199, 1.999, 9.999};
-
-  size_t num_distances = 3;
-  double distances[] = {0.15, 1.1, 11.};
-
-  size_t num_directions = TEST_PW85_NUM_DIRECTIONS;
-  double *directions = test_pw85_gen_directions();
-
-  size_t num_radius_vectors = num_distances * num_directions;
-  double *radius_vectors = test_pw85_gen_radius_vectors(
-      num_distances, distances, num_directions, directions);
-
-  size_t num_spheroids = num_radii * num_radii * num_directions;
-  double *spheroids =
-      test_pw85_gen_spheroids(num_radii, radii, num_directions, directions);
-
-  double *r12 = radius_vectors;
-  for (size_t i = 0; i < num_radius_vectors; i++) {
-    double *q1 = spheroids;
-    for (size_t j1 = 0; j1 < num_spheroids; j1++) {
-      double *q2 = spheroids;
-      for (size_t j2 = 0; j2 < num_spheroids; j2++) {
-        double *data = g_new(double, PW85_DIM + 2 * PW85_SYM);
-        for (size_t k = 0; k < PW85_DIM; k++) {
-          data[k] = r12[k];
-        }
-        for (size_t k = 0; k < PW85_SYM; k++) {
-          data[PW85_DIM + k] = q1[k];
-          data[PW85_DIM + PW85_SYM + k] = q2[k];
-        }
-
-        char path[255];
-        sprintf(path, "/pw85/contact_function(r12[%d],q1[%d],q2[%d])", (int)i,
-                (int)j1, (int)j2);
-        g_test_add_data_func_full(path, data, test_pw85_contact_function_test,
-                                  g_free);
-
-        q2 += PW85_SYM;
-      }
-      q1 += PW85_SYM;
-    }
-    r12 += PW85_DIM;
-  }
-
-  g_free(directions);
-  g_free(radius_vectors);
-  g_free(spheroids);
-
   pw85_test_add_cholesky_decomp_test();
   pw85_test_add_cholesky_solve_test();
 
   g_test_add_func("/pw85/f_neg", test_pw85_f_neg_test);
+  g_test_add_func("/pw85/contact_function", test_pw85_contact_function_test);
 
   int out = g_test_run();
 
