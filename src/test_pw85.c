@@ -202,7 +202,21 @@ void test_pw85_cholesky_solve_test(double const *data) {
   }
 }
 
-void test_pw85_spheroid_test(size_t const *data) {
+void test_pw85_spheroid_test() {
+  for (size_t i = 0; i < test_pw85_context.num_radii; i++) {
+    double const a = test_pw85_context.radii[i];
+    for (size_t j = 0; j < test_pw85_context.num_radii; j++) {
+      double const c = test_pw85_context.radii[j];
+      for (size_t k = 0; k < test_pw85_context.num_directions; k++) {
+        double *const n = test_pw85_context.directions + PW85_DIM * k;
+        test_pw85_spheroid_elementary_test(a, c, n);
+      }
+    }
+  }
+}
+
+void test_pw85_spheroid_elementary_test(double a, double c,
+                                        double const n[PW85_DIM]) {
   /*
    * Relative and absolute tolerance on the coefficients of the matrix
    * q to be computed and tested.
@@ -212,12 +226,9 @@ void test_pw85_spheroid_test(size_t const *data) {
 
   double exp, act, tol;
 
-  double a = test_pw85_context.radii[data[0]];
-  double c = test_pw85_context.radii[data[1]];
   double a2 = a * a;
   double c2 = c * c;
 
-  double const *n = test_pw85_context.directions + PW85_DIM * data[2];
   double abs_n[PW85_DIM];
   for (size_t i = 0; i < PW85_DIM; i++) {
     abs_n[i] = fabs(n[i]);
@@ -531,24 +542,10 @@ int main(int argc, char **argv) {
   test_pw85_init_context(hid);
   H5Fclose(hid);
 
-  for (size_t i = 0; i < test_pw85_context.num_radii; i++) {
-    for (size_t j = 0; j < test_pw85_context.num_radii; j++) {
-      for (size_t k = 0; k < test_pw85_context.num_directions; k++) {
-        size_t *data = g_new(size_t, 3);
-        data[0] = i;
-        data[1] = j;
-        data[2] = k;
-        char path[255];
-        sprintf(path, "/pw85/spheroid/a=radii[%d],c=radii[%d],n=directions[%d]",
-                (int)i, (int)j, (int)k);
-        g_test_add_data_func_full(path, data, test_pw85_spheroid_test, g_free);
-      }
-    }
-  }
-
   pw85_test_add_cholesky_decomp_test();
   pw85_test_add_cholesky_solve_test();
 
+  g_test_add_func("/pw85/spheroid", test_pw85_spheroid_test);
   g_test_add_func("/pw85/f_neg", test_pw85_f_neg_test);
   g_test_add_func("/pw85/contact_function", test_pw85_contact_function_test);
 
