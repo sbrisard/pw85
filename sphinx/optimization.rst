@@ -47,7 +47,7 @@ Q₂-Q₁``, so that::
 
 .. _optimization-eq-3:
 
-Combining Eqs. :ref:`(1) <optimization-eq-1>` and :ref:`(2) <optimization-eq>`
+Combining Eqs. :ref:`(1) <optimization-eq-1>` and :ref:`(2) <optimization-eq-2>`
 and recalling that ``Q⋅s = r`` then delivers the following expressions::
 
   (3a)    μ₁² = (1-λ)²rᵀ⋅s - λ(1-λ)²sᵀ⋅u,
@@ -72,5 +72,5 @@ residual. Using results that are presented in section
 
   (5)    g’(λ) = 2rᵀ⋅s + 2(1-2λ)sᵀ⋅u - 2λ(1-λ)uᵀ⋅v.
 
-Eqs. :ref:`(4) <optimization-eq-4>` and :ref:`(5) <optimization-eq-5` are then
+Eqs. :ref:`(4) <optimization-eq-4>` and :ref:`(5) <optimization-eq-5>` are then
 used for the final, refinement step of determination of ``λ``.
