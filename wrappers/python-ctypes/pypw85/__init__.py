@@ -49,28 +49,28 @@ from ctypes import c_double
 
 import numpy as np
 
-__version__ = '${version}'
-__author__ = '${author}'
+__version__ = "${version}"
+__author__ = "${author}"
 
 c_double_p = ctypes.POINTER(c_double)
 
 
 def __load_library():
-    path = pathlib.Path.home()/'pw85.ini'
+    path = pathlib.Path.home() / "pw85.ini"
     if path.is_file():
         cfg = configparser.ConfigParser()
         cfg.read(str(path))
-        return ctypes.cdll.LoadLibrary(cfg['pw85']['FullPath'])
+        return ctypes.cdll.LoadLibrary(cfg["pw85"]["FullPath"])
     else:
-        raise RuntimeError('Cannot file configuration file: {}'.format(path))
+        raise RuntimeError("Cannot file configuration file: {}".format(path))
 
 
 cpw85 = __load_library()
 
-cpw85.pw85__cholesky_decomp.argtypes = 2*[c_double_p]
+cpw85.pw85__cholesky_decomp.argtypes = 2 * [c_double_p]
 cpw85.pw85__cholesky_decomp.restype = None
 
-cpw85.pw85__cholesky_solve.argtypes = 3*[c_double_p]
+cpw85.pw85__cholesky_solve.argtypes = 3 * [c_double_p]
 cpw85.pw85__cholesky_solve.restype = None
 
 cpw85.pw85_spheroid.argtypes = [c_double, c_double, c_double_p, c_double_p]
@@ -79,10 +79,10 @@ cpw85.pw85_spheroid.restype = None
 cpw85.pw85_f_neg.argtypes = [c_double, c_double_p]
 cpw85.pw85_f_neg.restype = c_double
 
-cpw85.pw85__residual.argtypes = [c_double]+4*[c_double_p]
+cpw85.pw85__residual.argtypes = [c_double] + 4 * [c_double_p]
 cpw85.pw85__residual.restype = None
 
-cpw85.pw85_contact_function.argtypes = 4*[c_double_p]
+cpw85.pw85_contact_function.argtypes = 4 * [c_double_p]
 cpw85.pw85_contact_function.restype = ctypes.c_int
 
 
@@ -98,9 +98,10 @@ def _cholesky_decomp(a, l=None):
 
     """
     if l is None:
-        l = np.empty((6,), dtype=np.float64, order='C')
-    cpw85.pw85__cholesky_decomp(a.ctypes.data_as(c_double_p),
-                                    l.ctypes.data_as(c_double_p))
+        l = np.empty((6,), dtype=np.float64, order="C")
+    cpw85.pw85__cholesky_decomp(
+        a.ctypes.data_as(c_double_p), l.ctypes.data_as(c_double_p)
+    )
     return l
 
 
@@ -115,10 +116,12 @@ def _cholesky_solve(l, b, x=None):
 
     """
     if x is None:
-        x = np.empty((3,), dtype=np.float64, order='C')
-    cpw85.pw85__cholesky_solve(l.ctypes.data_as(c_double_p),
-                                   b.ctypes.data_as(c_double_p),
-                                   x.ctypes.data_as(c_double_p))
+        x = np.empty((3,), dtype=np.float64, order="C")
+    cpw85.pw85__cholesky_solve(
+        l.ctypes.data_as(c_double_p),
+        b.ctypes.data_as(c_double_p),
+        x.ctypes.data_as(c_double_p),
+    )
     return x
 
 
@@ -134,9 +137,10 @@ def spheroid(a, c, n, q=None):
 
     """
     if q is None:
-        q = np.empty((6,), dtype=np.float64, order='C')
-    cpw85.pw85_spheroid(a, c, n.ctypes.data_as(c_double_p),
-                            q.ctypes.data_as(c_double_p))
+        q = np.empty((6,), dtype=np.float64, order="C")
+    cpw85.pw85_spheroid(
+        a, c, n.ctypes.data_as(c_double_p), q.ctypes.data_as(c_double_p)
+    )
     return q
 
 
@@ -202,8 +206,10 @@ def contact_function(r12, q1, q2, out=None):
     if out is None:
         out = np.empty((2,), dtype=np.float64)
 
-    cpw85.pw85_contact_function(r12.ctypes.data_as(c_double_p),
-                                    q1.ctypes.data_as(c_double_p),
-                                    q2.ctypes.data_as(c_double_p),
-                                    out.ctypes.data_as(c_double_p))
+    cpw85.pw85_contact_function(
+        r12.ctypes.data_as(c_double_p),
+        q1.ctypes.data_as(c_double_p),
+        q2.ctypes.data_as(c_double_p),
+        out.ctypes.data_as(c_double_p),
+    )
     return tuple(out[:2])
