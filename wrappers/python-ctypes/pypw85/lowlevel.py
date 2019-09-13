@@ -42,8 +42,6 @@ init_signature(cpw85.pw85_contact_function, 4*[c_double_p], c_double)
 # _cholesky_decomp = cpw85.pw85__cholesky_decomp
 # _cholesky_solve = cpw85.pw85__cholesky_solve
 
-# init_signature(_det_sym, [c_double_p], c_double)
-# init_signature(_xT_adjA_x, [c_double_p, c_double_p], c_double)
 # init_signature(_detQ_as_poly, 5*[c_double_p])
 # init_signature(_rT_adjQ_r_as_poly, 5*[c_double_p])
 

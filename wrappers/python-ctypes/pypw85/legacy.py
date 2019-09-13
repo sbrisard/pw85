@@ -23,6 +23,9 @@ cpw85_legacy = __load_library()
 cpw85_legacy.pw85_legacy__det_sym.argtypes = [c_double_p]
 cpw85_legacy.pw85_legacy__det_sym.restype = c_double
 
+cpw85_legacy.pw85_legacy__xT_adjA_x.argtypes = [c_double_p, c_double_p]
+cpw85_legacy.pw85_legacy__xT_adjA_x.restype = c_double
+
 
 def _det_sym(a):
     """Return ``det(A)``.
@@ -33,15 +36,15 @@ def _det_sym(a):
     return cpw85_legacy.pw85_legacy__det_sym(a.ctypes.data_as(c_double_p))
 
 
-# def _xT_adjA_x(x, a):
-#     """Return ``xᵀ⋅adj(A)⋅x``.
+def _xT_adjA_x(x, a):
+    """Return ``xᵀ⋅adj(A)⋅x``.
 
-#     ``x`` is a vector, represented by the array `x`. ``A`` is a
-#     symmetric matrix, represented by the array `a`.
+    ``x`` is a vector, represented by the array ``x``. ``A`` is a
+    symmetric matrix, represented by the array ``a``.
 
-#     """
-#     return _ll._xT_adjA_x(x.ctypes.data_as(_ll.c_double_p),
-#                           a.ctypes.data_as(_ll.c_double_p))
+    """
+    return cpw85_legacy.pw85_legacy__xT_adjA_x(x.ctypes.data_as(c_double_p),
+                                               a.ctypes.data_as(c_double_p))
 
 
 # def _rT_adjQ_r_as_poly(r, q1, q2, q3=None, a=None):

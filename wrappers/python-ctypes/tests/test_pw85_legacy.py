@@ -46,6 +46,32 @@ def test__det_sym(a, rtol=1e-12, atol=1e-14):
     actual = pypw85.legacy._det_sym(a)
     assert_allclose(actual, expected, rtol, atol)
 
+def minor(A, i, j):
+    assert A.ndim >= 2
+    assert A.shape[-2] == A.shape[-1]
+    n = A.shape[-1]
+    rows = list(range(n))
+    rows.remove(i)
+    cols = list(range(n))
+    cols.remove(j)
+    rows, cols = np.meshgrid(rows, cols, indexing="ij")
+    return A[..., rows, cols]
+
+def adjugate(A):
+    adjA = np.empty_like(A)
+    for i in range(3):
+        for j in range(3):
+            adjA[..., i, j] = (-1) ** (i + j) * np.linalg.det(minor(A, i, j))
+    return adjA
+
+
+@pytest.mark.parametrize("x", np.random.rand(5, 3))
+@pytest.mark.parametrize("a", np.random.rand(5, 6))
+def test__xT_adjA_x(x, a, rtol=1e-12, atol=1e-14):
+    actual = pypw85.legacy._xT_adjA_x(x, a)
+    expected = np.dot(x, np.dot(adjugate(to_array_2d(a)), x))
+    assert_allclose(actual, expected, rtol, atol)
+
 
 # @pytest.mark.parametrize("a1", RADII)
 # @pytest.mark.parametrize("c1", RADII)
@@ -67,32 +93,8 @@ def test__det_sym(a, rtol=1e-12, atol=1e-14):
 #     assert_allclose(actual, expected, rtol, atol)
 
 
-# def minor(A, i, j):
-#     assert A.ndim >= 2
-#     assert A.shape[-2] == A.shape[-1]
-#     n = A.shape[-1]
-#     rows = list(range(n))
-#     rows.remove(i)
-#     cols = list(range(n))
-#     cols.remove(j)
-#     rows, cols = np.meshgrid(rows, cols, indexing="ij")
-#     return A[..., rows, cols]
 
 
-# def adjugate(A):
-#     adjA = np.empty_like(A)
-#     for i in range(3):
-#         for j in range(3):
-#             adjA[..., i, j] = (-1) ** (i + j) * np.linalg.det(minor(A, i, j))
-#     return adjA
-
-
-# @pytest.mark.parametrize("x", np.random.rand(5, 3))
-# @pytest.mark.parametrize("a", np.random.rand(5, 6))
-# def test__xT_adjA_x(x, a, rtol=1e-12, atol=1e-14):
-#     actual = pypw85._xT_adjA_x(x, a)
-#     expected = np.dot(x, np.dot(adjugate(to_array_2d(a)), x))
-#     assert_allclose(actual, expected, rtol, atol)
 
 
 # def _test__rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2, rtol=1e-10, atol=1e-8):
