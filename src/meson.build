@@ -35,3 +35,10 @@ pw85_legacy_lib = library('pw85_legacy',
 			  link_with: pw85_lib,
 			  dependencies: [math, gsl],
 			  install: true)
+
+hdf5_hl = dependency('hdf5_hl')
+executable('hdf5_example',
+	   'hdf5_example.c',
+	   link_with: pw85_lib,
+	   dependencies: [glib, hdf5_hl],
+	   install: false)

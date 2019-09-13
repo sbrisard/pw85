@@ -66,6 +66,12 @@ int main() {
 
   double *exp = expecteds;
   double params[2 * PW85_SYM + PW85_DIM];
+
+  size_t num_bins = 16;
+  size_t hist[num_bins];
+  for (size_t i = 0; i < num_bins; i++) {
+    hist[i] = 0;
+  }
   for (size_t i1 = 0; i1 < num_spheroids; i1++) {
     memcpy(params + PW85_DIM, spheroids + PW85_SYM * i1,
            PW85_SYM * sizeof(double));
@@ -75,11 +81,28 @@ int main() {
       for (size_t i = 0; i < num_directions; i++) {
         memcpy(params, directions + PW85_DIM * i, PW85_DIM * sizeof(double));
         for (size_t j = 0; j < num_lambdas; j++, exp++) {
-          double const act = pw85_f_neg(lambdas[j], params);
-          printf("%g, %g\n", act, *exp);
+          double const act = -pw85_f_neg(lambdas[j], params);
+          double const err = fabs((act - *exp) / (*exp));
+          int prec;
+          if (err == 0.0) {
+            prec = num_bins - 1;
+          } else {
+            prec = (int)(floor(-log10(err)));
+            if (prec <= 0) {
+              prec = 0;
+            }
+            if (prec >= num_bins) {
+              prec = num_bins - 1;
+            }
+          }
+          ++hist[prec];
         }
       }
     }
+  }
+  for (size_t i = 0; i < num_bins; i++) {
+    printf("hist[%d] = %g \n", (int)i,
+           100. * ((double)hist[i]) / ((double)num_expecteds));
   }
 
   g_free(spheroids);
