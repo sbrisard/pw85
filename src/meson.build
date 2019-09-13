@@ -22,9 +22,13 @@ pw85_lib = library('pw85', ['pw85.c'],
 		   dependencies: [math, gsl],
 		   install: true)
 
+hdf5_hl = dependency('hdf5_hl')
+
 pw85_test = executable('test_pw85', 'test_pw85.c',
 		       link_with: pw85_lib,
-		       dependencies: [glib, gsl])
+		       dependencies: [glib, gsl, hdf5_hl])
+
+
 
 test('GTest tests of PW85', pw85_test)
 
@@ -36,7 +40,7 @@ pw85_legacy_lib = library('pw85_legacy',
 			  dependencies: [math, gsl],
 			  install: true)
 
-hdf5_hl = dependency('hdf5_hl')
+
 executable('hdf5_example',
 	   'hdf5_example.c',
 	   link_with: pw85_lib,
