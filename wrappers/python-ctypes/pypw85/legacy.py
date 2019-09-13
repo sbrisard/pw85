@@ -18,13 +18,13 @@ def __load_library():
     else:
         raise RuntimeError("Cannot file configuration file: {}".format(path))
 
-cpw85_legacy = __load_library()
+__clib = __load_library()
 
-cpw85_legacy.pw85_legacy__det_sym.argtypes = [c_double_p]
-cpw85_legacy.pw85_legacy__det_sym.restype = c_double
+__clib.pw85_legacy__det_sym.argtypes = [c_double_p]
+__clib.pw85_legacy__det_sym.restype = c_double
 
-cpw85_legacy.pw85_legacy__xT_adjA_x.argtypes = [c_double_p, c_double_p]
-cpw85_legacy.pw85_legacy__xT_adjA_x.restype = c_double
+__clib.pw85_legacy__xT_adjA_x.argtypes = [c_double_p, c_double_p]
+__clib.pw85_legacy__xT_adjA_x.restype = c_double
 
 
 def _det_sym(a):
@@ -33,7 +33,7 @@ def _det_sym(a):
     ``A`` is a symmetric matrix represented by the array ``a``.
 
     """
-    return cpw85_legacy.pw85_legacy__det_sym(a.ctypes.data_as(c_double_p))
+    return __clib.pw85_legacy__det_sym(a.ctypes.data_as(c_double_p))
 
 
 def _xT_adjA_x(x, a):
@@ -43,7 +43,7 @@ def _xT_adjA_x(x, a):
     symmetric matrix, represented by the array ``a``.
 
     """
-    return cpw85_legacy.pw85_legacy__xT_adjA_x(x.ctypes.data_as(c_double_p),
+    return __clib.pw85_legacy__xT_adjA_x(x.ctypes.data_as(c_double_p),
                                                a.ctypes.data_as(c_double_p))
 
 
