@@ -241,9 +241,8 @@ and use the following link directive::
 
   Return the product ``xᵀ⋅adj(A)⋅x``.
 
-  The column vector ``x`` is specified through the ``double[3]`` array
-  ``x``.  The symmetric matrix ``A`` is specified trough the
-  ``double[6]`` array ``a``.
+  The column vector ``x`` is specified as a ``double[3]`` array. The symmetric
+  matrix ``A`` is specified trough the ``double[6]`` array ``a``.
 
   ``adj(A)`` denotes the adjugate matrix of ``A`` (transpose of its
   cofactor matrix), see e.g `Wikipedia
