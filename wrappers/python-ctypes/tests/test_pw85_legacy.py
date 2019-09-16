@@ -11,28 +11,28 @@ import pypw85.legacy
 from numpy.testing import assert_allclose
 
 
-# def setup_module():
-#     np.random.seed(20180813)
+def setup_module():
+    np.random.seed(20180813)
 
 
-# def gen_directions():
-#     # Use some vertices of icosahedron
-#     golden_ratio = (1.0 + np.sqrt(5.0)) / 2.0
-#     norm = np.sqrt(1 + golden_ratio ** 2)
-#     u_abs = 1.0 / norm
-#     v_abs = golden_ratio / norm
-#     # out = []
-#     # for u in (-u_abs, u_abs):
-#     #     for v in (-v_abs, v_abs):
-#     #         out += [np.array((0., u, v), dtype=np.float64),
-#     #                 np.array((v, 0., u), dtype=np.float64),
-#     #                 np.array((u, v, 0.), dtype=np.float64)]
-#     out = [[0.0, u_abs, v_abs], [v_abs, 0.0, u_abs], [u_abs, v_abs, 0.0]]
-#     return np.array(out, dtype=np.float64)
+def gen_directions():
+    # Use some vertices of icosahedron
+    golden_ratio = (1.0 + np.sqrt(5.0)) / 2.0
+    norm = np.sqrt(1 + golden_ratio ** 2)
+    u_abs = 1.0 / norm
+    v_abs = golden_ratio / norm
+    # out = []
+    # for u in (-u_abs, u_abs):
+    #     for v in (-v_abs, v_abs):
+    #         out += [np.array((0., u, v), dtype=np.float64),
+    #                 np.array((v, 0., u), dtype=np.float64),
+    #                 np.array((u, v, 0.), dtype=np.float64)]
+    out = [[0.0, u_abs, v_abs], [v_abs, 0.0, u_abs], [u_abs, v_abs, 0.0]]
+    return np.array(out, dtype=np.float64)
 
 
-# RADII = np.array([0.0199, 1.999, 9.999], dtype=np.float64)
-# DIRECTIONS = gen_directions()
+RADII = np.array([0.0199, 1.999, 9.999], dtype=np.float64)
+DIRECTIONS = gen_directions()
 
 
 def to_array_2d(a):
@@ -73,24 +73,24 @@ def test__xT_adjA_x(x, a, rtol=1e-12, atol=1e-14):
     assert_allclose(actual, expected, rtol, atol)
 
 
-# @pytest.mark.parametrize("a1", RADII)
-# @pytest.mark.parametrize("c1", RADII)
-# @pytest.mark.parametrize("n1", DIRECTIONS)
-# @pytest.mark.parametrize("a2", RADII)
-# @pytest.mark.parametrize("c2", RADII)
-# @pytest.mark.parametrize("n2", DIRECTIONS)
-# def test__detQ_as_poly(a1, c1, n1, a2, c2, n2, rtol=1e-10, atol=1e-8):
-#     q1 = pypw85.spheroid(a1, c1, n1)
-#     Q1 = to_array_2d(q1)
-#     q2 = pypw85.spheroid(a2, c2, n2)
-#     Q2 = to_array_2d(q2)
-#     x = np.linspace(0.0, 1.0, num=11)
-#     b = np.poly1d(pypw85._detQ_as_poly(q1, q2)[::-1])
-#     actual = b(x)
+@pytest.mark.parametrize("a1", RADII)
+@pytest.mark.parametrize("c1", RADII)
+@pytest.mark.parametrize("n1", DIRECTIONS)
+@pytest.mark.parametrize("a2", RADII)
+@pytest.mark.parametrize("c2", RADII)
+@pytest.mark.parametrize("n2", DIRECTIONS)
+def test__detQ_as_poly(a1, c1, n1, a2, c2, n2, rtol=1e-10, atol=1e-8):
+    q1 = pypw85.spheroid(a1, c1, n1)
+    Q1 = to_array_2d(q1)
+    q2 = pypw85.spheroid(a2, c2, n2)
+    Q2 = to_array_2d(q2)
+    x = np.linspace(0.0, 1.0, num=11)
+    b = np.poly1d(pypw85.legacy._detQ_as_poly(q1, q2)[::-1])
+    actual = b(x)
 
-#     x = x[:, None, None]
-#     expected = np.linalg.det((1.0 - x) * Q1 + x * Q2)
-#     assert_allclose(actual, expected, rtol, atol)
+    x = x[:, None, None]
+    expected = np.linalg.det((1.0 - x) * Q1 + x * Q2)
+    assert_allclose(actual, expected, rtol, atol)
 
 
 

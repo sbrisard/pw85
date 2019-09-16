@@ -28,6 +28,7 @@ __clib.pw85_legacy__xT_adjA_x.restype = c_double
 
 __clib.pw85_legacy__rT_adjQ_r_as_poly.argtypes=5*[c_double_p]
 
+__clib.pw85_legacy__detQ_as_poly.argtypes=5*[c_double_p]
 
 def _det_sym(a):
     """Return ``det(A)``.
@@ -75,33 +76,33 @@ def _rT_adjQ_r_as_poly(r, q1, q2, q3=None, a=None):
     return a
 
 
-# def _detQ_as_poly(q1, q2, q3=None, q4=None, b=None):
-#     """Compute the coefficients of the polynomial ``λ ↦ det[(1-λ)Q₁+λQ₂]``.
+def _detQ_as_poly(q1, q2, q3=None, q4=None, b=None):
+    """Compute the coefficients of the polynomial ``λ ↦ det[(1-λ)Q₁+λQ₂]``.
 
-#     The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are
-#     specified as arrays `q1` and `q2`. If specified, the arrays `q3` and `q4`
-#     must hold the difference ``2Q₁-Q₂`` and average ``(Q₁+Q₂)/2``,
-#     respectively::
+    The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are
+    specified as arrays `q1` and `q2`. If specified, the arrays `q3` and `q4`
+    must hold the difference ``2Q₁-Q₂`` and average ``(Q₁+Q₂)/2``,
+    respectively::
 
-#       q3[i] = 2*q1[i] - q2[i]  and  q4[i] = 0.5*(q1[i] + q2[i]),
+      q3[i] = 2*q1[i] - q2[i]  and  q4[i] = 0.5*(q1[i] + q2[i]),
 
-#     for ``i = 0, …, 5``. The returned polynomial has degree 3::
+    for ``i = 0, …, 5``. The returned polynomial has degree 3::
 
-#       det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³.
+      det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³.
 
-#     The coefficients ``bᵢ`` are stored in `b` in *increasing* order:
-#     ``b[i] = bᵢ``.
+    The coefficients ``bᵢ`` are stored in `b` in *increasing* order:
+    ``b[i] = bᵢ``.
 
-#     """
-#     if q3 is None:
-#         q3 = 2*q1-q2
-#     if q4 is None:
-#         q4 = 0.5*(q1+q2)
-#     if b is None:
-#         b = np.empty((4,), dtype=np.float64, order='C')
-#     args = [arg.ctypes.data_as(_ll.c_double_p) for arg in (q1, q2, q3, q4, b)]
-#     _ll._detQ_as_poly(*args)
-#     return b
+    """
+    if q3 is None:
+        q3 = 2*q1-q2
+    if q4 is None:
+        q4 = 0.5*(q1+q2)
+    if b is None:
+        b = np.empty((4,), dtype=np.float64, order='C')
+    args = [arg.ctypes.data_as(c_double_p) for arg in (q1, q2, q3, q4, b)]
+    __clib.pw85_legacy__detQ_as_poly(*args)
+    return b
 
 
 
