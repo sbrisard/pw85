@@ -15,7 +15,8 @@ def setup_module():
     np.random.seed(20180813)
 
 
-def gen_directions():
+@pytest.fixture(scope="module")
+def directions():
     # Use some vertices of icosahedron
     golden_ratio = (1.0 + np.sqrt(5.0)) / 2.0
     norm = np.sqrt(1 + golden_ratio ** 2)
@@ -31,8 +32,23 @@ def gen_directions():
     return np.array(out, dtype=np.float64)
 
 
-RADII = np.array([0.0199, 1.999, 9.999], dtype=np.float64)
-DIRECTIONS = gen_directions()
+@pytest.fixture(scope="module")
+def radii():
+    return np.array([0.0199, 1.999, 9.999], dtype=np.float64)
+
+
+@pytest.fixture(scope="module")
+def spheroids(radii, directions):
+    num_radii = radii.shape[0]
+    num_directions = directions.shape[0]
+    num_spheroids = num_radii*num_radii*num_directions
+    out = np.empty((num_spheroids, 6), dtype=np.float64)
+    i = 0
+    for a in radii:
+        for c in radii:
+            for n in directions:
+                out[i, :] = pypw85.spheroid(a, c, n)
+    return out
 
 
 def to_array_2d(a):
@@ -73,28 +89,18 @@ def test__xT_adjA_x(x, a, rtol=1e-12, atol=1e-14):
     assert_allclose(actual, expected, rtol, atol)
 
 
-@pytest.mark.parametrize("a1", RADII)
-@pytest.mark.parametrize("c1", RADII)
-@pytest.mark.parametrize("n1", DIRECTIONS)
-@pytest.mark.parametrize("a2", RADII)
-@pytest.mark.parametrize("c2", RADII)
-@pytest.mark.parametrize("n2", DIRECTIONS)
-def test__detQ_as_poly(a1, c1, n1, a2, c2, n2, rtol=1e-10, atol=1e-8):
-    q1 = pypw85.spheroid(a1, c1, n1)
-    Q1 = to_array_2d(q1)
-    q2 = pypw85.spheroid(a2, c2, n2)
-    Q2 = to_array_2d(q2)
-    x = np.linspace(0.0, 1.0, num=11)
-    b = np.poly1d(pypw85.legacy._detQ_as_poly(q1, q2)[::-1])
-    actual = b(x)
+def test__detQ_as_poly(spheroids, rtol=1e-10, atol=1e-8):
+    for q1 in spheroids:
+        Q1 = to_array_2d(q1)
+        for q2 in spheroids:
+            Q2 = to_array_2d(q2)
+            x = np.linspace(0.0, 1.0, num=11)
+            b = np.poly1d(pypw85.legacy._detQ_as_poly(q1, q2)[::-1])
+            actual = b(x)
 
-    x = x[:, None, None]
-    expected = np.linalg.det((1.0 - x) * Q1 + x * Q2)
-    assert_allclose(actual, expected, rtol, atol)
-
-
-
-
+            x = x[:, None, None]
+            expected = np.linalg.det((1.0 - x) * Q1 + x * Q2)
+            assert_allclose(actual, expected, rtol, atol)
 
 
 # def _test__rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2, rtol=1e-10, atol=1e-8):
