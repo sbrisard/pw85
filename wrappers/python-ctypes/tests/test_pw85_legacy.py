@@ -1,10 +1,6 @@
-import os.path
-
-import h5py
 import numpy as np
 import pytest
 import scipy.linalg
-import scipy.optimize
 
 import pypw85.legacy
 
@@ -39,14 +35,14 @@ def radii():
 
 @pytest.fixture(scope="module")
 def distances():
-    return np.array([0.15, 1.1, 11.], dtype=np.float64)
+    return np.array([0.15, 1.1, 11.0], dtype=np.float64)
 
 
 @pytest.fixture(scope="module")
 def spheroids(radii, directions):
     num_radii = radii.shape[0]
     num_directions = directions.shape[0]
-    num_spheroids = num_radii*num_radii*num_directions
+    num_spheroids = num_radii * num_radii * num_directions
     out = np.empty((num_spheroids, 6), dtype=np.float64)
     i = 0
     for a in radii:
@@ -67,6 +63,7 @@ def test__det_sym(a, rtol=1e-12, atol=1e-14):
     actual = pypw85.legacy._det_sym(a)
     assert_allclose(actual, expected, rtol, atol)
 
+
 def minor(A, i, j):
     assert A.ndim >= 2
     assert A.shape[-2] == A.shape[-1]
@@ -77,6 +74,7 @@ def minor(A, i, j):
     cols.remove(j)
     rows, cols = np.meshgrid(rows, cols, indexing="ij")
     return A[..., rows, cols]
+
 
 def adjugate(A):
     adjA = np.empty_like(A)
@@ -111,11 +109,13 @@ def test__detQ_as_poly(spheroids, rtol=1e-10, atol=1e-8):
 def test__rT_adjQ_r_as_poly(distances, directions, spheroids, rtol=1e-14, atol=1e-15):
     for r12 in distances:
         for n12 in directions:
-            r12_vec = r12*n12
+            r12_vec = r12 * n12
             for q1 in spheroids:
                 for q2 in spheroids:
                     x = np.linspace(0.0, 1.0, num=11)
-                    actual = np.poly1d(pypw85.legacy._rT_adjQ_r_as_poly(r12_vec, q1, q2)[::-1])(x)
+                    actual = np.poly1d(
+                        pypw85.legacy._rT_adjQ_r_as_poly(r12_vec, q1, q2)[::-1]
+                    )(x)
                     x = x[:, None, None]
                     Q = (1 - x) * to_array_2d(q1) + x * to_array_2d(q2)
                     expected = np.dot(np.dot(adjugate(Q), r12_vec), r12_vec)
