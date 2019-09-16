@@ -38,6 +38,11 @@ def radii():
 
 
 @pytest.fixture(scope="module")
+def distances():
+    return np.array([0.15, 1.1, 11.], dtype=np.float64)
+
+
+@pytest.fixture(scope="module")
 def spheroids(radii, directions):
     num_radii = radii.shape[0]
     num_directions = directions.shape[0]
@@ -103,34 +108,15 @@ def test__detQ_as_poly(spheroids, rtol=1e-10, atol=1e-8):
             assert_allclose(actual, expected, rtol, atol)
 
 
-# def _test__rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2, rtol=1e-10, atol=1e-8):
-#     q1 = pypw85.spheroid(a1, c1, n1)
-#     q2 = pypw85.spheroid(a2, c2, n2)
-#     x = np.linspace(0.0, 1.0, num=11)
-#     actual = np.poly1d(pypw85._rT_adjQ_r_as_poly(r, q1, q2)[::-1])(x)
-#     x = x[:, None, None]
-#     Q = (1 - x) * to_array_2d(q1) + x * to_array_2d(q2)
-#     expected = np.dot(np.dot(adjugate(Q), r), r)
-#     assert_allclose(actual, expected, rtol, atol)
-
-
-# @pytest.mark.parametrize("r", DIRECTIONS)
-# @pytest.mark.parametrize("a1", RADII)
-# @pytest.mark.parametrize("c1", RADII)
-# @pytest.mark.parametrize("n1", DIRECTIONS)
-# @pytest.mark.parametrize("a2", RADII)
-# @pytest.mark.parametrize("c2", RADII)
-# @pytest.mark.parametrize("n2", DIRECTIONS)
-# def test__rT_adjQ_r_as_poly_fixed_cc_distance(r, a1, c1, n1, a2, c2, n2):
-#     _test__rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2)
-
-
-# @pytest.mark.parametrize("r", DIRECTIONS[0, :] * RADII[:, None])
-# @pytest.mark.parametrize("a1", RADII)
-# @pytest.mark.parametrize("c1", RADII)
-# @pytest.mark.parametrize("n1", [DIRECTIONS[1]])
-# @pytest.mark.parametrize("a2", RADII)
-# @pytest.mark.parametrize("c2", RADII)
-# @pytest.mark.parametrize("n2", [DIRECTIONS[2]])
-# def test__rT_adjQ_r_as_poly_variable_cc_distance(r, a1, c1, n1, a2, c2, n2):
-#     _test__rT_adjQ_r_as_poly(r, a1, c1, n1, a2, c2, n2)
+def test__rT_adjQ_r_as_poly(distances, directions, spheroids, rtol=1e-14, atol=1e-15):
+    for r12 in distances:
+        for n12 in directions:
+            r12_vec = r12*n12
+            for q1 in spheroids:
+                for q2 in spheroids:
+                    x = np.linspace(0.0, 1.0, num=11)
+                    actual = np.poly1d(pypw85.legacy._rT_adjQ_r_as_poly(r12_vec, q1, q2)[::-1])(x)
+                    x = x[:, None, None]
+                    Q = (1 - x) * to_array_2d(q1) + x * to_array_2d(q2)
+                    expected = np.dot(np.dot(adjugate(Q), r12_vec), r12_vec)
+                    assert_allclose(actual, expected, rtol, atol)
