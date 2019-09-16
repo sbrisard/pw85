@@ -71,7 +71,7 @@ def _rT_adjQ_r_as_poly(r, q1, q2, q3=None, a=None):
         q3 = 2*q1-q2
     if a is None:
         a = np.empty((3,), dtype=np.float64, order='C')
-    args = [arg.ctypes.data_as(__clib.c_double_p) for arg in (r, q1, q2, q3, a)]
+    args = [arg.ctypes.data_as(c_double_p) for arg in (r, q1, q2, q3, a)]
     __clib.pw85_legacy__rT_adjQ_r_as_poly(*args)
     return a
 
