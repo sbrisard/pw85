@@ -1,14 +1,31 @@
+import os.path
+import shutil
+
+import h5py
 import numpy as np
 import pytest
-import scipy.linalg
+import requests
 
 import pypw85.legacy
 
 from numpy.testing import assert_allclose
 
 
+PROXIES = {"http": "http://proxy.enpc.fr:3128", "https": "https://proxy.enpc.fr:3128"}
+
+REF_DATA_URL = "https://zenodo.org/record/3323683/files/pw85_ref_data-20190712.h5"
+REF_DATA_PATH = "pw85_ref_data.h5"
+
+
 def setup_module():
     np.random.seed(20180813)
+    if not os.path.exists(REF_DATA_PATH):
+        r = requests.get(REF_DATA_URL, proxies=PROXIES, stream=True)
+        if r.status_code == 200:
+            with open(REF_DATA_PATH, "wb") as f:
+                shutil.copyfileobj(r.raw, f)
+        else:
+            raise RuntimeError("could not retrieve reference data")
 
 
 @pytest.fixture(scope="module")
@@ -120,3 +137,20 @@ def test__rT_adjQ_r_as_poly(distances, directions, spheroids, rtol=1e-14, atol=1
                     Q = (1 - x) * to_array_2d(q1) + x * to_array_2d(q2)
                     expected = np.dot(np.dot(adjugate(Q), r12_vec), r12_vec)
                     assert_allclose(actual, expected, rtol, atol)
+
+
+def test_f1():
+    rtol = 1e-10
+    atol = 1e-15
+    with h5py.File(REF_DATA_PATH, "r") as f:
+        spheroids = np.array(f["spheroids"])
+        directions = np.array(f["directions"])
+        lambdas = np.array(f["lambdas"])
+        expecteds = np.array(f["F"])
+    for i1, q1 in enumerate(spheroids):
+        for i2, q2 in enumerate(spheroids):
+            for i, r12 in enumerate(directions):
+                for j, lambda_ in enumerate(lambdas):
+                    exp = expecteds[i1, i2, i, j]
+                    act = pypw85.legacy.f1(lambda_, r12, q1, q2)
+                    assert np.abs(act - exp) <= rtol * exp + atol
