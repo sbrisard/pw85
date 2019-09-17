@@ -139,18 +139,30 @@ def test__rT_adjQ_r_as_poly(distances, directions, spheroids, rtol=1e-14, atol=1
                     assert_allclose(actual, expected, rtol, atol)
 
 
-def test_f1():
-    rtol = 1e-10
-    atol = 1e-15
+@pytest.mark.parametrize("func, prec", [(pypw85.legacy.f1, 10), (pypw85.legacy.f2, 9)])
+def test_f(func, prec):
     with h5py.File(REF_DATA_PATH, "r") as f:
         spheroids = np.array(f["spheroids"])
         directions = np.array(f["directions"])
         lambdas = np.array(f["lambdas"])
         expecteds = np.array(f["F"])
+
+    num_bins = np.finfo(np.float64).precision + 1
+    hist = np.zeros(num_bins, dtype=np.uint64)
     for i1, q1 in enumerate(spheroids):
         for i2, q2 in enumerate(spheroids):
             for i, r12 in enumerate(directions):
                 for j, lambda_ in enumerate(lambdas):
                     exp = expecteds[i1, i2, i, j]
-                    act = pypw85.legacy.f1(lambda_, r12, q1, q2)
-                    assert np.abs(act - exp) <= rtol * exp + atol
+                    act = func(lambda_, r12, q1, q2)
+                    err = np.abs((act - exp) / exp)
+                    if err == 0.0:
+                        hist[-1] += 1
+                    else:
+                        bin = int(np.floor(-np.log10(err)))
+                        if bin <= 0:
+                            bin = 0
+                        if bin >= num_bins:
+                            bin = num_bins - 1
+                        hist[bin] += 1
+    assert np.cumsum(hist)[prec - 1] == 0
