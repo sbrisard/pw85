@@ -23,3 +23,18 @@ this is true up to a relative error of ``10⁻¹⁰``.
 We also check that ``f’(λ) = 0``, up to an absolute error of ``Δλf”(λ)`` where
 ``Δλ`` is the absolute tolerance on ``λ`` for the stopping criterion of the
 Brent iterations, as defined by the macro :c:macro:`PW85_LAMBDA_ATOL`.
+
+.. note:: The PW85 library offers a “new” API and a “legacy” API. The
+          latter is kept for reference. The new API is generally more
+          accurate and robust, and should be preferred by most
+          users. Both APIs are thoroughly tested; however, we adopted
+          two different testing strategies.
+
+	  The legacy API is solely (but fully) tested through its
+	  Python wrapper using pytest.
+
+	  The new API is fully tested through pure C tests (using
+	  GLib). Then the Python wrapper is also tested (using
+	  pytest). However, the python tests do not need to be as
+	  thorough, since only the validity of the wrapper itself must
+	  be checked, not the validity of the underlying C library.
