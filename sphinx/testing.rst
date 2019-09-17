@@ -10,7 +10,7 @@ tested. The source of the unit tests can be found in the file
 large set of tests case, including very flat and very slender sheroids, for
 various relative orientations and center-to-center distances.
 
-In the present chapter, we assume that the two ellispoids (their matrices
+In the present chapter, we assume that the two ellipsoids (their matrices
 ``Q₁`` and ``Q₂`` are given), as well as their center-to-center radius vector
 ``r₁₂``. Then, a call to :func:`pw85_contact_function` delivers an estimate of
 ``λ`` and ``μ²``.
