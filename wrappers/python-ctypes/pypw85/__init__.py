@@ -36,9 +36,12 @@ that::
   A = ⎢      a[3] a[4] ⎥.
       ⎣ sym.      a[5] ⎦
 
-The present wrapper around the PW85 C library relies on the NumPy library.
-“Array of ``double``” should be understood here as “NumPy array with
-``dtype == numpy.float64``.”
+The present wrapper around the PW85 C library relies on the NumPy
+library.  “``double[n]`` array” should be understood here as “NumPy
+array with ``shape == (n,)`` and ``dtype == numpy.float64``.”
+
+Note that true NumPy array *must* be passed (array-likes will *not*
+work).
 
 """
 import configparser
@@ -87,14 +90,14 @@ cpw85.pw85_contact_function.restype = ctypes.c_int
 
 
 def _cholesky_decomp(a, l=None):
-    """Compute the Cholesky decomposition A = L⋅Lᵀ of a 3×3 matrix.
+    """Compute the Cholesky decomposition ``A = L⋅Lᵀ`` of a 3×3 matrix.
 
-    ``A`` is a symmetric matrix, represented by the array `a`, ``L``
-    is a lower matrix, represented by the array `l`.
+    ``A`` is a symmetric matrix, ``L`` is a lower matrix, both
+    represented by ``double[6]`` arrays.
 
-    This function returns `l`, suitably updated with the coefficients
-    of the Cholesky decomposition. If `l` is ``None``, then a new
-    array is allocated.
+    This function returns ``l``, suitably updated with the
+    coefficients of the Cholesky decomposition. If ``l`` is ``None``,
+    then a new array is allocated.
 
     """
     if l is None:
@@ -106,13 +109,13 @@ def _cholesky_decomp(a, l=None):
 
 
 def _cholesky_solve(l, b, x=None):
-    """Compute the solution of the 3×3 linear system L⋅Lᵀ⋅x = b.
+    """Compute the solution of the 3×3 linear system ``L⋅Lᵀ⋅x = b.``
 
-    ``L`` is a lower matrix, represented by the array `l`. ``x`` and
-    ``b`` are vectors, represented by the arrays `x` and `b`.
+    ``L`` is a lower matrix, represented by the ``double[6]`` array
+    ``l``; ``x`` and ``b`` are vectors (``double[3]`` arrays).
 
-    This function returns `x`, suitably updated with the solution to
-    the system. If `x` is ``None``, then a new array is allocated.
+    This function returns ``x``, suitably updated with the solution to
+    the system. If ``x`` is ``None``, then a new array is allocated.
 
     """
     if x is None:
@@ -128,12 +131,12 @@ def _cholesky_solve(l, b, x=None):
 def spheroid(a, c, n, q=None):
     """Return the quadratic form associated to a spheroid.
 
-    The spheroid is defined by its equatorial radius `a`, its polar
-    radius `c` and the direction of its axis of revolution, `n`
-    (vector).
+    The spheroid is defined by its equatorial radius ``a``, its polar
+    radius ``c`` and the direction of its axis of revolution, ``n``
+    (vector, a.k.a. ``double[3]`` array).
 
-    If `q` is not ``None``, then it must the array representation of a
-    symmetric matrix. It is modified in place.
+    If ``q`` is not ``None``, then it must be a pre-allocated
+    ``double[6]`` array. It is modified in place.
 
     """
     if q is None:
@@ -160,16 +163,13 @@ def f(lambda_, r12, q1, q2):
 
     In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is
     the center-to-center radius-vector, represented by the
-    ``double[3]`` array `r12`. The symmetric, positive-definite
+    ``double[3]`` array ``r12``. The symmetric, positive-definite
     matrices ``Q₁`` and ``Q₂`` are specified through the ``double[6]``
-    arrays `q1` and `q2`.
+    arrays ``q1`` and ``q2``.
 
-    The value of ``λ`` is specified through the parameter `lambda_`.
+    The value of ``λ`` is specified through the parameter ``lambda_``.
 
-    This function returns the value of ``f(λ)``. If `out` is not
-    ``None``, then it must be a pre-allocated ``double[3]`` array
-    which is updated with the values of the first and second
-    derivatives:
+    This function returns the value of ``f(λ)``.
 
     """
     params = np.empty((15,), dtype=np.float64)
@@ -182,8 +182,8 @@ def f(lambda_, r12, q1, q2):
 def contact_function(r12, q1, q2, out=None):
     """Return the value of the contact function of two ellipsoids.
 
-    See :py:func:`f` for the meaning of the parameters `r12`, `q1` and
-    `q2`.
+    See :py:func:`f` for the meaning of the parameters ``r12``, ``q1``
+    and ``q2``.
 
     This function returns the pair ``(μ², λ)``, defined as (see
     :ref:`theory`)::
@@ -196,9 +196,9 @@ def contact_function(r12, q1, q2, out=None):
     scaled (their centers being fixed) in order to be tangentially in
     contact.
 
-    If `out` is not ``None``, it must be a pre-allocated ``double[2]``
-    array. It is updated with the values of ``μ²``, and the maximizer
-    ``λ``::
+    If ``out`` is not ``None``, it must be a pre-allocated
+    ``double[2]`` array. It is updated with the values of ``μ²``, and
+    the maximizer ``λ``::
 
         out[0] = μ²    and    out[1] = λ.
 
