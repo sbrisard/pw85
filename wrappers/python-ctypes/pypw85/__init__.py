@@ -61,7 +61,12 @@ __clib.pw85__cholesky_decomp.restype = None
 __clib.pw85__cholesky_solve.argtypes = 3 * [pypw85.utils.c_double_p]
 __clib.pw85__cholesky_solve.restype = None
 
-__clib.pw85_spheroid.argtypes = [ctypes.c_double, ctypes.c_double, pypw85.utils.c_double_p, pypw85.utils.c_double_p]
+__clib.pw85_spheroid.argtypes = [
+    ctypes.c_double,
+    ctypes.c_double,
+    pypw85.utils.c_double_p,
+    pypw85.utils.c_double_p,
+]
 __clib.pw85_spheroid.restype = None
 
 __clib.pw85_f_neg.argtypes = [ctypes.c_double, pypw85.utils.c_double_p]
@@ -88,7 +93,8 @@ def _cholesky_decomp(a, l=None):
     if l is None:
         l = np.empty((6,), dtype=np.float64, order="C")
     __clib.pw85__cholesky_decomp(
-        a.ctypes.data_as(pypw85.utils.c_double_p), l.ctypes.data_as(pypw85.utils.c_double_p)
+        a.ctypes.data_as(pypw85.utils.c_double_p),
+        l.ctypes.data_as(pypw85.utils.c_double_p),
     )
     return l
 
@@ -127,7 +133,10 @@ def spheroid(a, c, n, q=None):
     if q is None:
         q = np.empty((6,), dtype=np.float64, order="C")
     __clib.pw85_spheroid(
-        a, c, n.ctypes.data_as(pypw85.utils.c_double_p), q.ctypes.data_as(pypw85.utils.c_double_p)
+        a,
+        c,
+        n.ctypes.data_as(pypw85.utils.c_double_p),
+        q.ctypes.data_as(pypw85.utils.c_double_p),
     )
     return q
 

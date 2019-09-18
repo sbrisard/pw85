@@ -24,7 +24,10 @@ __clib = pypw85.utils.load_library("libpw85_legacy")
 __clib.pw85_legacy__det_sym.argtypes = [pypw85.utils.c_double_p]
 __clib.pw85_legacy__det_sym.restype = ctypes.c_double
 
-__clib.pw85_legacy__xT_adjA_x.argtypes = [pypw85.utils.c_double_p, pypw85.utils.c_double_p]
+__clib.pw85_legacy__xT_adjA_x.argtypes = [
+    pypw85.utils.c_double_p,
+    pypw85.utils.c_double_p,
+]
 __clib.pw85_legacy__xT_adjA_x.restype = ctypes.c_double
 
 __clib.pw85_legacy__rT_adjQ_r_as_poly.argtypes = 5 * [pypw85.utils.c_double_p]
@@ -61,7 +64,8 @@ def _xT_adjA_x(x, a):
 
     """
     return __clib.pw85_legacy__xT_adjA_x(
-        x.ctypes.data_as(pypw85.utils.c_double_p), a.ctypes.data_as(pypw85.utils.c_double_p)
+        x.ctypes.data_as(pypw85.utils.c_double_p),
+        a.ctypes.data_as(pypw85.utils.c_double_p),
     )
 
 
