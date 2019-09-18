@@ -72,28 +72,40 @@ Installation of the Python bindings
 ===================================
 
 The installation procedure is fairly standard and should be platform
-independent. Installation in a virtual environment is not covered here, but is
-possible with little alterations to the procedure below.
+independent. It requires a fairly recent version of `NumPy
+<https://numpy.org/>`_. I successfully installed the Python bindings alongside
+v1.16.4 of NumPy. Please report if you are successful with older versions.
 
-Open a terminal and ``cd`` into the ``wrappers/python-ctypes/``
-directory. Issue the following command::
+Installation in a virtual environment is not covered here, but is possible with
+little alterations to the procedure below.
+
+Open a terminal and ``cd`` into the ``wrappers/python-ctypes/`` directory. Issue
+the following command::
 
   $PYTHON_EXEC setup.py install
 
 where ``$PYTHON_EXEC`` denotes your Python 3 executable (usually, ``python`` or
-``python3``). Then, you need to define the location of the dynamic library, for
-``ctypes`` to be able to import it. This is done through the ``pw85.ini`` file,
-which you must create and place at the root of your home directory.
+``python3``). Then, you need to define the location of the dynamic libraries,
+for ``ctypes`` to be able to import it. This is done through the ``pypw85.cfg``
+file, which you must create and place in the following directory
 
-The contents of this file should be::
+- Windows 10/8/7/Vista: ``C:\Users\<User Name>\AppData\Roaming\pypw85``
+- Windows XP/2000: ``C:\Documents and Settings\<username>\Application
+  Data\pypw85``
+- Mac: ``/Users/<username>/Library/Application Support/pypw85``
+- Linux: ``~/.pypw85``
+
+(in all cases, the ``pypw85`` subdirectory must be created). The contents of the
+``pw85.cfg`` file should be::
 
   [pw85]
-  FullPath = full/path/to/the/pw85/dynamic/library
+  libpw85 = full/path/to/the/pw85/dynamic/library
+  libpw85_legacy = full/path/to/the/pw85_legacy/dynamic/library
 
-where the ``FullPath`` entry is the full path to the dynamic library
-(``*.dll``, ``*.so`` or ``*.dylib``) *including its name*. It can be retrieved
-from the output of ``ninja install``. For example, on a Windows machine, where
-the output was::
+where the ``libpw85`` and ``libpw85_legacy`` entries are the full path to the
+dynamic libraries (``*.dll``, ``*.so`` or ``*.dylib``) *including their
+name*. These can be retrieved from the output of ``ninja install``. For example,
+on a Windows machine, where the output was::
 
   Installing libpw85.dll to C:/opt/pw85/bin
   Installing libpw85.dll.a to C:/opt/pw85/lib
@@ -101,16 +113,28 @@ the output was::
   Installing libpw85_legacy.dll to C:/opt/pw85/bin
   Installing libpw85_legacy.dll.a to C:/opt/pw85/lib
   Installing libpw85_legacy.a to C:/opt/pw85/lib
-  Installing C:/path/to/project/pw85/src/pw85_legacy.h to C:/opt/pw85/include
-  Installing C:/path/to/project/pw85/src/buid/pw85.h to C:/opt/pw85/include
+  Installing C:\path\to\pw85\src\pw85_legacy.h to C:/opt/pw85/include
+  Installing C:\path\to\pw85\src\build\pw85.h to C:/opt/pw85/include
 
 the contents of ``pw85.ini`` is::
 
   [pw85]
-  FullPath = C:/opt/pw85/bin/libpw85.dll
+  libpw85 = C:/opt/pw85/bin/libpw85.dll
+  libpw85_legacy = C:/opt/pw85/bin/libpw85_legacy.dll
 
 Provided the `pytest <https://pytest.org/>`_ module is installed on your
 machine, you can run the tests as follows (from the ``wrappers/python-ctypes``
 drectory)::
 
-  $PYTHON_EXEC -m pytest tests
+  $PYTHON_EXEC -m pytest tests/test_pw85.py
+
+You can also test the “legacy” API. This requires additional modules, namely
+
+- `h5py <https://www.h5py.org/>`_
+- `requests <https://2.python-requests.org/>`_
+
+To run the tests, issue the command::
+
+  $PYTHON_EXEC -m pytest tests/test_pw85_legacy.py
+
+(beware, these tests take some time!).
