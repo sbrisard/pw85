@@ -9,15 +9,15 @@ c_double_p = ctypes.POINTER(ctypes.c_double)
 def pw85_data_dir():
     home = os.path.expanduser('~')
     if sys.platform.startswith('darwin'):
-        return os.path.join(home, 'Library', 'Application Support', 'pw85')
+        return os.path.join(home, 'Library', 'Application Support', 'pypw85')
     elif sys.platform.startswith('win32'):
-        return os.path.join(os.environ['APPDATA'], 'pw85')
+        return os.path.join(os.environ['APPDATA'], 'pypw85')
     elif sys.platform.startswith('linux'):
-        return os.path.join(home, '.pw85')
+        return os.path.join(home, '.pypw85')
 
 
 def load_library(name):
-    path = os.path.join(pw85_data_dir(), 'pw85.cfg')
+    path = os.path.join(pw85_data_dir(), 'pypw85.cfg')
     if os.path.isfile(path):
         cfg = configparser.ConfigParser()
         cfg.read(path)
