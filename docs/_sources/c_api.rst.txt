@@ -8,6 +8,21 @@ The C API
 .. highlight:: none
 
 
+.. note:: we use the following naming convention
+
+	  - “public” functions are prefixed with ``pw85_`` or ``pw85_legacy_``
+            (single underscore),
+	  - “private” functions are prefixed with ``pw85__`` or
+            ``pw85_legacy__`` (double underscore).
+
+	  Note that “public” and “private” is a matter of convention here,
+	  since all functions are exposed (mostly, for testing
+	  purposes). However, double underscored functions should not be
+	  considered as part of the public API and should not be used, since
+	  they are susceptible of incompatible changes (or even removal) in
+	  future versions.
+
+
 Representation of vectors and matrices
 ======================================
 
@@ -33,15 +48,6 @@ matrix ``A`` is the ``double[6]`` array ``a`` such that::
       ⎡ a[0] a[1] a[2] ⎤
   A = ⎢      a[3] a[4] ⎥.
       ⎣ sym.      a[5] ⎦
-
-
-On “public” and “private” functions
-===================================
-
-For testing purposes, all functions are exposed in this library. However,
-functions prefixed with two underscores (``pw85__function_name`` or
-``pw85_legacy__function_name``) should be considered as private. Allthough they
-are exposed and documented, their use is discouraged.
 
 
 The new API

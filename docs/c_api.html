@@ -38,10 +38,25 @@
 <p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#representation-of-vectors-and-matrices" id="id5">Representation of vectors and matrices</a></p></li>
-<li><p><a class="reference internal" href="#on-public-and-private-functions" id="id6">On “public” and “private” functions</a></p></li>
-<li><p><a class="reference internal" href="#the-new-api" id="id7">The new API</a></p></li>
-<li><p><a class="reference internal" href="#the-legacy-api" id="id8">The “legacy” API</a></p></li>
+<li><p><a class="reference internal" href="#the-new-api" id="id6">The new API</a></p></li>
+<li><p><a class="reference internal" href="#the-legacy-api" id="id7">The “legacy” API</a></p></li>
 </ul>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>we use the following naming convention</p>
+<ul class="simple">
+<li><p>“public” functions are prefixed with <code class="docutils literal notranslate"><span class="pre">pw85_</span></code> or <code class="docutils literal notranslate"><span class="pre">pw85_legacy_</span></code>
+(single underscore),</p></li>
+<li><p>“private” functions are prefixed with <code class="docutils literal notranslate"><span class="pre">pw85__</span></code> or
+<code class="docutils literal notranslate"><span class="pre">pw85_legacy__</span></code> (double underscore).</p></li>
+</ul>
+<p>Note that “public” and “private” is a matter of convention here,
+since all functions are exposed (mostly, for testing
+purposes). However, double underscored functions should not be
+considered as part of the public API and should not be used, since
+they are susceptible of incompatible changes (or even removal) in
+future versions.</p>
 </div>
 <div class="section" id="representation-of-vectors-and-matrices">
 <h2><a class="toc-backref" href="#id5">Representation of vectors and matrices</a><a class="headerlink" href="#representation-of-vectors-and-matrices" title="Permalink to this headline">¶</a></h2>
@@ -69,15 +84,8 @@ A = ⎢      a[3] a[4] ⎥.
 </pre></div>
 </div>
 </div>
-<div class="section" id="on-public-and-private-functions">
-<h2><a class="toc-backref" href="#id6">On “public” and “private” functions</a><a class="headerlink" href="#on-public-and-private-functions" title="Permalink to this headline">¶</a></h2>
-<p>For testing purposes, all functions are exposed in this library. However,
-functions prefixed with two underscores (<code class="docutils literal notranslate"><span class="pre">pw85__function_name</span></code> or
-<code class="docutils literal notranslate"><span class="pre">pw85_legacy__function_name</span></code>) should be considered as private. Allthough they
-are exposed and documented, their use is discouraged.</p>
-</div>
 <div class="section" id="the-new-api">
-<h2><a class="toc-backref" href="#id7">The new API</a><a class="headerlink" href="#the-new-api" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id6">The new API</a><a class="headerlink" href="#the-new-api" title="Permalink to this headline">¶</a></h2>
 <p>The functions and macros gathered below form the new API that should be invoked
 by most users. To use these functions and macros in your code, you must include
 the following header:</p>
@@ -245,7 +253,7 @@ centers being fixed) in order to be tangentially in contact.</p>
 </div>
 </div>
 <div class="section" id="the-legacy-api">
-<h2><a class="toc-backref" href="#id8">The “legacy” API</a><a class="headerlink" href="#the-legacy-api" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7">The “legacy” API</a><a class="headerlink" href="#the-legacy-api" title="Permalink to this headline">¶</a></h2>
 <p>The functions described below belong to the legacy API. These are functions
 that have been superseded by equivalent (more accurate or more efficient)
 implementations in the core library. To use these functions in your code, you
@@ -419,7 +427,6 @@ this root.</p>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing the implementation of the contact function</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The C API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#representation-of-vectors-and-matrices">Representation of vectors and matrices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#on-public-and-private-functions">On “public” and “private” functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-new-api">The new API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-legacy-api">The “legacy” API</a></li>
 </ul>

@@ -45,30 +45,33 @@
 <span class="sd">work).</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">ctypes</span> <span class="k">import</span> <span class="n">c_double</span>
+<span class="kn">import</span> <span class="nn">ctypes</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.__utils</span> <span class="k">import</span> <span class="n">load_library</span><span class="p">,</span> <span class="n">c_double_p</span>
+<span class="kn">import</span> <span class="nn">pypw85.utils</span>
 
 
-<span class="n">__clib</span> <span class="o">=</span> <span class="n">load_library</span><span class="p">(</span><span class="s2">&quot;libpw85_legacy&quot;</span><span class="p">)</span>
+<span class="n">__clib</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">load_library</span><span class="p">(</span><span class="s2">&quot;libpw85_legacy&quot;</span><span class="p">)</span>
 
-<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__det_sym</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
-<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__det_sym</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__det_sym</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__det_sym</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span>
 
-<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__xT_adjA_x</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">,</span> <span class="n">c_double_p</span><span class="p">]</span>
-<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__xT_adjA_x</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__xT_adjA_x</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">,</span>
+    <span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__xT_adjA_x</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span>
 
-<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__rT_adjQ_r_as_poly</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__rT_adjQ_r_as_poly</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="p">[</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">]</span>
 
-<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__detQ_as_poly</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__detQ_as_poly</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="p">[</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">]</span>
 
-<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f1</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double</span><span class="p">]</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
-<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f1</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f1</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span><span class="p">]</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">[</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f1</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span>
 
-<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f2</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double</span><span class="p">]</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
-<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f2</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f2</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span><span class="p">]</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">[</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f2</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span>
 
 
 <div class="viewcode-block" id="_det_sym"><a class="viewcode-back" href="../../py_api.html#pypw85.legacy._det_sym">[docs]</a><span class="k">def</span> <span class="nf">_det_sym</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
@@ -78,7 +81,7 @@
 <span class="sd">    array ``a``.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__det_sym</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__det_sym</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="_xT_adjA_x"><a class="viewcode-back" href="../../py_api.html#pypw85.legacy._xT_adjA_x">[docs]</a><span class="k">def</span> <span class="nf">_xT_adjA_x</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
@@ -94,7 +97,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__xT_adjA_x</span><span class="p">(</span>
-        <span class="n">x</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span> <span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
     <span class="p">)</span></div>
 
 
@@ -124,7 +128,7 @@
         <span class="n">q3</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">q1</span> <span class="o">-</span> <span class="n">q2</span>
     <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">3</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
-    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="p">,</span> <span class="n">a</span><span class="p">)]</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="p">,</span> <span class="n">a</span><span class="p">)]</span>
     <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__rT_adjQ_r_as_poly</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">a</span></div>
 
@@ -157,7 +161,7 @@
         <span class="n">q4</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">q1</span> <span class="o">+</span> <span class="n">q2</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">4</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
-    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="p">,</span> <span class="n">q4</span><span class="p">,</span> <span class="n">b</span><span class="p">)]</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="p">,</span> <span class="n">q4</span><span class="p">,</span> <span class="n">b</span><span class="p">)]</span>
     <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__detQ_as_poly</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">b</span></div>
 
@@ -199,10 +203,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f1</span><span class="p">(</span>
         <span class="n">lambda_</span><span class="p">,</span>
-        <span class="n">r12</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
-        <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
-        <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
-        <span class="n">out</span> <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">out</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">r12</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">out</span> <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">out</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
     <span class="p">)</span></div>
 
 
@@ -222,10 +226,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f2</span><span class="p">(</span>
         <span class="n">lambda_</span><span class="p">,</span>
-        <span class="n">r12</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
-        <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
-        <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
-        <span class="n">out</span> <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">out</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">r12</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">out</span> <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">out</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
     <span class="p">)</span></div>
 </pre></div>
 
