@@ -1,3 +1,17 @@
+"""Python wrapper to the legacy API of PW85.
+
+This module offers some implementations of the function ``f`` that
+were eventually discarded (for accuracy reasons). These functions are
+kept for reference.
+
+The present wrapper around the legacy PW85 C library relies on the
+NumPy library.  “``double[n]`` array” should be understood here as
+“NumPy array with ``shape == (n,)`` and ``dtype == numpy.float64``.”
+
+Note that true NumPy array *must* be passed (array-likes will *not*
+work).
+
+"""
 from ctypes import c_double
 
 import numpy as np
@@ -25,19 +39,25 @@ __clib.pw85_legacy_f2.restype = c_double
 
 
 def _det_sym(a):
-    """Return ``det(A)``.
+    """Return the determinant of ``A``.
 
-    ``A`` is a symmetric matrix represented by the array ``a``.
+    The symmetric matrix ``A`` is specified through the ``double[6]``
+    array ``a``.
 
     """
     return __clib.pw85_legacy__det_sym(a.ctypes.data_as(c_double_p))
 
 
 def _xT_adjA_x(x, a):
-    """Return ``xᵀ⋅adj(A)⋅x``.
+    """Return the product ``xᵀ⋅adj(A)⋅x``.
 
-    ``x`` is a vector, represented by the array ``x``. ``A`` is a
-    symmetric matrix, represented by the array ``a``.
+    The column vector ``x`` is specified as a ``double[3]`` array. The
+    symmetric matrix ``A`` is specified trough the ``double[6]`` array
+    ``a``.
+
+    ``adj(A)`` denotes the adjugate matrix of ``A`` (transpose of its
+    cofactor matrix), see e.g `Wikipedia
+    <https://en.wikipedia.org/wiki/Adjugate_matrix>`_.
 
     """
     return __clib.pw85_legacy__xT_adjA_x(
@@ -48,18 +68,23 @@ def _xT_adjA_x(x, a):
 def _rT_adjQ_r_as_poly(r, q1, q2, q3=None, a=None):
     """Compute the coefficients of the polynomial ``λ ↦ rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r``.
 
-    The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are
-    specified as arrays `q1` and `q2`. If specified, the array `q3` must hold
-    the difference ``2Q₁-Q₂``::
+    The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂``
+    are specified as arrays ``q1`` and ``q2``. If ``q3 is not None``,
+    it must hold the difference ``2Q₁-Q₂``::
 
       q3[i] = 2*q1[i] - q2[i],
 
-    for ``i = 0, …, 5``. The returned polynomial has degree 2::
+    for ``i = 0, …, 5``. The returned polynomial has degree ``2``::
 
       rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².
 
-    The coefficients ``aᵢ`` are stored in `a` in *increasing* order:
-    ``a[i] = aᵢ``.
+    If ``a is not None``, it must be a pre-allocated ``double[3]``
+    array. It is modified in place with the coefficients ``aᵢ``,
+    stored in ``a`` in *increasing* order: ``a[i] = aᵢ``. The function
+    returns ``a``.
+
+    If ``a is None``, a new ``double[3]`` array is created and
+    returned.
 
     """
     if q3 is None:
@@ -74,19 +99,23 @@ def _rT_adjQ_r_as_poly(r, q1, q2, q3=None, a=None):
 def _detQ_as_poly(q1, q2, q3=None, q4=None, b=None):
     """Compute the coefficients of the polynomial ``λ ↦ det[(1-λ)Q₁+λQ₂]``.
 
-    The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂`` are
-    specified as arrays `q1` and `q2`. If specified, the arrays `q3` and `q4`
-    must hold the difference ``2Q₁-Q₂`` and average ``(Q₁+Q₂)/2``,
-    respectively::
+    The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂``
+    are specified as arrays ``q1`` and ``q2``. If ``q3 is not None``,
+    it must hold the difference ``2Q₁-Q₂``; if ``q4 is not None``, it
+    must hold the average ``(Q₁+Q₂)/2``::
 
       q3[i] = 2*q1[i] - q2[i]  and  q4[i] = 0.5*(q1[i] + q2[i]),
 
-    for ``i = 0, …, 5``. The returned polynomial has degree 3::
+    for ``i = 0, …, 5``. The returned polynomial has degree ``3``::
 
       det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³.
 
-    The coefficients ``bᵢ`` are stored in `b` in *increasing* order:
-    ``b[i] = bᵢ``.
+    If ``b is not None``, it must be a pre-allocated ``double[4]``
+    array. It is modified in place with the coefficients ``bᵢ``,
+    stored in *increasing* order: ``b[i] = bᵢ``.
+
+    If ``b is None``, a new ``double[4]`` array is created and
+    returned.
 
     """
     if q3 is None:
@@ -101,7 +130,8 @@ def _detQ_as_poly(q1, q2, q3=None, q4=None, b=None):
 
 
 def f1(lambda_, r12, q1, q2, out=None):
-    """Return the value of the function ``f`` defined as::
+    """Return the value of the function ``f`` defined as
+    (see :ref:`theory`)::
 
         f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
 
@@ -116,16 +146,15 @@ def f1(lambda_, r12, q1, q2, out=None):
 
     In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is
     the center-to-center radius-vector, represented by the
-    ``double[3]`` array `r12`. The symmetric, positive-definite
+    ``double[3]`` array ``r12``. The symmetric, positive-definite
     matrices ``Q₁`` and ``Q₂`` are specified through the ``double[6]``
-    arrays `q1` and `q2`.
+    arrays ``q1`` and ``q2``.
 
-    The value of ``λ`` is specified through the parameter `lambda`.
+    The value of ``λ`` is specified through the parameter ``lambda_``.
 
-    This function returns the value of ``f(λ)``. If `out` is not
-    ``None``, then it must be a pre-allocated ``double[3]`` array
-    which is updated with the values of the first and second
-    derivatives:
+    This function returns the value of ``f(λ)``. If ``out is not
+    None``, then it must be a pre-allocated ``double[3]`` array which
+    is updated with the values of the first and second derivatives:
 
     .. code-block:: none
 
@@ -145,14 +174,14 @@ def f1(lambda_, r12, q1, q2, out=None):
 
 
 def f2(lambda_, r12, q1, q2, out=None):
-    """Alternative implementation of :py:func:`f`.
+    """Alternative implementation of :py:func:`f1`.
 
-    See :py:func:`f` for the meaning of the parameters `lambda`,
-    `r12`, `q1` and `q2`.
+    See :py:func:`f1` for the meaning of the parameters ``lambda_``,
+    ``r12``, ``q1`` and ``q2``.
 
-    This function returns the value of ``f(λ)``. If `out` is not
-    ``None``, then it must be a pre-allocated ``double[1]`` array
-    which is updated with the value of ``f(λ)``.
+    This function returns the value of ``f(λ)``. If ``out is not
+    None``, then it must be a pre-allocated ``double[1]`` array which
+    is updated with the value of ``f(λ)``.
 
     This implementation uses :ref:`rational fractions
     <implementation-rational-functions>`.
