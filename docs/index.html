@@ -33,6 +33,13 @@
             
   <div class="section" id="documentation-of-the-pw85-library">
 <h1>Documentation of the PW85 library<a class="headerlink" href="#documentation-of-the-pw85-library" title="Permalink to this headline">¶</a></h1>
+<p>This library implements the “contact function” defined by Perram and
+Wertheim (J. Comp. Phys.  58(3), 409–416,
+<a class="reference external" href="https://doi.org/10.1016/0021-9991(85)90171-8">DOI:10.1016/0021-9991(85)90171-8</a>) for two ellipsoids.
+Given two ellipsoids, this function returns the <em>square</em> of the common
+factor by which both ellipsoids must be scaled (their centers being
+fixed) in order to be tangentially in contact.</p>
+<p>This library is released under a BSD 3-Clause License.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents</span></p>
 <ul>
@@ -53,20 +60,24 @@
 <li class="toctree-l2"><a class="reference internal" href="theory.html#references">References</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="implementation.html#implementation-1-using-cholesky-decompositions">Implementation #1: using Cholesky decompositions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="implementation.html#implementation-2-using-rational-functions">Implementation #2: using rational functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="implementation.html#comparison-of-the-two-implementations">Comparison of the two implementations</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="optimization.html">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing the implementation of the contact function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="c_api.html#representation-of-vectors-and-matrices">Representation of vectors and matrices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="c_api.html#public-api">“Public” API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="c_api.html#private-api">“Private” API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api.html#on-public-and-private-functions">On “public” and “private” functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api.html#the-new-api">The new API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="c_api.html#the-legacy-api">The “legacy” API</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="py_api.html#representation-of-vectors-and-matrices">Representation of vectors and matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py_api.html#module-pypw85">The new API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py_api.html#module-pypw85.legacy">The “legacy” API</a></li>
 </ul>
 </li>
 </ul>
@@ -95,7 +106,9 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimization.html">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing the implementation of the contact function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a></li>
 </ul>

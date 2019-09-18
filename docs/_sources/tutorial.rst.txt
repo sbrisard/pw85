@@ -70,9 +70,11 @@ array([25.  ,  0.  ,  0.  ,  0.25,  0.  ,  0.25])
 We can now compute the value of the contact function — see the documentation of
 :py:func:`pypw85.contact_function`:
 
->>> mu2 = pypw85.contact_function(r12, q1, q2)
+>>> mu2, lambda_ = pypw85.contact_function(r12, q1, q2)
 >>> print('μ² = {}'.format(mu2))
+>>> print('λ = {}'.format(lambda_))
 μ² = 3.362706040638343
+λ = 0.1668589553405904
 
 We find that ``μ² > 1``, hence ``μ > 1``. In other words, both ellipsoids must
 be *swollen* in order to bring them in contact: the ellipsoids do not overlap!
@@ -152,24 +154,15 @@ understand this derivation. What really matters is to check that the resulting
 point ``x₀`` is indeed the contact point of the two scaled ellipsoids; how the
 coordinates of this point were found is irrelevant.
 
-It is possible to ask a *full output* from the function
-:py:func:`pw85.contact_function`. Besides ``μ²``, it then also returns the
-maximizer ``λ`` of the function ``f`` defined by Eq. :ref:`(5) <theory-eq-5>` in
-section :ref:`theory` like so
-
->>> out = np.zeros((2,), dtype=np.float64)
->>> mu2 = pypw85.contact_function(r12, q1, q2, out)
->>> lambda_ = out[1]
->>> print('λ = {}'.format(lambda_))
-λ = 0.16685895534010342
-
-From the value of ``λ``, we compute ``Q`` defined by Eq. :ref:`(10)
+From the value of ``λ`` returned by the function
+:py:func:`pw85.contact_function`, we compute ``Q`` defined by Eq. :ref:`(10)
 <theory-eq-10>` in section :ref:`theory`, as well as ``x = Q⁻¹⋅r₁₂``
 
 >>> Q = (1-lambda_)*Q1+lambda_*Q2
 >>> x = np.linalg.solve(Q, r12)
 
-From which we find ``x₀``, using either Eq. :ref:`(9a) <theory-eq-9>` or Eq. :ref:`(9b) <theory-eq-9>` (and we can check that both give the same result)
+From which we find ``x₀``, using either Eq. :ref:`(9a) <theory-eq-9>` or
+Eq. :ref:`(9b) <theory-eq-9>` (and we can check that both give the same result)
 
 >>> x0a = x1+(1-lambda_)*np.dot(Q1, x)
 >>> x0a
@@ -217,7 +210,7 @@ We find that ``n₁ = -n₂``. Therefore, ``E₁`` and ``E₂`` are in external
 contact. QED
 
 Follow this link to
-:download:`download the above Python script<./tutorial.py>`.
+:download:`download the above Python script<./py_tutorial/tutorial.py>`.
 
 .. _c-tutorial:
 
@@ -225,45 +218,41 @@ C tutorial
 ==========
 
 The Python interface to PW85 has been kept close to the undelying C API. The
-following C program (:download:`download source file <./c_tutorial/tutorial.c>`)
-defines the two ellipsoids, then computes ``μ²`` (simplified output) and ``λ``
-(full output):
+following C program (:download:`download source file
+<./c_tutorial/tutorial.c>`) defines the two ellipsoids, then computes ``μ²``
+and ``λ``:
 
 .. literalinclude:: ./c_tutorial/tutorial.c
    :language: c
 
-A ``CMakeLists.txt`` file is provided for the compilation of the
-tutorial using CMake. You can copy and paste its contents for reuse in
-one of your own projects:
+A ``meson.build`` file is provided for the compilation of the tutorial using
+the `Meson build system <https://mesonbuild.com>`_. You can reuse it in one of
+your own projects (:download:`download <./c_tutorial/meson.build>`):
 
-.. literalinclude:: ./c_tutorial/CMakeLists.txt
-   :language: CMake
+.. literalinclude:: ./c_tutorial/meson.build
+   :language: none
 
-The compilation procedure is similar to that in the :ref:`installation`
-section. It produces an executable called (depending on the platform):
-``tutorial.exe`` or ``tutorial``. On execution, it prints the following lines
-to ``stdout``:
+The location of the PW85 dynamic library and header files is specified through
+two options that are defined in the ``meson_options.txt`` file
+(:download:`download <./c_tutorial/meson_options.txt>`):
+
+.. literalinclude:: ./c_tutorial/meson_options.txt
+   :language: none
+
+Compilation proceeds as follows::
+
+  meson setup -Dpw85_include=/c/opt/pw85/include/ -Dpw85_lib=/c/opt/pw85/bin/ build
+  cd build/
+  ninja
+
+It produces an executable called (depending on the platform): ``tutorial.exe``
+or ``tutorial``. On execution, it prints the following lines to ``stdout``:
 
 .. code-block:: none
 
-  Simplified output
-  -----------------
-  mu^2 = 3.36271
-
-  Full output
-  -----------
   mu^2 = 3.36271
   lambda = 0.166859
 
-.. note:: On calling ``cmake``, you might get the following error message:
-          ``“Could not find a package configuration file provided by "pw85"
-          (requested version 1.0) with any of the following names:
-          pw85Config.cmake, pw85-config.cmake.”`` If that is the case, add the
-          following command-line argument to your call to ``cmake``:
-          ``-Dpw85_DIR=/prefix/to/pw85/lib/pw85-1.0``.
-
-.. note:: On Windows/Visual C++ platforms, the system might complain about a
-          missing ``ucrtbased.dll`` file. Make sure that you compiled both the
-          tutorial and the library using the
-          ``-DCMAKE_BUILD_TYPE:STRING=Release`` option, rather than
-          ``-DCMAKE_BUILD_TYPE:STRING=Debug`` (the default).
+.. Local Variables:
+.. fill-column: 79
+.. End:

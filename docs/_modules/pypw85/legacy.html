@@ -1,0 +1,306 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>pypw85.legacy &#8212; PW85 1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for pypw85.legacy</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Python wrapper to the legacy API of PW85.</span>
+
+<span class="sd">This module offers some implementations of the function ``f`` that</span>
+<span class="sd">were eventually discarded (for accuracy reasons). These functions are</span>
+<span class="sd">kept for reference.</span>
+
+<span class="sd">The present wrapper around the legacy PW85 C library relies on the</span>
+<span class="sd">NumPy library.  “``double[n]`` array” should be understood here as</span>
+<span class="sd">“NumPy array with ``shape == (n,)`` and ``dtype == numpy.float64``.”</span>
+
+<span class="sd">Note that true NumPy array *must* be passed (array-likes will *not*</span>
+<span class="sd">work).</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="k">import</span> <span class="n">c_double</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.__utils</span> <span class="k">import</span> <span class="n">load_library</span><span class="p">,</span> <span class="n">c_double_p</span>
+
+
+<span class="n">__clib</span> <span class="o">=</span> <span class="n">load_library</span><span class="p">(</span><span class="s2">&quot;libpw85_legacy&quot;</span><span class="p">)</span>
+
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__det_sym</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__det_sym</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__xT_adjA_x</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">,</span> <span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__xT_adjA_x</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__rT_adjQ_r_as_poly</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
+
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__detQ_as_poly</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
+
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f1</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double</span><span class="p">]</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f1</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f2</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_double</span><span class="p">]</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">[</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f2</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_double</span>
+
+
+<div class="viewcode-block" id="_det_sym"><a class="viewcode-back" href="../../py_api.html#pypw85.legacy._det_sym">[docs]</a><span class="k">def</span> <span class="nf">_det_sym</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the determinant of ``A``.</span>
+
+<span class="sd">    The symmetric matrix ``A`` is specified through the ``double[6]``</span>
+<span class="sd">    array ``a``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__det_sym</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="_xT_adjA_x"><a class="viewcode-back" href="../../py_api.html#pypw85.legacy._xT_adjA_x">[docs]</a><span class="k">def</span> <span class="nf">_xT_adjA_x</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the product ``xᵀ⋅adj(A)⋅x``.</span>
+
+<span class="sd">    The column vector ``x`` is specified as a ``double[3]`` array. The</span>
+<span class="sd">    symmetric matrix ``A`` is specified trough the ``double[6]`` array</span>
+<span class="sd">    ``a``.</span>
+
+<span class="sd">    ``adj(A)`` denotes the adjugate matrix of ``A`` (transpose of its</span>
+<span class="sd">    cofactor matrix), see e.g `Wikipedia</span>
+<span class="sd">    &lt;https://en.wikipedia.org/wiki/Adjugate_matrix&gt;`_.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__xT_adjA_x</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span> <span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="_rT_adjQ_r_as_poly"><a class="viewcode-back" href="../../py_api.html#pypw85.legacy._rT_adjQ_r_as_poly">[docs]</a><span class="k">def</span> <span class="nf">_rT_adjQ_r_as_poly</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the coefficients of the polynomial ``λ ↦ rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r``.</span>
+
+<span class="sd">    The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂``</span>
+<span class="sd">    are specified as arrays ``q1`` and ``q2``. If ``q3 is not None``,</span>
+<span class="sd">    it must hold the difference ``2Q₁-Q₂``::</span>
+
+<span class="sd">      q3[i] = 2*q1[i] - q2[i],</span>
+
+<span class="sd">    for ``i = 0, …, 5``. The returned polynomial has degree ``2``::</span>
+
+<span class="sd">      rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².</span>
+
+<span class="sd">    If ``a is not None``, it must be a pre-allocated ``double[3]``</span>
+<span class="sd">    array. It is modified in place with the coefficients ``aᵢ``,</span>
+<span class="sd">    stored in ``a`` in *increasing* order: ``a[i] = aᵢ``. The function</span>
+<span class="sd">    returns ``a``.</span>
+
+<span class="sd">    If ``a is None``, a new ``double[3]`` array is created and</span>
+<span class="sd">    returned.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">q3</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">q3</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">q1</span> <span class="o">-</span> <span class="n">q2</span>
+    <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">3</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="p">,</span> <span class="n">a</span><span class="p">)]</span>
+    <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__rT_adjQ_r_as_poly</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">a</span></div>
+
+
+<div class="viewcode-block" id="_detQ_as_poly"><a class="viewcode-back" href="../../py_api.html#pypw85.legacy._detQ_as_poly">[docs]</a><span class="k">def</span> <span class="nf">_detQ_as_poly</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">q4</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the coefficients of the polynomial ``λ ↦ det[(1-λ)Q₁+λQ₂]``.</span>
+
+<span class="sd">    The symmetric, positive definite, 3×3 matrices ``Q₁`` and ``Q₂``</span>
+<span class="sd">    are specified as arrays ``q1`` and ``q2``. If ``q3 is not None``,</span>
+<span class="sd">    it must hold the difference ``2Q₁-Q₂``; if ``q4 is not None``, it</span>
+<span class="sd">    must hold the average ``(Q₁+Q₂)/2``::</span>
+
+<span class="sd">      q3[i] = 2*q1[i] - q2[i]  and  q4[i] = 0.5*(q1[i] + q2[i]),</span>
+
+<span class="sd">    for ``i = 0, …, 5``. The returned polynomial has degree ``3``::</span>
+
+<span class="sd">      det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³.</span>
+
+<span class="sd">    If ``b is not None``, it must be a pre-allocated ``double[4]``</span>
+<span class="sd">    array. It is modified in place with the coefficients ``bᵢ``,</span>
+<span class="sd">    stored in *increasing* order: ``b[i] = bᵢ``.</span>
+
+<span class="sd">    If ``b is None``, a new ``double[4]`` array is created and</span>
+<span class="sd">    returned.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">q3</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">q3</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">q1</span> <span class="o">-</span> <span class="n">q2</span>
+    <span class="k">if</span> <span class="n">q4</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">q4</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">q1</span> <span class="o">+</span> <span class="n">q2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">4</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">(</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">q3</span><span class="p">,</span> <span class="n">q4</span><span class="p">,</span> <span class="n">b</span><span class="p">)]</span>
+    <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy__detQ_as_poly</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">b</span></div>
+
+
+<div class="viewcode-block" id="f1"><a class="viewcode-back" href="../../py_api.html#pypw85.legacy.f1">[docs]</a><span class="k">def</span> <span class="nf">f1</span><span class="p">(</span><span class="n">lambda_</span><span class="p">,</span> <span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the value of the function ``f`` defined as</span>
+<span class="sd">    (see :ref:`theory`)::</span>
+
+<span class="sd">        f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,</span>
+
+<span class="sd">    with::</span>
+
+<span class="sd">        Q = (1-λ)Q₁ + λQ₂,</span>
+
+<span class="sd">    where ellipsoids 1 and 2 are defined as the sets of points ``m``</span>
+<span class="sd">    (column-vector) such that::</span>
+
+<span class="sd">        (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1</span>
+
+<span class="sd">    In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is</span>
+<span class="sd">    the center-to-center radius-vector, represented by the</span>
+<span class="sd">    ``double[3]`` array ``r12``. The symmetric, positive-definite</span>
+<span class="sd">    matrices ``Q₁`` and ``Q₂`` are specified through the ``double[6]``</span>
+<span class="sd">    arrays ``q1`` and ``q2``.</span>
+
+<span class="sd">    The value of ``λ`` is specified through the parameter ``lambda_``.</span>
+
+<span class="sd">    This function returns the value of ``f(λ)``. If ``out is not</span>
+<span class="sd">    None``, then it must be a pre-allocated ``double[3]`` array which</span>
+<span class="sd">    is updated with the values of the first and second derivatives:</span>
+
+<span class="sd">    .. code-block:: none</span>
+
+<span class="sd">       out[0] = f(λ),    out[1] = f&#39;(λ)    and    out[2] = f″(λ).</span>
+
+<span class="sd">    This implementation uses :ref:`Cholesky decompositions</span>
+<span class="sd">    &lt;implementation-cholesky&gt;`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f1</span><span class="p">(</span>
+        <span class="n">lambda_</span><span class="p">,</span>
+        <span class="n">r12</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">out</span> <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">out</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="f2"><a class="viewcode-back" href="../../py_api.html#pypw85.legacy.f2">[docs]</a><span class="k">def</span> <span class="nf">f2</span><span class="p">(</span><span class="n">lambda_</span><span class="p">,</span> <span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Alternative implementation of :py:func:`f1`.</span>
+
+<span class="sd">    See :py:func:`f1` for the meaning of the parameters ``lambda_``,</span>
+<span class="sd">    ``r12``, ``q1`` and ``q2``.</span>
+
+<span class="sd">    This function returns the value of ``f(λ)``. If ``out is not</span>
+<span class="sd">    None``, then it must be a pre-allocated ``double[1]`` array which</span>
+<span class="sd">    is updated with the value of ``f(λ)``.</span>
+
+<span class="sd">    This implementation uses :ref:`rational fractions</span>
+<span class="sd">    &lt;implementation-rational-functions&gt;`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_legacy_f2</span><span class="p">(</span>
+        <span class="n">lambda_</span><span class="p">,</span>
+        <span class="n">r12</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">out</span> <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">out</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">c_double_p</span><span class="p">),</span>
+    <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">PW85</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../implementation.html">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../optimization.html">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing.html">Testing the implementation of the contact function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../c_api.html">The C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../py_api.html">The python API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  <li><a href="../pypw85.html">pypw85</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018–2019, Sébastien Brisard.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,8 +1,8 @@
 .. _implementation:
 
-**************
-Implementation
-**************
+************************************
+Implementation of the function ``f``
+************************************
 
 .. _implementation-eq-1:
 

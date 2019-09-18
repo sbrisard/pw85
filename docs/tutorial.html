@@ -99,9 +99,11 @@ representations <code class="docutils literal notranslate"><span class="pre">q�
 </div>
 <p>We can now compute the value of the contact function — see the documentation of
 <a class="reference internal" href="py_api.html#pypw85.contact_function" title="pypw85.contact_function"><code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.contact_function()</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mu2</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mu2</span><span class="p">,</span> <span class="n">lambda_</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;μ² = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mu2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;λ = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lambda_</span><span class="p">))</span>
 <span class="go">μ² = 3.362706040638343</span>
+<span class="go">λ = 0.1668589553405904</span>
 </pre></div>
 </div>
 <p>We find that <code class="docutils literal notranslate"><span class="pre">μ²</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>, hence <code class="docutils literal notranslate"><span class="pre">μ</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>. In other words, both ellipsoids must
@@ -177,23 +179,14 @@ of the contact point, <code class="docutils literal notranslate"><span class="pr
 understand this derivation. What really matters is to check that the resulting
 point <code class="docutils literal notranslate"><span class="pre">x₀</span></code> is indeed the contact point of the two scaled ellipsoids; how the
 coordinates of this point were found is irrelevant.</p>
-<p>It is possible to ask a <em>full output</em> from the function
-<code class="xref py py-func docutils literal notranslate"><span class="pre">pw85.contact_function()</span></code>. Besides <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, it then also returns the
-maximizer <code class="docutils literal notranslate"><span class="pre">λ</span></code> of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> defined by Eq. <a class="reference internal" href="theory.html#theory-eq-5"><span class="std std-ref">(5)</span></a> in
-section <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a> like so</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mu2</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">lambda_</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;λ = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lambda_</span><span class="p">))</span>
-<span class="go">λ = 0.16685895534010342</span>
-</pre></div>
-</div>
-<p>From the value of <code class="docutils literal notranslate"><span class="pre">λ</span></code>, we compute <code class="docutils literal notranslate"><span class="pre">Q</span></code> defined by Eq. <a class="reference internal" href="theory.html#theory-eq-10"><span class="std std-ref">(10)</span></a> in section <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>, as well as <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">Q⁻¹⋅r₁₂</span></code></p>
+<p>From the value of <code class="docutils literal notranslate"><span class="pre">λ</span></code> returned by the function
+<code class="xref py py-func docutils literal notranslate"><span class="pre">pw85.contact_function()</span></code>, we compute <code class="docutils literal notranslate"><span class="pre">Q</span></code> defined by Eq. <a class="reference internal" href="theory.html#theory-eq-10"><span class="std std-ref">(10)</span></a> in section <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>, as well as <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">Q⁻¹⋅r₁₂</span></code></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">lambda_</span><span class="p">)</span><span class="o">*</span><span class="n">Q1</span><span class="o">+</span><span class="n">lambda_</span><span class="o">*</span><span class="n">Q2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">r12</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>From which we find <code class="docutils literal notranslate"><span class="pre">x₀</span></code>, using either Eq. <a class="reference internal" href="theory.html#theory-eq-9"><span class="std std-ref">(9a)</span></a> or Eq. <a class="reference internal" href="theory.html#theory-eq-9"><span class="std std-ref">(9b)</span></a> (and we can check that both give the same result)</p>
+<p>From which we find <code class="docutils literal notranslate"><span class="pre">x₀</span></code>, using either Eq. <a class="reference internal" href="theory.html#theory-eq-9"><span class="std std-ref">(9a)</span></a> or
+Eq. <a class="reference internal" href="theory.html#theory-eq-9"><span class="std std-ref">(9b)</span></a> (and we can check that both give the same result)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x0a</span> <span class="o">=</span> <span class="n">x1</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">lambda_</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x0a</span>
 <span class="go">array([ 0.16662271, -0.29964969, -0.51687799])</span>
@@ -243,15 +236,14 @@ by the level-set: <code class="docutils literal notranslate"><span class="pre">(
 <p>We find that <code class="docutils literal notranslate"><span class="pre">n₁</span> <span class="pre">=</span> <span class="pre">-n₂</span></code>. Therefore, <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> are in external
 contact. QED</p>
 <p>Follow this link to
-<a class="reference download internal" download="" href="_downloads/b2e388721d925980f1b292f8c6e7d58c/tutorial.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">the</span> <span class="pre">above</span> <span class="pre">Python</span> <span class="pre">script</span></code></a>.</p>
+<a class="reference download internal" download="" href="_downloads/1225105eff755db0ebe17bf32afb7ed2/tutorial.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">the</span> <span class="pre">above</span> <span class="pre">Python</span> <span class="pre">script</span></code></a>.</p>
 </div>
 </div>
 <div class="section" id="c-tutorial">
 <span id="id2"></span><h2><a class="toc-backref" href="#id5">C tutorial</a><a class="headerlink" href="#c-tutorial" title="Permalink to this headline">¶</a></h2>
 <p>The Python interface to PW85 has been kept close to the undelying C API. The
-following C program (<a class="reference download internal" download="" href="_downloads/ce558178f2c1a012f3f04946701e75ce/tutorial.c"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">source</span> <span class="pre">file</span></code></a>)
-defines the two ellipsoids, then computes <code class="docutils literal notranslate"><span class="pre">μ²</span></code> (simplified output) and <code class="docutils literal notranslate"><span class="pre">λ</span></code>
-(full output):</p>
+following C program (<a class="reference download internal" download="" href="_downloads/5501d842fdce79fe9eebce653b50c3bb/tutorial.c"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">source</span> <span class="pre">file</span></code></a>) defines the two ellipsoids, then computes <code class="docutils literal notranslate"><span class="pre">μ²</span></code>
+and <code class="docutils literal notranslate"><span class="pre">λ</span></code>:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pw85.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
@@ -277,63 +269,48 @@ defines the two ellipsoids, then computes <code class="docutils literal notransl
   <span class="n">pw85_spheroid</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">q1</span><span class="p">);</span>
   <span class="n">pw85_spheroid</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">q2</span><span class="p">);</span>
 
-  <span class="kt">double</span> <span class="n">mu2</span> <span class="o">=</span> <span class="n">pw85_contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Simplified output</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;-----------------</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;mu^2 = %g</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">mu2</span><span class="p">);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-
   <span class="kt">double</span> <span class="n">out</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
   <span class="n">pw85_contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="p">);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Full output</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;-----------</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;mu^2 = %g</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;lambda = %g</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>A <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> file is provided for the compilation of the
-tutorial using CMake. You can copy and paste its contents for reuse in
-one of your own projects:</p>
-<div class="highlight-CMake notranslate"><div class="highlight"><pre><span></span><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.0</span><span class="p">)</span>
-<span class="nb">project</span> <span class="p">(</span><span class="s">tutorial</span> <span class="s">LANGUAGES</span> <span class="s">C</span><span class="p">)</span>
-<span class="nb">find_package</span> <span class="p">(</span><span class="s">pw85</span> <span class="s">1.0</span> <span class="s">REQUIRED</span><span class="p">)</span>
-<span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">pw85_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
-<span class="nb">add_executable</span> <span class="p">(</span><span class="s">tutorial</span> <span class="s">tutorial.c</span><span class="p">)</span>
-<span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">tutorial</span> <span class="s">pw85</span><span class="p">)</span>
+<p>A <code class="docutils literal notranslate"><span class="pre">meson.build</span></code> file is provided for the compilation of the tutorial using
+the <a class="reference external" href="https://mesonbuild.com">Meson build system</a>. You can reuse it in one of
+your own projects (<a class="reference download internal" download="" href="_downloads/9be11ce15dd809fb657276ce8e81abcb/meson.build"><code class="xref download docutils literal notranslate"><span class="pre">download</span></code></a>):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>project(&#39;PW85_C_Tutorial&#39;, &#39;c&#39;)
+
+pw85_include = include_directories(get_option(&#39;pw85_include&#39;))
+
+cc = meson.get_compiler(&#39;c&#39;)
+pw85_lib = cc.find_library(&#39;pw85&#39;, dirs: get_option(&#39;pw85_lib&#39;))
+
+exe = executable(&#39;tutorial&#39;,
+		 &#39;tutorial.c&#39;,
+		 include_directories: pw85_include,
+		 dependencies: pw85_lib)
 </pre></div>
 </div>
-<p>The compilation procedure is similar to that in the <a class="reference internal" href="installation.html#installation"><span class="std std-ref">Installation</span></a>
-section. It produces an executable called (depending on the platform):
-<code class="docutils literal notranslate"><span class="pre">tutorial.exe</span></code> or <code class="docutils literal notranslate"><span class="pre">tutorial</span></code>. On execution, it prints the following lines
-to <code class="docutils literal notranslate"><span class="pre">stdout</span></code>:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Simplified output
------------------
-mu^2 = 3.36271
-
-Full output
------------
-mu^2 = 3.36271
+<p>The location of the PW85 dynamic library and header files is specified through
+two options that are defined in the <code class="docutils literal notranslate"><span class="pre">meson_options.txt</span></code> file
+(<a class="reference download internal" download="" href="_downloads/dc33116f07b1c9e1c2904d3844c868a9/meson_options.txt"><code class="xref download docutils literal notranslate"><span class="pre">download</span></code></a>):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>option(&#39;pw85_include&#39;, type: &#39;string&#39;, value: &#39;/usr/include&#39;)
+option(&#39;pw85_lib&#39;, type: &#39;string&#39;, value: &#39;/usr/lib&#39;)
+</pre></div>
+</div>
+<p>Compilation proceeds as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">meson</span> <span class="n">setup</span> <span class="o">-</span><span class="n">Dpw85_include</span><span class="o">=/</span><span class="n">c</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">pw85</span><span class="o">/</span><span class="n">include</span><span class="o">/</span> <span class="o">-</span><span class="n">Dpw85_lib</span><span class="o">=/</span><span class="n">c</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">pw85</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span> <span class="n">build</span>
+<span class="n">cd</span> <span class="n">build</span><span class="o">/</span>
+<span class="n">ninja</span>
+</pre></div>
+</div>
+<p>It produces an executable called (depending on the platform): <code class="docutils literal notranslate"><span class="pre">tutorial.exe</span></code>
+or <code class="docutils literal notranslate"><span class="pre">tutorial</span></code>. On execution, it prints the following lines to <code class="docutils literal notranslate"><span class="pre">stdout</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mu^2 = 3.36271
 lambda = 0.166859
 </pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>On calling <code class="docutils literal notranslate"><span class="pre">cmake</span></code>, you might get the following error message:
-<code class="docutils literal notranslate"><span class="pre">“Could</span> <span class="pre">not</span> <span class="pre">find</span> <span class="pre">a</span> <span class="pre">package</span> <span class="pre">configuration</span> <span class="pre">file</span> <span class="pre">provided</span> <span class="pre">by</span> <span class="pre">&quot;pw85&quot;</span>
-<span class="pre">(requested</span> <span class="pre">version</span> <span class="pre">1.0)</span> <span class="pre">with</span> <span class="pre">any</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">following</span> <span class="pre">names:</span>
-<span class="pre">pw85Config.cmake,</span> <span class="pre">pw85-config.cmake.”</span></code> If that is the case, add the
-following command-line argument to your call to <code class="docutils literal notranslate"><span class="pre">cmake</span></code>:
-<code class="docutils literal notranslate"><span class="pre">-Dpw85_DIR=/prefix/to/pw85/lib/pw85-1.0</span></code>.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>On Windows/Visual C++ platforms, the system might complain about a
-missing <code class="docutils literal notranslate"><span class="pre">ucrtbased.dll</span></code> file. Make sure that you compiled both the
-tutorial and the library using the
-<code class="docutils literal notranslate"><span class="pre">-DCMAKE_BUILD_TYPE:STRING=Release</span></code> option, rather than
-<code class="docutils literal notranslate"><span class="pre">-DCMAKE_BUILD_TYPE:STRING=Debug</span></code> (the default).</p>
 </div>
 </div>
 </div>
@@ -364,7 +341,9 @@ tutorial and the library using the
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimization.html">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing the implementation of the contact function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a></li>
 </ul>

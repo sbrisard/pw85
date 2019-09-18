@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Optimization of the function f &#8212; PW85 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Testing the implementation of the contact function" href="testing.html" />
+    <link rel="prev" title="Implementation of the function f" href="implementation.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="optimization-of-the-function-f">
+<span id="optimization"></span><h1>Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code><a class="headerlink" href="#optimization-of-the-function-f" title="Permalink to this headline">¶</a></h1>
+<p>It was shown in chapter <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a> [see Eq. <a class="reference internal" href="theory.html#theory-eq-6"><span class="std std-ref">(6)</span></a>] that
+the contact function was defined as the maximum for <code class="docutils literal notranslate"><span class="pre">0 ≤ λ ≤ 1</span></code> of the function
+<code class="docutils literal notranslate"><span class="pre">f</span></code> discussed in chapter <a class="reference internal" href="implementation.html#implementation"><span class="std std-ref">Implementation of the function f</span></a>.</p>
+<p>Given that the first and second derivatives of <code class="docutils literal notranslate"><span class="pre">f</span></code> can be computed
+explicitely (see section <a class="reference internal" href="implementation.html#implementation-cholesky"><span class="std std-ref">Implementation #1: using Cholesky decompositions</span></a> in chapter
+<a class="reference internal" href="implementation.html#implementation"><span class="std std-ref">Implementation of the function f</span></a>) it would be tempting to use the Newton–Raphson method to
+solve <code class="docutils literal notranslate"><span class="pre">f’(λ)</span></code> iteratively. However, our experiments show that this method
+performs very poorly in the present case, because the variations of <code class="docutils literal notranslate"><span class="pre">f</span></code> can
+be quite sharp in the neighborhood of <code class="docutils literal notranslate"><span class="pre">λ = 0</span></code> or <code class="docutils literal notranslate"><span class="pre">λ = 1</span></code>. To carry out the
+otpimization of <code class="docutils literal notranslate"><span class="pre">f</span></code>, we therefore proceed in two steps.</p>
+<p>In the first step, we use a robust optimization algorithm. We selected here
+<a class="reference external" href="https://en.wikipedia.org/wiki/Brent%27s_method">Brent’s method</a>, as
+implemented in the <a class="reference external" href="https://www.gnu.org/software/gsl/">GNU Scientific Library (GSL)</a>. However, this method delivers a
+relatively low accuracy of the maxmimizer and the maximum.</p>
+<p>Therefore, in the second step, we use a few Newton–Raphson iterations to refine
+the previously obtained estimates of the minimizer and minimum of <code class="docutils literal notranslate"><span class="pre">f</span></code>. In the
+remainder of this chapter, we describe how these Newton–Raphson iterations are
+performed.</p>
+<p id="optimization-eq-1">Our starting point is Eqs. <a class="reference internal" href="theory.html#theory-eq-9"><span class="std std-ref">(9)</span></a> and <a class="reference internal" href="theory.html#theory-eq-13"><span class="std std-ref">(13)</span></a> in chapter <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>, from which it results that for a given
+value of <code class="docutils literal notranslate"><span class="pre">λ</span></code> we can define two values of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>: one is provided by
+Eq. <a class="reference internal" href="theory.html#theory-eq-9"><span class="std std-ref">(9a)</span></a>, the other one is given by Eq. <a class="reference internal" href="theory.html#theory-eq-9"><span class="std std-ref">(9b)</span></a> (both in chapter <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(1a)    μ₁² = [x₀(λ₀)-c₁]ᵀ⋅Q₁⁻¹⋅[x₀(λ₀)-c₁] = (1-λ)²sᵀ⋅Q₁⋅s,
+(1b)    μ₂² = [x₀(λ₀)-c₂]ᵀ⋅Q₂⁻¹⋅[x₀(λ₀)-c₂] = λ²sᵀ⋅Q₂⋅s,
+</pre></div>
+</div>
+<p id="optimization-eq-2">where we have introduced <code class="docutils literal notranslate"><span class="pre">s</span> <span class="pre">=</span> <span class="pre">Q⁻¹⋅r₁₂</span></code>. We further define the matrix <code class="docutils literal notranslate"><span class="pre">Q₁₂</span> <span class="pre">=</span>
+<span class="pre">Q₂-Q₁</span></code>, so that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(2)    Q₁ = Q - λQ₁₂    and    Q₂ = Q + (1-λ)Q₁₂.
+</pre></div>
+</div>
+<p id="optimization-eq-3">Combining Eqs. <a class="reference internal" href="#optimization-eq-1"><span class="std std-ref">(1)</span></a> and <a class="reference internal" href="#optimization-eq-2"><span class="std std-ref">(2)</span></a>
+and recalling that <code class="docutils literal notranslate"><span class="pre">Q⋅s</span> <span class="pre">=</span> <span class="pre">r</span></code> then delivers the following expressions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(3a)    μ₁² = (1-λ)²rᵀ⋅s - λ(1-λ)²sᵀ⋅u,
+(3b)    μ₂² = λ²rᵀ⋅s + λ²(1-λ)sᵀ⋅u,
+</pre></div>
+</div>
+<p>where we have introduced <code class="docutils literal notranslate"><span class="pre">u = Q₁₂⋅s</span></code>.</p>
+<p id="optimization-eq-4">The above expressions seem to behave slightly better from a numerical point of
+view. Our problem is now to find <code class="docutils literal notranslate"><span class="pre">λ</span></code> such that <code class="docutils literal notranslate"><span class="pre">μ₁² = μ₂²</span></code>. We therefore
+define the following residual:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(4)    g(λ) = μ₂² - μ₁² = (2λ-1)rᵀ⋅s + λ(1-λ)sᵀ⋅u,
+</pre></div>
+</div>
+<p id="optimization-eq-5">and we need to find <code class="docutils literal notranslate"><span class="pre">λ</span></code> such that <code class="docutils literal notranslate"><span class="pre">g(λ) = 0</span></code>. In order to implement
+Newton–Raphson iterations, we need the expression of the derivative of the
+residual. Using results that are presented in section
+<a class="reference internal" href="implementation.html#implementation-cholesky"><span class="std std-ref">Implementation #1: using Cholesky decompositions</span></a>, we readily find that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(5)    g’(λ) = 2rᵀ⋅s + 2(1-2λ)sᵀ⋅u - 2λ(1-λ)uᵀ⋅v.
+</pre></div>
+</div>
+<p>Eqs. <a class="reference internal" href="#optimization-eq-4"><span class="std std-ref">(4)</span></a> and <a class="reference internal" href="#optimization-eq-5"><span class="std std-ref">(5)</span></a> are then
+used for the final, refinement step of determination of <code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PW85</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing the implementation of the contact function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="implementation.html" title="previous chapter">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+      <li>Next: <a href="testing.html" title="next chapter">Testing the implementation of the contact function</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018–2019, Sébastien Brisard.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/optimization.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
