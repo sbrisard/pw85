@@ -44,31 +44,19 @@ Note that true NumPy array *must* be passed (array-likes will *not*
 work).
 
 """
-import configparser
 import ctypes
-import pathlib
 
 from ctypes import c_double
 
 import numpy as np
 
+from .__utils import load_library, c_double_p
+
 __version__ = "${version}"
 __author__ = "${author}"
 
-c_double_p = ctypes.POINTER(c_double)
 
-
-def __load_library():
-    path = pathlib.Path.home() / "pw85.ini"
-    if path.is_file():
-        cfg = configparser.ConfigParser()
-        cfg.read(str(path))
-        return ctypes.cdll.LoadLibrary(cfg["pw85"]["FullPath"])
-    else:
-        raise RuntimeError("Cannot file configuration file: {}".format(path))
-
-
-cpw85 = __load_library()
+cpw85 = load_library("libpw85")
 
 cpw85.pw85__cholesky_decomp.argtypes = 2 * [c_double_p]
 cpw85.pw85__cholesky_decomp.restype = None

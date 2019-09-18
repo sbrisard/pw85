@@ -1,25 +1,11 @@
-import configparser
-import ctypes
-import pathlib
-
 from ctypes import c_double
 
 import numpy as np
 
-c_double_p = ctypes.POINTER(c_double)
+from .__utils import load_library, c_double_p
 
 
-def __load_library():
-    path = pathlib.Path.home() / "pw85.ini"
-    if path.is_file():
-        cfg = configparser.ConfigParser()
-        cfg.read(str(path))
-        return ctypes.cdll.LoadLibrary(cfg["pw85"]["legacy"])
-    else:
-        raise RuntimeError("Cannot file configuration file: {}".format(path))
-
-
-__clib = __load_library()
+__clib = load_library("libpw85_legacy")
 
 __clib.pw85_legacy__det_sym.argtypes = [c_double_p]
 __clib.pw85_legacy__det_sym.restype = c_double
