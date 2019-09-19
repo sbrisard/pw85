@@ -1,4 +1,5 @@
 *.exe
+*.h5
 *.o
 *.egg-info
 __pycache__
@@ -7,3 +8,4 @@ __pycache__
 build
 build-mingw64
 dist
+pytest.ini

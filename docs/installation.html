@@ -162,6 +162,19 @@ drectory):</p>
 </pre></div>
 </div>
 <p>(beware, these tests take some time!).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Tests of the legacy API require some reference data to be
+downloaded. You may need to configure the proxy. To do so, create a
+<code class="docutils literal notranslate"><span class="pre">pytest.ini</span></code> file in the root directory of the <code class="docutils literal notranslate"><span class="pre">pypw85</span></code> project
+(at the same level as the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> file). Add the following lines
+to this file:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[pytest]
+http_proxy = …
+https_proxy = …
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 

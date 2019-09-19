@@ -11,16 +11,22 @@ import pypw85.legacy
 from numpy.testing import assert_allclose
 
 
-PROXIES = {"http": "http://proxy.enpc.fr:3128", "https": "https://proxy.enpc.fr:3128"}
-
 REF_DATA_URL = "https://zenodo.org/record/3323683/files/pw85_ref_data-20190712.h5"
 REF_DATA_PATH = "pw85_ref_data.h5"
 
 
-def setup_module():
+def setup_module(pytestconfig):
     np.random.seed(20180813)
+
+
+@pytest.fixture(scope="module")
+def download_ref_data(pytestconfig):
     if not os.path.exists(REF_DATA_PATH):
-        r = requests.get(REF_DATA_URL, proxies=PROXIES, stream=True)
+        proxies = {
+            "http": pytestconfig.getini("http_proxy"),
+            "https": pytestconfig.getini("https_proxy"),
+        }
+        r = requests.get(REF_DATA_URL, proxies=proxies, stream=True)
         if r.status_code == 200:
             with open(REF_DATA_PATH, "wb") as f:
                 shutil.copyfileobj(r.raw, f)
@@ -139,6 +145,7 @@ def test__rT_adjQ_r_as_poly(distances, directions, spheroids, rtol=1e-14, atol=1
                     assert_allclose(actual, expected, rtol, atol)
 
 
+@pytest.mark.usefixtures("download_ref_data")
 @pytest.mark.parametrize("func, prec", [(pypw85.legacy.f1, 10), (pypw85.legacy.f2, 9)])
 def test_f(func, prec):
     with h5py.File(REF_DATA_PATH, "r") as f:

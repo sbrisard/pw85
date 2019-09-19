@@ -138,3 +138,13 @@ To run the tests, issue the command::
   $PYTHON_EXEC -m pytest tests/test_pw85_legacy.py
 
 (beware, these tests take some time!).
+
+.. note:: Tests of the legacy API require some reference data to be
+          downloaded. You may need to configure the proxy. To do so, create a
+          ``pytest.ini`` file in the root directory of the ``pypw85`` project
+          (at the same level as the ``setup.py`` file). Add the following lines
+          to this file::
+
+	    [pytest]
+	    http_proxy = …
+	    https_proxy = …

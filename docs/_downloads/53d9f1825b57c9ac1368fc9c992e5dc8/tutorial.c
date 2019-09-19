@@ -23,16 +23,8 @@ int main() {
   pw85_spheroid(a1, c1, n1, q1);
   pw85_spheroid(a2, c2, n2, q2);
 
-  double mu2 = pw85_contact_function(r12, q1, q2, NULL);
-  printf("Simplified output\n");
-  printf("-----------------\n");
-  printf("mu^2 = %g\n", mu2);
-  printf("\n");
-
   double out[2];
   pw85_contact_function(r12, q1, q2, out);
-  printf("Full output\n");
-  printf("-----------\n");
   printf("mu^2 = %g\n", out[0]);
   printf("lambda = %g\n", out[1]);
   printf("\n");
