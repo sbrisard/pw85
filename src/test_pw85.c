@@ -556,7 +556,6 @@ int main(int argc, char **argv) {
   g_test_init(&argc, &argv, NULL);
 
   hid_t const hid = H5Fopen(PW85_REF_DATA_PATH, H5F_ACC_RDONLY, H5P_DEFAULT);
-  fprintf(stderr, "%d\n", hid);
   test_pw85_init_context(hid);
   H5Fclose(hid);
 
