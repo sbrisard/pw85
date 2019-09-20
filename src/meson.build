@@ -1,4 +1,4 @@
-project('PW85', 'c', default_options: ['default_library=both'])
+project('pw85', 'c', default_options: ['default_library=both'])
 
 math = meson.get_compiler('c').find_library('m', required : false)
 gsl = dependency('gsl')
@@ -49,17 +49,21 @@ pw85_legacy_lib = library('pw85_legacy',
 src_dir = meson.current_source_dir()
 
 pw85_ref_data_basename = 'pw85_ref_data.h5'
-pw85_ref_data_path = join_paths(src_dir, '..', 'data', pw85_ref_data_basename)
+pw85_ref_data_path = join_paths(meson.current_build_dir(),
+				pw85_ref_data_basename)
 
 python = import('python').find_installation('python3')
 
 pw85_ref_data = custom_target(pw85_ref_data_basename,
 			      output: pw85_ref_data_basename,
 			      command: [python,
-					join_paths(src_dir,
+					join_paths(meson.current_source_dir(),
 						   'download_ref_data.py'),
 					'--pw85_ref_data_path',
-					pw85_ref_data_path])
+					pw85_ref_data_path],
+			      install: true,
+			      install_dir: join_paths(get_option('datadir'),
+						      meson.project_name()))
 
 pw85_test = executable('test_pw85', 'test_pw85.c',
 		       c_args: ['-DPW85_REF_DATA_PATH="'+pw85_ref_data_path+'"'],
