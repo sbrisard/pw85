@@ -38,7 +38,6 @@ if __name__ == "__main__":
     md5 = "6009b2a9abde129113612825ee105546"
     parser = create_parser()
     args = parser.parse_args()
-    print("Downloading reference data...")
 
     path = args.pw85_ref_data_path
     os.makedirs(os.path.dirname(path), exist_ok=True)
