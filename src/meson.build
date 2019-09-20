@@ -24,7 +24,11 @@ pw85_lib = library('pw85', ['pw85.c'],
 
 hdf5_hl = dependency('hdf5_hl')
 
+pw85_ref_data_path = join_paths(meson.current_source_dir(), '..', 'data',
+				'pw85_ref_data.h5')
+
 pw85_test = executable('test_pw85', 'test_pw85.c',
+		       c_args: ['-DPW85_REF_DATA_PATH="'+pw85_ref_data_path+'"'],
 		       link_with: pw85_lib,
 		       dependencies: [glib, gsl, hdf5_hl])
 

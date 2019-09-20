@@ -317,19 +317,6 @@ void pw85_test_add_cholesky_solve_test() {
   g_test_add_data_func_full(path, data2, test_pw85_cholesky_solve_test, g_free);
 }
 
-void test_pw85_spheroid_test() {
-  for (size_t i = 0; i < test_pw85_context.num_radii; i++) {
-    double const a = test_pw85_context.radii[i];
-    for (size_t j = 0; j < test_pw85_context.num_radii; j++) {
-      double const c = test_pw85_context.radii[j];
-      for (size_t k = 0; k < test_pw85_context.num_directions; k++) {
-        double *const n = test_pw85_context.directions + PW85_DIM * k;
-        test_pw85_spheroid_elementary_test(a, c, n);
-      }
-    }
-  }
-}
-
 void test_pw85_spheroid_elementary_test(double a, double c,
                                         double const n[PW85_DIM]) {
   /*
@@ -406,18 +393,14 @@ void test_pw85_spheroid_elementary_test(double a, double c,
   g_assert_cmpfloat(fabs(act - exp), <=, tol);
 }
 
-void test_pw85_contact_function_test() {
-  for (size_t i = 0; i < test_pw85_context.num_distances; i++) {
-    double const r = test_pw85_context.distances[i];
-    for (size_t j = 0; j < test_pw85_context.num_directions; j++) {
-      double const *n = test_pw85_context.directions + PW85_DIM * j;
-      double const r12[] = {r * n[0], r * n[1], r * n[2]};
-      for (size_t k1 = 0; k1 < test_pw85_context.num_spheroids; k1++) {
-        double const *q1 = test_pw85_context.spheroids + PW85_SYM * k1;
-        for (size_t k2 = 0; k2 < test_pw85_context.num_spheroids; k2++) {
-          double const *q2 = test_pw85_context.spheroids + PW85_SYM * k2;
-          test_pw85_contact_function_elementary_test(r12, q1, q2);
-        }
+void test_pw85_spheroid_test() {
+  for (size_t i = 0; i < test_pw85_context.num_radii; i++) {
+    double const a = test_pw85_context.radii[i];
+    for (size_t j = 0; j < test_pw85_context.num_radii; j++) {
+      double const c = test_pw85_context.radii[j];
+      for (size_t k = 0; k < test_pw85_context.num_directions; k++) {
+        double *const n = test_pw85_context.directions + PW85_DIM * k;
+        test_pw85_spheroid_elementary_test(a, c, n);
       }
     }
   }
@@ -512,6 +495,22 @@ void test_pw85_contact_function_elementary_test(double r12[PW85_DIM],
   gsl_matrix_free(Q);
 }
 
+void test_pw85_contact_function_test() {
+  for (size_t i = 0; i < test_pw85_context.num_distances; i++) {
+    double const r = test_pw85_context.distances[i];
+    for (size_t j = 0; j < test_pw85_context.num_directions; j++) {
+      double const *n = test_pw85_context.directions + PW85_DIM * j;
+      double const r12[] = {r * n[0], r * n[1], r * n[2]};
+      for (size_t k1 = 0; k1 < test_pw85_context.num_spheroids; k1++) {
+        double const *q1 = test_pw85_context.spheroids + PW85_SYM * k1;
+        for (size_t k2 = 0; k2 < test_pw85_context.num_spheroids; k2++) {
+          double const *q2 = test_pw85_context.spheroids + PW85_SYM * k2;
+          test_pw85_contact_function_elementary_test(r12, q1, q2);
+        }
+      }
+    }
+  }
+}
 
 void test_pw85_f_neg_test() {
   double params[2 * PW85_SYM + PW85_DIM];
@@ -539,7 +538,7 @@ void test_pw85_f_neg_test() {
 int main(int argc, char **argv) {
   g_test_init(&argc, &argv, NULL);
 
-  hid_t const hid = H5Fopen("../pw85_ref_data.h5", H5F_ACC_RDONLY, H5P_DEFAULT);
+  hid_t const hid = H5Fopen(PW85_REF_DATA_PATH, H5F_ACC_RDONLY, H5P_DEFAULT);
   test_pw85_init_context(hid);
   H5Fclose(hid);
 
