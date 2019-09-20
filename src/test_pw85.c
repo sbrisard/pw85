@@ -46,24 +46,38 @@ struct {
 } test_pw85_context;
 
 void test_pw85_init_context(hid_t const hid) {
-  test_pw85_read_dataset_double(hid, "/directions",
-                                &test_pw85_context.num_directions,
-                                &test_pw85_context.directions);
-  test_pw85_context.num_directions /= PW85_DIM;
+  if (hid > 0) {
+    test_pw85_read_dataset_double(hid, "/directions",
+                                  &test_pw85_context.num_directions,
+                                  &test_pw85_context.directions);
+    test_pw85_context.num_directions /= PW85_DIM;
 
-  test_pw85_read_dataset_double(hid, "/radii", &test_pw85_context.num_radii,
-                                &test_pw85_context.radii);
+    test_pw85_read_dataset_double(hid, "/radii", &test_pw85_context.num_radii,
+                                  &test_pw85_context.radii);
 
-  test_pw85_read_dataset_double(hid, "/spheroids",
-                                &test_pw85_context.num_spheroids,
-                                &test_pw85_context.spheroids);
-  test_pw85_context.num_spheroids /= PW85_SYM;
+    test_pw85_read_dataset_double(hid, "/spheroids",
+                                  &test_pw85_context.num_spheroids,
+                                  &test_pw85_context.spheroids);
+    test_pw85_context.num_spheroids /= PW85_SYM;
 
-  test_pw85_read_dataset_double(hid, "/lambdas", &test_pw85_context.num_lambdas,
-                                &test_pw85_context.lambdas);
+    test_pw85_read_dataset_double(hid, "/lambdas",
+                                  &test_pw85_context.num_lambdas,
+                                  &test_pw85_context.lambdas);
 
-  test_pw85_read_dataset_double(hid, "/F", &test_pw85_context.num_f,
-                                &test_pw85_context.f);
+    test_pw85_read_dataset_double(hid, "/F", &test_pw85_context.num_f,
+                                  &test_pw85_context.f);
+  } else {
+    test_pw85_context.num_radii = 0;
+    test_pw85_context.radii = NULL;
+    test_pw85_context.num_directions = 0;
+    test_pw85_context.directions = NULL;
+    test_pw85_context.num_spheroids = 0;
+    test_pw85_context.spheroids = NULL;
+    test_pw85_context.num_lambdas = 0;
+    test_pw85_context.lambdas = NULL;
+    test_pw85_context.num_f = 0;
+    test_pw85_context.f = NULL;
+  }
 
   test_pw85_context.num_distances = 3;
   test_pw85_context.distances = g_new(double, test_pw85_context.num_distances);
@@ -496,6 +510,9 @@ void test_pw85_contact_function_elementary_test(double r12[PW85_DIM],
 }
 
 void test_pw85_contact_function_test() {
+  g_assert_nonnull(test_pw85_context.distances);
+  g_assert_nonnull(test_pw85_context.directions);
+  g_assert_nonnull(test_pw85_context.spheroids);
   for (size_t i = 0; i < test_pw85_context.num_distances; i++) {
     double const r = test_pw85_context.distances[i];
     for (size_t j = 0; j < test_pw85_context.num_directions; j++) {
@@ -539,6 +556,7 @@ int main(int argc, char **argv) {
   g_test_init(&argc, &argv, NULL);
 
   hid_t const hid = H5Fopen(PW85_REF_DATA_PATH, H5F_ACC_RDONLY, H5P_DEFAULT);
+  fprintf(stderr, "%d\n", hid);
   test_pw85_init_context(hid);
   H5Fclose(hid);
 
