@@ -1,0 +1,3 @@
+option('pw85_include', type: 'string', value: '/usr/include')
+option('pw85_lib', type: 'string', value: '/usr/lib')
+option('pw85_data', type: 'string', value: '/usr/share/pw85')
