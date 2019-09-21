@@ -1,37 +1,17 @@
 import os.path
-import shutil
 
 import h5py
 import numpy as np
 import pytest
-import requests
 
 import pypw85.legacy
+import pypw85.utils
 
 from numpy.testing import assert_allclose
 
 
-REF_DATA_URL = "https://zenodo.org/record/3323683/files/pw85_ref_data-20190712.h5"
-REF_DATA_PATH = "pw85_ref_data.h5"
-
-
 def setup_module(pytestconfig):
     np.random.seed(20180813)
-
-
-@pytest.fixture(scope="module")
-def download_ref_data(pytestconfig):
-    if not os.path.exists(REF_DATA_PATH):
-        proxies = {
-            "http": pytestconfig.getini("http_proxy"),
-            "https": pytestconfig.getini("https_proxy"),
-        }
-        r = requests.get(REF_DATA_URL, proxies=proxies, stream=True)
-        if r.status_code == 200:
-            with open(REF_DATA_PATH, "wb") as f:
-                shutil.copyfileobj(r.raw, f)
-        else:
-            raise RuntimeError("could not retrieve reference data")
 
 
 @pytest.fixture(scope="module")
@@ -145,10 +125,10 @@ def test__rT_adjQ_r_as_poly(distances, directions, spheroids, rtol=1e-14, atol=1
                     assert_allclose(actual, expected, rtol, atol)
 
 
-@pytest.mark.usefixtures("download_ref_data")
 @pytest.mark.parametrize("func, prec", [(pypw85.legacy.f1, 10), (pypw85.legacy.f2, 9)])
 def test_f(func, prec):
-    with h5py.File(REF_DATA_PATH, "r") as f:
+    path = os.path.join(pypw85.utils.get_config_option("datadir"), "pw85_ref_data.h5")
+    with h5py.File(path, "r") as f:
         spheroids = np.array(f["spheroids"])
         directions = np.array(f["directions"])
         lambdas = np.array(f["lambdas"])

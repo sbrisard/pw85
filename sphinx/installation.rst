@@ -26,9 +26,12 @@ install `MSYS2 <https://www.msys2.org/The>`_.
 
 The C library depends on
 
-1. `GLib <https://developer.gnome.org/glib/>`_ (for testing purposes)
+1. The `GLib <https://developer.gnome.org/glib/>`_ (for testing purposes)
 2. The `GNU Scientific Library (GSL) <https://www.gnu.org/software/gsl/>`_ (for
-   the implementation of the Brent algorithm).
+   the implementation of the Brent algorithm)
+3. The `HDF5 <https://portal.hdfgroup.org/>`_ (for testing purposes)
+
+The installation procedure also requires Python 3.
 
 For installation, we use the `Meson build system
 <https://mesonbuild.com/>`_. We assume that GLib, GSL and Meson are installed
@@ -101,11 +104,12 @@ file, which you must create and place in the following directory
   [pw85]
   libpw85 = full/path/to/the/pw85/dynamic/library
   libpw85_legacy = full/path/to/the/pw85_legacy/dynamic/library
+  datadir = full/path/to/the/pw85/data/directory
 
 where the ``libpw85`` and ``libpw85_legacy`` entries are the full path to the
 dynamic libraries (``*.dll``, ``*.so`` or ``*.dylib``) *including their
-name*. These can be retrieved from the output of ``ninja install``. For example,
-on a Windows machine, where the output was::
+name*. All these configure opions can be retrieved from the output of ``ninja
+install``. For example, on a Windows machine, where the output was::
 
   Installing libpw85.dll to C:/opt/pw85/bin
   Installing libpw85.dll.a to C:/opt/pw85/lib
@@ -113,6 +117,7 @@ on a Windows machine, where the output was::
   Installing libpw85_legacy.dll to C:/opt/pw85/bin
   Installing libpw85_legacy.dll.a to C:/opt/pw85/lib
   Installing libpw85_legacy.a to C:/opt/pw85/lib
+  Installing pw85_ref_data.h5 to C:/opt/pw85/share/pw85
   Installing C:\path\to\pw85\src\pw85_legacy.h to C:/opt/pw85/include
   Installing C:\path\to\pw85\src\build\pw85.h to C:/opt/pw85/include
 
@@ -121,6 +126,7 @@ the contents of ``pw85.ini`` is::
   [pw85]
   libpw85 = C:/opt/pw85/bin/libpw85.dll
   libpw85_legacy = C:/opt/pw85/bin/libpw85_legacy.dll
+  datadir = C:/opt/pw85/share/pw85
 
 Provided the `pytest <https://pytest.org/>`_ module is installed on your
 machine, you can run the tests as follows (from the ``wrappers/python-ctypes``
@@ -128,23 +134,9 @@ drectory)::
 
   $PYTHON_EXEC -m pytest tests/test_pw85.py
 
-You can also test the “legacy” API. This requires additional modules, namely
-
-- `h5py <https://www.h5py.org/>`_
-- `requests <https://2.python-requests.org/>`_
-
-To run the tests, issue the command::
+You can also test the “legacy” API. This requires the `h5py
+<https://www.h5py.org/>`_ module. To run the tests, issue the command::
 
   $PYTHON_EXEC -m pytest tests/test_pw85_legacy.py
 
 (beware, these tests take some time!).
-
-.. note:: Tests of the legacy API require some reference data to be
-          downloaded. You may need to configure the proxy. To do so, create a
-          ``pytest.ini`` file in the root directory of the ``pypw85`` project
-          (at the same level as the ``setup.py`` file). Add the following lines
-          to this file::
-
-	    [pytest]
-	    http_proxy = …
-	    https_proxy = …

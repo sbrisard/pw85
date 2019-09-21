@@ -6,7 +6,7 @@ import sys
 c_double_p = ctypes.POINTER(ctypes.c_double)
 
 
-def pw85_data_dir():
+def get_config_dir():
     home = os.path.expanduser("~")
     if sys.platform.startswith("darwin"):
         return os.path.join(home, "Library", "Application Support", "pypw85")
@@ -16,11 +16,15 @@ def pw85_data_dir():
         return os.path.join(home, ".pypw85")
 
 
-def load_library(name):
-    path = os.path.join(pw85_data_dir(), "pypw85.cfg")
+def get_config_option(name):
+    path = os.path.join(get_config_dir(), "pypw85.cfg")
     if os.path.isfile(path):
         cfg = configparser.ConfigParser()
         cfg.read(path)
-        return ctypes.cdll.LoadLibrary(cfg["pw85"][name])
+        return cfg["pw85"][name]
     else:
         raise RuntimeError("Cannot file configuration file: {}".format(path))
+
+
+def load_library(name):
+    return ctypes.cdll.LoadLibrary(get_config_option(name))
