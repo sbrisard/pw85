@@ -58,10 +58,12 @@ welcome!</p>
 </div>
 <p>The C library depends on</p>
 <ol class="arabic simple">
-<li><p><a class="reference external" href="https://developer.gnome.org/glib/">GLib</a> (for testing purposes)</p></li>
+<li><p>The <a class="reference external" href="https://developer.gnome.org/glib/">GLib</a> (for testing purposes)</p></li>
 <li><p>The <a class="reference external" href="https://www.gnu.org/software/gsl/">GNU Scientific Library (GSL)</a> (for
-the implementation of the Brent algorithm).</p></li>
+the implementation of the Brent algorithm)</p></li>
+<li><p>The <a class="reference external" href="https://portal.hdfgroup.org/">HDF5</a> (for testing purposes)</p></li>
 </ol>
+<p>The installation procedure also requires Python 3.</p>
 <p>For installation, we use the <a class="reference external" href="https://mesonbuild.com/">Meson build system</a>. We assume that GLib, GSL and Meson are installed
 on your system. Assuming that the project is built in the <code class="docutils literal notranslate"><span class="pre">src/build/</span></code>
 directory (no need to create it first), here is the whole installation
@@ -124,18 +126,20 @@ file, which you must create and place in the following directory</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[pw85]
 libpw85 = full/path/to/the/pw85/dynamic/library
 libpw85_legacy = full/path/to/the/pw85_legacy/dynamic/library
+datadir = full/path/to/the/pw85/data/directory
 </pre></div>
 </div>
 <p>where the <code class="docutils literal notranslate"><span class="pre">libpw85</span></code> and <code class="docutils literal notranslate"><span class="pre">libpw85_legacy</span></code> entries are the full path to the
 dynamic libraries (<code class="docutils literal notranslate"><span class="pre">*.dll</span></code>, <code class="docutils literal notranslate"><span class="pre">*.so</span></code> or <code class="docutils literal notranslate"><span class="pre">*.dylib</span></code>) <em>including their
-name</em>. These can be retrieved from the output of <code class="docutils literal notranslate"><span class="pre">ninja</span> <span class="pre">install</span></code>. For example,
-on a Windows machine, where the output was:</p>
+name</em>. All these configure opions can be retrieved from the output of <code class="docutils literal notranslate"><span class="pre">ninja</span>
+<span class="pre">install</span></code>. For example, on a Windows machine, where the output was:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Installing libpw85.dll to C:/opt/pw85/bin
 Installing libpw85.dll.a to C:/opt/pw85/lib
 Installing libpw85.a to C:/opt/pw85/lib
 Installing libpw85_legacy.dll to C:/opt/pw85/bin
 Installing libpw85_legacy.dll.a to C:/opt/pw85/lib
 Installing libpw85_legacy.a to C:/opt/pw85/lib
+Installing pw85_ref_data.h5 to C:/opt/pw85/share/pw85
 Installing C:\path\to\pw85\src\pw85_legacy.h to C:/opt/pw85/include
 Installing C:\path\to\pw85\src\build\pw85.h to C:/opt/pw85/include
 </pre></div>
@@ -144,6 +148,7 @@ Installing C:\path\to\pw85\src\build\pw85.h to C:/opt/pw85/include
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[pw85]
 libpw85 = C:/opt/pw85/bin/libpw85.dll
 libpw85_legacy = C:/opt/pw85/bin/libpw85_legacy.dll
+datadir = C:/opt/pw85/share/pw85
 </pre></div>
 </div>
 <p>Provided the <a class="reference external" href="https://pytest.org/">pytest</a> module is installed on your
@@ -152,29 +157,11 @@ drectory):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$PYTHON_EXEC -m pytest tests/test_pw85.py
 </pre></div>
 </div>
-<p>You can also test the “legacy” API. This requires additional modules, namely</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://www.h5py.org/">h5py</a></p></li>
-<li><p><a class="reference external" href="https://2.python-requests.org/">requests</a></p></li>
-</ul>
-<p>To run the tests, issue the command:</p>
+<p>You can also test the “legacy” API. This requires the <a class="reference external" href="https://www.h5py.org/">h5py</a> module. To run the tests, issue the command:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$PYTHON_EXEC -m pytest tests/test_pw85_legacy.py
 </pre></div>
 </div>
 <p>(beware, these tests take some time!).</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Tests of the legacy API require some reference data to be
-downloaded. You may need to configure the proxy. To do so, create a
-<code class="docutils literal notranslate"><span class="pre">pytest.ini</span></code> file in the root directory of the <code class="docutils literal notranslate"><span class="pre">pypw85</span></code> project
-(at the same level as the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> file). Add the following lines
-to this file:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[pytest]
-http_proxy = …
-https_proxy = …
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 
