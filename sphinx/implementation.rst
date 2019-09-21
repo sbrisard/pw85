@@ -177,10 +177,14 @@ freely downloadable from the `Zenodo platform <http://about.zenodo.org/>`_
 (`DOI:10.5281/zenodo.3323683
 <https://doi.org/10.5281/zenodo.3323683>`_). Accuracy of both implementations is
 then evaluated through the following script (:download:`download source file
-<./implementation/f_accuracy.py>`):
+<./implementation/f_accuracy/f_accuracy.c>`):
 
-.. literalinclude:: ./implementation/f_accuracy.py
-   :language: python
+.. literalinclude:: ./implementation/f_accuracy/f_accuracy.c
+   :language: C
+
+.. note:: To compute this program, you might need to pass the options
+          ``-Dpw85_include=…``, ``-Dpw85_lib=…`` and ``-Dpw85_data=…``
+          to ``meson`` (see :ref:`c-tutorial`).
 
 We get the histograms shown in :numref:`implementation-histograms`. These
 histograms show that :ref:`Implementation #1 <implementation-cholesky>` is more
