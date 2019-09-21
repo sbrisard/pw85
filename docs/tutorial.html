@@ -87,7 +87,7 @@ underlying C library. We therefore import both modules:</p>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">r₁₂</span></code> is the vector that joins the center of the first ellipsoid,
 <code class="docutils literal notranslate"><span class="pre">x₁</span></code>, to the center of the second ellipsoid, <code class="docutils literal notranslate"><span class="pre">x₂</span></code>.</p>
-<p>We use the function <code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.spheroid()</span></code> to create the matrix
+<p>We use the function <a class="reference internal" href="py_api.html#pypw85.spheroid" title="pypw85.spheroid"><code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.spheroid()</span></code></a> to create the matrix
 representations <code class="docutils literal notranslate"><span class="pre">q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">q₂</span></code> of the two ellipsoids:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">spheroid</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span>
@@ -98,7 +98,7 @@ representations <code class="docutils literal notranslate"><span class="pre">q�
 </pre></div>
 </div>
 <p>We can now compute the value of the contact function — see the documentation of
-<code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.contact_function()</span></code>:</p>
+<a class="reference internal" href="py_api.html#pypw85.contact_function" title="pypw85.contact_function"><code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.contact_function()</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mu2</span><span class="p">,</span> <span class="n">lambda_</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;μ² = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mu2</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;λ = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lambda_</span><span class="p">))</span>
@@ -236,13 +236,13 @@ by the level-set: <code class="docutils literal notranslate"><span class="pre">(
 <p>We find that <code class="docutils literal notranslate"><span class="pre">n₁</span> <span class="pre">=</span> <span class="pre">-n₂</span></code>. Therefore, <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> are in external
 contact. QED</p>
 <p>Follow this link to
-<a class="reference download internal" download="" href="_downloads/9783200429dcd3a042caaaeb2514fb2c/tutorial.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">the</span> <span class="pre">above</span> <span class="pre">Python</span> <span class="pre">script</span></code></a>.</p>
+<a class="reference download internal" download="" href="_downloads/1225105eff755db0ebe17bf32afb7ed2/tutorial.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">the</span> <span class="pre">above</span> <span class="pre">Python</span> <span class="pre">script</span></code></a>.</p>
 </div>
 </div>
 <div class="section" id="c-tutorial">
 <span id="id2"></span><h2><a class="toc-backref" href="#id5">C tutorial</a><a class="headerlink" href="#c-tutorial" title="Permalink to this headline">¶</a></h2>
 <p>The Python interface to PW85 has been kept close to the undelying C API. The
-following C program (<a class="reference download internal" download="" href="_downloads/ce558178f2c1a012f3f04946701e75ce/tutorial.c"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">source</span> <span class="pre">file</span></code></a>) defines the two ellipsoids, then computes <code class="docutils literal notranslate"><span class="pre">μ²</span></code>
+following C program (<a class="reference download internal" download="" href="_downloads/5501d842fdce79fe9eebce653b50c3bb/tutorial.c"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">source</span> <span class="pre">file</span></code></a>) defines the two ellipsoids, then computes <code class="docutils literal notranslate"><span class="pre">μ²</span></code>
 and <code class="docutils literal notranslate"><span class="pre">λ</span></code>:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pw85.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
@@ -279,7 +279,7 @@ and <code class="docutils literal notranslate"><span class="pre">λ</span></code
 </div>
 <p>A <code class="docutils literal notranslate"><span class="pre">meson.build</span></code> file is provided for the compilation of the tutorial using
 the <a class="reference external" href="https://mesonbuild.com">Meson build system</a>. You can reuse it in one of
-your own projects (<a class="reference download internal" download="" href="_downloads/37b9dfb55a3c986f95001cc5d749559f/meson.build"><code class="xref download docutils literal notranslate"><span class="pre">download</span></code></a>):</p>
+your own projects (<a class="reference download internal" download="" href="_downloads/9be11ce15dd809fb657276ce8e81abcb/meson.build"><code class="xref download docutils literal notranslate"><span class="pre">download</span></code></a>):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>project(&#39;PW85_C_Tutorial&#39;, &#39;c&#39;)
 
 pw85_include = include_directories(get_option(&#39;pw85_include&#39;))
@@ -295,7 +295,7 @@ exe = executable(&#39;tutorial&#39;,
 </div>
 <p>The location of the PW85 dynamic library and header files is specified through
 two options that are defined in the <code class="docutils literal notranslate"><span class="pre">meson_options.txt</span></code> file
-(<a class="reference download internal" download="" href="_downloads/bbf683b2f02056b9cb4695a754799d30/meson_options.txt"><code class="xref download docutils literal notranslate"><span class="pre">download</span></code></a>):</p>
+(<a class="reference download internal" download="" href="_downloads/dc33116f07b1c9e1c2904d3844c868a9/meson_options.txt"><code class="xref download docutils literal notranslate"><span class="pre">download</span></code></a>):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>option(&#39;pw85_include&#39;, type: &#39;string&#39;, value: &#39;/usr/include&#39;)
 option(&#39;pw85_lib&#39;, type: &#39;string&#39;, value: &#39;/usr/lib&#39;)
 </pre></div>
