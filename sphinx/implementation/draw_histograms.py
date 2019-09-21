@@ -9,7 +9,7 @@ if __name__ == '__main__':
 
     fig, ax = plt.subplots(figsize=(6., 4.))
     ax.bar(data[:, 0]-0.5*bar_width, data[:, 1], bar_width, label='Implementation 1')
-    ax.bar(data[:, 0]+0.5*bar_width, data[:, 2], bar_width, label='Implementation 1')
+    ax.bar(data[:, 0]+0.5*bar_width, data[:, 2], bar_width, label='Implementation 2')
     ax.legend()
 
     ax.set_xticks(data[:, 0])
