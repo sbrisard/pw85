@@ -2,9 +2,10 @@
 #include <hdf5.h>
 #include <hdf5_hl.h>
 #include <pw85.h>
+#include <pw85_legacy.h>
 
-void test_pw85_read_dataset_double(hid_t const hid, char const *dset_name,
-                                   size_t *size, double **buffer) {
+void read_dataset_double(hid_t const hid, char const *dset_name, size_t *size,
+                         double **buffer) {
   int ndims;
   H5LTget_dataset_ndims(hid, dset_name, &ndims);
   hsize_t *dim = g_new(hsize_t, ndims);
@@ -18,59 +19,57 @@ void test_pw85_read_dataset_double(hid_t const hid, char const *dset_name,
   g_free(dim);
 }
 
+void update_histogram(double act, double exp, size_t num_bins, size_t *hist) {
+  double const err = fabs((act - exp) / exp);
+  int prec;
+  if (err == 0.0) {
+    prec = num_bins - 1;
+  } else {
+    prec = (int)(floor(-log10(err)));
+    if (prec <= 0) {
+      prec = 0;
+    }
+    if (prec >= num_bins) {
+      prec = num_bins - 1;
+    }
+  }
+  ++hist[prec];
+}
+
 int main() {
-  hid_t const hid = H5Fopen("../pw85_ref_data.h5", H5F_ACC_RDONLY, H5P_DEFAULT);
+  hid_t const hid = H5Fopen(PW85_REF_DATA_PATH, H5F_ACC_RDONLY, H5P_DEFAULT);
 
   size_t num_directions;
   double *directions;
-  test_pw85_read_dataset_double(hid, "/directions", &num_directions,
-                                &directions);
+  read_dataset_double(hid, "/directions", &num_directions, &directions);
   num_directions /= PW85_DIM;
-  printf("Total number of directions = %d\n", num_directions);
-  for (size_t i = 0; i < num_directions; i++) {
-    double const *n = directions + PW85_DIM * i;
-    printf("n[%d] = [%g, %g, %g]\n", i, n[0], n[1], n[2]);
-  }
 
   size_t num_lambdas;
   double *lambdas;
-  test_pw85_read_dataset_double(hid, "/lambdas", &num_lambdas, &lambdas);
-  printf("Total number of lambdas = %d\n", num_lambdas);
-  for (size_t i = 0; i < num_lambdas; i++) {
-    printf("lambdas[%d] = %g\n", i, lambdas[i]);
-  }
+  read_dataset_double(hid, "/lambdas", &num_lambdas, &lambdas);
 
   size_t num_radii;
   double *radii;
-  test_pw85_read_dataset_double(hid, "/radii", &num_radii, &radii);
-  printf("Total number of radii = %d\n", num_radii);
-  for (size_t i = 0; i < num_radii; i++) {
-    printf("radii[%d] = %g\n", i, radii[i]);
-  }
+  read_dataset_double(hid, "/radii", &num_radii, &radii);
 
   size_t num_spheroids;
   double *spheroids;
-  test_pw85_read_dataset_double(hid, "/spheroids", &num_spheroids, &spheroids);
+  read_dataset_double(hid, "/spheroids", &num_spheroids, &spheroids);
   num_spheroids /= PW85_SYM;
-  printf("Total number of spheroids = %d\n", num_spheroids);
-  for (size_t i = 0; i < num_spheroids; i++) {
-    double *q = spheroids + PW85_SYM * i;
-    printf("spheroid[%d] = [%g, %g, %g, %g, %g, %g]\n", i, q[0], q[1], q[2],
-           q[3], q[4], q[5]);
-  }
 
   size_t num_expecteds;
   double *expecteds;
-  test_pw85_read_dataset_double(hid, "/F", &num_expecteds, &expecteds);
-  printf("Total number of expecteds = %d\n", num_expecteds);
+  read_dataset_double(hid, "/F", &num_expecteds, &expecteds);
 
   double *exp = expecteds;
   double params[2 * PW85_SYM + PW85_DIM];
 
   size_t num_bins = 16;
-  size_t hist[num_bins];
+  size_t hist1[num_bins];
+  size_t hist2[num_bins];
   for (size_t i = 0; i < num_bins; i++) {
-    hist[i] = 0;
+    hist1[i] = 0;
+    hist2[i] = 0;
   }
   for (size_t i1 = 0; i1 < num_spheroids; i1++) {
     memcpy(params + PW85_DIM, spheroids + PW85_SYM * i1,
@@ -81,29 +80,25 @@ int main() {
       for (size_t i = 0; i < num_directions; i++) {
         memcpy(params, directions + PW85_DIM * i, PW85_DIM * sizeof(double));
         for (size_t j = 0; j < num_lambdas; j++, exp++) {
-          double const act = -pw85_f_neg(lambdas[j], params);
-          double const err = fabs((act - *exp) / (*exp));
-          int prec;
-          if (err == 0.0) {
-            prec = num_bins - 1;
-          } else {
-            prec = (int)(floor(-log10(err)));
-            if (prec <= 0) {
-              prec = 0;
-            }
-            if (prec >= num_bins) {
-              prec = num_bins - 1;
-            }
-          }
-          ++hist[prec];
+          double const act1 = -pw85_f_neg(lambdas[j], params);
+          update_histogram(act1, *exp, num_bins, hist1);
+	  double out[2];
+	  pw85_legacy_f2(lambdas[j], params, params + PW85_DIM,
+			 params + PW85_DIM + PW85_SYM, out);
+	  double const act2 = out[0];
+          update_histogram(act2, *exp, num_bins, hist2);
         }
       }
     }
   }
+
+  FILE *f = fopen(HISTOGRAM_PATH, "w");
   for (size_t i = 0; i < num_bins; i++) {
-    printf("hist[%d] = %g \n", (int)i,
-           100. * ((double)hist[i]) / ((double)num_expecteds));
+    fprintf(f, "%d,%g,%g\n", (int)i,
+	    100. * ((double)hist1[i]) / ((double)num_expecteds),
+	    100. * ((double)hist2[i]) / ((double)num_expecteds));
   }
+  fclose(f);
 
   g_free(spheroids);
   g_free(radii);
