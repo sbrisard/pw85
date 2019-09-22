@@ -41,6 +41,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 pygments_style = 'sphinx'
 
 html_theme = 'alabaster'
+html_title = title
 htmlhelp_basename = basename+'doc'
 
 latex_engine = 'xelatex'
