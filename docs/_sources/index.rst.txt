@@ -1,5 +1,5 @@
-Documentation of the PW85 library
-=================================
+Documentation of the ``pw85`` library
+=====================================
 
 .. raw:: latex
 
@@ -18,6 +18,11 @@ This library is released under a BSD 3-Clause License.
 .. raw:: latex
 
    \end{abstract}
+
+.. only:: html
+
+   A PDF version of this documentation can be dowloaded
+   :download:`here <_build/latex/pw85.pdf>`.
 
 .. toctree::
    :maxdepth: 2
