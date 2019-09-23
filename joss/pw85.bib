@@ -1,4 +1,20 @@
 
+@article{done2005,
+  title = {Neighbor List Collision-Driven Molecular Dynamics Simulation for Nonspherical Hard Particles. {{I}}. {{Algorithmic}} Details},
+  volume = {202},
+  issn = {0021-9991},
+  abstract = {In this first part of a series of two papers, we present in considerable detail a collision-driven molecular dynamics algorithm for a system of non-spherical particles, within a parallelepiped simulation domain, under both periodic or hard-wall boundary conditions. The algorithm extends previous event-driven molecular dynamics algorithms for spheres, and is most efficient when applied to systems of particles with relatively small aspect ratios and with small variations in size. We present a novel partial-update near-neighbor list (NNL) algorithm that is superior to previous algorithms at high densities, without compromising the correctness of the algorithm. This efficiency of the algorithm is further increased for systems of very aspherical particles by using bounding sphere complexes (BSC). These techniques will be useful in any particle-based simulation, including Monte Carlo and time-driven molecular dynamics. Additionally, we allow for a non-vanishing rate of deformation of the boundary, which can be used to model macroscopic strain and also alleviate boundary effects for small systems. In the second part of this series of papers we specialize the algorithm to systems of ellipses and ellipsoids and present performance results for our implementation, demonstrating the practical utility of the algorithm.},
+  number = {2},
+  journal = {Journal of Computational Physics},
+  doi = {10.1016/j.jcp.2004.08.014},
+  author = {Donev, Aleksandar and Torquato, Salvatore and Stillinger, Frank H.},
+  month = jan,
+  year = {2005},
+  keywords = {Generation of microstructures},
+  pages = {737-764},
+  file = {C\:\\Users\\brisard\\MyCore\\biblio\\d\\done2005\\done2005.pdf}
+}
+
 @article{perr1985,
   title = {Statistical Mechanics of Hard Ellipsoids. {{I}}. {{Overlap}} Algorithm and the Contact Function},
   volume = {58},
@@ -13,38 +29,7 @@
   year = {1985},
   keywords = {Ellipsoids,Hard particles},
   pages = {409-416},
-  file = {C\:\\Users\\sbrisard\\MyCoRe\\biblio\\p\\perr1985\\perr1985.pdf}
-}
-
-@article{bris2013,
-  title = {Small-Angle Scattering of Dense, Polydisperse Granular Porous Media: {{Computation}} Free of Size Effects},
-  volume = {87},
-  copyright = {All rights reserved},
-  shorttitle = {Small-Angle Scattering of Dense, Polydisperse Granular Porous Media},
-  abstract = {Small-angle x-ray and neutrons scattering is a widespread experimental tool for the investigation of the microstructure of random heterogeneous materials. Validation of (computer-generated) model microstructures often requires the numerical computation of the scattering intensity, which must be carried out with great care due to finite size effects. In this paper, a new method for this computation is presented. It is superior to previously existing methods for three reasons: First, it applies to any type of microstructure (not necessarily granular). Second, closed-form expressions of the size effects inherent to the proposed method can be rigorously derived and removed (in this sense, our method is free of size effects). Third, the complexity of the new algorithm is linear and the computation can easily be updated to account for local changes of the microstructure, while most existing algorithms are quadratic and any change of the microstructure requires a full recomputation. The present paper provides full derivation and validation of this method. Application to the computation of the scattering intensity of dense, polydisperse assemblies of spheres is then presented. A new, simple algorithm for the generation of these dense configurations is introduced. Finally, the results are critically reviewed in the perspective of hardened cement pastes.},
-  number = {1},
-  journal = {Physical Review E},
-  doi = {10.1103/PhysRevE.87.013305},
-  author = {Brisard, S{\'e}bastien and Levitz, Pierre},
-  month = jan,
-  year = {2013},
-  keywords = {SAXS/SANS,Generation of microstructures,Polydispersity},
-  pages = {013305},
-  file = {C\:\\Users\\sbrisard\\MyCoRe\\biblio\\b\\bris2013\\bris2013.pdf}
-}
-
-@inproceedings{chen2007,
-  title = {Intersection {{Testing}} between an {{Ellipsoid}} and an {{Algebraic Surface}}},
-  lccn = {CHEN2007},
-  abstract = {This paper presents a new method on the intersection testing problem between an ellipsoid and an algebraic surface. In the new method, the testing problem is turned into a new testing problem whether a univariate polynomial has a positive or negative real root. Examples are shown to illustrate the robustness and efficiency of the new method.},
-  booktitle = {2007 10th {{IEEE International Conference}} on {{Computer}}-{{Aided Design}} and {{Computer Graphics}}},
-  doi = {10.1109/CADCG.2007.4407853},
-  author = {Chen, Xiao-Diao and Yong, Jun-Hai and Paul, J.-C. and Sun, Jiaguang},
-  month = oct,
-  year = {2007},
-  keywords = {Computer graphics,Geometry},
-  pages = {43 -46},
-  file = {C\:\\Users\\sbrisard\\MyCoRe\\biblio\\c\\chen2007\\chen2007.pdf}
+  file = {C\:\\Users\\brisard\\MyCore\\biblio\\p\\perr1985\\perr1985.pdf}
 }
 
 @article{wang2001,
@@ -61,7 +46,24 @@
   year = {2001},
   keywords = {Ellipsoids,Geometry,Overlap test},
   pages = {531-539},
-  file = {C\:\\Users\\sbrisard\\MyCoRe\\biblio\\w\\wang2001\\wang2001.pdf}
+  file = {C\:\\Users\\brisard\\MyCore\\biblio\\w\\wang2001\\wang2001.pdf}
+}
+
+@article{done2005a,
+  title = {Neighbor List Collision-Driven Molecular Dynamics Simulation for Nonspherical Hard Particles.: {{II}}. {{Applications}} to Ellipses and Ellipsoids},
+  volume = {202},
+  issn = {0021-9991},
+  shorttitle = {Neighbor List Collision-Driven Molecular Dynamics Simulation for Nonspherical Hard Particles.},
+  abstract = {We apply the algorithm presented in the first part of this series of papers to systems of hard ellipses and ellipsoids. The theoretical machinery needed to treat such particles, including the overlap potentials, is developed in full detail. We describe an algorithm for predicting the time of collision for two moving ellipses or ellipsoids. We present performance results for our implementation of the algorithm, demonstrating that for dense systems of very aspherical ellipsoids the novel techniques of using neighbor lists and bounding sphere complexes, offer as much as two orders of magnitude improvement in efficiency over direct adaptations of traditional event-driven molecular dynamics algorithms. The practical utility of the algorithm is demonstrated by presenting several interesting physical applications, including the generation of jammed packings inside spherical containers, the study of contact force chains in jammed packings, and melting the densest-known equilibrium crystals of prolate spheroids.},
+  number = {2},
+  journal = {Journal of Computational Physics},
+  doi = {10.1016/j.jcp.2004.08.025},
+  author = {Donev, Aleksandar and Torquato, Salvatore and Stillinger, Frank H.},
+  month = jan,
+  year = {2005},
+  keywords = {Generation of microstructures},
+  pages = {765-793},
+  file = {C\:\\Users\\brisard\\MyCore\\biblio\\d\\done2005a\\done2005a.pdf}
 }
 
 @article{viei1972,
@@ -77,7 +79,38 @@
   year = {1972},
   keywords = {Ellipses,Hard particles,Monte-Carlo simulations},
   pages = {4729-4744},
-  file = {C\:\\Users\\sbrisard\\MyCoRe\\biblio\\v\\viei1972\\viei1972.pdf}
+  file = {C\:\\Users\\brisard\\MyCore\\biblio\\v\\viei1972\\viei1972.pdf}
+}
+
+@inproceedings{chen2007,
+  title = {Intersection {{Testing}} between an {{Ellipsoid}} and an {{Algebraic Surface}}},
+  lccn = {CHEN2007},
+  abstract = {This paper presents a new method on the intersection testing problem between an ellipsoid and an algebraic surface. In the new method, the testing problem is turned into a new testing problem whether a univariate polynomial has a positive or negative real root. Examples are shown to illustrate the robustness and efficiency of the new method.},
+  booktitle = {2007 10th {{IEEE International Conference}} on {{Computer}}-{{Aided Design}} and {{Computer Graphics}}},
+  doi = {10.1109/CADCG.2007.4407853},
+  author = {Chen, Xiao-Diao and Yong, Jun-Hai and Paul, J.-C. and Sun, Jiaguang},
+  month = oct,
+  year = {2007},
+  keywords = {Computer graphics,Geometry},
+  pages = {43 -46},
+  file = {C\:\\Users\\brisard\\MyCore\\biblio\\c\\chen2007\\chen2007.pdf}
+}
+
+@article{bris2013,
+  title = {Small-Angle Scattering of Dense, Polydisperse Granular Porous Media: {{Computation}} Free of Size Effects},
+  volume = {87},
+  copyright = {All rights reserved},
+  shorttitle = {Small-Angle Scattering of Dense, Polydisperse Granular Porous Media},
+  abstract = {Small-angle x-ray and neutrons scattering is a widespread experimental tool for the investigation of the microstructure of random heterogeneous materials. Validation of (computer-generated) model microstructures often requires the numerical computation of the scattering intensity, which must be carried out with great care due to finite size effects. In this paper, a new method for this computation is presented. It is superior to previously existing methods for three reasons: First, it applies to any type of microstructure (not necessarily granular). Second, closed-form expressions of the size effects inherent to the proposed method can be rigorously derived and removed (in this sense, our method is free of size effects). Third, the complexity of the new algorithm is linear and the computation can easily be updated to account for local changes of the microstructure, while most existing algorithms are quadratic and any change of the microstructure requires a full recomputation. The present paper provides full derivation and validation of this method. Application to the computation of the scattering intensity of dense, polydisperse assemblies of spheres is then presented. A new, simple algorithm for the generation of these dense configurations is introduced. Finally, the results are critically reviewed in the perspective of hardened cement pastes.},
+  number = {1},
+  journal = {Physical Review E},
+  doi = {10.1103/PhysRevE.87.013305},
+  author = {Brisard, S{\'e}bastien and Levitz, Pierre},
+  month = jan,
+  year = {2013},
+  keywords = {Generation of microstructures,Polydispersity,SAXS/SANS},
+  pages = {013305},
+  file = {C\:\\Users\\brisard\\MyCore\\biblio\\b\\bris2013\\bris2013.pdf}
 }
 
 @article{anou2018,
@@ -92,7 +125,7 @@
   year = {2018},
   keywords = {@Ellipsoid,@Full-field calculation,@Microstructure generation},
   pages = {87-101},
-  file = {C\:\\Users\\sbrisard\\MyCoRe\\biblio\\a\\anou2018\\anou2018.pdf}
+  file = {C\:\\Users\\brisard\\MyCore\\biblio\\a\\anou2018\\anou2018.pdf}
 }
 
 
