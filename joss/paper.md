@@ -22,8 +22,9 @@ theories exist for such microstructures, they often fail to capture the finest
 details of the microstructure, such as orientation correlations between
 anisotropic inclusions, or particle-size distributions. In order to account for
 such microstructural details, one must resort to so-called *full-field*
-numerical simulations (using dedicated tools such as [Damask][damask] or
-[Janus][janus], for example).
+numerical simulations (using dedicated tools such as
+[Damask](https://damask.mpie.de/) or [Janus](https://github.com/sbrisard/janus),
+for example).
 
 Full-field simulations require *realizations* of the microstructure. For
 composites made of ellipsoidal inclusions embedded in a (homogeneous) matrix,
@@ -200,10 +201,6 @@ operating systems the installation procedure of this and related libraries. His
 dedication led him to valiantly fight long battles with `setuptools` and `brew`.
 
 # References
-
-[damask]: https://damask.mpie.de/ "DAMASK — the Düsseldorf Advanced Material Simulation Kit"
-[janus]: https://github.com/sbrisard/janus "Janus"
-[refdata]:
 
 <!-- Local Variables: -->
 <!-- compile-command: "pandoc -s --filter pandoc-citeproc --mathjax -o pw85.html pw85.md" -->
