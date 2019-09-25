@@ -10,8 +10,8 @@ authors:
 affiliations:
   - name: Université Paris-Est, Laboratoire Navier, UMR 8205, CNRS, ENPC, IFSTTAR, F-77455 Marne-la-Vallée, France
     index: 1
-date: 22 September 2019
-bibliography: pw85.bib
+date: 25 September 2019
+bibliography: paper.bib
 ---
 
 # Introduction
