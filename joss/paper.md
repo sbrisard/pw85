@@ -195,7 +195,7 @@ Technology, School of Civil and Environmental Engineering) for stimulating
 exchanges and research ideas that motivated the exhumation of this project
 (which has long been a defunct Java library).
 
-The author would also like to thank Dr. Xianda Shen (GeorgiaTech Institute of
+The author would also like to thank Xianda Shen (GeorgiaTech Institute of
 Technology, School of Civil and Environmental Engineering) for testing on fruity
 operating systems the installation procedure of this and related libraries. His
 dedication led him to valiantly fight long battles with `setuptools` and `brew`.
