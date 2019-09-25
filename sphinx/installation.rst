@@ -7,8 +7,11 @@ Installation
 .. contents:: Contents
    :local:
 
-This chapter describes how to install the C library as well as the Python
-bindings. The first step is to clone the Git repository::
+This chapter describes how to install the C library as well as the
+Python bindings. The first step is to clone the source of this
+library. You can either get the latest release at
+https://github.com/sbrisard/pw85/releases or clone the Git repository
+for the development version::
 
   git clone https://github.com/sbrisard/pw85.git
 
