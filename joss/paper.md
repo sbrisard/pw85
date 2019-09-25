@@ -203,6 +203,6 @@ dedication led him to valiantly fight long battles with `setuptools` and `brew`.
 # References
 
 <!-- Local Variables: -->
-<!-- compile-command: "pandoc -s --filter pandoc-citeproc --mathjax -o pw85.html pw85.md" -->
+<!-- compile-command: "pandoc -s --filter pandoc-citeproc --mathjax -o paper.html paper.md" -->
 <!-- fill-column: 80 -->
 <!-- End: -->
