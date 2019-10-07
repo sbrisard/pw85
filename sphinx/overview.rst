@@ -28,61 +28,57 @@ trivial as checking for the overlap of two spheres. Several criteria can be
 found in the literature [@viei1972; @perr1985; @wang2001; @chen2007;
 @anou2018]. We propose an implementation of the *contact function* of @perr1985.
 
-The present paper is organised as follows. We first give a brief description of
-the contact function. Then, we discuss two essential features of this function:
-robustness with respect to floating-point errors and suitability for application
-to Monte-Carlo simulations. Finally, we give a brief description of the `pw85`
-library.
+The present chapter is organised as follows. We first give a brief description
+of the contact function. Then, we discuss two essential features of this
+function: robustness with respect to floating-point errors and suitability for
+application to Monte-Carlo simulations. Finally, we give a brief description of
+the ``pw85`` library.
 
-# The contact function of @perr1985
+The contact function of @perr1985
+=================================
 
-The origin being fixed, points are represented by the $3\times 1$ column-vector
-of their coordinates in a global cartesian frame. For $i=1, 2$, $\mathcal
-E_i\subset\mathbb{R}^3$ denotes the following ellipsoid
+The origin being fixed, points are represented by the ``3×1`` column-vector of
+their coordinates in a global cartesian frame. For ``i = 1, 2``, ``Eᵢ ⊂ ℝ³``
+denotes the following ellipsoid::
 
-$$\mathcal E_i
-=\{\mathsf{m}\in\mathbb{R}^3:\bigl(\mathsf{m}-\mathsf{c}_i\bigr)^\mathsf{T}
-\cdot\mathsf Q_i^{-1}\cdot\bigl(\mathsf{m}-\mathsf{c}_i\bigr)\leq 0\},$$
+  (1)    Eᵢ = {m ∈ ℝ³: (m-cᵢ)ᵀ⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1},
 
-where $\mathsf c_i\in\mathbb{R}^3$ is the center of $\mathcal E_i$, and
-$\mathsf{Q}_i$ is a positive definite matrix (we use sans serif fonts for
-matrices and vectors). @perr1985 define the following function
+where ``cᵢ ∈ ℝ³`` is the center of ``Eᵢ``, and ``Qᵢ`` is a positive definite
+matrix. @perr1985 define the following function::
 
-$$f(\lambda; \mathsf{r}_{12}, \mathsf{Q}_1, \mathsf{Q}_2) =\lambda\bigl(1-\lambda\bigr)\mathsf{r}_{12}^\mathsf{T}\cdot\mathsf{Q}^{-1}\cdot\mathsf{r}_{12},$$
+ (2)    f(λ; r₁₂, Q₁, Q₂) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
 
-where $0\leq\lambda\leq 1$ is a scalar,
-$\mathsf{Q}=\bigl(1-\lambda\bigr)\mathsf{Q}_1+\lambda\mathsf{Q}_2$, and
-$\mathsf{r}_{12}=\mathsf{c}_2-\mathsf{c}_1$ denotes the center-to-center
-radius-vector. The *contact function* $\mu^2(\mathcal{E}_1, \mathcal{E}_2)$ of
-the two ellipsoids is defined as the unique maximum of $f$ over $(0, 1)$
+where ``0 ≤ λ ≤ 1`` is a scalar, ``Q = (1-λ)Q₁ + λQ₂``, and ``r₁₂ = c₂-c₁``
+denotes the center-to-center radius-vector. The *contact function* ``μ²(E₁,
+E₂)`` of the two ellipsoids is defined as the unique maximum of ``f`` over
+``(0, 1)``::
 
-$$\mu^2=\max_{0\leq\lambda\leq 1}f(\lambda; \mathsf{r}_{12}, \mathsf{Q}_1,
-\mathsf{Q}_2).$$
+  (3)   μ² = max{f(λ; r₁₂, Q₁, Q₂), 0 ≤ λ ≤ 1}.
 
 It turns out that the contact function has a simple geometric
-interpretation. Indeed, $\mu$ is the quantity by which each of the two
-ellipsoids $\mathcal{E}_1$ and $\mathcal{E}_2$ must be scaled to bring them in
-contact. Therefore, an overlap test could be defined as follows
+interpretation. Indeed, ``μ`` is the quantity by which each of the two
+ellipsoids ``E₁`` and ``E₂`` must be scaled to bring them in contact. Therefore,
+an overlap test could be defined as follows
 
-- $\Phi(\mathcal{E}_1, \mathcal{E}_2) < 0$: the two ellipsoids overlap,
-- $\Phi(\mathcal{E}_1, \mathcal{E}_2) > 0$: the two ellipsoids do not overlap,
-- $\Phi(\mathcal{E}_1, \mathcal{E}_2) = 0$: the two ellipsoids are tangent.
+- ``μ²(E₁, E₂) < 1``: the two ellipsoids overlap,
+- ``μ²(E₁, E₂) > 1``: the two ellipsoids do not overlap,
+- ``μ²(E₁, E₂) = 1``: the two ellipsoids are tangent.
 
 Despite its apparent complexity, this overlap test has two nice features that
 are discussed below.
 
-# Features of the overlap test
+Features of the overlap test
+============================
 
-## Robustness with respect to floating-point errors
+Robustness with respect to floating-point errors
+------------------------------------------------
 
-All overlap tests amount to checking for the sign of a real quantity
-$\Phi(\mathcal E_1, \mathcal E_2)$ that depends on the two ellipsoids $\mathcal
-E_1$ and $\mathcal E_2$. The ellipsoids do not overlap when $\Phi(\mathcal E_1,
-\mathcal E_2)<0$; they do overlap when $\Phi(\mathcal E_1, \mathcal
-E_2)>0$. Finally, we usually have $\Phi(\mathcal E_1, \mathcal E_2)=0$ when
-$\mathcal E_1$ and $\mathcal E_2$ are in tangent contact (but it is important to
-note that, depending on the overlap criterion, the converse is not necessarily
-true).
+All overlap tests amount to checking for the sign of a real quantity ``Φ(E₁,
+E₂)`` that depends on the two ellipsoids ``E₁`` and ``E₂``. The ellipsoids do
+not overlap when ``Φ(E₁, E₂) < 0``; they do overlap when ``Φ(E₁,
+E₂) > 0``. Finally, we usually have ``Φ(E₁, E₂) = 0`` when ``E₁`` and ``E₂`` are
+in tangent contact (but it is important to note that, depending on the overlap
+criterion, the converse is not necessarily true).
 
 In a finite precision setting, we are bound to make wrong decisions about pairs
 of ellipsoids that are such that $\Phi$ is small. Indeed, let us consider a pair
