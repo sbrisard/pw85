@@ -153,12 +153,3 @@ ellipsoids are externally tangent.
 
 To sum up, ``μ`` is the common factor by wich ellipsoids ``E₁`` and ``E₂`` must
 be scaled in order for them to be externally tangent at point ``x₀(λ₀)``.
-
-
-References
-==========
-
-.. [PW85] Perram, J. W., & Wertheim, M. S. (1985). Statistical
-          mechanics of hard ellipsoids. I. Overlap algorithm and the
-          contact function. *Journal of Computational Physics*, 58(3),
-          409–416. https://doi.org/10.1016/0021-9991(85)90171-8

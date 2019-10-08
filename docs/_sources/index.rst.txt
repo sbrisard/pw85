@@ -28,6 +28,7 @@ This library is released under a BSD 3-Clause License.
    :maxdepth: 2
    :caption: Contents
 
+   overview
    installation
    tutorial
    theory

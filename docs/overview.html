@@ -1,0 +1,340 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Overview &#8212; Documentation of the pw85 library</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Documentation of the pw85 library" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="overview">
+<span id="id1"></span><h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>It is quite common in materials science to reason on assemblies of ellipsoids as
+model materials. Although simplified upscaling mean-field/effective-field
+theories exist for such microstructures, they often fail to capture the finest
+details of the microstructure, such as orientation correlations between
+anisotropic inclusions, or particle-size distributions. In order to account for
+such microstructural details, one must resort to so-called <em>full-field</em>
+numerical simulations (using dedicated tools such as <a class="reference external" href="https://damask.mpie.de/">Damask</a> or <a class="reference external" href="https://github.com/sbrisard/janus">Janus</a>, for
+example).</p>
+<p>Full-field simulations require <em>realizations</em> of the microstructure. For
+composites made of ellipsoidal inclusions embedded in a (homogeneous) matrix,
+this requires to be able to generate assemblies of (non-overlapping)
+ellipsoids. The basic ingredient of such microstructure simulations is of course
+the overlap test of two inclusions.</p>
+<p>Checking for the overlap (or the absence of it) of two ellipsoids is not as
+trivial as checking for the overlap of two spheres. Several criteria can be
+found in the literature <a class="reference internal" href="#vb72" id="id2"><span>[VB72]</span></a>; <a class="reference internal" href="#pw85" id="id3"><span>[PW85]</span></a>; <a class="reference internal" href="#wwk01" id="id4"><span>[WWK01]</span></a>; <a class="reference internal" href="#cyp07" id="id5"><span>[CYP07]</span></a>; <a class="reference internal" href="#abh18" id="id6"><span>[ABH18]</span></a>. We
+propose an implementation of the <em>contact function</em> of Perram and Wertheim
+<a class="reference internal" href="#pw85" id="id7"><span>[PW85]</span></a>.</p>
+<p>The present chapter is organised as follows. We first give a brief description
+of the contact function. Then, we discuss two essential features of this
+function: robustness with respect to floating-point errors and suitability for
+application to Monte-Carlo simulations. Finally, we give a brief description of
+the <code class="docutils literal notranslate"><span class="pre">pw85</span></code> library.</p>
+</div>
+<div class="section" id="the-contact-function-of-perram-and-wertheim-pw85">
+<h2>The contact function of Perram and Wertheim <a class="reference internal" href="#pw85" id="id8"><span>[PW85]</span></a><a class="headerlink" href="#the-contact-function-of-perram-and-wertheim-pw85" title="Permalink to this headline">¶</a></h2>
+<p>The origin being fixed, points are represented by the <code class="docutils literal notranslate"><span class="pre">3×1</span></code> column-vector of
+their coordinates in a global cartesian frame. For <code class="docutils literal notranslate"><span class="pre">i = 1,</span> <span class="pre">2</span></code>, <code class="docutils literal notranslate"><span class="pre">Eᵢ ⊂ ℝ³</span></code>
+denotes the following ellipsoid:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(1)    Eᵢ = {m ∈ ℝ³: (m-cᵢ)ᵀ⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1},
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">cᵢ</span> <span class="pre">∈</span> <span class="pre">ℝ³</span></code> is the center of <code class="docutils literal notranslate"><span class="pre">Eᵢ</span></code>, and <code class="docutils literal notranslate"><span class="pre">Qᵢ</span></code> is a positive definite
+matrix. Perram and Wertheim define the following function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(2)    f(λ; r₁₂, Q₁, Q₂) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">0 ≤ λ ≤ 1</span></code> is a scalar, <code class="docutils literal notranslate"><span class="pre">Q</span> <span class="pre">=</span> <span class="pre">(1-λ)Q₁</span> <span class="pre">+</span> <span class="pre">λQ₂</span></code>, and <code class="docutils literal notranslate"><span class="pre">r₁₂ = c₂-c₁</span></code>
+denotes the center-to-center radius-vector. The <em>contact function</em> <code class="docutils literal notranslate"><span class="pre">μ²(E₁,</span>
+<span class="pre">E₂)</span></code> of the two ellipsoids is defined as the unique maximum of <code class="docutils literal notranslate"><span class="pre">f</span></code> over
+<code class="docutils literal notranslate"><span class="pre">(0, 1)</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(3)   μ² = max{f(λ; r₁₂, Q₁, Q₂), 0 ≤ λ ≤ 1}.
+</pre></div>
+</div>
+<p>It turns out that the contact function has a simple geometric
+interpretation. Indeed, <code class="docutils literal notranslate"><span class="pre">μ</span></code> is the quantity by which each of the two
+ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> must be scaled to bring them in contact. Therefore,
+an overlap test could be defined as follows</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">μ²(E₁,</span> <span class="pre">E₂)</span> <span class="pre">&lt;</span> <span class="pre">1</span></code>: the two ellipsoids overlap,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">μ²(E₁,</span> <span class="pre">E₂)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>: the two ellipsoids do not overlap,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">μ²(E₁,</span> <span class="pre">E₂)</span> <span class="pre">=</span> <span class="pre">1</span></code>: the two ellipsoids are tangent.</p></li>
+</ul>
+<p>Despite its apparent complexity, this overlap test has two nice features that
+are discussed below.</p>
+</div>
+<div class="section" id="features-of-the-overlap-test">
+<h2>Features of the overlap test<a class="headerlink" href="#features-of-the-overlap-test" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="robustness-with-respect-to-floating-point-errors">
+<h3>Robustness with respect to floating-point errors<a class="headerlink" href="#robustness-with-respect-to-floating-point-errors" title="Permalink to this headline">¶</a></h3>
+<p>All overlap tests amount to checking for the sign of a real quantity <code class="docutils literal notranslate"><span class="pre">Φ(E₁,</span>
+<span class="pre">E₂)</span></code> that depends on the two ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code>. The ellipsoids do
+not overlap when <code class="docutils literal notranslate"><span class="pre">Φ(E₁,</span> <span class="pre">E₂) &lt; 0</span></code>; they do overlap when <code class="docutils literal notranslate"><span class="pre">Φ(E₁,</span>
+<span class="pre">E₂) &gt; 0</span></code>. Finally, we usually have <code class="docutils literal notranslate"><span class="pre">Φ(E₁,</span> <span class="pre">E₂) = 0</span></code> when <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> are
+in tangent contact (but it is important to note that, depending on the overlap
+criterion, the converse is not necessarily true).</p>
+<p>In a finite precision setting, we are bound to make wrong decisions about pairs
+of ellipsoids that are such that <code class="docutils literal notranslate"><span class="pre">Φ</span></code> is small. Indeed, let us consider a pair
+of ellipsoids <code class="docutils literal notranslate"><span class="pre">(E₁, E₂)</span></code> for which the true value of <code class="docutils literal notranslate"><span class="pre">Φ</span></code>, <code class="docutils literal notranslate"><span class="pre">Φₑ(E₁, E₂)</span></code>, is
+close to the machine epsilon. Then, the numerical estimate of <code class="docutils literal notranslate"><span class="pre">Φ</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Φₑ(E₁, E₂)</span></code>, is also (hopefully) a very small value. However, whether
+<code class="docutils literal notranslate"><span class="pre">Φₐ(E₁,</span> <span class="pre">E₂)</span></code> is the same sign as <code class="docutils literal notranslate"><span class="pre">Φₑ(E₁, E₂)</span></code> (and therefore delivers the
+correct answer regarding overlap) is uncertain, owing to accumulation of
+round-off errors. Such misclassifications are acceptable provided that they
+occur for ellipsoids that are close (nearly in tangent contact). The overlap
+criterion will be deemed robust if it is such that <code class="docutils literal notranslate"><span class="pre">Φ(E₁, E₂)</span></code> is small for
+nearly tangent ellipsoids only. This is obviously true of the overlap test based
+on the contact function of Perram and Wertheim. Note that some of the overlap
+tests that can be found in the literature do not exhibit such robustness.</p>
+</div>
+<div class="section" id="application-to-monte-carlo-simulations">
+<h3>Application to Monte-Carlo simulations<a class="headerlink" href="#application-to-monte-carlo-simulations" title="Permalink to this headline">¶</a></h3>
+<p>Generating compact assemblies of hard particles is a notoriously difficult
+task. Event-driven simulations <a class="reference internal" href="#dts05" id="id9"><span>[DTS05]</span></a>; <a class="reference internal" href="#dts05a" id="id10"><span>[DTS05a]</span></a> are often used, but require a
+lot of book-keeping. A comparatively simpler approach <a class="reference internal" href="#bl13" id="id11"><span>[BL13]</span></a> is similar to
+atomistic simulations with a non-physical energy. More precisely, starting from
+an initial configuration where the <code class="docutils literal notranslate"><span class="pre">n</span></code> ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁, …, Eₙ</span></code> do overlap, a
+simulated annealing strategy is adopted to minimize the quantity
+<code class="docutils literal notranslate"><span class="pre">U(E₁, …, Eₙ)</span></code> defined as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(4)    U(E₁, …, Eₙ) =      ∑       u(Eᵢ, Eⱼ),
+                     1 ≤ i &lt; j ≤ n
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">u(E₁,</span> <span class="pre">E₂)</span></code> denotes an <em>ad-hoc</em> pair-wise (non-physical) potential, that
+should vanish when the two ellipsoids do not overlap, and be “more positive when
+the overlap is greater” (this sentense being deliberately kept vague). A
+possible choice for <code class="docutils literal notranslate"><span class="pre">u</span></code> is the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(5)    u(E₁, E₂) = max{0, μ⁻¹(E₁, E₂)}.
+</pre></div>
+</div>
+<p>Monte-Carlo simulations using previous implementations of the contact function
+of Perram and Wertheim and the above definition of the energy of the system were
+successfully used to produce extremely compact assemblies of ellipsoids <a class="reference internal" href="#bl13" id="id12"><span>[BL13]</span></a>.</p>
+</div>
+</div>
+<div class="section" id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pw85</span></code> is a C library that implements the contact function of Perram and
+Wertheim. It is released under a BSD-3 license, and is available at
+<a class="reference external" href="https://github.com/sbrisard/pw85">https://github.com/sbrisard/pw85</a>. It is fully documented at
+<a class="reference external" href="https://sbrisard.github.io/pw85">https://sbrisard.github.io/pw85</a>.</p>
+<p>The core library depends on The <a class="reference external" href="https://www.gnu.org/software/gsl/">GNU Scientific Library (GSL)</a> (for its implementation of the Brent
+algorithm); the tests also depend on the <a class="reference external" href="https://developer.gnome.org/glib/">GLib</a> and <a class="reference external" href="https://portal.hdfgroup.org/">HDF5</a>
+libraries.</p>
+<p>The API is extremely simple; in particular it defines no custom objects:
+parameters of all functions are either simple types (<code class="docutils literal notranslate"><span class="pre">size_t</span></code>, <code class="docutils literal notranslate"><span class="pre">double</span></code>) or
+arrays. Note that all arrays must be pre-allocated and are modified
+in-place. This minimizes the risk of creating memory leaks when implementing
+wrappers for higher-level (garbage-collected) languages.</p>
+<p>A Python wrapper (based on <code class="docutils literal notranslate"><span class="pre">ctypes</span></code>) is also provided. It has the following
+(fairly standard) dependencies: <a class="reference external" href="https://numpy.org/">NumPy</a>, <a class="reference external" href="https://pytest.org/">pytest</a> and <a class="reference external" href="https://www.h5py.org/">h5py</a>.</p>
+<p>Note that when developing the library, several strategies have been tested for
+the evaluation of the function $f$ defined above, and its
+optimization. Evaluation of $f$ relies on a Cholesky decomposition of
+$mathsf{Q}$; we tested the accuracy of this implementation over a comprehensive
+set of large-precision reference values that are available on Zenodo
+(<a class="reference external" href="https://doi.org/10.5281/zenodo.3323683">https://doi.org/10.5281/zenodo.3323683</a>). Optimization of $f$ first starts with
+a few iterations of Brent’s robust algorithm. Then, the estimate of the
+minimizer is refined through a few Newton–Raphson iterations.</p>
+</div>
+<div class="section" id="extensions">
+<h2>Extensions<a class="headerlink" href="#extensions" title="Permalink to this headline">¶</a></h2>
+<p>Several improvements/extensions are planned for this library:</p>
+<ol class="arabic simple">
+<li><p>Provide a 2D implementation of the contact function.</p></li>
+<li><p>Allow for early stop of the iterations. If, during the iterations, a value of
+<code class="docutils literal notranslate"><span class="pre">λ</span></code> is found such that <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>, then <code class="docutils literal notranslate"><span class="pre">μ²</span></code> must be greater than <code class="docutils literal notranslate"><span class="pre">1</span></code>,
+and the ellipsoids certainly do not overlap, which might be sufficient if the
+user is not interested in the exact value of the contact function.</p></li>
+<li><p>Return error codes when necessary. Note that this would be an extra safety
+net, as the optimization procedure is extremely robust. Indeed, it never
+failed for the thousands of test cases considered (the function to optimize
+has the required convexity over <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">1)</span></code>).</p></li>
+</ol>
+<p>This project welcomes contributions. We definitely need help for the following
+points:</p>
+<ol class="arabic simple">
+<li><p>Define a “Code of conduct”.</p></li>
+<li><p>Improve the Python wrapper (using Cython or a C extension).</p></li>
+<li><p>Implement wrappers for other languages (Julia, Javascript).</p></li>
+</ol>
+</div>
+<div class="section" id="acknowledgements">
+<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h2>
+<p>The author would like to thank Prof. Chloé Arson (GeorgiaTech Institute of
+Technology, School of Civil and Environmental Engineering) for stimulating
+exchanges and research ideas that motivated the exhumation of this project
+(which has long been a defunct Java library).</p>
+<p>The author would also like to thank Xianda Shen (GeorgiaTech Institute of
+Technology, School of Civil and Environmental Engineering) for testing on fruity
+operating systems the installation procedure of this and related libraries. His
+dedication led him to valiantly fight long battles with <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> and
+<code class="docutils literal notranslate"><span class="pre">brew</span></code>.</p>
+<dl class="citation">
+<dt class="label" id="abh18"><span class="brackets"><a class="fn-backref" href="#id6">ABH18</a></span></dt>
+<dd><p>Anoukou, K., Brenner, R., Hong, F., Pellerin, M., &amp;
+Danas, K. (2018). Random distribution of polydisperse ellipsoidal
+inclusions and homogenization estimates for porous elastic
+materials. Computers &amp; Structures, 210,
+87–101. <a class="reference external" href="https://doi.org/10.1016/j.compstruc.2018.08.006">https://doi.org/10.1016/j.compstruc.2018.08.006</a></p>
+</dd>
+<dt class="label" id="bl13"><span class="brackets">BL13</span><span class="fn-backref">(<a href="#id11">1</a>,<a href="#id12">2</a>)</span></dt>
+<dd><p>Brisard, S., &amp; Levitz, P. (2013). Small-angle scattering of dense,
+polydisperse granular porous media: Computation free of size
+effects. Physical Review E,
+87(1), 013305. <a class="reference external" href="https://doi.org/10.1103/PhysRevE.87.013305">https://doi.org/10.1103/PhysRevE.87.013305</a></p>
+</dd>
+<dt class="label" id="cyp07"><span class="brackets"><a class="fn-backref" href="#id5">CYP07</a></span></dt>
+<dd><p>Chen, X.-D., Yong, J.-H., Paul, J.-C., &amp; Sun, J. (2007). Intersection
+Testing between an Ellipsoid and an Algebraic Surface. 2007 10th IEEE
+International Conference on Computer-Aided Design and Computer
+Graphics, 43–46. <a class="reference external" href="https://doi.org/10.1109/CADCG.2007.4407853">https://doi.org/10.1109/CADCG.2007.4407853</a></p>
+</dd>
+<dt class="label" id="dts05"><span class="brackets"><a class="fn-backref" href="#id9">DTS05</a></span></dt>
+<dd><p>Donev, A., Torquato, S., &amp; Stillinger, F. H. (2005). Neighbor list
+collision-driven molecular dynamics simulation for nonspherical hard
+particles. I. Algorithmic details. Journal of Computational Physics,
+202(2), 737–764. <a class="reference external" href="https://doi.org/10.1016/j.jcp.2004.08.014">https://doi.org/10.1016/j.jcp.2004.08.014</a></p>
+</dd>
+<dt class="label" id="dts05a"><span class="brackets"><a class="fn-backref" href="#id10">DTS05a</a></span></dt>
+<dd><p>Donev, A., Torquato, S., &amp; Stillinger, F. H. (2005). Neighbor list
+collision-driven molecular dynamics simulation for nonspherical hard
+particles.: II. Applications to ellipses and ellipsoids. Journal of
+Computational Physics, 202(2),
+765–793. <a class="reference external" href="https://doi.org/10.1016/j.jcp.2004.08.025">https://doi.org/10.1016/j.jcp.2004.08.025</a></p>
+</dd>
+<dt class="label" id="pw85"><span class="brackets">PW85</span><span class="fn-backref">(<a href="#id3">1</a>,<a href="#id7">2</a>,<a href="#id8">3</a>)</span></dt>
+<dd><p>Perram, J. W., &amp; Wertheim, M. S. (1985). Statistical
+mechanics of hard ellipsoids. I. Overlap algorithm and the
+contact function. <em>Journal of Computational Physics</em>, 58(3),
+409–416. <a class="reference external" href="https://doi.org/10.1016/0021-9991(85)90171-8">https://doi.org/10.1016/0021-9991(85)90171-8</a></p>
+</dd>
+<dt class="label" id="vb72"><span class="brackets"><a class="fn-backref" href="#id2">VB72</a></span></dt>
+<dd><p>Vieillard‐Baron, J. (1972). Phase Transitions of the Classical
+Hard‐Ellipse System. The Journal of Chemical Physics, 56(10),
+4729–4744. <a class="reference external" href="https://doi.org/doi:10.1063/1.1676946">https://doi.org/doi:10.1063/1.1676946</a></p>
+</dd>
+<dt class="label" id="wwk01"><span class="brackets"><a class="fn-backref" href="#id4">WWK01</a></span></dt>
+<dd><p>Wang, W., Wang, J., &amp; Kim, M.-S. (2001). An algebraic condition for
+the separation of two ellipsoids. Computer Aided Geometric Design,
+18(6), 531–539. <a class="reference external" href="https://doi.org/10.1016/S0167-8396(01)00049-8">https://doi.org/10.1016/S0167-8396(01)00049-8</a></p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">pw85</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-contact-function-of-perram-and-wertheim-pw85">The contact function of Perram and Wertheim <span>[PW85]</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#features-of-the-overlap-test">Features of the overlap test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extensions">Extensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimization.html">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing the implementation of the contact function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Documentation of the <code class="docutils literal notranslate"><span class="pre">pw85</span></code> library</a></li>
+      <li>Next: <a href="installation.html" title="next chapter">Installation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018–2019, Sébastien Brisard.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/overview.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
