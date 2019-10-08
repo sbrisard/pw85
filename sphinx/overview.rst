@@ -103,11 +103,11 @@ Application to Monte-Carlo simulations
 --------------------------------------
 
 Generating compact assemblies of hard particles is a notoriously difficult
-task. Event-driven simulations [@done2005; @done2005a] are often used, but
-require a lot of book-keeping. A comparatively simpler approach [@bris2013] is
-similar to atomistic simulations with a non-physical energy. More precisely,
-starting from an initial configuration where the ``n`` ellipsoids ``E₁, …, Eₙ``
-do overlap, a simulated annealing strategy is adopted to minimize the quantity
+task. Event-driven simulations [DTS05]_; [DTS05a]_ are often used, but require a
+lot of book-keeping. A comparatively simpler approach [BL13]_ is similar to
+atomistic simulations with a non-physical energy. More precisely, starting from
+an initial configuration where the ``n`` ellipsoids ``E₁, …, Eₙ`` do overlap, a
+simulated annealing strategy is adopted to minimize the quantity
 ``U(E₁, …, Eₙ)`` defined as follows::
 
   (4)    U(E₁, …, Eₙ) =      ∑       u(Eᵢ, Eⱼ),
@@ -122,8 +122,7 @@ possible choice for ``u`` is the following::
 
 Monte-Carlo simulations using previous implementations of the contact function
 of Perram and Wertheim and the above definition of the energy of the system were
-successfully used to produce extremely compact assemblies of ellipsoids
-[@bris2013].
+successfully used to produce extremely compact assemblies of ellipsoids [BL13]_.
 
 
 Implementation
@@ -207,10 +206,26 @@ References
            materials. Computers & Structures, 210,
            87–101. https://doi.org/10.1016/j.compstruc.2018.08.006
 
+.. [BL13] Brisard, S., & Levitz, P. (2013). Small-angle scattering of dense,
+          polydisperse granular porous media: Computation free of size
+          effects. Physical Review E,
+          87(1), 013305. https://doi.org/10.1103/PhysRevE.87.013305
+
 .. [CYP07] Chen, X.-D., Yong, J.-H., Paul, J.-C., & Sun, J. (2007). Intersection
            Testing between an Ellipsoid and an Algebraic Surface. 2007 10th IEEE
            International Conference on Computer-Aided Design and Computer
            Graphics, 43–46. https://doi.org/10.1109/CADCG.2007.4407853
+
+.. [DTS05] Donev, A., Torquato, S., & Stillinger, F. H. (2005). Neighbor list
+           collision-driven molecular dynamics simulation for nonspherical hard
+           particles. I. Algorithmic details. Journal of Computational Physics,
+           202(2), 737–764. https://doi.org/10.1016/j.jcp.2004.08.014
+
+.. [DTS05a] Donev, A., Torquato, S., & Stillinger, F. H. (2005). Neighbor list
+            collision-driven molecular dynamics simulation for nonspherical hard
+            particles.: II. Applications to ellipses and ellipsoids. Journal of
+            Computational Physics, 202(2),
+            765–793. https://doi.org/10.1016/j.jcp.2004.08.025
 
 .. [PW85] Perram, J. W., & Wertheim, M. S. (1985). Statistical
           mechanics of hard ellipsoids. I. Overlap algorithm and the
