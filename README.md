@@ -16,7 +16,7 @@ pw85 is released under a BSD 3-Clause License.
 
 [doi]: https://doi.org/10.1016/0021-9991(85)90171-8 "Perram and Wertheim (1985)"
 [htmldoc]: https://sbrisard.github.io/pw85/ "HTML documentation of the pw85 library"
-[pdfdoc]: https://sbrisard.github.io/pw85/_downloads/7f04ad075e7d12a5ca017c9e5549f8f0/pw85.pdf "PDF documentation of the pw85 library"
+[pdfdoc]: https://sbrisard.github.io/pw85/_downloads/00be61554f3f361f07aba461e46e94fa/pw85.pdf "PDF documentation of the pw85 library"
 
 ## Release notes
 
