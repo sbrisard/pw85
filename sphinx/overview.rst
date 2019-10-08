@@ -197,9 +197,6 @@ dedication led him to valiantly fight long battles with ``setuptools`` and
 ``brew``.
 
 
-References
-==========
-
 .. [ABH18] Anoukou, K., Brenner, R., Hong, F., Pellerin, M., &
            Danas, K. (2018). Random distribution of polydisperse ellipsoidal
            inclusions and homogenization estimates for porous elastic
