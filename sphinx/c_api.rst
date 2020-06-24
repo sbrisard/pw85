@@ -155,7 +155,7 @@ and use the following link directive::
   array. It is modified in-place.
 
 
-.. c:function:: double pw85_f_neg(double lambda, double cons* params)
+.. c:function:: double pw85_f_neg(double lambda, double const* params)
 
   Return the value of the opposite of the function ``f`` defined as (see
   :ref:`theory`)::
