@@ -1,17 +1,18 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The C API &#8212; Documentation of the pw85 library</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="The python API" href="py_api.html" />
@@ -35,7 +36,7 @@
   <div class="section" id="the-c-api">
 <h1>The C API<a class="headerlink" href="#the-c-api" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
-<p class="topic-title first">Contents</p>
+<p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#representation-of-vectors-and-matrices" id="id5">Representation of vectors and matrices</a></p></li>
 <li><p><a class="reference internal" href="#the-new-api" id="id6">The new API</a></p></li>
@@ -96,48 +97,48 @@ the following header:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-lpw85
 </pre></div>
 </div>
-<dl class="macro">
+<dl class="c macro">
 <dt id="c.PW85_VERSION">
-<code class="sig-name descname">PW85_VERSION</code><a class="headerlink" href="#c.PW85_VERSION" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">PW85_VERSION</code><a class="headerlink" href="#c.PW85_VERSION" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The current version of the library.</p>
 </dd></dl>
 
-<dl class="macro">
+<dl class="c macro">
 <dt id="c.PW85_DIM">
-<code class="sig-name descname">PW85_DIM</code><a class="headerlink" href="#c.PW85_DIM" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">PW85_DIM</code><a class="headerlink" href="#c.PW85_DIM" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The dimension of the physical space (3).</p>
 </dd></dl>
 
-<dl class="macro">
+<dl class="c macro">
 <dt id="c.PW85_SYM">
-<code class="sig-name descname">PW85_SYM</code><a class="headerlink" href="#c.PW85_SYM" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">PW85_SYM</code><a class="headerlink" href="#c.PW85_SYM" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The dimension of the space of symmetric matrices (6).</p>
 </dd></dl>
 
-<dl class="macro">
+<dl class="c macro">
 <dt id="c.PW85_LAMBDA_ATOL">
-<code class="sig-name descname">PW85_LAMBDA_ATOL</code><a class="headerlink" href="#c.PW85_LAMBDA_ATOL" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">PW85_LAMBDA_ATOL</code><a class="headerlink" href="#c.PW85_LAMBDA_ATOL" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The absolute tolerance for the stopping criterion of Brent’s method (in
 function <a class="reference internal" href="#c.pw85_contact_function" title="pw85_contact_function"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85_contact_function()</span></code></a>).</p>
 </dd></dl>
 
-<dl class="macro">
+<dl class="c macro">
 <dt id="c.PW85_MAX_ITER">
-<code class="sig-name descname">PW85_MAX_ITER</code><a class="headerlink" href="#c.PW85_MAX_ITER" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">PW85_MAX_ITER</code><a class="headerlink" href="#c.PW85_MAX_ITER" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The maximum number of iterations of Brent’s method (in function
 <a class="reference internal" href="#c.pw85_contact_function" title="pw85_contact_function"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85_contact_function()</span></code></a>).</p>
 </dd></dl>
 
-<dl class="macro">
+<dl class="c macro">
 <dt id="c.PW85_NR_ITER">
-<code class="sig-name descname">PW85_NR_ITER</code><a class="headerlink" href="#c.PW85_NR_ITER" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">PW85_NR_ITER</code><a class="headerlink" href="#c.PW85_NR_ITER" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The total number of iterations of the Newton–Raphson refinement phase (in
 function <a class="reference internal" href="#c.pw85_contact_function" title="pw85_contact_function"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85_contact_function()</span></code></a>).</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.pw85__cholesky_decomp">
-void <code class="sig-name descname">pw85__cholesky_decomp</code><span class="sig-paren">(</span>double const<em> a[PW85_SYM]</em>, double<em> l[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__cholesky_decomp" title="Permalink to this definition">¶</a></dt>
+void <code class="sig-name descname">pw85__cholesky_decomp</code><span class="sig-paren">(</span>double <em class="property">const</em> <em>a</em>[<em>PW85_SYM</em>], double <em>l</em>[<em>PW85_SYM</em>]<span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__cholesky_decomp" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Compute the Cholesky decomposition of a symmetric, positive matrix.</p>
 <p>Let <code class="docutils literal notranslate"><span class="pre">A</span></code> be a symmetric, positive matrix, defined by the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array
 <code class="docutils literal notranslate"><span class="pre">a</span></code>. This function computes the lower-triangular matrix <code class="docutils literal notranslate"><span class="pre">L</span></code>, defined by
@@ -151,9 +152,9 @@ L = ⎢ l[1] l[3]    0 ⎥.
 </div>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.pw85__cholesky_solve">
-void <code class="sig-name descname">pw85__cholesky_solve</code><span class="sig-paren">(</span>double const<em> l[PW85_SYM]</em>, double const<em> b[PW85_DIM]</em>, double<em> x[PW85_DIM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__cholesky_solve" title="Permalink to this definition">¶</a></dt>
+void <code class="sig-name descname">pw85__cholesky_solve</code><span class="sig-paren">(</span>double <em class="property">const</em> <em>l</em>[<em>PW85_SYM</em>], double <em class="property">const</em> <em>b</em>[<em>PW85_DIM</em>], double <em>x</em>[<em>PW85_DIM</em>]<span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__cholesky_solve" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Compute the solution to a previously Cholesky decoposed linear system.</p>
 <p>Let <code class="docutils literal notranslate"><span class="pre">L</span></code> be a lower-triangular matrix, defined by the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array
 <code class="docutils literal notranslate"><span class="pre">l</span></code> (see <a class="reference internal" href="#c.pw85__cholesky_decomp" title="pw85__cholesky_decomp"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85__cholesky_decomp()</span></code></a> for ordering of the
@@ -162,9 +163,9 @@ coefficients). This function solves (by substitution) the linear system
 <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array of coordinates; <code class="docutils literal notranslate"><span class="pre">x</span></code> is modified by this function.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.pw85__residual">
-void <code class="sig-name descname">pw85__residual</code><span class="sig-paren">(</span>double<em> lambda</em>, double const<em> r12[PW85_DIM]</em>, double const<em> q1[PW85_SYM]</em>, double const<em> q2[PW85_SYM]</em>, double<em> out[3]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__residual" title="Permalink to this definition">¶</a></dt>
+void <code class="sig-name descname">pw85__residual</code><span class="sig-paren">(</span>double <em>lambda</em>, double <em class="property">const</em> <em>r12</em>[<em>PW85_DIM</em>], double <em class="property">const</em> <em>q1</em>[<em>PW85_SYM</em>], double <em class="property">const</em> <em>q2</em>[<em>PW85_SYM</em>], double <em>out</em>[3]<span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__residual" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Compute the residual <code class="docutils literal notranslate"><span class="pre">g(λ)</span> <span class="pre">=</span> <span class="pre">μ₂²</span> <span class="pre">-</span> <span class="pre">μ₁²</span></code>.</p>
 <p>See <a class="reference internal" href="optimization.html#optimization"><span class="std std-ref">Optimization of the function f</span></a> for the definition of <code class="docutils literal notranslate"><span class="pre">g</span></code>. The value of <code class="docutils literal notranslate"><span class="pre">λ</span></code> is
 specified through the parameter
@@ -179,9 +180,9 @@ parameters <code class="docutils literal notranslate"><span class="pre">r12</spa
 final Newton–Raphson refinement step.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.pw85_spheroid">
-void <code class="sig-name descname">pw85_spheroid</code><span class="sig-paren">(</span>double<em> a</em>, double<em> c</em>, double<em> n[PW85_DIM]</em>, double<em> q[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_spheroid" title="Permalink to this definition">¶</a></dt>
+void <code class="sig-name descname">pw85_spheroid</code><span class="sig-paren">(</span>double <em>a</em>, double <em>c</em>, double <em>n</em>[<em>PW85_DIM</em>], double <em>q</em>[<em>PW85_SYM</em>]<span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_spheroid" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Compute the quadratic form associated to a spheroid.</p>
 <p>The spheroid is defined by its equatorial radius <code class="docutils literal notranslate"><span class="pre">a</span></code>, its polar radius
 <code class="docutils literal notranslate"><span class="pre">c</span></code> and the direction of its axis of revolution, <code class="docutils literal notranslate"><span class="pre">n</span></code>.</p>
@@ -189,9 +190,9 @@ void <code class="sig-name descname">pw85_spheroid</code><span class="sig-paren"
 array. It is modified in-place.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.pw85_f_neg">
-double <code class="sig-name descname">pw85_f_neg</code><span class="sig-paren">(</span>double<em> lambda</em>, double cons*<em> params</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_f_neg" title="Permalink to this definition">¶</a></dt>
+double <code class="sig-name descname">pw85_f_neg</code><span class="sig-paren">(</span>double <em>lambda</em>, double <em class="property">const</em> *<em>params</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_f_neg" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Return the value of the opposite of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> defined as (see
 <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
@@ -225,9 +226,9 @@ fact that we seek the maximum of <code class="docutils literal notranslate"><spa
 accordance with <code class="docutils literal notranslate"><span class="pre">gsl_min.h</span></code> from the GNU Scientific Library.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.pw85_contact_function">
-int <code class="sig-name descname">pw85_contact_function</code><span class="sig-paren">(</span>double const<em> r12[PW85_DIM]</em>, double const<em> q1[PW85_SYM]</em>, double const<em> q2[PW85_SYM]</em>, double<em> out[2]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_contact_function" title="Permalink to this definition">¶</a></dt>
+int <code class="sig-name descname">pw85_contact_function</code><span class="sig-paren">(</span>double <em class="property">const</em> <em>r12</em>[<em>PW85_DIM</em>], double <em class="property">const</em> <em>q1</em>[<em>PW85_SYM</em>], double <em class="property">const</em> <em>q2</em>[<em>PW85_SYM</em>], double <em>out</em>[2]<span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_contact_function" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Compute the value of the contact function of two ellipsoids.</p>
 <p>The center-to-center radius-vector is specified by the <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array
 <code class="docutils literal notranslate"><span class="pre">r12</span></code>. The symmetric, positive-definite matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> that
@@ -265,16 +266,16 @@ must include the following header:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-lpw85_legacy
 </pre></div>
 </div>
-<dl class="function">
+<dl class="c function">
 <dt id="c.pw85_legacy__det_sym">
-double <code class="sig-name descname">pw85_legacy__det_sym</code><span class="sig-paren">(</span>double<em> a[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_legacy__det_sym" title="Permalink to this definition">¶</a></dt>
+double <code class="sig-name descname">pw85_legacy__det_sym</code><span class="sig-paren">(</span>double <em>a</em>[<em>PW85_SYM</em>]<span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_legacy__det_sym" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Return the determinant of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
 <p>The symmetric matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array <code class="docutils literal notranslate"><span class="pre">a</span></code>.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.pw85_legacy__xT_adjA_x">
-double <code class="sig-name descname">pw85_legacy__xT_adjA_x</code><span class="sig-paren">(</span>double<em> x[PW85_DIM]</em>, double<em> a[PW85_SYM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_legacy__xT_adjA_x" title="Permalink to this definition">¶</a></dt>
+double <code class="sig-name descname">pw85_legacy__xT_adjA_x</code><span class="sig-paren">(</span>double <em>x</em>[<em>PW85_DIM</em>], double <em>a</em>[<em>PW85_SYM</em>]<span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_legacy__xT_adjA_x" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Return the product <code class="docutils literal notranslate"><span class="pre">xᵀ⋅adj(A)⋅x</span></code>.</p>
 <p>The column vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is specified as a <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array. The symmetric
 matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified trough the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array <code class="docutils literal notranslate"><span class="pre">a</span></code>.</p>
@@ -282,9 +283,9 @@ matrix <code class="docutils literal notranslate"><span class="pre">A</span></co
 cofactor matrix), see e.g <a class="reference external" href="https://en.wikipedia.org/wiki/Adjugate_matrix">Wikipedia</a>.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.pw85_legacy__detQ_as_poly">
-void <code class="sig-name descname">pw85_legacy__detQ_as_poly</code><span class="sig-paren">(</span>double<em> q1[PW85_SYM]</em>, double<em> q2[PW85_SYM]</em>, double<em> q3[PW85_SYM]</em>, double<em> q4[PW85_SYM]</em>, double<em> b[PW85_DIM+1]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_legacy__detQ_as_poly" title="Permalink to this definition">¶</a></dt>
+void <code class="sig-name descname">pw85_legacy__detQ_as_poly</code><span class="sig-paren">(</span>double <em>q1</em>[<em>PW85_SYM</em>], double <em>q2</em>[<em>PW85_SYM</em>], double <em>q3</em>[<em>PW85_SYM</em>], double <em>q4</em>[<em>PW85_SYM</em>], double <em>b</em>[<em>PW85_DIM</em> + 1]<span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_legacy__detQ_as_poly" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Compute the coefficients of the polynomial <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">↦</span> <span class="pre">det[(1-λ)Q₁+λQ₂]</span></code>.</p>
@@ -301,9 +302,9 @@ difference <code class="docutils literal notranslate"><span class="pre">2Q₁-Q�
 </div>
 <p>The coefficients <code class="docutils literal notranslate"><span class="pre">bᵢ</span></code> are stored in <code class="docutils literal notranslate"><span class="pre">b</span></code> in <em>increasing</em> order: <code class="docutils literal notranslate"><span class="pre">b[i]</span> <span class="pre">=</span>
 <span class="pre">bᵢ</span></code>.</p>
-<dl class="function">
+<dl class="c function">
 <dt id="c.pw85__rT_adjQ_r_as_poly">
-double <code class="sig-name descname">pw85__rT_adjQ_r_as_poly</code><span class="sig-paren">(</span>double<em> r[PW85_DIM]</em>, double<em> q1[PW85_SYM]</em>, double<em> q2[PW85_SYM]</em>, double<em> q3[PW85_SYM]</em>, double<em> a[PW85_DIM]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__rT_adjQ_r_as_poly" title="Permalink to this definition">¶</a></dt>
+double <code class="sig-name descname">pw85__rT_adjQ_r_as_poly</code><span class="sig-paren">(</span>double <em>r</em>[<em>PW85_DIM</em>], double <em>q1</em>[<em>PW85_SYM</em>], double <em>q2</em>[<em>PW85_SYM</em>], double <em>q3</em>[<em>PW85_SYM</em>], double <em>a</em>[<em>PW85_DIM</em>]<span class="sig-paren">)</span><a class="headerlink" href="#c.pw85__rT_adjQ_r_as_poly" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Compute the coefficients of the polynomial <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">↦</span> <span class="pre">rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r</span></code>.</p>
@@ -319,9 +320,9 @@ as arrays <code class="docutils literal notranslate"><span class="pre">q1</span>
 </pre></div>
 </div>
 <p>The coefficients <code class="docutils literal notranslate"><span class="pre">aᵢ</span></code> are stored in <code class="docutils literal notranslate"><span class="pre">a</span></code> in <em>increasing</em> order: <code class="docutils literal notranslate"><span class="pre">a[i]</span> <span class="pre">=</span> <span class="pre">aᵢ</span></code>.</p>
-<dl class="function">
+<dl class="c function">
 <dt id="c.pw85_legacy_f1">
-double <code class="sig-name descname">pw85_legacy_f1</code><span class="sig-paren">(</span>double<em> lambda</em>, double const<em> r12[PW85_DIM]</em>, double const<em> q1[PW85_SYM]</em>, double const<em> q2[PW85_SYM]</em>, double*<em> out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_legacy_f1" title="Permalink to this definition">¶</a></dt>
+double <code class="sig-name descname">pw85_legacy_f1</code><span class="sig-paren">(</span>double <em>lambda</em>, double <em class="property">const</em> <em>r12</em>[<em>PW85_DIM</em>], double <em class="property">const</em> <em>q1</em>[<em>PW85_SYM</em>], double <em class="property">const</em> <em>q2</em>[<em>PW85_SYM</em>], double *<em>out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_legacy_f1" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Return the value of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> defined as (see <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
 </pre></div>
@@ -349,9 +350,9 @@ values of the first and second derivatives:</p>
 <p>This implementation uses <a class="reference internal" href="implementation.html#implementation-cholesky"><span class="std std-ref">Cholesky decompositions</span></a>.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.pw85_legacy_f2">
-double <code class="sig-name descname">pw85_legacy_f2</code><span class="sig-paren">(</span>double<em> lambda</em>, double const<em> r12[PW85_DIM]</em>, double const<em> q1[PW85_SYM]</em>, double const<em> q2[PW85_SYM]</em>, double*<em> out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_legacy_f2" title="Permalink to this definition">¶</a></dt>
+double <code class="sig-name descname">pw85_legacy_f2</code><span class="sig-paren">(</span>double <em>lambda</em>, double <em class="property">const</em> <em>r12</em>[<em>PW85_DIM</em>], double <em class="property">const</em> <em>q1</em>[<em>PW85_SYM</em>], double <em class="property">const</em> <em>q2</em>[<em>PW85_SYM</em>], double *<em>out</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_legacy_f2" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alternative implementation of <a class="reference internal" href="#c.pw85_legacy_f1" title="pw85_legacy_f1"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85_legacy_f1()</span></code></a>.</p>
 <p>See <a class="reference internal" href="#c.pw85_legacy_f1" title="pw85_legacy_f1"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85_legacy_f1()</span></code></a> for the meaning of the parameters <code class="docutils literal notranslate"><span class="pre">lambda</span></code>,
 <code class="docutils literal notranslate"><span class="pre">r12</span></code>, <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code>.</p>
@@ -365,9 +366,9 @@ value of <code class="docutils literal notranslate"><span class="pre">f(λ)</spa
 <p class="admonition-title">Todo</p>
 <p>This function should also compute the first and second derivatives.</p>
 </div>
-<dl class="function">
+<dl class="c function">
 <dt id="c.pw85_legacy_contact_function1">
-int <code class="sig-name descname">pw85_legacy_contact_function1</code><span class="sig-paren">(</span>double const<em> r12[PW85_DIM]</em>, double const<em> q1[PW85_SYM]</em>, double const<em> q2[PW85_SYM]</em>, double<em> out[2]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_legacy_contact_function1" title="Permalink to this definition">¶</a></dt>
+int <code class="sig-name descname">pw85_legacy_contact_function1</code><span class="sig-paren">(</span>double <em class="property">const</em> <em>r12</em>[<em>PW85_DIM</em>], double <em class="property">const</em> <em>q1</em>[<em>PW85_SYM</em>], double <em class="property">const</em> <em>q2</em>[<em>PW85_SYM</em>], double <em>out</em>[2]<span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_legacy_contact_function1" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Compute the value of the contact function of two ellipsoids.</p>
 <p>See <a class="reference internal" href="#c.pw85_contact_function" title="pw85_contact_function"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85_contact_function()</span></code></a> for the invocation of this function.</p>
 <p>Implementation of this function relies on Newton–Raphson iterations on <code class="docutils literal notranslate"><span class="pre">f</span></code>;
@@ -379,9 +380,9 @@ it is not robust.</p>
 <p class="admonition-title">Todo</p>
 <p>This function should return an error code.</p>
 </div>
-<dl class="function">
+<dl class="c function">
 <dt id="c.pw85_legacy_contact_function2">
-int <code class="sig-name descname">pw85_legacy_contact_function2</code><span class="sig-paren">(</span>double const<em> r12[PW85_DIM]</em>, double const<em> q1[PW85_SYM]</em>, double const<em> q2[PW85_SYM]</em>, double<em> out[2]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_legacy_contact_function2" title="Permalink to this definition">¶</a></dt>
+int <code class="sig-name descname">pw85_legacy_contact_function2</code><span class="sig-paren">(</span>double <em class="property">const</em> <em>r12</em>[<em>PW85_DIM</em>], double <em class="property">const</em> <em>q1</em>[<em>PW85_SYM</em>], double <em class="property">const</em> <em>q2</em>[<em>PW85_SYM</em>], double <em>out</em>[2]<span class="sig-paren">)</span><a class="headerlink" href="#c.pw85_legacy_contact_function2" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Compute the value of the contact function of two ellipsoids.</p>
 <p>See <a class="reference internal" href="#c.pw85_contact_function" title="pw85_contact_function"><code class="xref c c-func docutils literal notranslate"><span class="pre">pw85_contact_function()</span></code></a> for the invocation of this
 function.</p>
@@ -453,7 +454,7 @@ this root.</p>
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -467,10 +468,10 @@ this root.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018–2019, Sébastien Brisard.
+      &copy;2018–2020, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

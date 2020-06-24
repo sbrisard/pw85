@@ -1,0 +1,319 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pypw85 &#8212; Documentation of the pw85 library</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for pypw85</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Overlap test of two ellipsoids.</span>
+
+<span class="sd">This module provides a wrapper around the PW85 C library that implements</span>
+<span class="sd">the “contact function” defined by Perram and Wertheim (J. Comp. Phys.</span>
+<span class="sd">58(3), 409–416, DOI:10.1016/0021-9991(85)90171-8) for two ellipsoids.</span>
+<span class="sd">Given two ellipsoids, this function returns the *square* of the common</span>
+<span class="sd">factor by which both ellipsoids must be scaled (their centers being</span>
+<span class="sd">fixed) in order to be tangentially in contact.</span>
+
+<span class="sd">This module is released under a BSD 3-Clause License.</span>
+
+<span class="sd">Representation of vectors and matrices</span>
+<span class="sd">--------------------------------------</span>
+
+<span class="sd">An ellipsoid is defined from its center ``c`` (a 3×1, column-vector)</span>
+<span class="sd">and quadratic form ``Q`` (a 3×3, symmetric, positive definite matrix)</span>
+<span class="sd">as the set of points ``m`` such that::</span>
+
+<span class="sd">  (m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.</span>
+
+<span class="sd">In this module, objects referred to as “vectors” are length-3 arrays</span>
+<span class="sd">of ``double`` coordinates. In other words, the representation of the</span>
+<span class="sd">vector ``x`` is the ``double[3]`` array ``x`` such that::</span>
+
+<span class="sd">      ⎡ x[0] ⎤</span>
+<span class="sd">  x = ⎢ x[1] ⎥.</span>
+<span class="sd">      ⎣ x[2] ⎦</span>
+
+<span class="sd">Objects referred to as “symmetric matrices” (or “quadratic forms”) are</span>
+<span class="sd">length-6 arrays of ``double``. Such arrays list in row-major order the</span>
+<span class="sd">coefficients of the triangular upper part. In other words, the</span>
+<span class="sd">representation of a the symmetric matrix ``A`` is the array ``a`` such</span>
+<span class="sd">that::</span>
+
+<span class="sd">      ⎡ a[0] a[1] a[2] ⎤</span>
+<span class="sd">  A = ⎢      a[3] a[4] ⎥.</span>
+<span class="sd">      ⎣ sym.      a[5] ⎦</span>
+
+<span class="sd">The present wrapper around the PW85 C library relies on the NumPy</span>
+<span class="sd">library.  “``double[n]`` array” should be understood here as “NumPy</span>
+<span class="sd">array with ``shape == (n,)`` and ``dtype == numpy.float64``.”</span>
+
+<span class="sd">Note that true NumPy array *must* be passed (array-likes will *not*</span>
+<span class="sd">work).</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">ctypes</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">pypw85.utils</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{version}</span><span class="s2">&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="si">{author}</span><span class="s2">&quot;</span>
+
+<span class="n">__clib</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">load_library</span><span class="p">(</span><span class="s2">&quot;libpw85&quot;</span><span class="p">)</span>
+
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85__cholesky_decomp</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">[</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85__cholesky_decomp</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85__cholesky_solve</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">[</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85__cholesky_solve</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_spheroid</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span><span class="p">,</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span><span class="p">,</span>
+    <span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">,</span>
+    <span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_spheroid</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_f_neg</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span><span class="p">,</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_f_neg</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span>
+
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85__residual</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_double</span><span class="p">]</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">[</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85__residual</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">[</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">]</span>
+<span class="n">__clib</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span>
+
+
+<div class="viewcode-block" id="_cholesky_decomp"><a class="viewcode-back" href="../py_api.html#pypw85._cholesky_decomp">[docs]</a><span class="k">def</span> <span class="nf">_cholesky_decomp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the Cholesky decomposition ``A = L⋅Lᵀ`` of a 3×3 matrix.</span>
+
+<span class="sd">    ``A`` is a symmetric matrix, ``L`` is a lower matrix, both</span>
+<span class="sd">    represented by ``double[6]`` arrays.</span>
+
+<span class="sd">    This function returns ``l``, suitably updated with the</span>
+<span class="sd">    coefficients of the Cholesky decomposition. If ``l`` is ``None``,</span>
+<span class="sd">    then a new array is allocated.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">l</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">6</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+    <span class="n">__clib</span><span class="o">.</span><span class="n">pw85__cholesky_decomp</span><span class="p">(</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">l</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">l</span></div>
+
+
+<div class="viewcode-block" id="_cholesky_solve"><a class="viewcode-back" href="../py_api.html#pypw85._cholesky_solve">[docs]</a><span class="k">def</span> <span class="nf">_cholesky_solve</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the solution of the 3×3 linear system ``L⋅Lᵀ⋅x = b.``</span>
+
+<span class="sd">    ``L`` is a lower matrix, represented by the ``double[6]`` array</span>
+<span class="sd">    ``l``; ``x`` and ``b`` are vectors (``double[3]`` arrays).</span>
+
+<span class="sd">    This function returns ``x``, suitably updated with the solution to</span>
+<span class="sd">    the system. If ``x`` is ``None``, then a new array is allocated.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">3</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+    <span class="n">__clib</span><span class="o">.</span><span class="n">pw85__cholesky_solve</span><span class="p">(</span>
+        <span class="n">l</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">b</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="spheroid"><a class="viewcode-back" href="../py_api.html#pypw85.spheroid">[docs]</a><span class="k">def</span> <span class="nf">spheroid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the quadratic form associated to a spheroid.</span>
+
+<span class="sd">    The spheroid is defined by its equatorial radius ``a``, its polar</span>
+<span class="sd">    radius ``c`` and the direction of its axis of revolution, ``n``</span>
+<span class="sd">    (vector, a.k.a. ``double[3]`` array).</span>
+
+<span class="sd">    If ``q`` is not ``None``, then it must be a pre-allocated</span>
+<span class="sd">    ``double[6]`` array. It is modified in place.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">q</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">6</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+    <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_spheroid</span><span class="p">(</span>
+        <span class="n">a</span><span class="p">,</span>
+        <span class="n">c</span><span class="p">,</span>
+        <span class="n">n</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">q</span></div>
+
+
+<div class="viewcode-block" id="f"><a class="viewcode-back" href="../py_api.html#pypw85.f">[docs]</a><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">lambda_</span><span class="p">,</span> <span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the value of the function ``f`` defined as::</span>
+
+<span class="sd">        f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,</span>
+
+<span class="sd">    with::</span>
+
+<span class="sd">        Q = (1-λ)Q₁ + λQ₂,</span>
+
+<span class="sd">    where ellipsoids 1 and 2 are defined as the sets of points ``m``</span>
+<span class="sd">    (column-vector) such that::</span>
+
+<span class="sd">        (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1</span>
+
+<span class="sd">    In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is</span>
+<span class="sd">    the center-to-center radius-vector, represented by the</span>
+<span class="sd">    ``double[3]`` array ``r12``. The symmetric, positive-definite</span>
+<span class="sd">    matrices ``Q₁`` and ``Q₂`` are specified through the ``double[6]``</span>
+<span class="sd">    arrays ``q1`` and ``q2``.</span>
+
+<span class="sd">    The value of ``λ`` is specified through the parameter ``lambda_``.</span>
+
+<span class="sd">    This function returns the value of ``f(λ)``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">15</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">r12</span>
+    <span class="n">params</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="n">q1</span>
+    <span class="n">params</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="n">q2</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">__clib</span><span class="o">.</span><span class="n">pw85_f_neg</span><span class="p">(</span><span class="n">lambda_</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="contact_function"><a class="viewcode-back" href="../py_api.html#pypw85.contact_function">[docs]</a><span class="k">def</span> <span class="nf">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the value of the contact function of two ellipsoids.</span>
+
+<span class="sd">    See :py:func:`f` for the meaning of the parameters ``r12``, ``q1``</span>
+<span class="sd">    and ``q2``.</span>
+
+<span class="sd">    This function returns the pair ``(μ², λ)``, defined as (see</span>
+<span class="sd">    :ref:`theory`)::</span>
+
+<span class="sd">        μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }</span>
+
+<span class="sd">    (the returned value of ``λ`` is the actual maximizer).</span>
+
+<span class="sd">    ``μ`` is the common factor by which the two ellipsoids must be</span>
+<span class="sd">    scaled (their centers being fixed) in order to be tangentially in</span>
+<span class="sd">    contact.</span>
+
+<span class="sd">    If ``out`` is not ``None``, it must be a pre-allocated</span>
+<span class="sd">    ``double[2]`` array. It is updated with the values of ``μ²``, and</span>
+<span class="sd">    the maximizer ``λ``::</span>
+
+<span class="sd">        out[0] = μ²    and    out[1] = λ.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">2</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="n">__clib</span><span class="o">.</span><span class="n">pw85_contact_function</span><span class="p">(</span>
+        <span class="n">r12</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">q1</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">q2</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">ctypes</span><span class="o">.</span><span class="n">data_as</span><span class="p">(</span><span class="n">pypw85</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">c_double_p</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">out</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">pw85</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory.html">Theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../implementation.html">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../optimization.html">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing the implementation of the contact function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../c_api.html">The C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../py_api.html">The python API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018–2020, Sébastien Brisard.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

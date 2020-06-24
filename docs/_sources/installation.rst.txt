@@ -102,7 +102,7 @@ file, which you must create and place in the following directory
 - Linux: ``~/.pypw85``
 
 (in all cases, the ``pypw85`` subdirectory must be created). The contents of the
-``pw85.cfg`` file should be::
+``pypw85.cfg`` file should be::
 
   [pw85]
   libpw85 = full/path/to/the/pw85/dynamic/library

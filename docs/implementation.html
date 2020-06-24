@@ -1,17 +1,18 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Implementation of the function f &#8212; Documentation of the pw85 library</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Optimization of the function f" href="optimization.html" />
@@ -136,7 +137,7 @@ matrix), see e.g <a class="reference external" href="https://en.wikipedia.org/wi
 <p>Evaluating the derivative of <code class="docutils literal notranslate"><span class="pre">f</span></code> with respect to <code class="docutils literal notranslate"><span class="pre">λ</span></code> is fairly easy. The following <a class="reference external" href="https://www.sympy.org">Sympy</a> script will do the job:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sympy</span>
 
-<span class="kn">from</span> <span class="nn">sympy</span> <span class="k">import</span> <span class="n">Equality</span><span class="p">,</span> <span class="n">numer</span><span class="p">,</span> <span class="n">pprint</span><span class="p">,</span> <span class="n">Symbol</span>
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">Equality</span><span class="p">,</span> <span class="n">numer</span><span class="p">,</span> <span class="n">pprint</span><span class="p">,</span> <span class="n">Symbol</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">sympy</span><span class="o">.</span><span class="n">init_printing</span><span class="p">(</span><span class="n">use_latex</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_unicode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -365,7 +366,7 @@ former will therefore be selected as default.</p>
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -379,10 +380,10 @@ former will therefore be selected as default.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018–2019, Sébastien Brisard.
+      &copy;2018–2020, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
