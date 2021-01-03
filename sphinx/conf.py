@@ -9,11 +9,12 @@ def read_metadata(basename):
     with open(metadata_dir/(basename+'.txt'), 'r', encoding='utf-8') as f:
         return f.read().strip()
 
-basenames = ['name', 'version', 'author', 'url']
-project, version, author, url = [read_metadata(basename)
-                                 for basename in basenames]
+basenames = ['version', 'author', 'repository']
+project = "pw85"
+version, author, url = [read_metadata(basename)
+                        for basename in basenames]
 release = version
-copyright = '{}–{}, {}'.format(read_metadata('copyright'),
+copyright = '{}–{}, {}'.format(read_metadata('year'),
                                datetime.date.today().year,
                                author)
 
