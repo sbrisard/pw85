@@ -8,7 +8,6 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_min.h>
 
-#define PW85_VERSION "@project_version@"
 #define PW85_DIM 3
 #define PW85_SYM 6
 
