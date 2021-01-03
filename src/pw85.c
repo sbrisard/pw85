@@ -1,4 +1,4 @@
-#include "pw85.h"
+#include "pw85/pw85.h"
 
 void pw85__cholesky_decomp(double const a[PW85_SYM], double l[PW85_SYM]) {
   l[0] = sqrt(a[0]);
