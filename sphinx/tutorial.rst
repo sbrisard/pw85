@@ -225,33 +225,31 @@ and ``λ``:
 .. literalinclude:: ./c_tutorial/tutorial.c
    :language: c
 
-A ``meson.build`` file is provided for the compilation of the tutorial using
-the `Meson build system <https://mesonbuild.com>`_. You can reuse it in one of
-your own projects (:download:`download <./c_tutorial/meson.build>`):
+A ``CMakeLists.txt`` file is provided for the compilation of the tutorial using
+the CMake_. You can reuse it in one of your own projects (:download:`download
+<./c_tutorial/CMakeLists.txt>`):
 
-.. literalinclude:: ./c_tutorial/meson.build
-   :language: none
+.. literalinclude:: ./c_tutorial/CMakeLists.txt
+   :language: cmake
 
-The location of the PW85 dynamic library and header files is specified through
-two options that are defined in the ``meson_options.txt`` file
-(:download:`download <./c_tutorial/meson_options.txt>`):
 
-.. literalinclude:: ./c_tutorial/meson_options.txt
-   :language: none
+``cd`` into the ``c_tutorial`` subdirectory. The provided example program
+should be compiled and linked against pw85::
 
-Compilation proceeds as follows::
+  $ mkdir build
+  $ cd build
+  $ cmake -Dpw85_DIR=pw85_INSTALL_PREFIX/lib/cmake/pw85 ..
+  $ cmake --build . --config Release
 
-  meson setup -Dpw85_include=/c/opt/pw85/include/ -Dpw85_lib=/c/opt/pw85/bin/ build
-  cd build/
-  ninja
-
-It produces an executable called (depending on the platform): ``tutorial.exe``
-or ``tutorial``. On execution, it prints the following lines to ``stdout``:
+An executable called ``tutorial`` should be present in the ``build/Release``
+subdirectory. On execution, it prints the following lines to ``stdout``:
 
 .. code-block:: none
 
   mu^2 = 3.36271
   lambda = 0.166859
+
+.. _CMake: https://cmake.org/
 
 .. Local Variables:
 .. fill-column: 79

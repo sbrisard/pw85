@@ -47,20 +47,6 @@ run the tests::
 
 To further test your installation, build the example in the :ref:`c-tutorial`.
 
-Compiling your first pw85 program
-=================================
-
-``cd`` into the ``example`` subdirectory. The provided example program should be
-compiled and linked against pw85::
-
-  $ mkdir build
-  $ cd build
-  $ cmake -Dpw85_DIR=pw85_INSTALL_PREFIX/lib/cmake/pw85 ..
-  $ cmake --build . --config Release
-
-An executable called ``example_pw85`` should be present
-in the ``build/Release`` subdirectory.
-
 
 Building the documentation
 ==========================
