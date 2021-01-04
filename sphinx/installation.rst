@@ -84,27 +84,7 @@ or (if you intend to edit the project)::
 
   $ python setup.py develop --user
 
-To run the tests with Pytest_::
-
-  $ python -m pytest tests
-
-.. todo:: Rewrite from there
-
-The installation procedure is fairly standard and should be platform
-independent. It requires a fairly recent version of `NumPy
-<https://numpy.org/>`_. I successfully installed the Python bindings alongside
-v1.16.4 of NumPy. Please report if you are successful with older versions.
-
-Installation in a virtual environment is not covered here, but is possible with
-little alterations to the procedure below.
-
-Open a terminal and ``cd`` into the ``wrappers/python-ctypes/`` directory. Issue
-the following command::
-
-  $PYTHON_EXEC setup.py install
-
-where ``$PYTHON_EXEC`` denotes your Python 3 executable (usually, ``python`` or
-``python3``). Then, you need to define the location of the dynamic libraries,
+you need to define the location of the dynamic libraries,
 for ``ctypes`` to be able to import it. This is done through the ``pypw85.cfg``
 file, which you must create and place in the following directory
 
@@ -124,42 +104,45 @@ file, which you must create and place in the following directory
 
 where the ``libpw85`` and ``libpw85_legacy`` entries are the full path to the
 dynamic libraries (``*.dll``, ``*.so`` or ``*.dylib``) *including their
-name*. All these configure opions can be retrieved from the output of ``ninja
-install``. For example, on a Windows machine, where the output was::
+name*. All these configure opions can be retrieved from the output of
+``cmake --install .``. For example, on a Windows machine, where the output was::
 
-  Installing libpw85.dll to C:/opt/pw85/bin
-  Installing libpw85.dll.a to C:/opt/pw85/lib
-  Installing libpw85.a to C:/opt/pw85/lib
-  Installing libpw85_legacy.dll to C:/opt/pw85/bin
-  Installing libpw85_legacy.dll.a to C:/opt/pw85/lib
-  Installing libpw85_legacy.a to C:/opt/pw85/lib
-  Installing pw85_ref_data.h5 to C:/opt/pw85/share/pw85
-  Installing C:\path\to\pw85\src\pw85_legacy.h to C:/opt/pw85/include
-  Installing C:\path\to\pw85\src\build\pw85.h to C:/opt/pw85/include
+  $ cmake --install .
+  -- Install configuration: ""
+  -- Installing: C:/opt/pw85/include/pw85
+  -- Installing: C:/opt/pw85/include/pw85/pw85.h
+  -- Installing: C:/opt/pw85/include/pw85/pw85_legacy.h
+  -- Installing: C:/opt/pw85/lib/libpw85.dll.a
+  -- Installing: C:/opt/pw85/lib/libpw85.dll
+  -- Installing: C:/opt/pw85/lib/cmake/pw85/pw85-targets.cmake
+  -- Installing: C:/opt/pw85/lib/cmake/pw85/pw85-targets-noconfig.cmake
+  -- Installing: C:/opt/pw85/lib/cmake/pw85/pw85-config.cmake
 
 the contents of ``pw85.ini`` is::
 
   [pw85]
-  libpw85 = C:/opt/pw85/bin/libpw85.dll
-  libpw85_legacy = C:/opt/pw85/bin/libpw85_legacy.dll
+  libpw85 = C:/opt/pw85/lib/libpw85.dll
+  libpw85_legacy = C:/opt/pw85/lib/libpw85_legacy.dll
   datadir = C:/opt/pw85/share/pw85
 
-Provided the `pytest <https://pytest.org/>`_ module is installed on your
-machine, you can run the tests as follows (from the ``wrappers/python-ctypes``
-drectory)::
+To run the tests with Pytest_::
 
-  $PYTHON_EXEC -m pytest tests/test_pw85.py
+  $ python -m pytest tests/test_pw85.py
 
-You can also test the “legacy” API. This requires the `h5py
-<https://www.h5py.org/>`_ module. To run the tests, issue the command::
+You can also test the “legacy” API. This requires the h5py_ module. To run the
+tests, issue the command::
 
   $PYTHON_EXEC -m pytest tests/test_pw85_legacy.py
 
 (beware, these tests take some time!).
-
 
 .. _Breathe: https://breathe.readthedocs.io/
 .. _CMake: https://cmake.org/
 .. _Doxygen: https://www.doxygen.nl/
 .. _Pytest: https://docs.pytest.org/
 .. _Sphinx: https://www.sphinx-doc.org/
+.. _h5py: https://www.h5py.org/
+
+.. Local Variables:
+.. fill-column: 80
+.. End:
