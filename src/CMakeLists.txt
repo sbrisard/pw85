@@ -18,12 +18,8 @@ if (MATH_LIBRARY)
   target_link_libraries(${PROJECT_NAME} ${MATH_LIBRARY})
 endif()
 
-include(FindGSL)
-#find_path(GSL_INCLUDE_DIR gsl_math.h)
-message(${GSL_INCLUDE_DIRS})
-message(${GSL_LIBRARIES})
-target_include_directories(${PROJECT_NAME} PRIVATE ${GSL_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} ${GSL_LIBRARIES})
+find_package(GSL REQUIRED)
+target_link_libraries(${PROJECT_NAME} GSL::gsl)
 
 install(
   TARGETS ${PROJECT_NAME}
