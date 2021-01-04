@@ -1,0 +1,30 @@
+add_executable(test_pw85
+  test_pw85.c
+)
+
+target_include_directories(test_pw85 PUBLIC ../include)
+
+if (MATH_LIBRARY)
+    target_link_libraries(test_pw85 ${MATH_LIBRARY})
+endif ()
+
+find_package(PkgConfig REQUIRED)
+pkg_search_module(GLIB2 REQUIRED glib-2.0 IMPORTED_TARGET)
+find_package(GSL REQUIRED)
+find_package(HDF5 COMPONENTS C HL REQUIRED)
+
+target_link_libraries(test_pw85
+  pw85
+  GSL::gsl
+  hdf5::hdf5
+  hdf5::hdf5_hl
+  PkgConfig::GLIB2)
+
+set(PW85_REF_DATA_FILENAME "pw85_ref_data.h5")
+if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${PW85_REF_DATA_FILENAME})
+  execute_process(COMMAND python download_ref_data.py --pw85_ref_data_path ${CMAKE_CURRENT_BINARY_DIR}/${PW85_REF_DATA_FILENAME} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/.)
+endif()
+
+add_compile_definitions(PW85_REF_DATA_PATH="${PW85_REF_DATA_FILENAME}")
+
+add_test(NAME test_pw85 COMMAND test_pw85)

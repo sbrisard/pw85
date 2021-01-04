@@ -10,7 +10,7 @@
 
 #include <hdf5_hl.h>
 
-#include <pw85.h>
+#include "pw85/pw85.h"
 
 void test_pw85_read_dataset_double(hid_t const hid, char const *dset_name,
                                    size_t *size, double **buffer) {
