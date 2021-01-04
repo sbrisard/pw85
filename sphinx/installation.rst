@@ -7,25 +7,10 @@ Installation
 .. contents:: Contents
    :local:
 
-This chapter describes how to install the C library as well as the
-Python bindings. The first step is to clone the source of this
-library. You can either get the latest release at
-https://github.com/sbrisard/pw85/releases or clone the Git repository
-for the development version::
-
-  git clone https://github.com/sbrisard/pw85.git
-
 .. highlight:: none
 
-Building and installing the C library
-=====================================
-
-PW85 requires a POSIX system. On Windows platforms, it is recommended that you
-install `MSYS2 <https://www.msys2.org/The>`_.
-
-.. note:: Meson supports MSVC compilers. However, at the time of writing,
-          MSVC-based installation has not been tested. Contributions are most
-          welcome!
+Installing the C library
+========================
 
 The C library depends on
 
@@ -34,48 +19,90 @@ The C library depends on
    the implementation of the Brent algorithm)
 3. The `HDF5 <https://portal.hdfgroup.org/>`_ (for testing purposes)
 
-The installation procedure also requires Python 3.
+This is a CMake_ based project. The installation procedure is standard. First,
+clone the repository. Then, ``cd`` into the root directory of the
+pw85 project. Let
+``pw85_INSTALL_PREFIX`` be the path to the directory
+where pw85 should be installed::
 
-For installation, we use the `Meson build system
-<https://mesonbuild.com/>`_. We assume that GLib, GSL and Meson are installed
-on your system. Assuming that the project is built in the ``src/build/``
-directory (no need to create it first), here is the whole installation
-procedure (you must first ``cd`` into the root directory of the PW85 project)::
+  $ git clone https://github.com/sbrisard/pw85.git
+  $ cd pw85
+  $ mkdir build
+  $ cd build
+  $ cmake -DCMAKE_INSTALL_PREFIX=pw85_INSTALL_PREFIX ..
+  $ cmake --build . --config Release
+  $ cmake --install . --config Release
 
-  cd pw85/src
-  meson build
-  cd build
-  ninja install
+.. note:: The ``--config`` option might not be available, depending on the
+   selected generator.
 
-A prefix can be specified in order for PW85 to be installed in a custom
-directory, like so::
+At this point, pw85 should be installed. You can now
+run the tests::
 
-  cd pw85/src
-  meson build --prefix=C:/opt/pw85
-  cd build
-  ninja install
+  $ ctest . -C Release
 
-Congratulations, ``PW85`` is now built and installed! You can then test the
-installation (stay in the ``src/build`` directory)::
-
-  meson test
-
-If you intend to use ``PW85`` from within Python only, then go to
-:ref:`installation-of-the-python-bindings`.
-
-If you also intend to link the library to e.g. C executables, you must inform
-your system about the location of the library.
-
-- On Windows platforms, you need to add the full path to ``pw85.dll`` to your
-  ``PATH`` environment variable.
-- On Linux or MacOS platforms, no further operation is required.
+.. note:: Depending on the system, you might need to add
+   ``pw85_INSTALL_PREFIX`` to your ``PATH`` environment
+   variable.
 
 To further test your installation, build the example in the :ref:`c-tutorial`.
 
-.. _installation-of-the-python-bindings:
+Compiling your first pw85 program
+=================================
 
-Installation of the Python bindings
-===================================
+``cd`` into the ``example`` subdirectory. The provided example program should be
+compiled and linked against pw85::
+
+  $ mkdir build
+  $ cd build
+  $ cmake -Dpw85_DIR=pw85_INSTALL_PREFIX/lib/cmake/pw85 ..
+  $ cmake --build . --config Release
+
+An executable called ``example_pw85`` should be present
+in the ``build/Release`` subdirectory.
+
+
+Building the documentation
+==========================
+
+The documentation of pw85 requires Sphinx_. The C++ API
+docs are built with Doxygen_ and the Breathe_ extension to Sphinx_.
+
+To build the HTML version of the docs in the ``public`` subdirectory::
+
+  $ cd docs
+  $ sphinx-build -b html . ../public
+
+To build the LaTeX version of the docs::
+
+  $ cd docs
+  $ make latex
+
+
+Installing the Python bindings
+==============================
+
+To install the pypw85 module, ``cd`` into the
+``python`` subdirectory and edit the ``setup.cfg`` file. Set the ``include_dir``
+and ``library_dir`` to the appropriate paths. These should be::
+
+  [pypw85]
+  include_dir = ${CMAKE_INSTALL_PREFIX}/include
+  library_dir = ${CMAKE_INSTLAL_PREFIX}/lib
+
+Then, issue the following command::
+
+  $ python setup.py install --user
+
+or (if you intend to edit the project)::
+
+  $ python setup.py develop --user
+
+To run the tests with Pytest_::
+
+  $ python -m pytest tests
+
+.. todo:: Rewrite from there
 
 The installation procedure is fairly standard and should be platform
 independent. It requires a fairly recent version of `NumPy
@@ -143,3 +170,10 @@ You can also test the “legacy” API. This requires the `h5py
   $PYTHON_EXEC -m pytest tests/test_pw85_legacy.py
 
 (beware, these tests take some time!).
+
+
+.. _Breathe: https://breathe.readthedocs.io/
+.. _CMake: https://cmake.org/
+.. _Doxygen: https://www.doxygen.nl/
+.. _Pytest: https://docs.pytest.org/
+.. _Sphinx: https://www.sphinx-doc.org/
