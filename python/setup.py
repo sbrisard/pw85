@@ -33,12 +33,12 @@ class my_build_py(build_py):
 
 if __name__ == '__main__':
     name = 'pypw85'
-    metadata_dir = pathlib.Path(__file__).parent/'..'/'..'/'metadata'
+    metadata_dir = pathlib.Path(__file__).parent/'..'/'metadata'
     version = get_metadata('version', metadata_dir)
     author = get_metadata('author', metadata_dir)
     url = get_metadata('repository', metadata_dir)
 
-    path = pathlib.Path('../../README.md')
+    path = pathlib.Path('../README.md')
     with open(str(path), mode='r', encoding='utf-8') as f:
         lines = f.readlines()
         description = lines[2].strip()
