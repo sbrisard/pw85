@@ -122,7 +122,7 @@ name*. All these configure opions can be retrieved from the output of
   -- Installing: C:/opt/pw85/lib/cmake/pw85/pw85-targets-noconfig.cmake
   -- Installing: C:/opt/pw85/lib/cmake/pw85/pw85-config.cmake
 
-the contents of ``pw85.ini`` is::
+the contents of ``pw85.cfg`` is::
 
   [pw85]
   libpw85 = C:/opt/pw85/lib/libpw85.dll
