@@ -1,5 +1,5 @@
 import numpy as np
-import pypw85
+import pw85
 
 if __name__ == "__main__":
     x1 = np.array([-0.5, 0.4, -0.7])
@@ -10,13 +10,13 @@ if __name__ == "__main__":
     a2, c2 = 0.5, 5.0
     r12 = x2 - x1
 
-    q1 = pypw85.spheroid(a1, c1, n1)
+    q1 = pw85.spheroid(a1, c1, n1)
     print(repr(q1))
 
-    q2 = pypw85.spheroid(a2, c2, n2)
+    q2 = pw85.spheroid(a2, c2, n2)
     print(repr(q2))
 
-    mu2, lambda_ = pypw85.contact_function(r12, q1, q2)
+    mu2, lambda_ = pw85.contact_function(r12, q1, q2)
     print("μ² = {}".format(mu2))
     print("λ = {}".format(lambda_))
 

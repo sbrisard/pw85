@@ -42,7 +42,7 @@ The Python module relies on `NumPy <www.numpy.org>`_ for passing arrays to the
 underlying C library. We therefore import both modules:
 
 >>> import numpy as np
->>> import pypw85
+>>> import pw85
 
 and define the parameters of the simulation:
 
@@ -57,20 +57,20 @@ and define the parameters of the simulation:
 where ``r₁₂`` is the vector that joins the center of the first ellipsoid,
 ``x₁``, to the center of the second ellipsoid, ``x₂``.
 
-We use the function :py:func:`pypw85.spheroid` to create the matrix
+We use the function :py:func:`pw85.spheroid` to create the matrix
 representations ``q₁`` and ``q₂`` of the two ellipsoids:
 
->>> q1 = pypw85.spheroid(a1, c1, n1)
+>>> q1 = pw85.spheroid(a1, c1, n1)
 >>> q1
 array([ 1.e+02, -0.e+00, -0.e+00,  1.e+02, -0.e+00,  1.e-02])
->>> q2 = pypw85.spheroid(a2, c2, n2)
+>>> q2 = pw85.spheroid(a2, c2, n2)
 >>> q2
 array([25.  ,  0.  ,  0.  ,  0.25,  0.  ,  0.25])
 
 We can now compute the value of the contact function — see the documentation of
-:py:func:`pypw85.contact_function`:
+:py:func:`pw85.contact_function`:
 
->>> mu2, lambda_ = pypw85.contact_function(r12, q1, q2)
+>>> mu2, lambda_ = pw85.contact_function(r12, q1, q2)
 >>> print('μ² = {}'.format(mu2))
 >>> print('λ = {}'.format(lambda_))
 μ² = 3.362706040638343
