@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Installation &#8212; Documentation of the pw85 library</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>This chapter describes how to install the C library as well as the
+Python bindings. The first step is to clone the source of this
+library. You can either get the latest release at
+<a class="reference external" href="https://github.com/sbrisard/pw85/releases">https://github.com/sbrisard/pw85/releases</a> or clone the Git repository
+for the development version:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span>
+</pre></div>
+</div>
+<div class="section" id="building-and-installing-the-c-library">
+<h2>Building and installing the C library<a class="headerlink" href="#building-and-installing-the-c-library" title="Permalink to this headline">¶</a></h2>
+<p>PW85 requires a POSIX system. On Windows platforms, it is recommended that you
+install <a class="reference external" href="https://www.msys2.org/The">MSYS2</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Meson supports MSVC compilers. However, at the time of writing,
+MSVC-based installation has not been tested. Contributions are most
+welcome!</p>
+</div>
+<p>The installation procedure also requires Python 3.</p>
+<p>For installation, we use the <a class="reference external" href="https://mesonbuild.com/">Meson build system</a>. We assume that GLib, GSL and Meson are installed
+on your system. Assuming that the project is built in the <code class="docutils literal notranslate"><span class="pre">src/build/</span></code>
+directory (no need to create it first), here is the whole installation
+procedure (you must first <code class="docutils literal notranslate"><span class="pre">cd</span></code> into the root directory of the PW85 project):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">pw85</span><span class="o">/</span><span class="n">src</span>
+<span class="n">meson</span> <span class="n">build</span>
+<span class="n">cd</span> <span class="n">build</span>
+<span class="n">ninja</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>A prefix can be specified in order for PW85 to be installed in a custom
+directory, like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">pw85</span><span class="o">/</span><span class="n">src</span>
+<span class="n">meson</span> <span class="n">build</span> <span class="o">--</span><span class="n">prefix</span><span class="o">=</span><span class="n">C</span><span class="p">:</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">pw85</span>
+<span class="n">cd</span> <span class="n">build</span>
+<span class="n">ninja</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>Congratulations, <code class="docutils literal notranslate"><span class="pre">PW85</span></code> is now built and installed! You can then test the
+installation (stay in the <code class="docutils literal notranslate"><span class="pre">src/build</span></code> directory):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">meson</span> <span class="n">test</span>
+</pre></div>
+</div>
+<p>If you also intend to link the library to e.g. C executables, you must inform
+your system about the location of the library.</p>
+<ul class="simple">
+<li><p>On Windows platforms, you need to add the full path to <code class="docutils literal notranslate"><span class="pre">pw85.dll</span></code> to your
+<code class="docutils literal notranslate"><span class="pre">PATH</span></code> environment variable.</p></li>
+<li><p>On Linux or MacOS platforms, no further operation is required.</p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">pw85</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimization.html">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing the implementation of the contact function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018–2021, Sébastien Brisard.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/installation-old.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

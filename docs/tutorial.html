@@ -4,10 +4,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tutorial &#8212; Documentation of the pw85 library</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
@@ -73,7 +73,7 @@ compute the matrices themselves.</p>
 <p>The Python module relies on <a class="reference external" href="www.numpy.org">NumPy</a> for passing arrays to the
 underlying C library. We therefore import both modules:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pypw85</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pw85</span>
 </pre></div>
 </div>
 <p>and define the parameters of the simulation:</p>
@@ -88,19 +88,19 @@ underlying C library. We therefore import both modules:</p>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">r₁₂</span></code> is the vector that joins the center of the first ellipsoid,
 <code class="docutils literal notranslate"><span class="pre">x₁</span></code>, to the center of the second ellipsoid, <code class="docutils literal notranslate"><span class="pre">x₂</span></code>.</p>
-<p>We use the function <a class="reference internal" href="py_api.html#pypw85.spheroid" title="pypw85.spheroid"><code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.spheroid()</span></code></a> to create the matrix
+<p>We use the function <code class="xref py py-func docutils literal notranslate"><span class="pre">pw85.spheroid()</span></code> to create the matrix
 representations <code class="docutils literal notranslate"><span class="pre">q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">q₂</span></code> of the two ellipsoids:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">spheroid</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="n">pw85</span><span class="o">.</span><span class="n">spheroid</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span>
 <span class="go">array([ 1.e+02, -0.e+00, -0.e+00,  1.e+02, -0.e+00,  1.e-02])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">q2</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">spheroid</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">n2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q2</span> <span class="o">=</span> <span class="n">pw85</span><span class="o">.</span><span class="n">spheroid</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">n2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">q2</span>
 <span class="go">array([25.  ,  0.  ,  0.  ,  0.25,  0.  ,  0.25])</span>
 </pre></div>
 </div>
 <p>We can now compute the value of the contact function — see the documentation of
-<a class="reference internal" href="py_api.html#pypw85.contact_function" title="pypw85.contact_function"><code class="xref py py-func docutils literal notranslate"><span class="pre">pypw85.contact_function()</span></code></a>:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mu2</span><span class="p">,</span> <span class="n">lambda_</span> <span class="o">=</span> <span class="n">pypw85</span><span class="o">.</span><span class="n">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">pw85.contact_function()</span></code>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mu2</span><span class="p">,</span> <span class="n">lambda_</span> <span class="o">=</span> <span class="n">pw85</span><span class="o">.</span><span class="n">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;μ² = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mu2</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;λ = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lambda_</span><span class="p">))</span>
 <span class="go">μ² = 3.362706040638343</span>
@@ -245,20 +245,21 @@ contact. QED</p>
 <p>The Python interface to PW85 has been kept close to the undelying C API. The
 following C program (<a class="reference download internal" download="" href="_downloads/a919fff3e81d6f3e074fb3053ede793d/tutorial.c"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">source</span> <span class="pre">file</span></code></a>) defines the two ellipsoids, then computes <code class="docutils literal notranslate"><span class="pre">μ²</span></code>
 and <code class="docutils literal notranslate"><span class="pre">λ</span></code>:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pw85.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;pw85/pw85.h&quot;</span><span class="cp"></span>
 
 <span class="cp">#define DIM 3</span>
 <span class="cp">#define SYM 6</span>
 
 <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kt">double</span> <span class="n">x1</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">};</span>
+  <span class="kt">double</span> <span class="n">x1</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mf">-0.5</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">-0.7</span><span class="p">};</span>
   <span class="kt">double</span> <span class="n">n1</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">};</span>
   <span class="kt">double</span> <span class="n">a1</span> <span class="o">=</span> <span class="mf">10.</span><span class="p">;</span>
   <span class="kt">double</span> <span class="n">c1</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
 
-  <span class="kt">double</span> <span class="n">x2</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">};</span>
+  <span class="kt">double</span> <span class="n">x2</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">-0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">};</span>
   <span class="kt">double</span> <span class="n">n2</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">};</span>
   <span class="kt">double</span> <span class="n">a2</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
   <span class="kt">double</span> <span class="n">c2</span> <span class="o">=</span> <span class="mf">5.</span><span class="p">;</span>
@@ -278,37 +279,29 @@ and <code class="docutils literal notranslate"><span class="pre">λ</span></code
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>A <code class="docutils literal notranslate"><span class="pre">meson.build</span></code> file is provided for the compilation of the tutorial using
-the <a class="reference external" href="https://mesonbuild.com">Meson build system</a>. You can reuse it in one of
-your own projects (<a class="reference download internal" download="" href="_downloads/f007136daa2aa88c672658ef29bc9705/meson.build"><code class="xref download docutils literal notranslate"><span class="pre">download</span></code></a>):</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>project(&#39;PW85_C_Tutorial&#39;, &#39;c&#39;)
+<p>A <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> file is provided for the compilation of the tutorial using
+the <a class="reference external" href="https://cmake.org/">CMake</a>. You can reuse it in one of your own projects (<a class="reference download internal" download="" href="_downloads/e5bb549a7d88ffb0a42438d6980b745c/CMakeLists.txt"><code class="xref download docutils literal notranslate"><span class="pre">download</span></code></a>):</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.13</span><span class="p">)</span>
 
-pw85_include = include_directories(get_option(&#39;pw85_include&#39;))
+<span class="nb">project</span><span class="p">(</span><span class="s2">&quot;tutorial&quot;</span><span class="p">)</span>
 
-cc = meson.get_compiler(&#39;c&#39;)
-pw85_lib = cc.find_library(&#39;pw85&#39;, dirs: get_option(&#39;pw85_lib&#39;))
+<span class="nb">find_package</span><span class="p">(</span><span class="s">GSL</span> <span class="s">REQUIRED</span><span class="p">)</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">pw85</span> <span class="s">CONFIG</span> <span class="s">REQUIRED</span><span class="p">)</span>
 
-exe = executable(&#39;tutorial&#39;,
-		 &#39;tutorial.c&#39;,
-		 include_directories: pw85_include,
-		 dependencies: pw85_lib)
+<span class="nb">add_executable</span><span class="p">(</span><span class="o">${</span><span class="nv">PROJECT_NAME</span><span class="o">}</span> <span class="o">${</span><span class="nv">PROJECT_NAME</span><span class="o">}</span><span class="s">.c</span><span class="p">)</span>
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="o">${</span><span class="nv">PROJECT_NAME</span><span class="o">}</span> <span class="s">pw85</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The location of the PW85 dynamic library and header files is specified through
-two options that are defined in the <code class="docutils literal notranslate"><span class="pre">meson_options.txt</span></code> file
-(<a class="reference download internal" download="" href="_downloads/0e99c18ac7738c9311043f10fcd99a2e/meson_options.txt"><code class="xref download docutils literal notranslate"><span class="pre">download</span></code></a>):</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>option(&#39;pw85_include&#39;, type: &#39;string&#39;, value: &#39;/usr/include&#39;)
-option(&#39;pw85_lib&#39;, type: &#39;string&#39;, value: &#39;/usr/lib&#39;)
+<p><code class="docutils literal notranslate"><span class="pre">cd</span></code> into the <code class="docutils literal notranslate"><span class="pre">c_tutorial</span></code> subdirectory. The provided example program
+should be compiled and linked against pw85:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir build
+$ cd build
+$ cmake -Dpw85_DIR=pw85_INSTALL_PREFIX/lib/cmake/pw85 ..
+$ cmake --build . --config Release
 </pre></div>
 </div>
-<p>Compilation proceeds as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">meson</span> <span class="n">setup</span> <span class="o">-</span><span class="n">Dpw85_include</span><span class="o">=/</span><span class="n">c</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">pw85</span><span class="o">/</span><span class="n">include</span><span class="o">/</span> <span class="o">-</span><span class="n">Dpw85_lib</span><span class="o">=/</span><span class="n">c</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">pw85</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span> <span class="n">build</span>
-<span class="n">cd</span> <span class="n">build</span><span class="o">/</span>
-<span class="n">ninja</span>
-</pre></div>
-</div>
-<p>It produces an executable called (depending on the platform): <code class="docutils literal notranslate"><span class="pre">tutorial.exe</span></code>
-or <code class="docutils literal notranslate"><span class="pre">tutorial</span></code>. On execution, it prints the following lines to <code class="docutils literal notranslate"><span class="pre">stdout</span></code>:</p>
+<p>An executable called <code class="docutils literal notranslate"><span class="pre">tutorial</span></code> should be present in the <code class="docutils literal notranslate"><span class="pre">build/Release</span></code>
+subdirectory. On execution, it prints the following lines to <code class="docutils literal notranslate"><span class="pre">stdout</span></code>:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mu^2 = 3.36271
 lambda = 0.166859
 </pre></div>
@@ -382,10 +375,10 @@ lambda = 0.166859
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018–2020, Sébastien Brisard.
+      &copy;2018–2021, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

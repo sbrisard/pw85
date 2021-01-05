@@ -4,10 +4,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Installation &#8212; Documentation of the pw85 library</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
@@ -38,28 +38,13 @@
 <div class="contents local topic" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#building-and-installing-the-c-library" id="id3">Building and installing the C library</a></p></li>
-<li><p><a class="reference internal" href="#installation-of-the-python-bindings" id="id4">Installation of the Python bindings</a></p></li>
+<li><p><a class="reference internal" href="#installing-the-c-library" id="id2">Installing the C library</a></p></li>
+<li><p><a class="reference internal" href="#building-the-documentation" id="id3">Building the documentation</a></p></li>
+<li><p><a class="reference internal" href="#installing-the-python-bindings" id="id4">Installing the Python bindings</a></p></li>
 </ul>
 </div>
-<p>This chapter describes how to install the C library as well as the
-Python bindings. The first step is to clone the source of this
-library. You can either get the latest release at
-<a class="reference external" href="https://github.com/sbrisard/pw85/releases">https://github.com/sbrisard/pw85/releases</a> or clone the Git repository
-for the development version:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">sbrisard</span><span class="o">/</span><span class="n">pw85</span><span class="o">.</span><span class="n">git</span>
-</pre></div>
-</div>
-<div class="section" id="building-and-installing-the-c-library">
-<h2><a class="toc-backref" href="#id3">Building and installing the C library</a><a class="headerlink" href="#building-and-installing-the-c-library" title="Permalink to this headline">¶</a></h2>
-<p>PW85 requires a POSIX system. On Windows platforms, it is recommended that you
-install <a class="reference external" href="https://www.msys2.org/The">MSYS2</a>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Meson supports MSVC compilers. However, at the time of writing,
-MSVC-based installation has not been tested. Contributions are most
-welcome!</p>
-</div>
+<div class="section" id="installing-the-c-library">
+<h2><a class="toc-backref" href="#id2">Installing the C library</a><a class="headerlink" href="#installing-the-c-library" title="Permalink to this headline">¶</a></h2>
 <p>The C library depends on</p>
 <ol class="arabic simple">
 <li><p>The <a class="reference external" href="https://developer.gnome.org/glib/">GLib</a> (for testing purposes)</p></li>
@@ -67,66 +52,85 @@ welcome!</p>
 the implementation of the Brent algorithm)</p></li>
 <li><p>The <a class="reference external" href="https://portal.hdfgroup.org/">HDF5</a> (for testing purposes)</p></li>
 </ol>
-<p>The installation procedure also requires Python 3.</p>
-<p>For installation, we use the <a class="reference external" href="https://mesonbuild.com/">Meson build system</a>. We assume that GLib, GSL and Meson are installed
-on your system. Assuming that the project is built in the <code class="docutils literal notranslate"><span class="pre">src/build/</span></code>
-directory (no need to create it first), here is the whole installation
-procedure (you must first <code class="docutils literal notranslate"><span class="pre">cd</span></code> into the root directory of the PW85 project):</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd pw85/src
-meson build
-cd build
-ninja install
+<p>This is a <a class="reference external" href="https://cmake.org/">CMake</a> based project. The installation procedure is standard. First,
+clone the repository. Then, <code class="docutils literal notranslate"><span class="pre">cd</span></code> into the root directory of the
+pw85 project. Let
+<code class="docutils literal notranslate"><span class="pre">pw85_INSTALL_PREFIX</span></code> be the path to the directory
+where pw85 should be installed:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/sbrisard/pw85.git
+$ cd pw85
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_INSTALL_PREFIX=pw85_INSTALL_PREFIX ..
+$ cmake --build . --config Release
+$ cmake --install . --config Release
 </pre></div>
 </div>
-<p>A prefix can be specified in order for PW85 to be installed in a custom
-directory, like so:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd pw85/src
-meson build --prefix=C:/opt/pw85
-cd build
-ninja install
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--config</span></code> option might not be available, depending on the
+selected generator.</p>
+</div>
+<p>At this point, pw85 should be installed. You can now
+run the tests:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ ctest . -C Release
 </pre></div>
 </div>
-<p>Congratulations, <code class="docutils literal notranslate"><span class="pre">PW85</span></code> is now built and installed! You can then test the
-installation (stay in the <code class="docutils literal notranslate"><span class="pre">src/build</span></code> directory):</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>meson test
-</pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Depending on the system, you might need to add
+<code class="docutils literal notranslate"><span class="pre">pw85_INSTALL_PREFIX</span></code> to your <code class="docutils literal notranslate"><span class="pre">PATH</span></code> environment
+variable.</p>
 </div>
-<p>If you intend to use <code class="docutils literal notranslate"><span class="pre">PW85</span></code> from within Python only, then go to
-<a class="reference internal" href="#installation-of-the-python-bindings"><span class="std std-ref">Installation of the Python bindings</span></a>.</p>
-<p>If you also intend to link the library to e.g. C executables, you must inform
-your system about the location of the library.</p>
-<ul class="simple">
-<li><p>On Windows platforms, you need to add the full path to <code class="docutils literal notranslate"><span class="pre">pw85.dll</span></code> to your
-<code class="docutils literal notranslate"><span class="pre">PATH</span></code> environment variable.</p></li>
-<li><p>On Linux or MacOS platforms, no further operation is required.</p></li>
-</ul>
 <p>To further test your installation, build the example in the <a class="reference internal" href="tutorial.html#c-tutorial"><span class="std std-ref">C tutorial</span></a>.</p>
 </div>
-<div class="section" id="installation-of-the-python-bindings">
-<span id="id2"></span><h2><a class="toc-backref" href="#id4">Installation of the Python bindings</a><a class="headerlink" href="#installation-of-the-python-bindings" title="Permalink to this headline">¶</a></h2>
-<p>The installation procedure is fairly standard and should be platform
-independent. It requires a fairly recent version of <a class="reference external" href="https://numpy.org/">NumPy</a>. I successfully installed the Python bindings alongside
-v1.16.4 of NumPy. Please report if you are successful with older versions.</p>
-<p>Installation in a virtual environment is not covered here, but is possible with
-little alterations to the procedure below.</p>
-<p>Open a terminal and <code class="docutils literal notranslate"><span class="pre">cd</span></code> into the <code class="docutils literal notranslate"><span class="pre">wrappers/python-ctypes/</span></code> directory. Issue
-the following command:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$PYTHON_EXEC setup.py install
+<div class="section" id="building-the-documentation">
+<h2><a class="toc-backref" href="#id3">Building the documentation</a><a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h2>
+<p>The documentation of pw85 requires <a class="reference external" href="https://www.sphinx-doc.org/">Sphinx</a>. The C++ API
+docs are built with <a class="reference external" href="https://www.doxygen.nl/">Doxygen</a> and the <a class="reference external" href="https://breathe.readthedocs.io/">Breathe</a> extension to <a class="reference external" href="https://www.sphinx-doc.org/">Sphinx</a>.</p>
+<p>To build the HTML version of the docs in the <code class="docutils literal notranslate"><span class="pre">public</span></code> subdirectory:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ cd docs
+$ sphinx-build -b html . ../public
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">$PYTHON_EXEC</span></code> denotes your Python 3 executable (usually, <code class="docutils literal notranslate"><span class="pre">python</span></code> or
-<code class="docutils literal notranslate"><span class="pre">python3</span></code>). Then, you need to define the location of the dynamic libraries,
-for <code class="docutils literal notranslate"><span class="pre">ctypes</span></code> to be able to import it. This is done through the <code class="docutils literal notranslate"><span class="pre">pypw85.cfg</span></code>
-file, which you must create and place in the following directory</p>
+<p>To build the LaTeX version of the docs:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ cd docs
+$ make latex
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-the-python-bindings">
+<h2><a class="toc-backref" href="#id4">Installing the Python bindings</a><a class="headerlink" href="#installing-the-python-bindings" title="Permalink to this headline">¶</a></h2>
+<p><strong>—————————— This section to be needed when pybind11 is used.</strong></p>
+<p>To install the pw85 module, <code class="docutils literal notranslate"><span class="pre">cd</span></code> into the <code class="docutils literal notranslate"><span class="pre">python</span></code> subdirectory and edit the
+<code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> file. Set the <code class="docutils literal notranslate"><span class="pre">include_dir</span></code> and <code class="docutils literal notranslate"><span class="pre">library_dir</span></code> to the
+appropriate paths. These should be:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[pw85]
+include_dir = ${CMAKE_INSTALL_PREFIX}/include
+library_dir = ${CMAKE_INSTLAL_PREFIX}/lib
+</pre></div>
+</div>
+<p>Then, issue the following command:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ python setup.py install --user
+</pre></div>
+</div>
+<p>or (if you intend to edit the project):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ python setup.py develop --user
+</pre></div>
+</div>
+<p><strong>—————————— End of this section.</strong></p>
+<p>You need to define the location of the dynamic libraries, for <code class="docutils literal notranslate"><span class="pre">ctypes</span></code> to be
+able to import it. This is done through the <code class="docutils literal notranslate"><span class="pre">pw85.cfg</span></code> file, which you must
+create and place in the following directory</p>
 <ul class="simple">
-<li><p>Windows 10/8/7/Vista: <code class="docutils literal notranslate"><span class="pre">C:\Users\&lt;User</span> <span class="pre">Name&gt;\AppData\Roaming\pypw85</span></code></p></li>
+<li><p>Windows 10/8/7/Vista: <code class="docutils literal notranslate"><span class="pre">C:\Users\&lt;username&gt;\AppData\Roaming\pw85</span></code></p></li>
 <li><p>Windows XP/2000: <code class="docutils literal notranslate"><span class="pre">C:\Documents</span> <span class="pre">and</span> <span class="pre">Settings\&lt;username&gt;\Application</span>
-<span class="pre">Data\pypw85</span></code></p></li>
-<li><p>Mac: <code class="docutils literal notranslate"><span class="pre">/Users/&lt;username&gt;/Library/Application</span> <span class="pre">Support/pypw85</span></code></p></li>
-<li><p>Linux: <code class="docutils literal notranslate"><span class="pre">~/.pypw85</span></code></p></li>
+<span class="pre">Data\pw85</span></code></p></li>
+<li><p>Mac: <code class="docutils literal notranslate"><span class="pre">/Users/&lt;username&gt;/Library/Application</span> <span class="pre">Support/pw85</span></code></p></li>
+<li><p>Linux: <code class="docutils literal notranslate"><span class="pre">~/.pw85</span></code></p></li>
 </ul>
-<p>(in all cases, the <code class="docutils literal notranslate"><span class="pre">pypw85</span></code> subdirectory must be created). The contents of the
-<code class="docutils literal notranslate"><span class="pre">pypw85.cfg</span></code> file should be:</p>
+<p>(in all cases, the <code class="docutils literal notranslate"><span class="pre">pw85</span></code> subdirectory must be created). The contents of the
+<code class="docutils literal notranslate"><span class="pre">pw85.cfg</span></code> file should be:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[pw85]
 libpw85 = full/path/to/the/pw85/dynamic/library
 libpw85_legacy = full/path/to/the/pw85_legacy/dynamic/library
@@ -135,34 +139,34 @@ datadir = full/path/to/the/pw85/data/directory
 </div>
 <p>where the <code class="docutils literal notranslate"><span class="pre">libpw85</span></code> and <code class="docutils literal notranslate"><span class="pre">libpw85_legacy</span></code> entries are the full path to the
 dynamic libraries (<code class="docutils literal notranslate"><span class="pre">*.dll</span></code>, <code class="docutils literal notranslate"><span class="pre">*.so</span></code> or <code class="docutils literal notranslate"><span class="pre">*.dylib</span></code>) <em>including their
-name</em>. All these configure opions can be retrieved from the output of <code class="docutils literal notranslate"><span class="pre">ninja</span>
-<span class="pre">install</span></code>. For example, on a Windows machine, where the output was:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Installing libpw85.dll to C:/opt/pw85/bin
-Installing libpw85.dll.a to C:/opt/pw85/lib
-Installing libpw85.a to C:/opt/pw85/lib
-Installing libpw85_legacy.dll to C:/opt/pw85/bin
-Installing libpw85_legacy.dll.a to C:/opt/pw85/lib
-Installing libpw85_legacy.a to C:/opt/pw85/lib
-Installing pw85_ref_data.h5 to C:/opt/pw85/share/pw85
-Installing C:\path\to\pw85\src\pw85_legacy.h to C:/opt/pw85/include
-Installing C:\path\to\pw85\src\build\pw85.h to C:/opt/pw85/include
+name</em>. All these configure opions can be retrieved from the output of
+<code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">--install</span> <span class="pre">.</span></code>. For example, on a Windows machine, where the output was:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ cmake --install .
+-- Install configuration: &quot;&quot;
+-- Installing: C:/opt/pw85/include/pw85
+-- Installing: C:/opt/pw85/include/pw85/pw85.h
+-- Installing: C:/opt/pw85/include/pw85/pw85_legacy.h
+-- Installing: C:/opt/pw85/lib/libpw85.dll.a
+-- Installing: C:/opt/pw85/lib/libpw85.dll
+-- Installing: C:/opt/pw85/lib/cmake/pw85/pw85-targets.cmake
+-- Installing: C:/opt/pw85/lib/cmake/pw85/pw85-targets-noconfig.cmake
+-- Installing: C:/opt/pw85/lib/cmake/pw85/pw85-config.cmake
 </pre></div>
 </div>
-<p>the contents of <code class="docutils literal notranslate"><span class="pre">pw85.ini</span></code> is:</p>
+<p>the contents of <code class="docutils literal notranslate"><span class="pre">pw85.cfg</span></code> is:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[pw85]
-libpw85 = C:/opt/pw85/bin/libpw85.dll
-libpw85_legacy = C:/opt/pw85/bin/libpw85_legacy.dll
+libpw85 = C:/opt/pw85/lib/libpw85.dll
+libpw85_legacy = C:/opt/pw85/lib/libpw85_legacy.dll
 datadir = C:/opt/pw85/share/pw85
 </pre></div>
 </div>
-<p>Provided the <a class="reference external" href="https://pytest.org/">pytest</a> module is installed on your
-machine, you can run the tests as follows (from the <code class="docutils literal notranslate"><span class="pre">wrappers/python-ctypes</span></code>
-drectory):</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$PYTHON_EXEC -m pytest tests/test_pw85.py
+<p>To run the tests with <a class="reference external" href="https://docs.pytest.org/">Pytest</a>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ python -m pytest tests/test_pw85.py
 </pre></div>
 </div>
-<p>You can also test the “legacy” API. This requires the <a class="reference external" href="https://www.h5py.org/">h5py</a> module. To run the tests, issue the command:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$PYTHON_EXEC -m pytest tests/test_pw85_legacy.py
+<p>You can also test the “legacy” API. This requires the <a class="reference external" href="https://www.h5py.org/">h5py</a> module. To run the
+tests, issue the command:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ python -m pytest tests/test_pw85_legacy.py
 </pre></div>
 </div>
 <p>(beware, these tests take some time!).</p>
@@ -190,8 +194,9 @@ drectory):</p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#building-and-installing-the-c-library">Building and installing the C library</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-of-the-python-bindings">Installation of the Python bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-the-c-library">Installing the C library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-the-documentation">Building the documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-the-python-bindings">Installing the Python bindings</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
@@ -235,10 +240,10 @@ drectory):</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018–2020, Sébastien Brisard.
+      &copy;2018–2021, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -4,10 +4,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The python API &#8212; Documentation of the pw85 library</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
@@ -37,16 +37,16 @@
 <div class="contents local topic" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#module-pypw85" id="id1">The new API</a></p>
+<li><p><a class="reference internal" href="#module-pw85" id="id1">The new API</a></p>
 <ul>
 <li><p><a class="reference internal" href="#representation-of-vectors-and-matrices" id="id2">Representation of vectors and matrices</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#module-pypw85.legacy" id="id3">The “legacy” API</a></p></li>
+<li><p><a class="reference internal" href="#module-pw85.legacy" id="id3">The “legacy” API</a></p></li>
 </ul>
 </div>
-<div class="section" id="module-pypw85">
-<span id="the-new-api"></span><h2><a class="toc-backref" href="#id1">The new API</a><a class="headerlink" href="#module-pypw85" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pw85">
+<span id="the-new-api"></span><h2><a class="toc-backref" href="#id1">The new API</a><a class="headerlink" href="#module-pw85" title="Permalink to this headline">¶</a></h2>
 <p>Overlap test of two ellipsoids.</p>
 <p>This module provides a wrapper around the PW85 C library that implements
 the “contact function” defined by Perram and Wertheim (J. Comp. Phys.
@@ -87,8 +87,8 @@ array with <code class="docutils literal notranslate"><span class="pre">shape</s
 <p>Note that true NumPy array <em>must</em> be passed (array-likes will <em>not</em>
 work).</p>
 <dl class="py function">
-<dt id="pypw85._cholesky_decomp">
-<code class="sig-prename descclassname">pypw85.</code><code class="sig-name descname">_cholesky_decomp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">l</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#_cholesky_decomp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85._cholesky_decomp" title="Permalink to this definition">¶</a></dt>
+<dt id="pw85._cholesky_decomp">
+<code class="sig-prename descclassname">pw85.</code><code class="sig-name descname">_cholesky_decomp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">l</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85.html#_cholesky_decomp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85._cholesky_decomp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the Cholesky decomposition <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">=</span> <span class="pre">L⋅Lᵀ</span></code> of a 3×3 matrix.</p>
 <p><code class="docutils literal notranslate"><span class="pre">A</span></code> is a symmetric matrix, <code class="docutils literal notranslate"><span class="pre">L</span></code> is a lower matrix, both
 represented by <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> arrays.</p>
@@ -98,8 +98,8 @@ then a new array is allocated.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pypw85._cholesky_solve">
-<code class="sig-prename descclassname">pypw85.</code><code class="sig-name descname">_cholesky_solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">l</span></em>, <em class="sig-param"><span class="n">b</span></em>, <em class="sig-param"><span class="n">x</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#_cholesky_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85._cholesky_solve" title="Permalink to this definition">¶</a></dt>
+<dt id="pw85._cholesky_solve">
+<code class="sig-prename descclassname">pw85.</code><code class="sig-name descname">_cholesky_solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">l</span></em>, <em class="sig-param"><span class="n">b</span></em>, <em class="sig-param"><span class="n">x</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85.html#_cholesky_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85._cholesky_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the solution of the 3×3 linear system <code class="docutils literal notranslate"><span class="pre">L⋅Lᵀ⋅x</span> <span class="pre">=</span> <span class="pre">b.</span></code></p>
 <p><code class="docutils literal notranslate"><span class="pre">L</span></code> is a lower matrix, represented by the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array
 <code class="docutils literal notranslate"><span class="pre">l</span></code>; <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> are vectors (<code class="docutils literal notranslate"><span class="pre">double[3]</span></code> arrays).</p>
@@ -108,10 +108,10 @@ the system. If <code class="docutils literal notranslate"><span class="pre">x</s
 </dd></dl>
 
 <dl class="py function">
-<dt id="pypw85.contact_function">
-<code class="sig-prename descclassname">pypw85.</code><code class="sig-name descname">contact_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r12</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#contact_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.contact_function" title="Permalink to this definition">¶</a></dt>
+<dt id="pw85.contact_function">
+<code class="sig-prename descclassname">pw85.</code><code class="sig-name descname">contact_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r12</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85.html#contact_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.contact_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the value of the contact function of two ellipsoids.</p>
-<p>See <a class="reference internal" href="#pypw85.f" title="pypw85.f"><code class="xref py py-func docutils literal notranslate"><span class="pre">f()</span></code></a> for the meaning of the parameters <code class="docutils literal notranslate"><span class="pre">r12</span></code>, <code class="docutils literal notranslate"><span class="pre">q1</span></code>
+<p>See <a class="reference internal" href="#pw85.f" title="pw85.f"><code class="xref py py-func docutils literal notranslate"><span class="pre">f()</span></code></a> for the meaning of the parameters <code class="docutils literal notranslate"><span class="pre">r12</span></code>, <code class="docutils literal notranslate"><span class="pre">q1</span></code>
 and <code class="docutils literal notranslate"><span class="pre">q2</span></code>.</p>
 <p>This function returns the pair <code class="docutils literal notranslate"><span class="pre">(μ²,</span> <span class="pre">λ)</span></code>, defined as (see
 <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
@@ -131,8 +131,8 @@ the maximizer <code class="docutils literal notranslate"><span class="pre">λ</s
 </dd></dl>
 
 <dl class="py function">
-<dt id="pypw85.f">
-<code class="sig-prename descclassname">pypw85.</code><code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lambda_</span></em>, <em class="sig-param"><span class="n">r12</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.f" title="Permalink to this definition">¶</a></dt>
+<dt id="pw85.f">
+<code class="sig-prename descclassname">pw85.</code><code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lambda_</span></em>, <em class="sig-param"><span class="n">r12</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85.html#f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.f" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the value of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> defined as:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
 </pre></div>
@@ -156,8 +156,8 @@ arrays <code class="docutils literal notranslate"><span class="pre">q1</span></c
 </dd></dl>
 
 <dl class="py function">
-<dt id="pypw85.spheroid">
-<code class="sig-prename descclassname">pypw85.</code><code class="sig-name descname">spheroid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">c</span></em>, <em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">q</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85.html#spheroid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.spheroid" title="Permalink to this definition">¶</a></dt>
+<dt id="pw85.spheroid">
+<code class="sig-prename descclassname">pw85.</code><code class="sig-name descname">spheroid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">c</span></em>, <em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">q</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85.html#spheroid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.spheroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the quadratic form associated to a spheroid.</p>
 <p>The spheroid is defined by its equatorial radius <code class="docutils literal notranslate"><span class="pre">a</span></code>, its polar
 radius <code class="docutils literal notranslate"><span class="pre">c</span></code> and the direction of its axis of revolution, <code class="docutils literal notranslate"><span class="pre">n</span></code>
@@ -168,8 +168,8 @@ radius <code class="docutils literal notranslate"><span class="pre">c</span></co
 
 </div>
 </div>
-<div class="section" id="module-pypw85.legacy">
-<span id="the-legacy-api"></span><h2><a class="toc-backref" href="#id3">The “legacy” API</a><a class="headerlink" href="#module-pypw85.legacy" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pw85.legacy">
+<span id="the-legacy-api"></span><h2><a class="toc-backref" href="#id3">The “legacy” API</a><a class="headerlink" href="#module-pw85.legacy" title="Permalink to this headline">¶</a></h2>
 <p>Python wrapper to the legacy API of PW85.</p>
 <p>This module offers some implementations of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> that
 were eventually discarded (for accuracy reasons). These functions are
@@ -180,8 +180,8 @@ NumPy library.  “<code class="docutils literal notranslate"><span class="pre">
 <p>Note that true NumPy array <em>must</em> be passed (array-likes will <em>not</em>
 work).</p>
 <dl class="py function">
-<dt id="pypw85.legacy._detQ_as_poly">
-<code class="sig-prename descclassname">pypw85.legacy.</code><code class="sig-name descname">_detQ_as_poly</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">q3</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">q4</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85/legacy.html#_detQ_as_poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.legacy._detQ_as_poly" title="Permalink to this definition">¶</a></dt>
+<dt id="pw85.legacy._detQ_as_poly">
+<code class="sig-prename descclassname">pw85.legacy.</code><code class="sig-name descname">_detQ_as_poly</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">q3</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">q4</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85/legacy.html#_detQ_as_poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.legacy._detQ_as_poly" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the coefficients of the polynomial <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">↦</span> <span class="pre">det[(1-λ)Q₁+λQ₂]</span></code>.</p>
 <p>The symmetric, positive definite, 3×3 matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code>
 are specified as arrays <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code>. If <code class="docutils literal notranslate"><span class="pre">q3</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">None</span></code>,
@@ -202,16 +202,16 @@ returned.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pypw85.legacy._det_sym">
-<code class="sig-prename descclassname">pypw85.legacy.</code><code class="sig-name descname">_det_sym</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85/legacy.html#_det_sym"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.legacy._det_sym" title="Permalink to this definition">¶</a></dt>
+<dt id="pw85.legacy._det_sym">
+<code class="sig-prename descclassname">pw85.legacy.</code><code class="sig-name descname">_det_sym</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85/legacy.html#_det_sym"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.legacy._det_sym" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the determinant of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
 <p>The symmetric matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code>
 array <code class="docutils literal notranslate"><span class="pre">a</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pypw85.legacy._rT_adjQ_r_as_poly">
-<code class="sig-prename descclassname">pypw85.legacy.</code><code class="sig-name descname">_rT_adjQ_r_as_poly</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">q3</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85/legacy.html#_rT_adjQ_r_as_poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.legacy._rT_adjQ_r_as_poly" title="Permalink to this definition">¶</a></dt>
+<dt id="pw85.legacy._rT_adjQ_r_as_poly">
+<code class="sig-prename descclassname">pw85.legacy.</code><code class="sig-name descname">_rT_adjQ_r_as_poly</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">q3</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85/legacy.html#_rT_adjQ_r_as_poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.legacy._rT_adjQ_r_as_poly" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the coefficients of the polynomial <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">↦</span> <span class="pre">rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r</span></code>.</p>
 <p>The symmetric, positive definite, 3×3 matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code>
 are specified as arrays <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code>. If <code class="docutils literal notranslate"><span class="pre">q3</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">None</span></code>,
@@ -232,8 +232,8 @@ returned.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pypw85.legacy._xT_adjA_x">
-<code class="sig-prename descclassname">pypw85.legacy.</code><code class="sig-name descname">_xT_adjA_x</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">a</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85/legacy.html#_xT_adjA_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.legacy._xT_adjA_x" title="Permalink to this definition">¶</a></dt>
+<dt id="pw85.legacy._xT_adjA_x">
+<code class="sig-prename descclassname">pw85.legacy.</code><code class="sig-name descname">_xT_adjA_x</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">a</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85/legacy.html#_xT_adjA_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.legacy._xT_adjA_x" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the product <code class="docutils literal notranslate"><span class="pre">xᵀ⋅adj(A)⋅x</span></code>.</p>
 <p>The column vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is specified as a <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array. The
 symmetric matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified trough the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array
@@ -243,8 +243,8 @@ cofactor matrix), see e.g <a class="reference external" href="https://en.wikiped
 </dd></dl>
 
 <dl class="py function">
-<dt id="pypw85.legacy.f1">
-<code class="sig-prename descclassname">pypw85.legacy.</code><code class="sig-name descname">f1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lambda_</span></em>, <em class="sig-param"><span class="n">r12</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85/legacy.html#f1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.legacy.f1" title="Permalink to this definition">¶</a></dt>
+<dt id="pw85.legacy.f1">
+<code class="sig-prename descclassname">pw85.legacy.</code><code class="sig-name descname">f1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lambda_</span></em>, <em class="sig-param"><span class="n">r12</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85/legacy.html#f1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.legacy.f1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the value of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> defined as
 (see <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
@@ -275,10 +275,10 @@ is updated with the values of the first and second derivatives:</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pypw85.legacy.f2">
-<code class="sig-prename descclassname">pypw85.legacy.</code><code class="sig-name descname">f2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lambda_</span></em>, <em class="sig-param"><span class="n">r12</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pypw85/legacy.html#f2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pypw85.legacy.f2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alternative implementation of <a class="reference internal" href="#pypw85.legacy.f1" title="pypw85.legacy.f1"><code class="xref py py-func docutils literal notranslate"><span class="pre">f1()</span></code></a>.</p>
-<p>See <a class="reference internal" href="#pypw85.legacy.f1" title="pypw85.legacy.f1"><code class="xref py py-func docutils literal notranslate"><span class="pre">f1()</span></code></a> for the meaning of the parameters <code class="docutils literal notranslate"><span class="pre">lambda_</span></code>,
+<dt id="pw85.legacy.f2">
+<code class="sig-prename descclassname">pw85.legacy.</code><code class="sig-name descname">f2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lambda_</span></em>, <em class="sig-param"><span class="n">r12</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85/legacy.html#f2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.legacy.f2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alternative implementation of <a class="reference internal" href="#pw85.legacy.f1" title="pw85.legacy.f1"><code class="xref py py-func docutils literal notranslate"><span class="pre">f1()</span></code></a>.</p>
+<p>See <a class="reference internal" href="#pw85.legacy.f1" title="pw85.legacy.f1"><code class="xref py py-func docutils literal notranslate"><span class="pre">f1()</span></code></a> for the meaning of the parameters <code class="docutils literal notranslate"><span class="pre">lambda_</span></code>,
 <code class="docutils literal notranslate"><span class="pre">r12</span></code>, <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code>.</p>
 <p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>. If <code class="docutils literal notranslate"><span class="pre">out</span> <span class="pre">is</span> <span class="pre">not</span>
 <span class="pre">None</span></code>, then it must be a pre-allocated <code class="docutils literal notranslate"><span class="pre">double[1]</span></code> array which
@@ -317,8 +317,8 @@ is updated with the value of <code class="docutils literal notranslate"><span cl
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing the implementation of the contact function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The python API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-pypw85">The new API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pypw85.legacy">The “legacy” API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pw85">The new API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pw85.legacy">The “legacy” API</a></li>
 </ul>
 </li>
 </ul>
@@ -354,10 +354,10 @@ is updated with the value of <code class="docutils literal notranslate"><span cl
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2018–2020, Sébastien Brisard.
+      &copy;2018–2021, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

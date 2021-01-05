@@ -1,0 +1,58 @@
+************
+Installation
+************
+
+
+This chapter describes how to install the C library as well as the
+Python bindings. The first step is to clone the source of this
+library. You can either get the latest release at
+https://github.com/sbrisard/pw85/releases or clone the Git repository
+for the development version::
+
+  git clone
+
+
+Building and installing the C library
+=====================================
+
+PW85 requires a POSIX system. On Windows platforms, it is recommended that you
+install `MSYS2 <https://www.msys2.org/The>`_.
+
+.. note:: Meson supports MSVC compilers. However, at the time of writing,
+          MSVC-based installation has not been tested. Contributions are most
+          welcome!
+
+
+The installation procedure also requires Python 3.
+
+For installation, we use the `Meson build system
+<https://mesonbuild.com/>`_. We assume that GLib, GSL and Meson are installed
+on your system. Assuming that the project is built in the ``src/build/``
+directory (no need to create it first), here is the whole installation
+procedure (you must first ``cd`` into the root directory of the PW85 project)::
+
+  cd pw85/src
+  meson build
+  cd build
+  ninja install
+
+A prefix can be specified in order for PW85 to be installed in a custom
+directory, like so::
+
+  cd pw85/src
+  meson build --prefix=C:/opt/pw85
+  cd build
+  ninja install
+
+Congratulations, ``PW85`` is now built and installed! You can then test the
+installation (stay in the ``src/build`` directory)::
+
+  meson test
+
+
+If you also intend to link the library to e.g. C executables, you must inform
+your system about the location of the library.
+
+- On Windows platforms, you need to add the full path to ``pw85.dll`` to your
+  ``PATH`` environment variable.
+- On Linux or MacOS platforms, no further operation is required.
