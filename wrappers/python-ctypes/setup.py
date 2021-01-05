@@ -36,7 +36,7 @@ if __name__ == '__main__':
     metadata_dir = pathlib.Path(__file__).parent/'..'/'..'/'metadata'
     version = get_metadata('version', metadata_dir)
     author = get_metadata('author', metadata_dir)
-    url = get_metadata('url', metadata_dir)
+    url = get_metadata('repository', metadata_dir)
 
     path = pathlib.Path('../../README.md')
     with open(str(path), mode='r', encoding='utf-8') as f:

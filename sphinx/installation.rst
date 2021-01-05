@@ -68,6 +68,8 @@ To build the LaTeX version of the docs::
 Installing the Python bindings
 ==============================
 
+**—————————— This section to be needed when pybind11 is used.**
+
 To install the pypw85 module, ``cd`` into the
 ``python`` subdirectory and edit the ``setup.cfg`` file. Set the ``include_dir``
 and ``library_dir`` to the appropriate paths. These should be::
@@ -84,11 +86,13 @@ or (if you intend to edit the project)::
 
   $ python setup.py develop --user
 
-you need to define the location of the dynamic libraries,
+**—————————— End of this section.**
+
+You need to define the location of the dynamic libraries,
 for ``ctypes`` to be able to import it. This is done through the ``pypw85.cfg``
 file, which you must create and place in the following directory
 
-- Windows 10/8/7/Vista: ``C:\Users\<User Name>\AppData\Roaming\pypw85``
+- Windows 10/8/7/Vista: ``C:\Users\<username>\AppData\Roaming\pypw85``
 - Windows XP/2000: ``C:\Documents and Settings\<username>\Application
   Data\pypw85``
 - Mac: ``/Users/<username>/Library/Application Support/pypw85``
@@ -132,7 +136,7 @@ To run the tests with Pytest_::
 You can also test the “legacy” API. This requires the h5py_ module. To run the
 tests, issue the command::
 
-  $PYTHON_EXEC -m pytest tests/test_pw85_legacy.py
+  $ python -m pytest tests/test_pw85_legacy.py
 
 (beware, these tests take some time!).
 
