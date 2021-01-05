@@ -9,7 +9,7 @@ The python API
 The new API
 ===========
 
-.. automodule:: pypw85
+.. automodule:: pw85
    :members:
    :private-members:
    :undoc-members:
@@ -19,7 +19,7 @@ The new API
 The “legacy” API
 ================
 
-.. automodule:: pypw85.legacy
+.. automodule:: pw85.legacy
    :members:
    :private-members:
    :undoc-members:
