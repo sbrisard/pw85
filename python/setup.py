@@ -24,7 +24,7 @@ class my_build_py(build_py):
     def run(self):
         super().run()
         metadata = self.distribution.metadata
-        path = self.get_module_outfile(self.build_lib, ['pypw85'], '__init__')
+        path = self.get_module_outfile(self.build_lib, ['pw85'], '__init__')
         substitute(path,
                    author=metadata.get_author(),
                    version=metadata.get_version(),
@@ -32,7 +32,7 @@ class my_build_py(build_py):
 
 
 if __name__ == '__main__':
-    name = 'pypw85'
+    name = 'pw85'
     metadata_dir = pathlib.Path(__file__).parent/'..'/'metadata'
     version = get_metadata('version', metadata_dir)
     author = get_metadata('author', metadata_dir)

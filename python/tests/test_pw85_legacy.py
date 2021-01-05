@@ -4,8 +4,8 @@ import h5py
 import numpy as np
 import pytest
 
-import pypw85.legacy
-import pypw85.utils
+import pw85.legacy
+import pw85.utils
 
 from numpy.testing import assert_allclose
 
@@ -51,7 +51,7 @@ def spheroids(radii, directions):
     for a in radii:
         for c in radii:
             for n in directions:
-                out[i, :] = pypw85.spheroid(a, c, n)
+                out[i, :] = pw85.spheroid(a, c, n)
     return out
 
 
@@ -63,7 +63,7 @@ def to_array_2d(a):
 def test__det_sym(a, rtol=1e-12, atol=1e-14):
 
     expected = np.linalg.det(to_array_2d(a))
-    actual = pypw85.legacy._det_sym(a)
+    actual = pw85.legacy._det_sym(a)
     assert_allclose(actual, expected, rtol, atol)
 
 
@@ -90,7 +90,7 @@ def adjugate(A):
 @pytest.mark.parametrize("x", np.random.rand(5, 3))
 @pytest.mark.parametrize("a", np.random.rand(5, 6))
 def test__xT_adjA_x(x, a, rtol=1e-12, atol=1e-14):
-    actual = pypw85.legacy._xT_adjA_x(x, a)
+    actual = pw85.legacy._xT_adjA_x(x, a)
     expected = np.dot(x, np.dot(adjugate(to_array_2d(a)), x))
     assert_allclose(actual, expected, rtol, atol)
 
@@ -101,7 +101,7 @@ def test__detQ_as_poly(spheroids, rtol=1e-10, atol=1e-8):
         for q2 in spheroids:
             Q2 = to_array_2d(q2)
             x = np.linspace(0.0, 1.0, num=11)
-            b = np.poly1d(pypw85.legacy._detQ_as_poly(q1, q2)[::-1])
+            b = np.poly1d(pw85.legacy._detQ_as_poly(q1, q2)[::-1])
             actual = b(x)
 
             x = x[:, None, None]
@@ -117,7 +117,7 @@ def test__rT_adjQ_r_as_poly(distances, directions, spheroids, rtol=1e-14, atol=1
                 for q2 in spheroids:
                     x = np.linspace(0.0, 1.0, num=11)
                     actual = np.poly1d(
-                        pypw85.legacy._rT_adjQ_r_as_poly(r12_vec, q1, q2)[::-1]
+                        pw85.legacy._rT_adjQ_r_as_poly(r12_vec, q1, q2)[::-1]
                     )(x)
                     x = x[:, None, None]
                     Q = (1 - x) * to_array_2d(q1) + x * to_array_2d(q2)
@@ -125,9 +125,9 @@ def test__rT_adjQ_r_as_poly(distances, directions, spheroids, rtol=1e-14, atol=1
                     assert_allclose(actual, expected, rtol, atol)
 
 
-@pytest.mark.parametrize("func, prec", [(pypw85.legacy.f1, 10), (pypw85.legacy.f2, 9)])
+@pytest.mark.parametrize("func, prec", [(pw85.legacy.f1, 10), (pw85.legacy.f2, 9)])
 def test_f(func, prec):
-    path = os.path.join(pypw85.utils.get_config_option("datadir"), "pw85_ref_data.h5")
+    path = os.path.join(pw85.utils.get_config_option("datadir"), "pw85_ref_data.h5")
     with h5py.File(path, "r") as f:
         spheroids = np.array(f["spheroids"])
         directions = np.array(f["directions"])

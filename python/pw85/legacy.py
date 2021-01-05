@@ -16,28 +16,28 @@ import ctypes
 
 import numpy as np
 
-import pypw85.utils
+import pw85.utils
 
 
-__clib = pypw85.utils.load_library("libpw85")
+__clib = pw85.utils.load_library("libpw85")
 
-__clib.pw85_legacy__det_sym.argtypes = [pypw85.utils.c_double_p]
+__clib.pw85_legacy__det_sym.argtypes = [pw85.utils.c_double_p]
 __clib.pw85_legacy__det_sym.restype = ctypes.c_double
 
 __clib.pw85_legacy__xT_adjA_x.argtypes = [
-    pypw85.utils.c_double_p,
-    pypw85.utils.c_double_p,
+    pw85.utils.c_double_p,
+    pw85.utils.c_double_p,
 ]
 __clib.pw85_legacy__xT_adjA_x.restype = ctypes.c_double
 
-__clib.pw85_legacy__rT_adjQ_r_as_poly.argtypes = 5 * [pypw85.utils.c_double_p]
+__clib.pw85_legacy__rT_adjQ_r_as_poly.argtypes = 5 * [pw85.utils.c_double_p]
 
-__clib.pw85_legacy__detQ_as_poly.argtypes = 5 * [pypw85.utils.c_double_p]
+__clib.pw85_legacy__detQ_as_poly.argtypes = 5 * [pw85.utils.c_double_p]
 
-__clib.pw85_legacy_f1.argtypes = [ctypes.c_double] + 4 * [pypw85.utils.c_double_p]
+__clib.pw85_legacy_f1.argtypes = [ctypes.c_double] + 4 * [pw85.utils.c_double_p]
 __clib.pw85_legacy_f1.restype = ctypes.c_double
 
-__clib.pw85_legacy_f2.argtypes = [ctypes.c_double] + 4 * [pypw85.utils.c_double_p]
+__clib.pw85_legacy_f2.argtypes = [ctypes.c_double] + 4 * [pw85.utils.c_double_p]
 __clib.pw85_legacy_f2.restype = ctypes.c_double
 
 
@@ -48,7 +48,7 @@ def _det_sym(a):
     array ``a``.
 
     """
-    return __clib.pw85_legacy__det_sym(a.ctypes.data_as(pypw85.utils.c_double_p))
+    return __clib.pw85_legacy__det_sym(a.ctypes.data_as(pw85.utils.c_double_p))
 
 
 def _xT_adjA_x(x, a):
@@ -64,8 +64,8 @@ def _xT_adjA_x(x, a):
 
     """
     return __clib.pw85_legacy__xT_adjA_x(
-        x.ctypes.data_as(pypw85.utils.c_double_p),
-        a.ctypes.data_as(pypw85.utils.c_double_p),
+        x.ctypes.data_as(pw85.utils.c_double_p),
+        a.ctypes.data_as(pw85.utils.c_double_p),
     )
 
 
@@ -95,7 +95,7 @@ def _rT_adjQ_r_as_poly(r, q1, q2, q3=None, a=None):
         q3 = 2 * q1 - q2
     if a is None:
         a = np.empty((3,), dtype=np.float64, order="C")
-    args = [arg.ctypes.data_as(pypw85.utils.c_double_p) for arg in (r, q1, q2, q3, a)]
+    args = [arg.ctypes.data_as(pw85.utils.c_double_p) for arg in (r, q1, q2, q3, a)]
     __clib.pw85_legacy__rT_adjQ_r_as_poly(*args)
     return a
 
@@ -128,7 +128,7 @@ def _detQ_as_poly(q1, q2, q3=None, q4=None, b=None):
         q4 = 0.5 * (q1 + q2)
     if b is None:
         b = np.empty((4,), dtype=np.float64, order="C")
-    args = [arg.ctypes.data_as(pypw85.utils.c_double_p) for arg in (q1, q2, q3, q4, b)]
+    args = [arg.ctypes.data_as(pw85.utils.c_double_p) for arg in (q1, q2, q3, q4, b)]
     __clib.pw85_legacy__detQ_as_poly(*args)
     return b
 
@@ -170,10 +170,10 @@ def f1(lambda_, r12, q1, q2, out=None):
     """
     return __clib.pw85_legacy_f1(
         lambda_,
-        r12.ctypes.data_as(pypw85.utils.c_double_p),
-        q1.ctypes.data_as(pypw85.utils.c_double_p),
-        q2.ctypes.data_as(pypw85.utils.c_double_p),
-        out if out is None else out.ctypes.data_as(pypw85.utils.c_double_p),
+        r12.ctypes.data_as(pw85.utils.c_double_p),
+        q1.ctypes.data_as(pw85.utils.c_double_p),
+        q2.ctypes.data_as(pw85.utils.c_double_p),
+        out if out is None else out.ctypes.data_as(pw85.utils.c_double_p),
     )
 
 
@@ -193,8 +193,8 @@ def f2(lambda_, r12, q1, q2, out=None):
     """
     return __clib.pw85_legacy_f2(
         lambda_,
-        r12.ctypes.data_as(pypw85.utils.c_double_p),
-        q1.ctypes.data_as(pypw85.utils.c_double_p),
-        q2.ctypes.data_as(pypw85.utils.c_double_p),
-        out if out is None else out.ctypes.data_as(pypw85.utils.c_double_p),
+        r12.ctypes.data_as(pw85.utils.c_double_p),
+        q1.ctypes.data_as(pw85.utils.c_double_p),
+        q2.ctypes.data_as(pw85.utils.c_double_p),
+        out if out is None else out.ctypes.data_as(pw85.utils.c_double_p),
     )

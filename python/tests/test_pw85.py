@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-import pypw85
+import pw85
 
 from numpy.testing import assert_allclose, assert_equal
 
@@ -27,7 +27,7 @@ from numpy.testing import assert_allclose, assert_equal
     ],
 )
 def test__cholesky_decomp(a, expected, rtol, atol=1e-15):
-    actual = pypw85._cholesky_decomp(a)
+    actual = pw85._cholesky_decomp(a)
     assert_allclose(actual, expected, rtol=rtol, atol=atol)
 
 
@@ -49,7 +49,7 @@ def test__cholesky_decomp(a, expected, rtol, atol=1e-15):
     ],
 )
 def test__cholesky_solve(l, b, expected, rtol, atol=1e-15):
-    actual = pypw85._cholesky_solve(l, b)
+    actual = pw85._cholesky_solve(l, b)
     assert_allclose(actual, expected, rtol=rtol, atol=atol)
 
 
@@ -83,7 +83,7 @@ def test__cholesky_solve(l, b, expected, rtol, atol=1e-15):
 @pytest.mark.parametrize("in_place", [False, True])
 def test_spheroid(a, c, n, in_place, expected, rtol, atol=1e-15):
     out = np.empty((6,), dtype=np.float64) if in_place else None
-    actual = pypw85.spheroid(a, c, n, out)
+    actual = pw85.spheroid(a, c, n, out)
     if in_place:
         assert actual is out
     assert_allclose(actual, expected, rtol=rtol, atol=atol)
@@ -121,7 +121,7 @@ def test_spheroid(a, c, n, in_place, expected, rtol, atol=1e-15):
     ],
 )
 def test_f(lambda_, r12, q1, q2, expected, rtol, atol=1e-15):
-    actual = pypw85.f(lambda_, r12, q1, q2)
+    actual = pw85.f(lambda_, r12, q1, q2)
     assert np.abs(actual - expected) <= rtol * np.abs(expected) + atol
 
 
@@ -158,7 +158,7 @@ def test_f(lambda_, r12, q1, q2, expected, rtol, atol=1e-15):
 @pytest.mark.parametrize("in_place", [False, True])
 def test_contact_function(r12, q1, q2, in_place, expected, rtol, atol=1e-15):
     out = np.empty((2,), dtype=np.float64) if in_place else None
-    actual = np.array(pypw85.contact_function(r12, q1, q2, out))
+    actual = np.array(pw85.contact_function(r12, q1, q2, out))
     assert_allclose(actual, expected, rtol=rtol, atol=atol)
     if in_place:
         assert_equal(out, actual)

@@ -48,34 +48,34 @@ import ctypes
 
 import numpy as np
 
-import pypw85.utils
+import pw85.utils
 
 __version__ = "${version}"
 __author__ = "${author}"
 
-__clib = pypw85.utils.load_library("libpw85")
+__clib = pw85.utils.load_library("libpw85")
 
-__clib.pw85__cholesky_decomp.argtypes = 2 * [pypw85.utils.c_double_p]
+__clib.pw85__cholesky_decomp.argtypes = 2 * [pw85.utils.c_double_p]
 __clib.pw85__cholesky_decomp.restype = None
 
-__clib.pw85__cholesky_solve.argtypes = 3 * [pypw85.utils.c_double_p]
+__clib.pw85__cholesky_solve.argtypes = 3 * [pw85.utils.c_double_p]
 __clib.pw85__cholesky_solve.restype = None
 
 __clib.pw85_spheroid.argtypes = [
     ctypes.c_double,
     ctypes.c_double,
-    pypw85.utils.c_double_p,
-    pypw85.utils.c_double_p,
+    pw85.utils.c_double_p,
+    pw85.utils.c_double_p,
 ]
 __clib.pw85_spheroid.restype = None
 
-__clib.pw85_f_neg.argtypes = [ctypes.c_double, pypw85.utils.c_double_p]
+__clib.pw85_f_neg.argtypes = [ctypes.c_double, pw85.utils.c_double_p]
 __clib.pw85_f_neg.restype = ctypes.c_double
 
-__clib.pw85__residual.argtypes = [ctypes.c_double] + 4 * [pypw85.utils.c_double_p]
+__clib.pw85__residual.argtypes = [ctypes.c_double] + 4 * [pw85.utils.c_double_p]
 __clib.pw85__residual.restype = None
 
-__clib.pw85_contact_function.argtypes = 4 * [pypw85.utils.c_double_p]
+__clib.pw85_contact_function.argtypes = 4 * [pw85.utils.c_double_p]
 __clib.pw85_contact_function.restype = ctypes.c_int
 
 
@@ -93,8 +93,8 @@ def _cholesky_decomp(a, l=None):
     if l is None:
         l = np.empty((6,), dtype=np.float64, order="C")
     __clib.pw85__cholesky_decomp(
-        a.ctypes.data_as(pypw85.utils.c_double_p),
-        l.ctypes.data_as(pypw85.utils.c_double_p),
+        a.ctypes.data_as(pw85.utils.c_double_p),
+        l.ctypes.data_as(pw85.utils.c_double_p),
     )
     return l
 
@@ -112,9 +112,9 @@ def _cholesky_solve(l, b, x=None):
     if x is None:
         x = np.empty((3,), dtype=np.float64, order="C")
     __clib.pw85__cholesky_solve(
-        l.ctypes.data_as(pypw85.utils.c_double_p),
-        b.ctypes.data_as(pypw85.utils.c_double_p),
-        x.ctypes.data_as(pypw85.utils.c_double_p),
+        l.ctypes.data_as(pw85.utils.c_double_p),
+        b.ctypes.data_as(pw85.utils.c_double_p),
+        x.ctypes.data_as(pw85.utils.c_double_p),
     )
     return x
 
@@ -135,8 +135,8 @@ def spheroid(a, c, n, q=None):
     __clib.pw85_spheroid(
         a,
         c,
-        n.ctypes.data_as(pypw85.utils.c_double_p),
-        q.ctypes.data_as(pypw85.utils.c_double_p),
+        n.ctypes.data_as(pw85.utils.c_double_p),
+        q.ctypes.data_as(pw85.utils.c_double_p),
     )
     return q
 
@@ -170,7 +170,7 @@ def f(lambda_, r12, q1, q2):
     params[0:3] = r12
     params[3:9] = q1
     params[9:15] = q2
-    return -__clib.pw85_f_neg(lambda_, params.ctypes.data_as(pypw85.utils.c_double_p))
+    return -__clib.pw85_f_neg(lambda_, params.ctypes.data_as(pw85.utils.c_double_p))
 
 
 def contact_function(r12, q1, q2, out=None):
@@ -201,9 +201,9 @@ def contact_function(r12, q1, q2, out=None):
         out = np.empty((2,), dtype=np.float64)
 
     __clib.pw85_contact_function(
-        r12.ctypes.data_as(pypw85.utils.c_double_p),
-        q1.ctypes.data_as(pypw85.utils.c_double_p),
-        q2.ctypes.data_as(pypw85.utils.c_double_p),
-        out.ctypes.data_as(pypw85.utils.c_double_p),
+        r12.ctypes.data_as(pw85.utils.c_double_p),
+        q1.ctypes.data_as(pw85.utils.c_double_p),
+        q2.ctypes.data_as(pw85.utils.c_double_p),
+        out.ctypes.data_as(pw85.utils.c_double_p),
     )
     return tuple(out[:2])

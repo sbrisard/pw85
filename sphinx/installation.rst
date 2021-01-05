@@ -70,11 +70,11 @@ Installing the Python bindings
 
 **—————————— This section to be needed when pybind11 is used.**
 
-To install the pypw85 module, ``cd`` into the
-``python`` subdirectory and edit the ``setup.cfg`` file. Set the ``include_dir``
-and ``library_dir`` to the appropriate paths. These should be::
+To install the pw85 module, ``cd`` into the ``python`` subdirectory and edit the
+``setup.cfg`` file. Set the ``include_dir`` and ``library_dir`` to the
+appropriate paths. These should be::
 
-  [pypw85]
+  [pw85]
   include_dir = ${CMAKE_INSTALL_PREFIX}/include
   library_dir = ${CMAKE_INSTLAL_PREFIX}/lib
 
@@ -88,18 +88,18 @@ or (if you intend to edit the project)::
 
 **—————————— End of this section.**
 
-You need to define the location of the dynamic libraries,
-for ``ctypes`` to be able to import it. This is done through the ``pypw85.cfg``
-file, which you must create and place in the following directory
+You need to define the location of the dynamic libraries, for ``ctypes`` to be
+able to import it. This is done through the ``pw85.cfg`` file, which you must
+create and place in the following directory
 
-- Windows 10/8/7/Vista: ``C:\Users\<username>\AppData\Roaming\pypw85``
+- Windows 10/8/7/Vista: ``C:\Users\<username>\AppData\Roaming\pw85``
 - Windows XP/2000: ``C:\Documents and Settings\<username>\Application
-  Data\pypw85``
-- Mac: ``/Users/<username>/Library/Application Support/pypw85``
-- Linux: ``~/.pypw85``
+  Data\pw85``
+- Mac: ``/Users/<username>/Library/Application Support/pw85``
+- Linux: ``~/.pw85``
 
-(in all cases, the ``pypw85`` subdirectory must be created). The contents of the
-``pypw85.cfg`` file should be::
+(in all cases, the ``pw85`` subdirectory must be created). The contents of the
+``pw85.cfg`` file should be::
 
   [pw85]
   libpw85 = full/path/to/the/pw85/dynamic/library
