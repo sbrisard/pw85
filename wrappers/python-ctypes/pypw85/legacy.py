@@ -19,7 +19,7 @@ import numpy as np
 import pypw85.utils
 
 
-__clib = pypw85.utils.load_library("libpw85_legacy")
+__clib = pypw85.utils.load_library("libpw85")
 
 __clib.pw85_legacy__det_sym.argtypes = [pypw85.utils.c_double_p]
 __clib.pw85_legacy__det_sym.restype = ctypes.c_double

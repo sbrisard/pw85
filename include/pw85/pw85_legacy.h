@@ -1,6 +1,6 @@
 #ifndef __PW85_LEGACY_H__
 #define __PW85_LEGACY_H__
-#include "pw85.h"
+#include "pw85/pw85.h"
 
 DllExport double pw85_legacy__det_sym(double const a[PW85_SYM]);
 DllExport double pw85_legacy__xT_adjA_x(double const x[PW85_DIM],
