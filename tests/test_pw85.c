@@ -12,6 +12,12 @@
 
 #include "pw85/pw85.h"
 
+void assert_cmp_float(double expected, double actual, double rtol, double atol) {
+  if (!fabs(actual-expected) <= rtol*fabs(expected)+atol) {
+    exit(-1);
+  }
+}
+
 void test_pw85_read_dataset_double(hid_t const hid, char const *dset_name,
                                    size_t *size, double **buffer) {
   int ndims;
