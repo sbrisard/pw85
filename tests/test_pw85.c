@@ -14,7 +14,14 @@
 
 void assert_cmp_float(double expected, double actual, double rtol,
                       double atol) {
-  if (!(fabs(actual - expected) <= rtol * fabs(expected) + atol)) {
+  double err = fabs(actual - expected);
+  double tol = rtol * fabs(expected) + atol;
+
+  if (err > tol) {
+    fprintf(stderr,
+            "expected = %g\nactual = %g\nrtol = %g\natol = %g\n\nerr = %g\ntol "
+            "= %g\n",
+            expected, actual, rtol, atol, err, tol);
     exit(-1);
   }
 }
