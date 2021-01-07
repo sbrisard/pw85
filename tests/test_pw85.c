@@ -215,8 +215,9 @@ void pw85_test_add_cholesky_decomp_test() {
   double exp2[] = {2, -1, 3, 4, -5, 6};
   test_pw85_cholesky_decomp_test(a2, exp2, 1e-15);
 
-  double a3[] = {1e10,-2,-3,16 + 1. / 25e8,-0.02 + 3. / 5e9,29. / 8e3 - 9e-10};
-  double exp3[] = {1e5,-2e-5,-3e-5,4,-5e-3,6e-2};
+  double a3[] = {
+      1e10, -2, -3, 16 + 1. / 25e8, -0.02 + 3. / 5e9, 29. / 8e3 - 9e-10};
+  double exp3[] = {1e5, -2e-5, -3e-5, 4, -5e-3, 6e-2};
   test_pw85_cholesky_decomp_test(a3, exp3, 1e-6);
 }
 
