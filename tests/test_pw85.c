@@ -12,8 +12,9 @@
 
 #include "pw85/pw85.h"
 
-void assert_cmp_float(double expected, double actual, double rtol, double atol) {
-  if (!fabs(actual-expected) <= rtol*fabs(expected)+atol) {
+void assert_cmp_float(double expected, double actual, double rtol,
+                      double atol) {
+  if (!(fabs(actual - expected) <= rtol * fabs(expected) + atol)) {
     exit(-1);
   }
 }
@@ -191,83 +192,32 @@ double *test_pw85_gen_spheroids(size_t num_radii, double *radii,
   return spheroids;
 }
 
-void test_pw85_cholesky_decomp_test(double const *data) {
-  double const *a = data;
-  double const *exp = data + PW85_SYM;
-  double const rtol = exp[PW85_SYM];
-
+void test_pw85_cholesky_decomp_test(double const *a, double const *exp,
+                                    double const rtol) {
+  printf("test_pw85_cholesky_decomp...");
   double act[PW85_SYM];
-  pw85__cholesky_decomp(data, act);
+  pw85__cholesky_decomp(a, act);
 
   double *exp_i = exp;
   double *act_i = act;
   for (size_t i = 0; i < PW85_SYM; ++i, ++exp_i, ++act_i) {
-    g_assert_cmpfloat(fabs(*exp_i - *act_i), <=, rtol * fabs(*act_i));
+    assert_cmp_float(*exp_i, *act_i, rtol, 0.);
   }
+  printf(" OK\n");
 }
 
 void pw85_test_add_cholesky_decomp_test() {
-  char path_template[] =
-      "/pw85/cholesky_decomp/a=[%1.3e,%1.3e,%1.3e,%1.3e,%1.3e,%1.3e]";
-  char path[92];
-  double *data1 = g_new(double, 2 * PW85_SYM + 1);
-  data1[0] = 4;
-  data1[1] = 2;
-  data1[2] = 6;
-  data1[3] = 17;
-  data1[4] = 23;
-  data1[5] = 70;
-  data1[6] = 2;
-  data1[7] = 1;
-  data1[8] = 3;
-  data1[9] = 4;
-  data1[10] = 5;
-  data1[11] = 6;
-  data1[12] = 1e-15;
+  double a1[] = {4, 2, 6, 17, 23, 70};
+  double exp1[] = {2, 1, 3, 4, 5, 6};
+  test_pw85_cholesky_decomp_test(a1, exp1, 1e-15);
 
-  sprintf(path, path_template, data1[0], data1[1], data1[2], data1[3], data1[4],
-          data1[5]);
-  g_test_add_data_func_full(path, data1, test_pw85_cholesky_decomp_test,
-                            g_free);
+  double a2[] = {4, -2, 6, 17, -23, 70};
+  double exp2[] = {2, -1, 3, 4, -5, 6};
+  test_pw85_cholesky_decomp_test(a2, exp2, 1e-15);
 
-  double *data2 = g_new(double, 2 * PW85_SYM + 1);
-  data2[0] = 4;
-  data2[1] = -2;
-  data2[2] = 6;
-  data2[3] = 17;
-  data2[4] = -23;
-  data2[5] = 70;
-  data2[6] = 2;
-  data2[7] = -1;
-  data2[8] = 3;
-  data2[9] = 4;
-  data2[10] = -5;
-  data2[11] = 6;
-  data2[12] = 1e-15;
-
-  sprintf(path, path_template, data2[0], data2[1], data2[2], data2[3], data2[4],
-          data2[5]);
-  g_test_add_data_func_full(path, data2, test_pw85_cholesky_decomp_test,
-                            g_free);
-
-  double *data3 = g_new(double, 2 * PW85_SYM + 1);
-  data3[0] = 1e10;
-  data3[1] = -2;
-  data3[2] = -3;
-  data3[3] = 16 + 1. / 25e8;
-  data3[4] = -0.02 + 3. / 5e9;
-  data3[5] = 29. / 8e3 - 9e-10;
-  data3[6] = 1e5;
-  data3[7] = -2e-5;
-  data3[8] = -3e-5;
-  data3[9] = 4;
-  data3[10] = -5e-3;
-  data3[11] = 6e-2;
-  data3[12] = 1e-6;
-  sprintf(path, path_template, data3[0], data3[1], data3[2], data3[3], data3[4],
-          data3[5]);
-  g_test_add_data_func_full(path, data3, test_pw85_cholesky_decomp_test,
-                            g_free);
+  double a3[] = {1e10,-2,-3,16 + 1. / 25e8,-0.02 + 3. / 5e9,29. / 8e3 - 9e-10};
+  double exp3[] = {1e5,-2e-5,-3e-5,4,-5e-3,6e-2};
+  test_pw85_cholesky_decomp_test(a3, exp3, 1e-6);
 }
 
 void test_pw85_cholesky_solve_test(double const *data) {
@@ -561,19 +511,19 @@ void test_pw85_f_neg_test() {
 int main(int argc, char **argv) {
   g_test_init(&argc, &argv, NULL);
 
-  hid_t const hid = H5Fopen(PW85_REF_DATA_PATH, H5F_ACC_RDONLY, H5P_DEFAULT);
-  test_pw85_init_context(hid);
-  H5Fclose(hid);
+  //  hid_t const hid = H5Fopen(PW85_REF_DATA_PATH, H5F_ACC_RDONLY,
+  //  H5P_DEFAULT); test_pw85_init_context(hid); H5Fclose(hid);
 
   pw85_test_add_cholesky_decomp_test();
-  pw85_test_add_cholesky_solve_test();
-
-  g_test_add_func("/pw85/spheroid", test_pw85_spheroid_test);
-  g_test_add_func("/pw85/f_neg", test_pw85_f_neg_test);
-  g_test_add_func("/pw85/contact_function", test_pw85_contact_function_test);
+  //  pw85_test_add_cholesky_solve_test();
+  //
+  //  g_test_add_func("/pw85/spheroid", test_pw85_spheroid_test);
+  //  g_test_add_func("/pw85/f_neg", test_pw85_f_neg_test);
+  //  g_test_add_func("/pw85/contact_function",
+  //  test_pw85_contact_function_test);
 
   int out = g_test_run();
 
-  test_pw85_free_context();
+  //  test_pw85_free_context();
   return out;
 }
