@@ -213,12 +213,7 @@ void test_pw85_cholesky_decomp_test(double const *a, double const *exp,
   printf("test_pw85_cholesky_decomp...");
   double act[PW85_SYM];
   pw85__cholesky_decomp(a, act);
-
-  double *exp_i = exp;
-  double *act_i = act;
-  for (size_t i = 0; i < PW85_SYM; ++i, ++exp_i, ++act_i) {
-    assert_cmp_float(*exp_i, *act_i, rtol, 0.);
-  }
+  assert_cmp_float_array(PW85_SYM, exp, act, rtol, 0.);
   printf(" OK\n");
 }
 
@@ -243,13 +238,7 @@ void test_pw85_cholesky_solve_test(double const l[PW85_SYM],
   printf("test_pw85_cholesky_solve...");
   double const act[PW85_DIM];
   pw85__cholesky_solve(l, b, act);
-
-  double *exp_i = exp;
-  double *act_i = act;
-  for (size_t i = 0; i < PW85_DIM; ++i, ++exp_i, ++act_i) {
-    assert_cmp_float(*exp_i, *act_i, rtol, 0.0);
-    // g_assert_cmpfloat(fabs(*exp_i - *act_i), <=, rtol * fabs(*act_i));
-  }
+  assert_cmp_float_array(PW85_DIM, exp, act, rtol, 0.0);
   printf(" OK\n");
 }
 
