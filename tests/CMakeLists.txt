@@ -30,6 +30,6 @@ endif()
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PW85_REF_DATA_FILENAME}
   DESTINATION ${PW85_REF_DATA_DIR})
 
-add_compile_definitions(PW85_REF_DATA_PATH="${PW85_REF_DATA_DIR}/${PW85_REF_DATA_FILENAME}")
+add_compile_definitions(PW85_REF_DATA_PATH="${PW85_REF_DATA_FILENAME}")
 
 add_test(NAME test_pw85 COMMAND test_pw85)
