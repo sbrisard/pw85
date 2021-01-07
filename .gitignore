@@ -7,5 +7,7 @@ __pycache__
 .pytest_cache
 build
 build-mingw64
+cmake-build-debug-mingw
 dist
 pytest.ini
+.idea
