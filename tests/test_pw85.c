@@ -220,71 +220,32 @@ void pw85_test_add_cholesky_decomp_test() {
   test_pw85_cholesky_decomp_test(a3, exp3, 1e-6);
 }
 
-void test_pw85_cholesky_solve_test(double const *data) {
-  double const *l = data;
-  double const *b = data + PW85_SYM;
-  double const *exp = b + PW85_DIM;
-  double const rtol = exp[PW85_DIM];
-
+void test_pw85_cholesky_solve_test(double const l[PW85_SYM],
+                                   double const b[PW85_DIM],
+                                   double const exp[PW85_DIM], double rtol) {
+  printf("test_pw85_cholesky_solve...");
   double const act[PW85_DIM];
   pw85__cholesky_solve(l, b, act);
 
   double *exp_i = exp;
   double *act_i = act;
   for (size_t i = 0; i < PW85_DIM; ++i, ++exp_i, ++act_i) {
-    g_assert_cmpfloat(fabs(*exp_i - *act_i), <=, rtol * fabs(*act_i));
+    assert_cmp_float(*exp_i, *act_i, rtol, 0.0);
+    // g_assert_cmpfloat(fabs(*exp_i - *act_i), <=, rtol * fabs(*act_i));
   }
+  printf(" OK\n");
 }
 
 void pw85_test_add_cholesky_solve_test() {
-  char path_template[] =
-      "/pw85/cholesky_solve/l=[%g,%g,%g,%g,%g,%g],b=[%g,%g,%g]";
-  char path[255];
-  double *data1 = g_new(double, PW85_SYM + 2 * PW85_DIM + 1);
-  /* L */
-  data1[0] = 1;
-  data1[1] = 2;
-  data1[2] = 3;
-  data1[3] = 4;
-  data1[4] = 5;
-  data1[5] = 6;
-  /* b */
-  data1[6] = 11.5;
-  data1[7] = 82.6;
-  data1[8] = 314.2;
-  /* x */
-  data1[9] = 1.2;
-  data1[10] = -3.4;
-  data1[11] = 5.7;
-  /* rtol */
-  data1[12] = 1e-15;
+  double l1[] = {1, 2, 3, 4, 5, 6};
+  double b1[] = {11.5, 82.6, 314.2};
+  double x1[] = {1.2, -3.4, 5.7};
+  test_pw85_cholesky_solve_test(l1, b1, x1, 1e-15);
 
-  sprintf(path, path_template, data1[0], data1[1], data1[2], data1[3], data1[4],
-          data1[5], data1[6], data1[7], data1[8]);
-  g_test_add_data_func_full(path, data1, test_pw85_cholesky_solve_test, g_free);
-
-  double *data2 = g_new(double, PW85_SYM + 2 * PW85_DIM + 1);
-  /* L */
-  data2[0] = 1;
-  data2[1] = -2;
-  data2[2] = -3;
-  data2[3] = 4;
-  data2[4] = -5;
-  data2[5] = 6;
-  /* b */
-  data2[6] = -9.1;
-  data2[7] = -150.2;
-  data2[8] = 443;
-  /* x */
-  data2[9] = 1.2;
-  data2[10] = -3.4;
-  data2[11] = 5.7;
-  /* rtol */
-  data2[12] = 4e-15;
-
-  sprintf(path, path_template, data2[0], data2[1], data2[2], data2[3], data2[4],
-          data2[5], data2[6], data2[7], data2[8]);
-  g_test_add_data_func_full(path, data2, test_pw85_cholesky_solve_test, g_free);
+  double l2[] = {1, -2, -3, 4, -5, 6};
+  double b2[] = {-9.1, -150.2, 443};
+  double x2[] = {1.2, -3.4, 5.7};
+  test_pw85_cholesky_solve_test(l2, b2, x2, 4e-15);
 }
 
 void test_pw85_spheroid_elementary_test(double a, double c,
@@ -515,7 +476,7 @@ int main(int argc, char **argv) {
   //  H5P_DEFAULT); test_pw85_init_context(hid); H5Fclose(hid);
 
   pw85_test_add_cholesky_decomp_test();
-  //  pw85_test_add_cholesky_solve_test();
+  pw85_test_add_cholesky_solve_test();
   //
   //  g_test_add_func("/pw85/spheroid", test_pw85_spheroid_test);
   //  g_test_add_func("/pw85/f_neg", test_pw85_f_neg_test);
