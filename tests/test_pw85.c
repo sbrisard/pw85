@@ -26,6 +26,15 @@ void assert_cmp_float(double expected, double actual, double rtol,
   }
 }
 
+void assert_cmp_float_array(size_t n, double const *expected,
+                            double const *actual, double rtol, double atol) {
+  double *exp_i = expected;
+  double *act_i = actual;
+  for (size_t i = 0; i < n; ++i, ++exp_i, ++act_i) {
+    assert_cmp_float(*exp_i, *act_i, rtol, atol);
+  }
+}
+
 void test_pw85_read_dataset_double(hid_t const hid, char const *dset_name,
                                    size_t *size, double **buffer) {
   int ndims;
