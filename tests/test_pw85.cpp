@@ -9,7 +9,7 @@
 
 #include "pw85/pw85.hpp"
 
-void print_float_array(size_t n, double a[n]) {
+void print_float_array(size_t n, double *a) {
   printf("[");
   for (size_t i = 0; i < n; i++) {
     printf("%g", a[i]);
@@ -57,15 +57,15 @@ void test_pw85_read_dataset_double(hid_t const hid, char const *dset_name,
                                    size_t *size, double **buffer) {
   int ndims;
   H5LTget_dataset_ndims(hid, dset_name, &ndims);
-  hsize_t *dim = malloc(sizeof(hsize_t) * ndims);
+  hsize_t *dim = new hsize_t[ndims];
   H5LTget_dataset_info(hid, dset_name, dim, NULL, NULL);
   *size = 1;
   for (size_t i = 0; i < ndims; i++) {
     *size *= dim[i];
   }
-  *buffer = malloc(sizeof(double) * (*size));
+  *buffer = new double[*size];
   H5LTread_dataset_double(hid, dset_name, *buffer);
-  free(dim);
+  delete[] dim;
 }
 
 /* This is a global variable that holds the parameters used for most
@@ -121,8 +121,8 @@ void test_pw85_init_context(hid_t const hid) {
   }
 
   test_pw85_context.num_distances = 3;
-  test_pw85_context.distances =
-      malloc(sizeof(double) * test_pw85_context.num_distances);
+  test_pw85_context.distances = static_cast<double *>(
+      malloc(sizeof(double) * test_pw85_context.num_distances));
   test_pw85_context.distances[0] = 0.15;
   test_pw85_context.distances[1] = 1.1;
   test_pw85_context.distances[2] = 11.;
@@ -170,8 +170,8 @@ void test_pw85_free_context() {
 #define TEST_PW85_NUM_DIRECTIONS 3
 
 double *test_pw85_gen_directions() {
-  double *directions =
-      malloc(sizeof(double) * TEST_PW85_NUM_DIRECTIONS * PW85_DIM);
+  double *directions = static_cast<double *>(
+      malloc(sizeof(double) * TEST_PW85_NUM_DIRECTIONS * PW85_DIM));
   double u = sqrt(2. / (5. + sqrt(5.)));
   double v = sqrt((3 + sqrt(5.)) / (5. + sqrt(5.)));
   directions[0] = 0.;
@@ -191,7 +191,8 @@ double *test_pw85_gen_radius_vectors(size_t num_distances, double *distances,
                                      double *directions) {
   size_t num_radius_vectors = num_distances * num_directions;
   size_t num_doubles = num_radius_vectors * PW85_DIM;
-  double *radius_vectors = malloc(sizeof(double) * num_doubles);
+  double *radius_vectors =
+      static_cast<double *>(malloc(sizeof(double) * num_doubles));
   double *r12 = radius_vectors;
   for (size_t i = 0; i < num_distances; i++) {
     double r = distances[i];
@@ -211,7 +212,8 @@ double *test_pw85_gen_spheroids(size_t num_radii, double *radii,
                                 size_t num_directions, double *directions) {
   size_t num_spheroids = num_radii * num_radii * num_directions;
   size_t num_doubles = num_spheroids * PW85_SYM;
-  double *spheroids = malloc(sizeof(double) * num_doubles);
+  double *spheroids =
+      static_cast<double *>(malloc(sizeof(double) * num_doubles));
   double *q = spheroids;
   for (size_t i = 0; i < num_radii; i++) {
     double a = radii[i];

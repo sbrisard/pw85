@@ -62,6 +62,12 @@ double pw85_f_neg(double lambda, double const *params) {
   return -lambda * (1. - lambda) * rs;
 }
 
+double pw85__f_neg(double lambda, void *params) {
+  // TODO Remove this non-const version of f_neg.
+  // It is required by GSL
+  return pw85_f_neg(lambda, static_cast<double *>(params));
+}
+
 void pw85__residual(double lambda, double const r12[PW85_DIM],
                     double const q1[PW85_SYM], double const q2[PW85_SYM],
                     double out[3]) {
@@ -95,7 +101,7 @@ int pw85_contact_function(double const r12[PW85_DIM], double const q1[PW85_SYM],
   double params[] = {r12[0], r12[1], r12[2], q1[0], q1[1], q1[2], q1[3], q1[4],
                      q1[5],  q2[0],  q2[1],  q2[2], q2[3], q2[4], q2[5]};
 
-  const gsl_function f = {.function = &pw85_f_neg, .params = params};
+  gsl_function f = {.function = pw85__f_neg, .params = params};
   gsl_min_fminimizer *s = gsl_min_fminimizer_alloc(gsl_min_fminimizer_brent);
 
   gsl_min_fminimizer_set(s, &f, 0.5, 0., 1.);
