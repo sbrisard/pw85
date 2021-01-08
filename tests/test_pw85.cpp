@@ -1,6 +1,5 @@
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
+#include <cmath>
+#include <cstring>
 
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
