@@ -25,8 +25,8 @@ void assert_nonnull(void *p) {
   if (p == NULL) exit(-1);
 }
 
-void assert_cmp_float(double expected, double actual, double rtol,
-                      double atol) {
+void assert_cmp_double(double expected, double actual, double rtol,
+                       double atol) {
   double err = fabs(actual - expected);
   double tol = rtol * fabs(expected) + atol;
 
@@ -47,12 +47,12 @@ void assert_cmp_float(double expected, double actual, double rtol,
   }
 }
 
-void assert_cmp_float_array(size_t n, double const *expected,
-                            double const *actual, double rtol, double atol) {
+void assert_cmp_double_array(size_t n, double const *expected,
+                             double const *actual, double rtol, double atol) {
   double *exp_i = expected;
   double *act_i = actual;
   for (size_t i = 0; i < n; ++i, ++exp_i, ++act_i) {
-    assert_cmp_float(*exp_i, *act_i, rtol, atol);
+    assert_cmp_double(*exp_i, *act_i, rtol, atol);
   }
 }
 
@@ -234,11 +234,11 @@ void test_pw85_cholesky_decomp_test(double const *a, double const *exp,
   printf("test_pw85_cholesky_decomp...");
   double act[PW85_SYM];
   pw85__cholesky_decomp(a, act);
-  assert_cmp_float_array(PW85_SYM, exp, act, rtol, 0.);
+  assert_cmp_double_array(PW85_SYM, exp, act, rtol, 0.);
   printf(" OK\n");
 }
 
-void pw85_test_add_cholesky_decomp_test() {
+void test_pw85_cholesky_decomp_tests() {
   double a1[] = {4, 2, 6, 17, 23, 70};
   double exp1[] = {2, 1, 3, 4, 5, 6};
   test_pw85_cholesky_decomp_test(a1, exp1, 1e-15);
@@ -259,11 +259,11 @@ void test_pw85_cholesky_solve_test(double const l[PW85_SYM],
   printf("test_pw85_cholesky_solve...");
   double const act[PW85_DIM];
   pw85__cholesky_solve(l, b, act);
-  assert_cmp_float_array(PW85_DIM, exp, act, rtol, 0.0);
+  assert_cmp_double_array(PW85_DIM, exp, act, rtol, 0.0);
   printf(" OK\n");
 }
 
-void pw85_test_add_cholesky_solve_test() {
+void test_pw85_cholesky_solve_tests() {
   double l1[] = {1, 2, 3, 4, 5, 6};
   double b1[] = {11.5, 82.6, 314.2};
   double x1[] = {1.2, -3.4, 5.7};
@@ -312,7 +312,7 @@ void test_pw85_spheroid_test(double a, double c, const double *n) {
       delta_q[1] * abs_n[0] + delta_q[3] * abs_n[1] + delta_q[4] * abs_n[2],
       delta_q[2] * abs_n[0] + delta_q[4] * abs_n[1] + delta_q[5] * abs_n[2]};
   for (size_t i = 0; i < PW85_DIM; i++) {
-    assert_cmp_float(c2 * n[i], qn[i], 0., delta_qn[i]);
+    assert_cmp_double(c2 * n[i], qn[i], 0., delta_qn[i]);
   }
 
   /*
@@ -324,7 +324,7 @@ void test_pw85_spheroid_test(double a, double c, const double *n) {
   exp = 2. * a2 + c2;
   act = q[0] + q[3] + q[5];
   tol = delta_q[0] + delta_q[3] + delta_q[5];
-  assert_cmp_float(exp, act, 0., tol);
+  assert_cmp_double(exp, act, 0., tol);
 
   /* Check det(q). */
   exp = a2 * a2 * c2;
@@ -339,7 +339,7 @@ void test_pw85_spheroid_test(double a, double c, const double *n) {
           (abs_q[1] * delta_q[2] * abs_q[4] + abs_q[0] * delta_q[4] * abs_q[4] +
            abs_q[3] * delta_q[2] * abs_q[2] + abs_q[5] * delta_q[1] * abs_q[1] +
            abs_q[1] * abs_q[2] * delta_q[4]);
-  assert_cmp_float(exp, act, 0., tol);
+  assert_cmp_double(exp, act, 0., tol);
 
   /* Check [tr(q)^2 - tr(q^2)]/2 */
   exp = a2 * (a2 + 2. * c2);
@@ -349,7 +349,7 @@ void test_pw85_spheroid_test(double a, double c, const double *n) {
         abs_q[3] * delta_q[5] + delta_q[5] * abs_q[0] + abs_q[5] * delta_q[0] +
         2. * delta_q[1] * abs_q[1] + 2. * delta_q[2] * abs_q[2] +
         2. * delta_q[4] * abs_q[4];
-  assert_cmp_float(exp, act, 0, tol);
+  assert_cmp_double(exp, act, 0, tol);
   printf(" OK\n");
 }
 
@@ -431,8 +431,8 @@ void test_pw85_contact_function_test(double *r12, double *q1, double *q2) {
   double mu2_1 = lambda1 * lambda1 * (rs - lambda * su);
   double mu2_2 = lambda * lambda * (rs + lambda1 * su);
 
-  assert_cmp_float(mu2, mu2_1, rtol, atol);
-  assert_cmp_float(mu2, mu2_2, rtol, atol);
+  assert_cmp_double(mu2, mu2_1, rtol, atol);
+  assert_cmp_double(mu2, mu2_2, rtol, atol);
 
   /*
    * Finally, we check that f'(lambda) = 0.
@@ -451,7 +451,7 @@ void test_pw85_contact_function_test(double *r12, double *q1, double *q2) {
   double lambda2 = 1. - 2. * lambda;
   double f1 = lambda2 * rs - lambda * lambda1 * su;
   double f2 = -2. * rs - 2. * lambda2 * su + 2. * lambda * lambda1 * uv;
-  assert_cmp_float(0., fabs(f1), 0., PW85_LAMBDA_ATOL * fabs(f2));
+  assert_cmp_double(0., fabs(f1), 0., PW85_LAMBDA_ATOL * fabs(f2));
 
   gsl_vector_free(r);
   gsl_vector_free(s);
@@ -502,7 +502,7 @@ void test_pw85_f_neg_test(double lambda, double const r12[PW85_DIM],
   memcpy(params + PW85_DIM, q1, PW85_SYM * sizeof(double));
   memcpy(params + PW85_DIM + PW85_SYM, q2, PW85_SYM * sizeof(double));
   double act = -pw85_f_neg(lambda, params);
-  assert_cmp_float(exp, act, rtol, atol);
+  assert_cmp_double(exp, act, rtol, atol);
 
   //  printf("OK\n");
 }
@@ -536,8 +536,8 @@ int main(int argc, char **argv) {
   test_pw85_init_context(hid);
   H5Fclose(hid);
 
-  pw85_test_add_cholesky_decomp_test();
-  pw85_test_add_cholesky_solve_test();
+  test_pw85_cholesky_decomp_tests();
+  test_pw85_cholesky_solve_tests();
   test_pw85_spheroid_tests();
   test_pw85_f_neg_tests();
   test_pw85_contact_function_tests();
