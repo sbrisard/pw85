@@ -9,7 +9,6 @@ if (MATH_LIBRARY)
 endif ()
 
 find_package(PkgConfig REQUIRED)
-pkg_search_module(GLIB2 REQUIRED glib-2.0 IMPORTED_TARGET)
 find_package(GSL REQUIRED)
 find_package(HDF5 COMPONENTS C HL REQUIRED)
 
@@ -17,8 +16,7 @@ target_link_libraries(test_pw85
   pw85
   GSL::gsl
   hdf5::hdf5
-  hdf5::hdf5_hl
-  PkgConfig::GLIB2)
+  hdf5::hdf5_hl)
 
 set(PW85_REF_DATA_FILENAME "pw85_ref_data.h5")
 set(PW85_REF_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME})
