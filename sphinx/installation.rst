@@ -53,10 +53,10 @@ Building the documentation
 The documentation of pw85 requires Sphinx_. The C++ API
 docs are built with Doxygen_ and the Breathe_ extension to Sphinx_.
 
-To build the HTML version of the docs in the ``public`` subdirectory::
+To build the HTML version of the docs in the ``docs`` subdirectory::
 
   $ cd docs
-  $ sphinx-build -b html . ../public
+  $ sphinx-build -b html . ../docs
 
 To build the LaTeX version of the docs::
 
