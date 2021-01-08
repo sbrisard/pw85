@@ -1,7 +1,6 @@
 #include <math.h>
 #include <stdio.h>
-
-#include <glib.h>
+#include <string.h>
 
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
@@ -60,15 +59,15 @@ void test_pw85_read_dataset_double(hid_t const hid, char const *dset_name,
                                    size_t *size, double **buffer) {
   int ndims;
   H5LTget_dataset_ndims(hid, dset_name, &ndims);
-  hsize_t *dim = g_new(hsize_t, ndims);
+  hsize_t *dim = malloc(sizeof(hsize_t) * ndims);
   H5LTget_dataset_info(hid, dset_name, dim, NULL, NULL);
   *size = 1;
   for (size_t i = 0; i < ndims; i++) {
     *size *= dim[i];
   }
-  *buffer = g_new(double, *size);
+  *buffer = malloc(sizeof(double) * (*size));
   H5LTread_dataset_double(hid, dset_name, *buffer);
-  g_free(dim);
+  free(dim);
 }
 
 /* This is a global variable that holds the parameters used for most
@@ -124,19 +123,20 @@ void test_pw85_init_context(hid_t const hid) {
   }
 
   test_pw85_context.num_distances = 3;
-  test_pw85_context.distances = g_new(double, test_pw85_context.num_distances);
+  test_pw85_context.distances =
+      malloc(sizeof(double) * test_pw85_context.num_distances);
   test_pw85_context.distances[0] = 0.15;
   test_pw85_context.distances[1] = 1.1;
   test_pw85_context.distances[2] = 11.;
 }
 
 void test_pw85_free_context() {
-  g_free(test_pw85_context.directions);
-  g_free(test_pw85_context.radii);
-  g_free(test_pw85_context.spheroids);
-  g_free(test_pw85_context.lambdas);
-  g_free(test_pw85_context.f);
-  g_free(test_pw85_context.distances);
+  free(test_pw85_context.directions);
+  free(test_pw85_context.radii);
+  free(test_pw85_context.spheroids);
+  free(test_pw85_context.lambdas);
+  free(test_pw85_context.f);
+  free(test_pw85_context.distances);
 }
 
 /* #define TEST_PW85_NUM_DIRECTIONS 12 */
@@ -172,7 +172,8 @@ void test_pw85_free_context() {
 #define TEST_PW85_NUM_DIRECTIONS 3
 
 double *test_pw85_gen_directions() {
-  double *directions = g_new(double, TEST_PW85_NUM_DIRECTIONS *PW85_DIM);
+  double *directions =
+      malloc(sizeof(double) * TEST_PW85_NUM_DIRECTIONS * PW85_DIM);
   double u = sqrt(2. / (5. + sqrt(5.)));
   double v = sqrt((3 + sqrt(5.)) / (5. + sqrt(5.)));
   directions[0] = 0.;
@@ -192,7 +193,7 @@ double *test_pw85_gen_radius_vectors(size_t num_distances, double *distances,
                                      double *directions) {
   size_t num_radius_vectors = num_distances * num_directions;
   size_t num_doubles = num_radius_vectors * PW85_DIM;
-  double *radius_vectors = g_new(double, num_doubles);
+  double *radius_vectors = malloc(sizeof(double) * num_doubles);
   double *r12 = radius_vectors;
   for (size_t i = 0; i < num_distances; i++) {
     double r = distances[i];
@@ -212,7 +213,7 @@ double *test_pw85_gen_spheroids(size_t num_radii, double *radii,
                                 size_t num_directions, double *directions) {
   size_t num_spheroids = num_radii * num_radii * num_directions;
   size_t num_doubles = num_spheroids * PW85_SYM;
-  double *spheroids = g_new(double, num_doubles);
+  double *spheroids = malloc(sizeof(double) * num_doubles);
   double *q = spheroids;
   for (size_t i = 0; i < num_radii; i++) {
     double a = radii[i];
@@ -280,8 +281,9 @@ void test_pw85_cholesky_solve_tests() {
 }
 
 void test_pw85_spheroid_test(double a, double c, const double *n) {
-//  printf("test_pw85_spheroid(a=%g, c=%g, n=[%g, %g, %g])...", a, c, n[0], n[1],
-//         n[2]);
+  //  printf("test_pw85_spheroid(a=%g, c=%g, n=[%g, %g, %g])...", a, c, n[0],
+  //  n[1],
+  //         n[2]);
   /*
    * Relative and absolute tolerance on the coefficients of the matrix
    * q to be computed and tested.
@@ -354,7 +356,7 @@ void test_pw85_spheroid_test(double a, double c, const double *n) {
         2. * delta_q[1] * abs_q[1] + 2. * delta_q[2] * abs_q[2] +
         2. * delta_q[4] * abs_q[4];
   assert_cmp_double(exp, act, 0, tol);
-//  printf(" OK\n");
+  //  printf(" OK\n");
 }
 
 void test_pw85_spheroid_tests() {
@@ -540,8 +542,6 @@ void test_pw85_f_neg_tests() {
 }
 
 int main(int argc, char **argv) {
-  g_test_init(&argc, &argv, NULL);
-
   hid_t const hid = H5Fopen(PW85_REF_DATA_PATH, H5F_ACC_RDONLY, H5P_DEFAULT);
   test_pw85_init_context(hid);
   H5Fclose(hid);
