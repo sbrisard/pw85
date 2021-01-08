@@ -14,10 +14,9 @@ Installing the C library
 
 The C library depends on
 
-1. The `GLib <https://developer.gnome.org/glib/>`_ (for testing purposes)
-2. The `GNU Scientific Library (GSL) <https://www.gnu.org/software/gsl/>`_ (for
+1. The `GNU Scientific Library (GSL) <https://www.gnu.org/software/gsl/>`_ (for
    the implementation of the Brent algorithm)
-3. The `HDF5 <https://portal.hdfgroup.org/>`_ (for testing purposes)
+2. The `HDF5 <https://portal.hdfgroup.org/>`_ (for testing purposes)
 
 This is a CMake_ based project. The installation procedure is standard. First,
 clone the repository. Then, ``cd`` into the root directory of the
