@@ -46,8 +46,8 @@ void assert_cmp_double(double expected, double actual, double rtol,
 
 void assert_cmp_double_array(size_t n, double const *expected,
                              double const *actual, double rtol, double atol) {
-  double *exp_i = expected;
-  double *act_i = actual;
+  double const *exp_i = expected;
+  double const *act_i = actual;
   for (size_t i = 0; i < n; ++i, ++exp_i, ++act_i) {
     assert_cmp_double(*exp_i, *act_i, rtol, atol);
   }
@@ -258,7 +258,7 @@ void test_pw85_cholesky_solve_test(double const l[PW85_SYM],
                                    double const b[PW85_DIM],
                                    double const exp[PW85_DIM], double rtol) {
   //  printf("test_pw85_cholesky_solve...");
-  double const act[PW85_DIM];
+  double act[PW85_DIM];
   pw85__cholesky_solve(l, b, act);
   assert_cmp_double_array(PW85_DIM, exp, act, rtol, 0.0);
   //  printf(" OK\n");
@@ -372,7 +372,8 @@ void test_pw85_spheroid_tests() {
   printf(" OK\n");
 }
 
-void test_pw85_contact_function_test(double *r12, double *q1, double *q2) {
+void test_pw85_contact_function_test(double const *r12, double const *q1,
+                                     double const *q2) {
   //  printf("test_pw85_contact_function(r12=");
   //  print_float_array(PW85_DIM, r12);
   //  printf(", q1=");
