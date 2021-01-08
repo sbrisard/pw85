@@ -1,8 +1,6 @@
 #ifndef __PW85_H__
 #define __PW85_H__
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cmath>
 
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_math.h>
