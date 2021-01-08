@@ -12,6 +12,19 @@
 
 #include "pw85/pw85.h"
 
+void print_float_array(size_t n, double a[n]) {
+  printf("[");
+  for (size_t i = 0; i < n; i++) {
+    printf("%g", a[i]);
+    if (i + 1 < n) printf(", ");
+  }
+  printf("]");
+}
+
+void assert_nonnull(void *p) {
+  if (p == NULL) exit(-1);
+}
+
 void assert_cmp_float(double expected, double actual, double rtol,
                       double atol) {
   double err = fabs(actual - expected);
@@ -19,8 +32,16 @@ void assert_cmp_float(double expected, double actual, double rtol,
 
   if (err > tol) {
     fprintf(stderr,
-            "expected = %g\nactual = %g\nrtol = %g\natol = %g\n\nerr = %g\ntol "
-            "= %g\n",
+            "\n"
+            "-----\n"
+            "expected = %g\n"
+            "actual = %g\n"
+            "rtol = %g\n"
+            "atol = %g\n"
+            "\n"
+            "err = %g\n"
+            "tol = %g\n"
+            "-----\n",
             expected, actual, rtol, atol, err, tol);
     exit(-1);
   }
@@ -345,9 +366,15 @@ void test_pw85_spheroid_tests() {
   }
 }
 
-void test_pw85_contact_function_elementary_test(double r12[PW85_DIM],
-                                                double q1[PW85_SYM],
-                                                double q2[PW85_SYM]) {
+void test_pw85_contact_function_test(double *r12, double *q1, double *q2) {
+  //  printf("test_pw85_contact_function(r12=");
+  //  print_float_array(PW85_DIM, r12);
+  //  printf(", q1=");
+  //  print_float_array(PW85_SYM, q1);
+  //  printf(", q2=");
+  //  print_float_array(PW85_SYM, q2);
+  //  printf("...");
+
   double atol = 1e-15;
   double rtol = 1e-10;
 
@@ -404,8 +431,8 @@ void test_pw85_contact_function_elementary_test(double r12[PW85_DIM],
   double mu2_1 = lambda1 * lambda1 * (rs - lambda * su);
   double mu2_2 = lambda * lambda * (rs + lambda1 * su);
 
-  g_assert_cmpfloat(fabs(mu2_1 - mu2), <=, rtol * mu2 + atol);
-  g_assert_cmpfloat(fabs(mu2_2 - mu2), <=, rtol * mu2 + atol);
+  assert_cmp_float(mu2, mu2_1, rtol, atol);
+  assert_cmp_float(mu2, mu2_2, rtol, atol);
 
   /*
    * Finally, we check that f'(lambda) = 0.
@@ -424,7 +451,7 @@ void test_pw85_contact_function_elementary_test(double r12[PW85_DIM],
   double lambda2 = 1. - 2. * lambda;
   double f1 = lambda2 * rs - lambda * lambda1 * su;
   double f2 = -2. * rs - 2. * lambda2 * su + 2. * lambda * lambda1 * uv;
-  g_assert_cmpfloat(fabs(f1), <=, PW85_LAMBDA_ATOL * fabs(f2));
+  assert_cmp_float(0., fabs(f1), 0., PW85_LAMBDA_ATOL * fabs(f2));
 
   gsl_vector_free(r);
   gsl_vector_free(s);
@@ -432,45 +459,70 @@ void test_pw85_contact_function_elementary_test(double r12[PW85_DIM],
   gsl_vector_free(v);
   gsl_matrix_free(Q12);
   gsl_matrix_free(Q);
+
+  //  printf(" OK\n");
 }
 
-void test_pw85_contact_function_test() {
-  g_assert_nonnull(test_pw85_context.distances);
-  g_assert_nonnull(test_pw85_context.directions);
-  g_assert_nonnull(test_pw85_context.spheroids);
+void test_pw85_contact_function_tests() {
+  assert_nonnull(test_pw85_context.distances);
+  assert_nonnull(test_pw85_context.directions);
+  assert_nonnull(test_pw85_context.spheroids);
+
+  double *q_begin = test_pw85_context.spheroids;
+  double *q_end = q_begin + test_pw85_context.num_spheroids * PW85_SYM;
+  double *n_begin = test_pw85_context.directions;
+  double *n_end = n_begin + test_pw85_context.num_directions * PW85_DIM;
+
   for (size_t i = 0; i < test_pw85_context.num_distances; i++) {
     double const r = test_pw85_context.distances[i];
-    for (size_t j = 0; j < test_pw85_context.num_directions; j++) {
-      double const *n = test_pw85_context.directions + PW85_DIM * j;
+    for (double *n = n_begin; n < n_end; n += PW85_DIM) {
       double const r12[] = {r * n[0], r * n[1], r * n[2]};
-      for (size_t k1 = 0; k1 < test_pw85_context.num_spheroids; k1++) {
-        double const *q1 = test_pw85_context.spheroids + PW85_SYM * k1;
-        for (size_t k2 = 0; k2 < test_pw85_context.num_spheroids; k2++) {
-          double const *q2 = test_pw85_context.spheroids + PW85_SYM * k2;
-          test_pw85_contact_function_elementary_test(r12, q1, q2);
+      for (double *q1 = q_begin; q1 < q_end; q1 += PW85_SYM) {
+        for (double *q2 = q_begin; q2 < q_end; q2 += PW85_SYM) {
+          test_pw85_contact_function_test(r12, q1, q2);
         }
       }
     }
   }
 }
 
-void test_pw85_f_neg_test() {
+void test_pw85_f_neg_test(double lambda, double const r12[PW85_DIM],
+                          double const q1[PW85_SYM], double const q2[PW85_SYM],
+                          double exp, double rtol, double atol) {
+  //  printf("test_pw85_f_neg(lambda=%g, r12=", lambda);
+  //  print_float_array(PW85_DIM, r12);
+  //  printf(", q1=");
+  //  print_float_array(PW85_SYM, q1);
+  //  printf(", q2=");
+  //  print_float_array(PW85_SYM, q2);
+  //  printf("...");
+
   double params[2 * PW85_SYM + PW85_DIM];
+  memcpy(params, r12, PW85_DIM * sizeof(double));
+  memcpy(params + PW85_DIM, q1, PW85_SYM * sizeof(double));
+  memcpy(params + PW85_DIM + PW85_SYM, q2, PW85_SYM * sizeof(double));
+  double act = -pw85_f_neg(lambda, params);
+  assert_cmp_float(exp, act, rtol, atol);
+
+  //  printf("OK\n");
+}
+
+void test_pw85_f_neg_tests() {
   double rtol = 1e-10;
+  double *q_begin = test_pw85_context.spheroids;
+  double *q_end = q_begin + test_pw85_context.num_spheroids * PW85_SYM;
+  double *n_begin = test_pw85_context.directions;
+  double *n_end = n_begin + test_pw85_context.num_directions * PW85_DIM;
+  double *lambda_begin = test_pw85_context.lambdas;
+  double *lambda_end = lambda_begin + test_pw85_context.num_lambdas;
   double *exp = test_pw85_context.f;
-  for (size_t i1 = 0; i1 < test_pw85_context.num_spheroids; i1++) {
-    memcpy(params + PW85_DIM, test_pw85_context.spheroids + PW85_SYM * i1,
-           PW85_SYM * sizeof(double));
-    for (size_t i2 = 0; i2 < test_pw85_context.num_spheroids; i2++) {
-      memcpy(params + PW85_DIM + PW85_SYM,
-             test_pw85_context.spheroids + PW85_SYM * i2,
-             PW85_SYM * sizeof(double));
-      for (size_t i = 0; i < test_pw85_context.num_directions; i++) {
-        memcpy(params, test_pw85_context.directions + PW85_DIM * i,
-               PW85_DIM * sizeof(double));
-        for (size_t j = 0; j < test_pw85_context.num_lambdas; j++, exp++) {
-          double const act = -pw85_f_neg(test_pw85_context.lambdas[j], params);
-          g_assert_cmpfloat(fabs(act - *exp), <=, rtol * (*exp));
+
+  for (double *q1 = q_begin; q1 < q_end; q1 += PW85_SYM) {
+    for (double *q2 = q_begin; q2 < q_end; q2 += PW85_SYM) {
+      for (double *n = n_begin; n < n_end; n += PW85_DIM) {
+        for (double *lambda = lambda_begin; lambda < lambda_end;
+             lambda++, exp++) {
+          test_pw85_f_neg_test(*lambda, n, q1, q2, *exp, rtol, 0.0);
         }
       }
     }
@@ -487,14 +539,9 @@ int main(int argc, char **argv) {
   pw85_test_add_cholesky_decomp_test();
   pw85_test_add_cholesky_solve_test();
   test_pw85_spheroid_tests();
-
-  // g_test_add_func("/pw85/spheroid", test_pw85_spheroid_tests);
-  //  g_test_add_func("/pw85/f_neg", test_pw85_f_neg_test);
-  //  g_test_add_func("/pw85/contact_function",
-  //  test_pw85_contact_function_test);
-
-  int out = g_test_run();
+  test_pw85_f_neg_tests();
+  test_pw85_contact_function_tests();
 
   test_pw85_free_context();
-  return out;
+  return 0;
 }
