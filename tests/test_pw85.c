@@ -231,14 +231,15 @@ double *test_pw85_gen_spheroids(size_t num_radii, double *radii,
 
 void test_pw85_cholesky_decomp_test(double const *a, double const *exp,
                                     double const rtol) {
-  printf("test_pw85_cholesky_decomp...");
+  //  printf("test_pw85_cholesky_decomp...");
   double act[PW85_SYM];
   pw85__cholesky_decomp(a, act);
   assert_cmp_double_array(PW85_SYM, exp, act, rtol, 0.);
-  printf(" OK\n");
+  //  printf(" OK\n");
 }
 
 void test_pw85_cholesky_decomp_tests() {
+  printf("test_pw85_cholesky_decomp_tests...");
   double a1[] = {4, 2, 6, 17, 23, 70};
   double exp1[] = {2, 1, 3, 4, 5, 6};
   test_pw85_cholesky_decomp_test(a1, exp1, 1e-15);
@@ -251,19 +252,21 @@ void test_pw85_cholesky_decomp_tests() {
       1e10, -2, -3, 16 + 1. / 25e8, -0.02 + 3. / 5e9, 29. / 8e3 - 9e-10};
   double exp3[] = {1e5, -2e-5, -3e-5, 4, -5e-3, 6e-2};
   test_pw85_cholesky_decomp_test(a3, exp3, 1e-6);
+  printf("OK\n");
 }
 
 void test_pw85_cholesky_solve_test(double const l[PW85_SYM],
                                    double const b[PW85_DIM],
                                    double const exp[PW85_DIM], double rtol) {
-  printf("test_pw85_cholesky_solve...");
+  //  printf("test_pw85_cholesky_solve...");
   double const act[PW85_DIM];
   pw85__cholesky_solve(l, b, act);
   assert_cmp_double_array(PW85_DIM, exp, act, rtol, 0.0);
-  printf(" OK\n");
+  //  printf(" OK\n");
 }
 
 void test_pw85_cholesky_solve_tests() {
+  printf("test_pw85_cholesky_solve_tests...");
   double l1[] = {1, 2, 3, 4, 5, 6};
   double b1[] = {11.5, 82.6, 314.2};
   double x1[] = {1.2, -3.4, 5.7};
@@ -273,11 +276,12 @@ void test_pw85_cholesky_solve_tests() {
   double b2[] = {-9.1, -150.2, 443};
   double x2[] = {1.2, -3.4, 5.7};
   test_pw85_cholesky_solve_test(l2, b2, x2, 4e-15);
+  printf(" OK\n");
 }
 
 void test_pw85_spheroid_test(double a, double c, const double *n) {
-  printf("test_pw85_spheroid(a=%g, c=%g, n=[%g, %g, %g])...", a, c, n[0], n[1],
-         n[2]);
+//  printf("test_pw85_spheroid(a=%g, c=%g, n=[%g, %g, %g])...", a, c, n[0], n[1],
+//         n[2]);
   /*
    * Relative and absolute tolerance on the coefficients of the matrix
    * q to be computed and tested.
@@ -350,10 +354,11 @@ void test_pw85_spheroid_test(double a, double c, const double *n) {
         2. * delta_q[1] * abs_q[1] + 2. * delta_q[2] * abs_q[2] +
         2. * delta_q[4] * abs_q[4];
   assert_cmp_double(exp, act, 0, tol);
-  printf(" OK\n");
+//  printf(" OK\n");
 }
 
 void test_pw85_spheroid_tests() {
+  printf("test_pw85_spheroid_tests...");
   for (size_t i = 0; i < test_pw85_context.num_radii; i++) {
     double const a = test_pw85_context.radii[i];
     for (size_t j = 0; j < test_pw85_context.num_radii; j++) {
@@ -364,6 +369,7 @@ void test_pw85_spheroid_tests() {
       }
     }
   }
+  printf(" OK\n");
 }
 
 void test_pw85_contact_function_test(double *r12, double *q1, double *q2) {
@@ -464,6 +470,7 @@ void test_pw85_contact_function_test(double *r12, double *q1, double *q2) {
 }
 
 void test_pw85_contact_function_tests() {
+  printf("test_pw85_contact_function_tests...");
   assert_nonnull(test_pw85_context.distances);
   assert_nonnull(test_pw85_context.directions);
   assert_nonnull(test_pw85_context.spheroids);
@@ -484,6 +491,7 @@ void test_pw85_contact_function_tests() {
       }
     }
   }
+  printf(" OK\n");
 }
 
 void test_pw85_f_neg_test(double lambda, double const r12[PW85_DIM],
@@ -508,6 +516,7 @@ void test_pw85_f_neg_test(double lambda, double const r12[PW85_DIM],
 }
 
 void test_pw85_f_neg_tests() {
+  printf("test_pw85_f_neg_tests...");
   double rtol = 1e-10;
   double *q_begin = test_pw85_context.spheroids;
   double *q_end = q_begin + test_pw85_context.num_spheroids * PW85_SYM;
@@ -527,6 +536,7 @@ void test_pw85_f_neg_tests() {
       }
     }
   }
+  printf(" OK\n");
 }
 
 int main(int argc, char **argv) {
