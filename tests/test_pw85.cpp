@@ -7,7 +7,7 @@
 
 #include <hdf5_hl.h>
 
-#include "pw85/pw85.h"
+#include "pw85/pw85.hpp"
 
 void print_float_array(size_t n, double a[n]) {
   printf("[");

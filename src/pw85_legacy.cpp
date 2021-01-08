@@ -1,4 +1,4 @@
-#include "pw85/pw85_legacy.h"
+#include "pw85/pw85_legacy.hpp"
 
 double pw85_legacy__det_sym(double const a[PW85_SYM]) {
   return a[0] * a[3] * a[5] + 2 * a[1] * a[2] * a[4] - a[0] * a[4] * a[4] -

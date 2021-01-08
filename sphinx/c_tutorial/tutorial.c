@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "pw85/pw85.h"
+#include "pw85/pw85.hpp"
 
 #define DIM 3
 #define SYM 6

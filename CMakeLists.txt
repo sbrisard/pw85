@@ -11,9 +11,9 @@ project(
   pw85
   VERSION ${METADATA_VERSION}
   DESCRIPTION ${METADATA_AUTHOR}
-  LANGUAGES C)
+  LANGUAGES CXX)
 
-# set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 17)
 include(CTest)
 
 add_subdirectory(include)

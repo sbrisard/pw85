@@ -1,5 +1,5 @@
 add_executable(test_pw85
-  test_pw85.c
+        test_pw85.cpp
 )
 
 target_include_directories(test_pw85 PUBLIC ../include)
