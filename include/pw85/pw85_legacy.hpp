@@ -1,5 +1,4 @@
-#ifndef __PW85_LEGACY_H__
-#define __PW85_LEGACY_H__
+#pragma once
 #include "pw85/pw85.hpp"
 
 namespace pw85_legacy {
@@ -19,4 +18,4 @@ DllExport int contact_function1(const double* r12, const double* q1,
 DllExport int contact_function2(const double* r12, const double* q1,
                                 const double* q2, double* out);
 }  // namespace pw85_legacy
-#endif
+

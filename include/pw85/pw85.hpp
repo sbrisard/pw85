@@ -1,5 +1,4 @@
-#ifndef __PW85_H__
-#define __PW85_H__
+#pragma once
 #include <cmath>
 
 #include <gsl/gsl_errno.h>
@@ -39,4 +38,4 @@ DllExport void _residual(double lambda, const double *r12, const double *q1,
 DllExport int contact_function(const double *r12, const double *q1,
                                const double *q2, double *out);
 }  // namespace pw85
-#endif
+
