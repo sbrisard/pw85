@@ -33,7 +33,7 @@ namespace pw85 {
 DllExport void _cholesky_decomp(const double *a, double *l);
 DllExport void _cholesky_solve(const double *l, const double *b, double *x);
 DllExport void spheroid(double a, double c, const double *n, double *q);
-DllExport double f_neg(double lambda, double const *params);
+DllExport double f_neg(double lambda, const double *params);
 DllExport void _residual(double lambda, const double *r12, const double *q1,
                          const double *q2, double *out);
 DllExport int contact_function(const double *r12, const double *q1,
