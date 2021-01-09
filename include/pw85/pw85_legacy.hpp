@@ -3,32 +3,20 @@
 #include "pw85/pw85.hpp"
 
 namespace pw85_legacy {
-DllExport double pw85_legacy__det_sym(double const a[PW85_SYM]);
-DllExport double pw85_legacy__xT_adjA_x(double const x[PW85_DIM],
-                                        double const a[PW85_SYM]);
-DllExport void pw85_legacy__rT_adjQ_r_as_poly(double const r[PW85_DIM],
-                                              double const q1[PW85_SYM],
-                                              double const q2[PW85_SYM],
-                                              double const q3[PW85_SYM],
-                                              double a[PW85_DIM]);
-DllExport void pw85_legacy__detQ_as_poly(double const q1[PW85_SYM],
-                                         double const q2[PW85_SYM],
-                                         double const q3[PW85_SYM],
-                                         double const q4[PW85_SYM],
-                                         double b[PW85_DIM + 1]);
-DllExport double pw85_legacy_f1(double lambda, double const r12[PW85_DIM],
-                                double const q1[PW85_SYM],
-                                double const q2[PW85_SYM], double* out);
-DllExport double pw85_legacy_f2(double lambda, double const r12[PW85_DIM],
-                                double const q1[PW85_SYM],
-                                double const q2[PW85_SYM], double* out);
-DllExport int pw85_legacy_contact_function1(double const r12[PW85_DIM],
-                                            double const q1[PW85_SYM],
-                                            double const q2[PW85_SYM],
-                                            double out[2]);
-DllExport int pw85_legacy_contact_function2(double const r12[PW85_DIM],
-                                            double const q1[PW85_SYM],
-                                            double const q2[PW85_SYM],
-                                            double out[2]);
+DllExport double _det_sym(const double* a);
+DllExport double _xT_adjA_x(const double* x, const double* a);
+DllExport void _rT_adjQ_r_as_poly(const double* r, const double* q1,
+                                  const double* q2, const double* q3,
+                                  double* a);
+DllExport void _detQ_as_poly(const double* q1, const double* q2,
+                             const double* q3, const double* q4, double* b);
+DllExport double f1(double lambda, const double* r12, const double* q1,
+                    const double* q2, double* out);
+DllExport double f2(double lambda, const double* r12, const double* q1,
+                    const double* q2, double* out);
+DllExport int contact_function1(const double* r12, const double* q1,
+                                const double* q2, double* out);
+DllExport int contact_function2(const double* r12, const double* q1,
+                                const double* q2, double* out);
 }  // namespace pw85_legacy
 #endif

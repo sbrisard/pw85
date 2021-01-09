@@ -1,13 +1,12 @@
 #include "pw85/pw85_legacy.hpp"
 
 namespace pw85_legacy {
-double pw85_legacy__det_sym(double const a[PW85_SYM]) {
+double _det_sym(const double *a) {
   return a[0] * a[3] * a[5] + 2 * a[1] * a[2] * a[4] - a[0] * a[4] * a[4] -
          a[3] * a[2] * a[2] - a[5] * a[1] * a[1];
 }
 
-double pw85_legacy__xT_adjA_x(double const x[PW85_DIM],
-                              double const a[PW85_SYM]) {
+double _xT_adjA_x(const double *x, const double *a) {
   return (x[0] * x[0] * (a[3] * a[5] - a[4] * a[4]) +
           x[1] * x[1] * (a[0] * a[5] - a[2] * a[2]) +
           x[2] * x[2] * (a[0] * a[3] - a[1] * a[1]) +
@@ -16,39 +15,32 @@ double pw85_legacy__xT_adjA_x(double const x[PW85_DIM],
                 x[1] * x[2] * (a[1] * a[2] - a[0] * a[4])));
 }
 
-void pw85_legacy__rT_adjQ_r_as_poly(double const r[PW85_DIM],
-                                    double const q1[PW85_SYM],
-                                    double const q2[PW85_SYM],
-                                    double const q3[PW85_SYM],
-                                    double a[PW85_DIM]) {
-  double const a_zero = pw85_legacy__xT_adjA_x(r, q1);
-  double const a_one = pw85_legacy__xT_adjA_x(r, q2);
-  double const a_minus_one = pw85_legacy__xT_adjA_x(r, q3);
+void _rT_adjQ_r_as_poly(const double *r, const double *q1, const double *q2,
+                        const double *q3, double *a) {
+  double const a_zero = _xT_adjA_x(r, q1);
+  double const a_one = _xT_adjA_x(r, q2);
+  double const a_minus_one = _xT_adjA_x(r, q3);
   a[0] = a_zero;
   a[2] = 0.5 * (a_one + a_minus_one) - a_zero;
   a[1] = 0.5 * (a_one - a_minus_one);
 }
 
-void pw85_legacy__detQ_as_poly(double const q1[PW85_SYM],
-                               double const q2[PW85_SYM],
-                               double const q3[PW85_SYM],
-                               double const q4[PW85_SYM],
-                               double b[PW85_DIM + 1]) {
-  double const b_zero = pw85_legacy__det_sym(q1);
-  double const b_one = pw85_legacy__det_sym(q2);
+void _detQ_as_poly(const double *q1, const double *q2, const double *q3,
+                   const double *q4, double *b) {
+  double const b_zero = _det_sym(q1);
+  double const b_one = _det_sym(q2);
   /* Compute det[(1-x)*q1+x*q2] for x = -1. */
-  double const b_minus_one = pw85_legacy__det_sym(q3);
+  double const b_minus_one = _det_sym(q3);
   /* Compute det[(1-x)*q1+x*q2] for x = 1/2. */
-  double const b_one_half = pw85_legacy__det_sym(q4);
+  double const b_one_half = _det_sym(q4);
   b[0] = b_zero;
   b[2] = 0.5 * (b_one + b_minus_one) - b_zero;
   b[1] = (8. * b_one_half - 6. * b_zero - 1.5 * b_one - 0.5 * b_minus_one) / 3.;
   b[3] = (-8. * b_one_half + 6. * b_zero + 3. * b_one - b_minus_one) / 3.;
 }
 
-double pw85_legacy_f1(double lambda, double const r12[PW85_DIM],
-                      double const q1[PW85_SYM], double const q2[PW85_SYM],
-                      double *out) {
+double f1(double lambda, const double *r12, const double *q1, const double *q2,
+          double *out) {
   double q[PW85_SYM], q12[PW85_SYM];
   double const *q1_i = q1;
   double const *q2_i = q2;
@@ -100,9 +92,8 @@ double pw85_legacy_f1(double lambda, double const r12[PW85_DIM],
   }
 }
 
-double pw85_legacy_f2(double lambda, double const r12[PW85_DIM],
-                      double const q1[PW85_SYM], double const q2[PW85_SYM],
-                      double *out) {
+double f2(double lambda, const double *r12, const double *q1, const double *q2,
+          double *out) {
   double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
   double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
   for (int i = 0; i < PW85_SYM; i++) {
@@ -111,10 +102,10 @@ double pw85_legacy_f2(double lambda, double const r12[PW85_DIM],
   }
 
   double a[3];
-  pw85_legacy__rT_adjQ_r_as_poly(r12, q1, q2, q3, a);
+  _rT_adjQ_r_as_poly(r12, q1, q2, q3, a);
 
   double b[4];
-  pw85_legacy__detQ_as_poly(q1, q2, q3, q4, b);
+  _detQ_as_poly(q1, q2, q3, q4, b);
 
   double const y = lambda * (1. - lambda) *
                    (a[0] + lambda * (a[1] + lambda * a[2])) /
@@ -123,24 +114,23 @@ double pw85_legacy_f2(double lambda, double const r12[PW85_DIM],
   return y;
 }
 
-int pw85_legacy_contact_function1(double const r12[PW85_DIM],
-                                  double const q1[PW85_SYM],
-                                  double const q2[PW85_SYM], double out[2]) {
+int contact_function1(const double *r12, const double *q1, const double *q2,
+                      double *out) {
   double f[3];
   /* Lower-bound for the root. */
   double a = 0., f_prime_a;
-  pw85_legacy_f1(a, r12, q1, q2, f);
+  f1(a, r12, q1, q2, f);
   f_prime_a = f[1];
   /* Upper-bound for the root. */
   double b = 1., f_prime_b;
-  pw85_legacy_f1(b, r12, q1, q2, f);
+  f1(b, r12, q1, q2, f);
   f_prime_b = f[1];
   printf("--------------------\n");
   printf("%g\t%g\n", f_prime_a, f_prime_b);
   /* Current estimate of the root f'(x) == 0. */
   double x = (a * f_prime_b - b * f_prime_a) / (f_prime_b - f_prime_a);
   for (int i = 0; i < 100; i++) {
-    pw85_legacy_f1(x, r12, q1, q2, f);
+    f1(x, r12, q1, q2, f);
     if (f[1] * f_prime_a < 0.) {
       b = x;
       f_prime_b = f[1];
@@ -155,15 +145,14 @@ int pw85_legacy_contact_function1(double const r12[PW85_DIM],
     }
     x = x_new;
   }
-  pw85_legacy_f1(x, r12, q1, q2, f);
+  f1(x, r12, q1, q2, f);
   out[0] = f[0];
   out[1] = x;
   return 0;
 }
 
-int pw85_legacy_contact_function2(double const r12[PW85_DIM],
-                                  double const q1[PW85_SYM],
-                                  double const q2[PW85_SYM], double out[2]) {
+int contact_function2(const double *r12, const double *q1, const double *q2,
+                      double *out) {
   double q3[PW85_SYM]; /* q3 = 2*q1-q2. */
   double q4[PW85_SYM]; /* q4 = (q1+q2)/2. */
   for (int i = 0; i < PW85_SYM; i++) {
@@ -172,12 +161,12 @@ int pw85_legacy_contact_function2(double const r12[PW85_DIM],
   }
 
   double a[3];
-  pw85_legacy__rT_adjQ_r_as_poly(r12, q1, q2, q3, a);
+  _rT_adjQ_r_as_poly(r12, q1, q2, q3, a);
   printf("a = \n");
   for (size_t i = 0; i < 3; i++) printf("%1.15f\n", a[i]);
 
   double b[4];
-  pw85_legacy__detQ_as_poly(q1, q2, q3, q4, b);
+  _detQ_as_poly(q1, q2, q3, q4, b);
   printf("b = \n");
   for (size_t i = 0; i < 4; i++) printf("%1.15f\n", b[i]);
 
