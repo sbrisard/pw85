@@ -1,7 +1,7 @@
 #include "pw85/pw85.hpp"
 
 namespace pw85 {
-void pw85__cholesky_decomp(const double a[PW85_SYM], double l[PW85_SYM]) {
+void _cholesky_decomp(const double *a, double *l) {
   l[0] = sqrt(a[0]);
   l[1] = a[1] / l[0];
   l[2] = a[2] / l[0];
@@ -10,8 +10,7 @@ void pw85__cholesky_decomp(const double a[PW85_SYM], double l[PW85_SYM]) {
   l[5] = sqrt(a[5] - l[2] * l[2] - l[4] * l[4]);
 }
 
-void pw85__cholesky_solve(const double l[PW85_SYM], const double b[PW85_DIM],
-                          double x[PW85_DIM]) {
+void _cholesky_solve(const double *l, const double *b, double *x) {
   /* Solve L.y = b */
   double const y0 = b[0] / l[0];
   double const y1 = (b[1] - l[1] * y0) / l[3];
@@ -23,8 +22,7 @@ void pw85__cholesky_solve(const double l[PW85_SYM], const double b[PW85_DIM],
   x[0] = (y0 - l[1] * x[1] - l[2] * x[2]) / l[0];
 }
 
-void pw85_spheroid(double a, double c, const double n[PW85_DIM],
-                   double q[PW85_SYM]) {
+void spheroid(double a, double c, const double *n, double *q) {
   double const a2 = a * a;
   double const c2_minus_a2 = c * c - a2;
   double const nx = n[0];
@@ -38,7 +36,7 @@ void pw85_spheroid(double a, double c, const double n[PW85_DIM],
   q[1] = nx * ny * c2_minus_a2;
 }
 
-double pw85_f_neg(double lambda, const double *params) {
+double f_neg(double lambda, const double *params) {
   double const *r12 = params;
   double const *q1_i = params + PW85_DIM;
   double const *q2_i = q1_i + PW85_SYM;
@@ -51,9 +49,9 @@ double pw85_f_neg(double lambda, const double *params) {
     *q12_i = (*q2_i) - (*q1_i);
   }
   double l[PW85_SYM];
-  pw85__cholesky_decomp(q, l);
+  _cholesky_decomp(q, l);
   double s[PW85_DIM];
-  pw85__cholesky_solve(l, r12, s);
+  _cholesky_solve(l, r12, s);
   double const *r_i = r12;
   double *s_i = s;
   double rs = 0.;
@@ -66,12 +64,11 @@ double pw85_f_neg(double lambda, const double *params) {
 double pw85__f_neg(double lambda, void *params) {
   // TODO Remove this non-const version of f_neg.
   // It is required by GSL
-  return pw85_f_neg(lambda, static_cast<double *>(params));
+  return f_neg(lambda, static_cast<double *>(params));
 }
 
-void pw85__residual(double lambda, const double r12[PW85_DIM],
-                    const double q1[PW85_SYM], const double q2[PW85_SYM],
-                    double out[3]) {
+void _residual(double lambda, const double *r12, const double *q1,
+               const double *q2, double *out) {
   double q[PW85_SYM];
   double q12[PW85_SYM];
   for (size_t i = 0; i < PW85_SYM; i++) {
@@ -79,14 +76,14 @@ void pw85__residual(double lambda, const double r12[PW85_DIM],
     q12[i] = q2[i] - q1[i];
   }
   double l[PW85_SYM];
-  pw85__cholesky_decomp(q, l);
+  _cholesky_decomp(q, l);
   double s[PW85_DIM];
-  pw85__cholesky_solve(l, r12, s);
+  _cholesky_solve(l, r12, s);
   double u[] = {q12[0] * s[0] + q12[1] * s[1] + q12[2] * s[2],
                 q12[1] * s[0] + q12[3] * s[1] + q12[4] * s[2],
                 q12[2] * s[0] + q12[4] * s[1] + q12[5] * s[2]};
   double v[PW85_DIM];
-  pw85__cholesky_solve(l, u, v);
+  _cholesky_solve(l, u, v);
   double rs = r12[0] * s[0] + r12[1] * s[1] + r12[2] * s[2];
   double su = s[0] * u[0] + s[1] * u[1] + s[2] * u[2];
   double uv = u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
@@ -97,8 +94,8 @@ void pw85__residual(double lambda, const double r12[PW85_DIM],
       2. * rs + 2. * (1. - 2. * lambda) * su - 2. * lambda * (1. - lambda) * uv;
 }
 
-int pw85_contact_function(const double r12[PW85_DIM], const double q1[PW85_SYM],
-                          const double q2[PW85_SYM], double out[2]) {
+int contact_function(const double *r12, const double *q1, const double *q2,
+                     double *out) {
   double params[] = {r12[0], r12[1], r12[2], q1[0], q1[1], q1[2], q1[3], q1[4],
                      q1[5],  q2[0],  q2[1],  q2[2], q2[3], q2[4], q2[5]};
 
@@ -119,7 +116,7 @@ int pw85_contact_function(const double r12[PW85_DIM], const double q1[PW85_SYM],
   double out_res[3];
   double mu2_brent = -gsl_min_fminimizer_f_minimum(s);
   double lambda_brent = gsl_min_fminimizer_x_minimum(s);
-  pw85__residual(lambda_brent, r12, q1, q2, out_res);
+  _residual(lambda_brent, r12, q1, q2, out_res);
   double res_brent = fabs(out_res[1]);
 
   gsl_min_fminimizer_free(s);
@@ -134,7 +131,7 @@ int pw85_contact_function(const double r12[PW85_DIM], const double q1[PW85_SYM],
     if ((lambda_trial < 0.) || (lambda_trial > 1.)) {
       break;
     }
-    pw85__residual(lambda_trial, r12, q1, q2, out_res);
+    _residual(lambda_trial, r12, q1, q2, out_res);
     lambda_nr = lambda_trial;
     mu2_nr = out_res[0];
     res_nr = fabs(out_res[1]);

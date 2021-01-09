@@ -30,19 +30,13 @@
 #endif
 
 namespace pw85 {
-DllExport void pw85__cholesky_decomp(double const a[PW85_SYM],
-                                     double l[PW85_SYM]);
-DllExport void pw85__cholesky_solve(double const l[PW85_SYM],
-                                    double const b[PW85_DIM],
-                                    double x[PW85_DIM]);
-DllExport void pw85_spheroid(double a, double c, double const n[PW85_DIM],
-                             double q[PW85_SYM]);
-DllExport double pw85_f_neg(double lambda, double const* params);
-DllExport void pw85__residual(double lambda, double const r12[PW85_DIM],
-                              double const q1[PW85_SYM],
-                              double const q2[PW85_SYM], double out[3]);
-DllExport int pw85_contact_function(double const r12[PW85_DIM],
-                                    double const q1[PW85_SYM],
-                                    double const q2[PW85_SYM], double out[2]);
+DllExport void _cholesky_decomp(const double *a, double *l);
+DllExport void _cholesky_solve(const double *l, const double *b, double *x);
+DllExport void spheroid(double a, double c, const double *n, double *q);
+DllExport double f_neg(double lambda, double const *params);
+DllExport void _residual(double lambda, const double *r12, const double *q1,
+                         const double *q2, double *out);
+DllExport int contact_function(const double *r12, const double *q1,
+                               const double *q2, double *out);
 }  // namespace pw85
 #endif
