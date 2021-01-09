@@ -1,6 +1,6 @@
 #include "pw85/pw85.hpp"
 
-void pw85__cholesky_decomp(double const a[PW85_SYM], double l[PW85_SYM]) {
+void pw85__cholesky_decomp(const double a[PW85_SYM], double l[PW85_SYM]) {
   l[0] = sqrt(a[0]);
   l[1] = a[1] / l[0];
   l[2] = a[2] / l[0];
@@ -9,7 +9,7 @@ void pw85__cholesky_decomp(double const a[PW85_SYM], double l[PW85_SYM]) {
   l[5] = sqrt(a[5] - l[2] * l[2] - l[4] * l[4]);
 }
 
-void pw85__cholesky_solve(double const l[PW85_SYM], double const b[PW85_DIM],
+void pw85__cholesky_solve(const double l[PW85_SYM], const double b[PW85_DIM],
                           double x[PW85_DIM]) {
   /* Solve L.y = b */
   double const y0 = b[0] / l[0];
@@ -22,7 +22,7 @@ void pw85__cholesky_solve(double const l[PW85_SYM], double const b[PW85_DIM],
   x[0] = (y0 - l[1] * x[1] - l[2] * x[2]) / l[0];
 }
 
-void pw85_spheroid(double a, double c, double const n[PW85_DIM],
+void pw85_spheroid(double a, double c, const double n[PW85_DIM],
                    double q[PW85_SYM]) {
   double const a2 = a * a;
   double const c2_minus_a2 = c * c - a2;
@@ -37,7 +37,7 @@ void pw85_spheroid(double a, double c, double const n[PW85_DIM],
   q[1] = nx * ny * c2_minus_a2;
 }
 
-double pw85_f_neg(double lambda, double const *params) {
+double pw85_f_neg(double lambda, const double *params) {
   double const *r12 = params;
   double const *q1_i = params + PW85_DIM;
   double const *q2_i = q1_i + PW85_SYM;
@@ -68,8 +68,8 @@ double pw85__f_neg(double lambda, void *params) {
   return pw85_f_neg(lambda, static_cast<double *>(params));
 }
 
-void pw85__residual(double lambda, double const r12[PW85_DIM],
-                    double const q1[PW85_SYM], double const q2[PW85_SYM],
+void pw85__residual(double lambda, const double r12[PW85_DIM],
+                    const double q1[PW85_SYM], const double q2[PW85_SYM],
                     double out[3]) {
   double q[PW85_SYM];
   double q12[PW85_SYM];
@@ -96,8 +96,8 @@ void pw85__residual(double lambda, double const r12[PW85_DIM],
       2. * rs + 2. * (1. - 2. * lambda) * su - 2. * lambda * (1. - lambda) * uv;
 }
 
-int pw85_contact_function(double const r12[PW85_DIM], double const q1[PW85_SYM],
-                          double const q2[PW85_SYM], double out[2]) {
+int pw85_contact_function(const double r12[PW85_DIM], const double q1[PW85_SYM],
+                          const double q2[PW85_SYM], double out[2]) {
   double params[] = {r12[0], r12[1], r12[2], q1[0], q1[1], q1[2], q1[3], q1[4],
                      q1[5],  q2[0],  q2[1],  q2[2], q2[3], q2[4], q2[5]};
 
