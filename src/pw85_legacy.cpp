@@ -1,5 +1,6 @@
 #include "pw85/pw85_legacy.hpp"
 
+namespace pw85_legacy {
 double pw85_legacy__det_sym(double const a[PW85_SYM]) {
   return a[0] * a[3] * a[5] + 2 * a[1] * a[2] * a[4] - a[0] * a[4] * a[4] -
          a[3] * a[2] * a[2] - a[5] * a[1] * a[1];
@@ -215,3 +216,4 @@ int pw85_legacy_contact_function2(double const r12[PW85_DIM],
   out[1] = x;
   return 0;
 }
+}  // namespace pw85_legacy

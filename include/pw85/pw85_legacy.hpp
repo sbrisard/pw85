@@ -2,6 +2,7 @@
 #define __PW85_LEGACY_H__
 #include "pw85/pw85.hpp"
 
+namespace pw85_legacy {
 DllExport double pw85_legacy__det_sym(double const a[PW85_SYM]);
 DllExport double pw85_legacy__xT_adjA_x(double const x[PW85_DIM],
                                         double const a[PW85_SYM]);
@@ -29,4 +30,5 @@ DllExport int pw85_legacy_contact_function2(double const r12[PW85_DIM],
                                             double const q1[PW85_SYM],
                                             double const q2[PW85_SYM],
                                             double out[2]);
+}  // namespace pw85_legacy
 #endif
