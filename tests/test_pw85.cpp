@@ -220,7 +220,7 @@ double *test_pw85_gen_spheroids(size_t num_radii, double *radii,
       double c = radii[j];
       double *n = directions;
       for (size_t k = 0; k < num_directions; k++) {
-        pw85_spheroid(a, c, n, q);
+        pw85::pw85_spheroid(a, c, n, q);
         n += PW85_DIM;
         q += PW85_SYM;
       }
@@ -233,7 +233,7 @@ void test_pw85_cholesky_decomp_test(double const *a, double const *exp,
                                     double const rtol) {
   //  printf("test_pw85_cholesky_decomp...");
   double act[PW85_SYM];
-  pw85__cholesky_decomp(a, act);
+  pw85::pw85__cholesky_decomp(a, act);
   assert_cmp_double_array(PW85_SYM, exp, act, rtol, 0.);
   //  printf(" OK\n");
 }
@@ -260,7 +260,7 @@ void test_pw85_cholesky_solve_test(double const l[PW85_SYM],
                                    double const exp[PW85_DIM], double rtol) {
   //  printf("test_pw85_cholesky_solve...");
   double act[PW85_DIM];
-  pw85__cholesky_solve(l, b, act);
+  pw85::pw85__cholesky_solve(l, b, act);
   assert_cmp_double_array(PW85_DIM, exp, act, rtol, 0.0);
   //  printf(" OK\n");
 }
@@ -301,7 +301,7 @@ void test_pw85_spheroid_test(double a, double c, const double *n) {
   }
 
   double q[PW85_SYM];
-  pw85_spheroid(a, c, n, q);
+  pw85::pw85_spheroid(a, c, n, q);
   double abs_q[PW85_SYM], delta_q[PW85_SYM];
   for (size_t i = 0; i < PW85_SYM; i++) {
     abs_q[i] = fabs(q[i]);
@@ -387,7 +387,7 @@ void test_pw85_contact_function_test(double const *r12, double const *q1,
   double rtol = 1e-10;
 
   double out[2];
-  pw85_contact_function(r12, q1, q2, out);
+  pw85::pw85_contact_function(r12, q1, q2, out);
   double mu2 = out[0];
   double lambda = out[1];
   double lambda1 = 1. - lambda;
@@ -511,7 +511,7 @@ void test_pw85_f_neg_test(double lambda, double const r12[PW85_DIM],
   memcpy(params, r12, PW85_DIM * sizeof(double));
   memcpy(params + PW85_DIM, q1, PW85_SYM * sizeof(double));
   memcpy(params + PW85_DIM + PW85_SYM, q2, PW85_SYM * sizeof(double));
-  double act = -pw85_f_neg(lambda, params);
+  double act = -pw85::pw85_f_neg(lambda, params);
   assert_cmp_double(exp, act, rtol, atol);
 
   //  printf("OK\n");

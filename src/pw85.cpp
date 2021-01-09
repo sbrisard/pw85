@@ -1,5 +1,6 @@
 #include "pw85/pw85.hpp"
 
+namespace pw85 {
 void pw85__cholesky_decomp(const double a[PW85_SYM], double l[PW85_SYM]) {
   l[0] = sqrt(a[0]);
   l[1] = a[1] / l[0];
@@ -150,3 +151,4 @@ int pw85_contact_function(const double r12[PW85_DIM], const double q1[PW85_SYM],
   /* TODO: return error code. */
   return 0;
 }
+}  // namespace pw85

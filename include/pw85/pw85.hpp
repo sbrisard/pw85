@@ -29,6 +29,7 @@
 #define DllExport
 #endif
 
+namespace pw85 {
 DllExport void pw85__cholesky_decomp(double const a[PW85_SYM],
                                      double l[PW85_SYM]);
 DllExport void pw85__cholesky_solve(double const l[PW85_SYM],
@@ -43,4 +44,5 @@ DllExport void pw85__residual(double lambda, double const r12[PW85_DIM],
 DllExport int pw85_contact_function(double const r12[PW85_DIM],
                                     double const q1[PW85_SYM],
                                     double const q2[PW85_SYM], double out[2]);
+}  // namespace pw85
 #endif

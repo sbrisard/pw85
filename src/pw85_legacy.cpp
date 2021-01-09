@@ -63,14 +63,14 @@ double pw85_legacy_f1(double lambda, double const r12[PW85_DIM],
   }
 
   double l[PW85_SYM];
-  pw85__cholesky_decomp(q, l);
+  pw85::pw85__cholesky_decomp(q, l);
   double s[PW85_DIM];
-  pw85__cholesky_solve(l, r12, s);
+  pw85::pw85__cholesky_solve(l, r12, s);
   double u[] = {q12[0] * s[0] + q12[1] * s[1] + q12[2] * s[2],
                 q12[1] * s[0] + q12[3] * s[1] + q12[4] * s[2],
                 q12[2] * s[0] + q12[4] * s[1] + q12[5] * s[2]};
   double v[PW85_DIM];
-  pw85__cholesky_solve(l, u, v);
+  pw85::pw85__cholesky_solve(l, u, v);
 
   double const *r_i = r12;
   double *s_i = s;
