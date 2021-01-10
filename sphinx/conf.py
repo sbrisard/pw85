@@ -30,7 +30,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.doctest',
               'sphinx.ext.todo',
               'sphinx.ext.viewcode',
-              'sphinx.ext.githubpages',]
+              'sphinx.ext.githubpages',
+              'breathe']
 
 numfig = True
 
@@ -69,3 +70,12 @@ todo_include_todos = True
 
 autodoc_default_options = {'member-order': 'groupwise',
                            'undoc-members': True,}
+
+breathe_projects_source = {
+    "pw85": (
+        "../include/pw85",
+        ["pw85.hpp"],
+    )
+}
+
+breathe_doxygen_config_options = {"GENERATE_TODOLIST": "YES"}
