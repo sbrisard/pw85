@@ -19,38 +19,16 @@ void print_float_array(size_t n, double *a) {
   printf("]");
 }
 
-void assert_nonnull(void *p) {
-  if (p == NULL) exit(-1);
-}
-
-void assert_cmp_double(double expected, double actual, double rtol,
-                       double atol) {
-  double err = fabs(actual - expected);
-  double tol = rtol * fabs(expected) + atol;
-
-  if (err > tol) {
-    fprintf(stderr,
-            "\n"
-            "-----\n"
-            "expected = %g\n"
-            "actual = %g\n"
-            "rtol = %g\n"
-            "atol = %g\n"
-            "\n"
-            "err = %g\n"
-            "tol = %g\n"
-            "-----\n",
-            expected, actual, rtol, atol, err, tol);
-    exit(-1);
-  }
-}
+//void assert_nonnull(void *p) {
+//  if (p == NULL) exit(-1);
+//}
 
 void assert_cmp_double_array(size_t n, double const *expected,
                              double const *actual, double rtol, double atol) {
   double const *exp_i = expected;
   double const *act_i = actual;
   for (size_t i = 0; i < n; ++i, ++exp_i, ++act_i) {
-    assert_cmp_double(*exp_i, *act_i, rtol, atol);
+    REQUIRE(*act_i == Catch::Detail::Approx(*exp_i).epsilon(rtol).margin(atol));
   }
 }
 
@@ -319,7 +297,7 @@ void test_pw85_spheroid_test(double a, double c, const double *n) {
       delta_q[1] * abs_n[0] + delta_q[3] * abs_n[1] + delta_q[4] * abs_n[2],
       delta_q[2] * abs_n[0] + delta_q[4] * abs_n[1] + delta_q[5] * abs_n[2]};
   for (size_t i = 0; i < PW85_DIM; i++) {
-    assert_cmp_double(c2 * n[i], qn[i], 0., delta_qn[i]);
+    REQUIRE(qn[i] == Catch::Detail::Approx(c2 * n[i]).margin(delta_qn[i]));
   }
 
   /*
@@ -331,7 +309,7 @@ void test_pw85_spheroid_test(double a, double c, const double *n) {
   exp = 2. * a2 + c2;
   act = q[0] + q[3] + q[5];
   tol = delta_q[0] + delta_q[3] + delta_q[5];
-  assert_cmp_double(exp, act, 0., tol);
+  REQUIRE(act == Catch::Detail::Approx(exp).margin(tol));
 
   /* Check det(q). */
   exp = a2 * a2 * c2;
@@ -346,7 +324,7 @@ void test_pw85_spheroid_test(double a, double c, const double *n) {
           (abs_q[1] * delta_q[2] * abs_q[4] + abs_q[0] * delta_q[4] * abs_q[4] +
            abs_q[3] * delta_q[2] * abs_q[2] + abs_q[5] * delta_q[1] * abs_q[1] +
            abs_q[1] * abs_q[2] * delta_q[4]);
-  assert_cmp_double(exp, act, 0., tol);
+  REQUIRE(act == Catch::Detail::Approx(exp).margin(tol));
 
   /* Check [tr(q)^2 - tr(q^2)]/2 */
   exp = a2 * (a2 + 2. * c2);
@@ -356,7 +334,7 @@ void test_pw85_spheroid_test(double a, double c, const double *n) {
         abs_q[3] * delta_q[5] + delta_q[5] * abs_q[0] + abs_q[5] * delta_q[0] +
         2. * delta_q[1] * abs_q[1] + 2. * delta_q[2] * abs_q[2] +
         2. * delta_q[4] * abs_q[4];
-  assert_cmp_double(exp, act, 0, tol);
+  REQUIRE(act == Catch::Detail::Approx(exp).margin(tol));
   //  printf(" OK\n");
 }
 
@@ -441,8 +419,8 @@ void test_pw85_contact_function_test(double const *r12, double const *q1,
   double mu2_1 = lambda1 * lambda1 * (rs - lambda * su);
   double mu2_2 = lambda * lambda * (rs + lambda1 * su);
 
-  assert_cmp_double(mu2, mu2_1, rtol, atol);
-  assert_cmp_double(mu2, mu2_2, rtol, atol);
+  REQUIRE(mu2 == Catch::Detail::Approx(mu2_1).scale(rtol).margin(atol));
+  REQUIRE(mu2 == Catch::Detail::Approx(mu2_2).scale(rtol).margin(atol));
 
   /*
    * Finally, we check that f'(lambda) = 0.
@@ -461,7 +439,7 @@ void test_pw85_contact_function_test(double const *r12, double const *q1,
   double lambda2 = 1. - 2. * lambda;
   double f1 = lambda2 * rs - lambda * lambda1 * su;
   double f2 = -2. * rs - 2. * lambda2 * su + 2. * lambda * lambda1 * uv;
-  assert_cmp_double(0., fabs(f1), 0., PW85_LAMBDA_ATOL * fabs(f2));
+  REQUIRE(fabs(f1) <= PW85_LAMBDA_ATOL * fabs(f2));
 
   gsl_vector_free(r);
   gsl_vector_free(s);
@@ -475,9 +453,10 @@ void test_pw85_contact_function_test(double const *r12, double const *q1,
 
 void test_pw85_contact_function_tests() {
   printf("test_pw85_contact_function_tests...");
-  assert_nonnull(test_pw85_context.distances);
-  assert_nonnull(test_pw85_context.directions);
-  assert_nonnull(test_pw85_context.spheroids);
+  // TODO: these assertions should be removed.
+  assert(test_pw85_context.distances != nullptr);
+  assert(test_pw85_context.directions != nullptr);
+  assert(test_pw85_context.spheroids !=nullptr);
 
   double *q_begin = test_pw85_context.spheroids;
   double *q_end = q_begin + test_pw85_context.num_spheroids * PW85_SYM;
@@ -514,7 +493,7 @@ void test_pw85_f_neg_test(double lambda, double const r12[PW85_DIM],
   memcpy(params + PW85_DIM, q1, PW85_SYM * sizeof(double));
   memcpy(params + PW85_DIM + PW85_SYM, q2, PW85_SYM * sizeof(double));
   double act = -pw85::f_neg(lambda, params);
-  assert_cmp_double(exp, act, rtol, atol);
+  REQUIRE(act == Catch::Detail::Approx(exp).scale(rtol).margin(atol));
 
   //  printf("OK\n");
 }
@@ -548,25 +527,15 @@ TEST_CASE("pw85") {
   test_pw85_init_context(hid);
   H5Fclose(hid);
 
-  SECTION("cholesky_decomp") {
-    test_pw85_cholesky_decomp_tests();
-  }
+  SECTION("cholesky_decomp") { test_pw85_cholesky_decomp_tests(); }
 
-  SECTION("cholesky_solve") {
-    test_pw85_cholesky_solve_tests();
-  }
+  SECTION("cholesky_solve") { test_pw85_cholesky_solve_tests(); }
 
-  SECTION("spheroid") {
-    test_pw85_spheroid_tests();
-  }
+  SECTION("spheroid") { test_pw85_spheroid_tests(); }
 
-  SECTION("f_neg") {
-    test_pw85_f_neg_tests();
-  }
+  SECTION("f_neg") { test_pw85_f_neg_tests(); }
 
-  SECTION("contact_function") {
-    test_pw85_contact_function_tests();
-  }
+  SECTION("contact_function") { test_pw85_contact_function_tests(); }
 
   test_pw85_free_context();
 }
