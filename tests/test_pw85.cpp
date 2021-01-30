@@ -1,6 +1,8 @@
 #include <cmath>
 #include <cstring>
 
+#include "catch2/catch.hpp"
+
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 
@@ -541,17 +543,30 @@ void test_pw85_f_neg_tests() {
   printf(" OK\n");
 }
 
-int main(int argc, char **argv) {
+TEST_CASE("pw85") {
   hid_t const hid = H5Fopen(PW85_REF_DATA_PATH, H5F_ACC_RDONLY, H5P_DEFAULT);
   test_pw85_init_context(hid);
   H5Fclose(hid);
 
-  test_pw85_cholesky_decomp_tests();
-  test_pw85_cholesky_solve_tests();
-  test_pw85_spheroid_tests();
-  test_pw85_f_neg_tests();
-  test_pw85_contact_function_tests();
+  SECTION("cholesky_decomp") {
+    test_pw85_cholesky_decomp_tests();
+  }
+
+  SECTION("cholesky_solve") {
+    test_pw85_cholesky_solve_tests();
+  }
+
+  SECTION("spheroid") {
+    test_pw85_spheroid_tests();
+  }
+
+  SECTION("f_neg") {
+    test_pw85_f_neg_tests();
+  }
+
+  SECTION("contact_function") {
+    test_pw85_contact_function_tests();
+  }
 
   test_pw85_free_context();
-  return 0;
 }
