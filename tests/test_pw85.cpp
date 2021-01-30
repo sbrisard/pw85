@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cmath>
 #include <cstring>
 
@@ -182,7 +183,7 @@ void test_cholesky_solve(Sym const l, Vec const b, Vec const exp, double rtol) {
   assert_cmp_doubles(exp.cbegin(), exp.cend(), act.cbegin(), rtol, 0.0);
 }
 
-void test_pw85_spheroid_test(double a, double c, const double *n) {
+void test_spheroid(double a, double c, Vec n) {
   /*
    * Relative and absolute tolerance on the coefficients of the matrix
    * q to be computed and tested.
@@ -195,24 +196,22 @@ void test_pw85_spheroid_test(double a, double c, const double *n) {
   double a2 = a * a;
   double c2 = c * c;
 
-  double abs_n[PW85_DIM];
-  for (size_t i = 0; i < PW85_DIM; i++) {
-    abs_n[i] = fabs(n[i]);
-  }
+  auto abs_f = [](double x) { return fabs(x); };
+  auto tol_f = [rtol, atol](double x) { return rtol * fabs(x) + atol; };
 
-  double q[PW85_SYM];
-  pw85::spheroid(a, c, n, q);
-  double abs_q[PW85_SYM], delta_q[PW85_SYM];
-  for (size_t i = 0; i < PW85_SYM; i++) {
-    abs_q[i] = fabs(q[i]);
-    delta_q[i] = rtol * fabs(q[i]) + atol;
-  }
+  Vec abs_n;
+  std::transform(n.cbegin(), n.cend(), abs_n.begin(), abs_f);
+
+  Sym q, abs_q, delta_q;
+  pw85::spheroid(a, c, n.data(), q.data());
+  std::transform(q.cbegin(), q.cend(), abs_q.begin(), abs_f);
+  std::transform(q.cbegin(), q.cend(), delta_q.begin(), tol_f);
 
   /* Check that n is an eigenvector. */
-  double qn[] = {q[0] * n[0] + q[1] * n[1] + q[2] * n[2],
-                 q[1] * n[0] + q[3] * n[1] + q[4] * n[2],
-                 q[2] * n[0] + q[4] * n[1] + q[5] * n[2]};
-  double delta_qn[] = {
+  Vec qn{q[0] * n[0] + q[1] * n[1] + q[2] * n[2],
+         q[1] * n[0] + q[3] * n[1] + q[4] * n[2],
+         q[2] * n[0] + q[4] * n[1] + q[5] * n[2]};
+  Vec delta_qn{
       delta_q[0] * abs_n[0] + delta_q[1] * abs_n[1] + delta_q[2] * abs_n[2],
       delta_q[1] * abs_n[0] + delta_q[3] * abs_n[1] + delta_q[4] * abs_n[2],
       delta_q[2] * abs_n[0] + delta_q[4] * abs_n[1] + delta_q[5] * abs_n[2]};
@@ -255,19 +254,6 @@ void test_pw85_spheroid_test(double a, double c, const double *n) {
         2. * delta_q[1] * abs_q[1] + 2. * delta_q[2] * abs_q[2] +
         2. * delta_q[4] * abs_q[4];
   REQUIRE(act == Catch::Detail::Approx(exp).margin(tol));
-}
-
-void test_pw85_spheroid_tests() {
-  for (size_t i = 0; i < test_pw85_context.num_radii; i++) {
-    double const a = test_pw85_context.radii[i];
-    for (size_t j = 0; j < test_pw85_context.num_radii; j++) {
-      double const c = test_pw85_context.radii[j];
-      for (size_t k = 0; k < test_pw85_context.num_directions; k++) {
-        double *const n = test_pw85_context.directions + PW85_DIM * k;
-        test_pw85_spheroid_test(a, c, n);
-      }
-    }
-  }
 }
 
 void test_pw85_contact_function_test(double const *r12, double const *q1,
@@ -438,7 +424,19 @@ TEST_CASE("pw85") {
                         {1.2, -3.4, 5.7}, 4e-15);
   }
 
-  SECTION("spheroid") { test_pw85_spheroid_tests(); }
+  SECTION("spheroid") {
+    for (size_t i = 0; i < test_pw85_context.num_radii; i++) {
+      double const a = test_pw85_context.radii[i];
+      for (size_t j = 0; j < test_pw85_context.num_radii; j++) {
+        double const c = test_pw85_context.radii[j];
+        for (size_t k = 0; k < test_pw85_context.num_directions; k++) {
+          // TODO: remove raw pointer
+          double *const n = test_pw85_context.directions + PW85_DIM * k;
+          test_spheroid(a, c, {n[0], n[1], n[2]});
+        }
+      }
+    }
+  }
 
   SECTION("f_neg") { test_pw85_f_neg_tests(); }
 
