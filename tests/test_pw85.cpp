@@ -13,12 +13,12 @@
 using Vec = std::array<double, 3>;
 using Sym = std::array<double, 6>;
 
-void assert_cmp_double_array(size_t n, double const *expected,
-                             double const *actual, double rtol, double atol) {
-  double const *exp_i = expected;
-  double const *act_i = actual;
-  for (size_t i = 0; i < n; ++i, ++exp_i, ++act_i) {
-    REQUIRE(*act_i == Catch::Detail::Approx(*exp_i).epsilon(rtol).margin(atol));
+template <typename E, typename A>
+void assert_cmp_doubles(E first_expected, E last_expected, A first_actual,
+                        double rtol, double atol) {
+  auto act = first_actual;
+  for (auto exp = first_expected; exp != last_expected; ++exp, ++act) {
+    REQUIRE(*act == Catch::Detail::Approx(*exp).epsilon(rtol).margin(atol));
   }
 }
 
@@ -170,31 +170,16 @@ std::vector<Sym> test_pw85_gen_spheroids(std::vector<double> radii,
   return spheroids;
 }
 
-void test_cholesky_decomp(Sym const a, Sym const exp,
-                                    double const rtol) {
+void test_cholesky_decomp(Sym const a, Sym const exp, double const rtol) {
   Sym act;
   pw85::_cholesky_decomp(a.data(), act.data());
-  assert_cmp_double_array(PW85_SYM, exp.data(), act.data(), rtol, 0.);
+  assert_cmp_doubles(exp.cbegin(), exp.cend(), act.cbegin(), rtol, 0.);
 }
 
-void test_pw85_cholesky_solve_test(double const l[PW85_SYM],
-                                   double const b[PW85_DIM],
-                                   double const exp[PW85_DIM], double rtol) {
-  double act[PW85_DIM];
-  pw85::_cholesky_solve(l, b, act);
-  assert_cmp_double_array(PW85_DIM, exp, act, rtol, 0.0);
-}
-
-void test_pw85_cholesky_solve_tests() {
-  double l1[] = {1, 2, 3, 4, 5, 6};
-  double b1[] = {11.5, 82.6, 314.2};
-  double x1[] = {1.2, -3.4, 5.7};
-  test_pw85_cholesky_solve_test(l1, b1, x1, 1e-15);
-
-  double l2[] = {1, -2, -3, 4, -5, 6};
-  double b2[] = {-9.1, -150.2, 443};
-  double x2[] = {1.2, -3.4, 5.7};
-  test_pw85_cholesky_solve_test(l2, b2, x2, 4e-15);
+void test_cholesky_solve(Sym const l, Vec const b, Vec const exp, double rtol) {
+  Vec act;
+  pw85::_cholesky_solve(l.data(), b.data(), act.data());
+  assert_cmp_doubles(exp.cbegin(), exp.cend(), act.cbegin(), rtol, 0.0);
 }
 
 void test_pw85_spheroid_test(double a, double c, const double *n) {
@@ -445,7 +430,13 @@ TEST_CASE("pw85") {
         {1e5, -2e-5, -3e-5, 4, -5e-3, 6e-2}, 1e-6);
   }
 
-  SECTION("cholesky_solve") { test_pw85_cholesky_solve_tests(); }
+  SECTION("cholesky_solve") {
+    test_cholesky_solve({1, 2, 3, 4, 5, 6}, {11.5, 82.6, 314.2},
+                        {1.2, -3.4, 5.7}, 1e-15);
+
+    test_cholesky_solve({1, -2, -3, 4, -5, 6}, {-9.1, -150.2, 443},
+                        {1.2, -3.4, 5.7}, 4e-15);
+  }
 
   SECTION("spheroid") { test_pw85_spheroid_tests(); }
 
