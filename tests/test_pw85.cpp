@@ -145,7 +145,7 @@ std::vector<std::array<double, PW85_DIM>> test_pw85_gen_directions() {
 }
 
 std::vector<Vec> test_pw85_gen_radius_vectors(std::vector<double> distances,
-                                                std::vector<Vec> directions) {
+                                              std::vector<Vec> directions) {
   std::vector<Vec> radius_vectors{};
   for (const auto r : distances) {
     for (const auto n : directions) {
@@ -156,7 +156,7 @@ std::vector<Vec> test_pw85_gen_radius_vectors(std::vector<double> distances,
 }
 
 std::vector<Sym> test_pw85_gen_spheroids(std::vector<double> radii,
-                                             std::vector<Vec> directions) {
+                                         std::vector<Vec> directions) {
   std::vector<Sym> spheroids{};
   for (const auto a : radii) {
     for (const auto c : radii) {
@@ -170,26 +170,11 @@ std::vector<Sym> test_pw85_gen_spheroids(std::vector<double> radii,
   return spheroids;
 }
 
-void test_pw85_cholesky_decomp_test(double const *a, double const *exp,
+void test_cholesky_decomp(Sym const a, Sym const exp,
                                     double const rtol) {
-  double act[PW85_SYM];
-  pw85::_cholesky_decomp(a, act);
-  assert_cmp_double_array(PW85_SYM, exp, act, rtol, 0.);
-}
-
-void test_pw85_cholesky_decomp_tests() {
-  double a1[] = {4, 2, 6, 17, 23, 70};
-  double exp1[] = {2, 1, 3, 4, 5, 6};
-  test_pw85_cholesky_decomp_test(a1, exp1, 1e-15);
-
-  double a2[] = {4, -2, 6, 17, -23, 70};
-  double exp2[] = {2, -1, 3, 4, -5, 6};
-  test_pw85_cholesky_decomp_test(a2, exp2, 1e-15);
-
-  double a3[] = {
-      1e10, -2, -3, 16 + 1. / 25e8, -0.02 + 3. / 5e9, 29. / 8e3 - 9e-10};
-  double exp3[] = {1e5, -2e-5, -3e-5, 4, -5e-3, 6e-2};
-  test_pw85_cholesky_decomp_test(a3, exp3, 1e-6);
+  Sym act;
+  pw85::_cholesky_decomp(a.data(), act.data());
+  assert_cmp_double_array(PW85_SYM, exp.data(), act.data(), rtol, 0.);
 }
 
 void test_pw85_cholesky_solve_test(double const l[PW85_SYM],
@@ -450,7 +435,15 @@ TEST_CASE("pw85") {
   test_pw85_init_context(hid);
   H5Fclose(hid);
 
-  SECTION("cholesky_decomp") { test_pw85_cholesky_decomp_tests(); }
+  SECTION("cholesky_decomp") {
+    test_cholesky_decomp({4, 2, 6, 17, 23, 70}, {2, 1, 3, 4, 5, 6}, 1e-15);
+
+    test_cholesky_decomp({4, -2, 6, 17, -23, 70}, {2, -1, 3, 4, -5, 6}, 1e-15);
+
+    test_cholesky_decomp(
+        {1e10, -2, -3, 16 + 1. / 25e8, -0.02 + 3. / 5e9, 29. / 8e3 - 9e-10},
+        {1e5, -2e-5, -3e-5, 4, -5e-3, 6e-2}, 1e-6);
+  }
 
   SECTION("cholesky_solve") { test_pw85_cholesky_solve_tests(); }
 
