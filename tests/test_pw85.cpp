@@ -344,30 +344,6 @@ void test_pw85_contact_function_test(double const *r12, double const *q1,
   gsl_matrix_free(Q);
 }
 
-void test_pw85_contact_function_tests() {
-  // TODO: these assertions should be removed.
-  assert(test_pw85_context.distances != nullptr);
-  assert(test_pw85_context.directions != nullptr);
-  assert(test_pw85_context.spheroids != nullptr);
-
-  double *q_begin = test_pw85_context.spheroids;
-  double *q_end = q_begin + test_pw85_context.num_spheroids * PW85_SYM;
-  double *n_begin = test_pw85_context.directions;
-  double *n_end = n_begin + test_pw85_context.num_directions * PW85_DIM;
-
-  for (size_t i = 0; i < test_pw85_context.num_distances; i++) {
-    double const r = test_pw85_context.distances[i];
-    for (double *n = n_begin; n < n_end; n += PW85_DIM) {
-      double const r12[] = {r * n[0], r * n[1], r * n[2]};
-      for (double *q1 = q_begin; q1 < q_end; q1 += PW85_SYM) {
-        for (double *q2 = q_begin; q2 < q_end; q2 += PW85_SYM) {
-          test_pw85_contact_function_test(r12, q1, q2);
-        }
-      }
-    }
-  }
-}
-
 void test_pw85_f_neg_test(double lambda, double const r12[PW85_DIM],
                           double const q1[PW85_SYM], double const q2[PW85_SYM],
                           double exp, double rtol, double atol) {
@@ -377,28 +353,6 @@ void test_pw85_f_neg_test(double lambda, double const r12[PW85_DIM],
   memcpy(params + PW85_DIM + PW85_SYM, q2, PW85_SYM * sizeof(double));
   double act = -pw85::f_neg(lambda, params);
   REQUIRE(act == Catch::Detail::Approx(exp).scale(rtol).margin(atol));
-}
-
-void test_pw85_f_neg_tests() {
-  double rtol = 1e-10;
-  double *q_begin = test_pw85_context.spheroids;
-  double *q_end = q_begin + test_pw85_context.num_spheroids * PW85_SYM;
-  double *n_begin = test_pw85_context.directions;
-  double *n_end = n_begin + test_pw85_context.num_directions * PW85_DIM;
-  double *lambda_begin = test_pw85_context.lambdas;
-  double *lambda_end = lambda_begin + test_pw85_context.num_lambdas;
-  double *exp = test_pw85_context.f;
-
-  for (double *q1 = q_begin; q1 < q_end; q1 += PW85_SYM) {
-    for (double *q2 = q_begin; q2 < q_end; q2 += PW85_SYM) {
-      for (double *n = n_begin; n < n_end; n += PW85_DIM) {
-        for (double *lambda = lambda_begin; lambda < lambda_end;
-             lambda++, exp++) {
-          test_pw85_f_neg_test(*lambda, n, q1, q2, *exp, rtol, 0.0);
-        }
-      }
-    }
-  }
 }
 
 TEST_CASE("pw85") {
@@ -438,9 +392,51 @@ TEST_CASE("pw85") {
     }
   }
 
-  SECTION("f_neg") { test_pw85_f_neg_tests(); }
+  SECTION("f_neg") {
+    double rtol = 1e-10;
+    double *q_begin = test_pw85_context.spheroids;
+    double *q_end = q_begin + test_pw85_context.num_spheroids * PW85_SYM;
+    double *n_begin = test_pw85_context.directions;
+    double *n_end = n_begin + test_pw85_context.num_directions * PW85_DIM;
+    double *lambda_begin = test_pw85_context.lambdas;
+    double *lambda_end = lambda_begin + test_pw85_context.num_lambdas;
+    double *exp = test_pw85_context.f;
 
-  SECTION("contact_function") { test_pw85_contact_function_tests(); }
+    for (double *q1 = q_begin; q1 < q_end; q1 += PW85_SYM) {
+      for (double *q2 = q_begin; q2 < q_end; q2 += PW85_SYM) {
+        for (double *n = n_begin; n < n_end; n += PW85_DIM) {
+          for (double *lambda = lambda_begin; lambda < lambda_end;
+               lambda++, exp++) {
+            test_pw85_f_neg_test(*lambda, n, q1, q2, *exp, rtol, 0.0);
+          }
+        }
+      }
+    }
+  }
+
+  SECTION("contact_function") {
+    // TODO: these assertions should be removed.
+    assert(test_pw85_context.distances != nullptr);
+    assert(test_pw85_context.directions != nullptr);
+    assert(test_pw85_context.spheroids != nullptr);
+
+    double *q_begin = test_pw85_context.spheroids;
+    double *q_end = q_begin + test_pw85_context.num_spheroids * PW85_SYM;
+    double *n_begin = test_pw85_context.directions;
+    double *n_end = n_begin + test_pw85_context.num_directions * PW85_DIM;
+
+    for (size_t i = 0; i < test_pw85_context.num_distances; i++) {
+      double const r = test_pw85_context.distances[i];
+      for (double *n = n_begin; n < n_end; n += PW85_DIM) {
+        double const r12[] = {r * n[0], r * n[1], r * n[2]};
+        for (double *q1 = q_begin; q1 < q_end; q1 += PW85_SYM) {
+          for (double *q2 = q_begin; q2 < q_end; q2 += PW85_SYM) {
+            test_pw85_contact_function_test(r12, q1, q2);
+          }
+        }
+      }
+    }
+  }
 
   test_pw85_free_context();
 }
