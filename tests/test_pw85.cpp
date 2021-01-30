@@ -10,19 +10,6 @@
 
 #include "pw85/pw85.hpp"
 
-void print_float_array(size_t n, double *a) {
-  printf("[");
-  for (size_t i = 0; i < n; i++) {
-    printf("%g", a[i]);
-    if (i + 1 < n) printf(", ");
-  }
-  printf("]");
-}
-
-//void assert_nonnull(void *p) {
-//  if (p == NULL) exit(-1);
-//}
-
 void assert_cmp_double_array(size_t n, double const *expected,
                              double const *actual, double rtol, double atol) {
   double const *exp_i = expected;
