@@ -135,21 +135,10 @@ void test_pw85_free_context() {
 
 #define TEST_PW85_NUM_DIRECTIONS 3
 
-double *test_pw85_gen_directions() {
-  double *directions = static_cast<double *>(
-      malloc(sizeof(double) * TEST_PW85_NUM_DIRECTIONS * PW85_DIM));
+std::vector<std::array<double, PW85_DIM>> test_pw85_gen_directions() {
   double u = sqrt(2. / (5. + sqrt(5.)));
   double v = sqrt((3 + sqrt(5.)) / (5. + sqrt(5.)));
-  directions[0] = 0.;
-  directions[1] = -u;
-  directions[2] = -v;
-  directions[3] = -v;
-  directions[4] = 0.;
-  directions[5] = u;
-  directions[6] = u;
-  directions[7] = -v;
-  directions[8] = 0.;
-  return directions;
+  return {{0., -u, -v},{-v, 0., u}, {u, -v, 0.}};
 }
 
 double *test_pw85_gen_radius_vectors(size_t num_distances, double *distances,
