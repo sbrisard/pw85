@@ -145,8 +145,8 @@ std::vector<std::array<double, PW85_DIM>> test_pw85_gen_directions() {
   return {{0., -u, -v}, {-v, 0., u}, {u, -v, 0.}};
 }
 
-std::vector<Vec> test_pw85_gen_radius_vectors(std::vector<double> distances,
-                                              std::vector<Vec> directions) {
+std::vector<Vec> test_pw85_gen_radius_vectors(
+    const std::vector<double> &distances, const std::vector<Vec> &directions) {
   std::vector<Vec> radius_vectors{};
   for (const auto r : distances) {
     for (const auto n : directions) {
@@ -156,8 +156,8 @@ std::vector<Vec> test_pw85_gen_radius_vectors(std::vector<double> distances,
   return radius_vectors;
 }
 
-std::vector<Sym> test_pw85_gen_spheroids(std::vector<double> radii,
-                                         std::vector<Vec> directions) {
+std::vector<Sym> test_pw85_gen_spheroids(const std::vector<double> &radii,
+                                         const std::vector<Vec> &directions) {
   std::vector<Sym> spheroids{};
   for (const auto a : radii) {
     for (const auto c : radii) {
