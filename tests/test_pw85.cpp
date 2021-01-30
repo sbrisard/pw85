@@ -10,6 +10,9 @@
 
 #include "pw85/pw85.hpp"
 
+using Vec = std::array<double, 3>;
+using Sym = std::array<double, 6>;
+
 void assert_cmp_double_array(size_t n, double const *expected,
                              double const *actual, double rtol, double atol) {
   double const *exp_i = expected;
@@ -138,47 +141,29 @@ void test_pw85_free_context() {
 std::vector<std::array<double, PW85_DIM>> test_pw85_gen_directions() {
   double u = sqrt(2. / (5. + sqrt(5.)));
   double v = sqrt((3 + sqrt(5.)) / (5. + sqrt(5.)));
-  return {{0., -u, -v},{-v, 0., u}, {u, -v, 0.}};
+  return {{0., -u, -v}, {-v, 0., u}, {u, -v, 0.}};
 }
 
-double *test_pw85_gen_radius_vectors(size_t num_distances, double *distances,
-                                     size_t num_directions,
-                                     double *directions) {
-  size_t num_radius_vectors = num_distances * num_directions;
-  size_t num_doubles = num_radius_vectors * PW85_DIM;
-  double *radius_vectors =
-      static_cast<double *>(malloc(sizeof(double) * num_doubles));
-  double *r12 = radius_vectors;
-  for (size_t i = 0; i < num_distances; i++) {
-    double r = distances[i];
-    double *n = directions;
-    for (size_t j = 0; j < num_directions; j++) {
-      for (size_t k = 0; k < PW85_DIM; k++) {
-        r12[k] = r * n[k];
-      }
-      n += PW85_DIM;
-      r12 += PW85_DIM;
+std::vector<Vec> test_pw85_gen_radius_vectors(std::vector<double> distances,
+                                                std::vector<Vec> directions) {
+  std::vector<Vec> radius_vectors{};
+  for (const auto r : distances) {
+    for (const auto n : directions) {
+      radius_vectors.push_back({r * n[0], r * n[1], r * n[2]});
     }
   }
   return radius_vectors;
 }
 
-double *test_pw85_gen_spheroids(size_t num_radii, double *radii,
-                                size_t num_directions, double *directions) {
-  size_t num_spheroids = num_radii * num_radii * num_directions;
-  size_t num_doubles = num_spheroids * PW85_SYM;
-  double *spheroids =
-      static_cast<double *>(malloc(sizeof(double) * num_doubles));
-  double *q = spheroids;
-  for (size_t i = 0; i < num_radii; i++) {
-    double a = radii[i];
-    for (size_t j = 0; j < num_radii; j++) {
-      double c = radii[j];
-      double *n = directions;
-      for (size_t k = 0; k < num_directions; k++) {
-        pw85::spheroid(a, c, n, q);
-        n += PW85_DIM;
-        q += PW85_SYM;
+std::vector<Sym> test_pw85_gen_spheroids(std::vector<double> radii,
+                                             std::vector<Vec> directions) {
+  std::vector<Sym> spheroids{};
+  for (const auto a : radii) {
+    for (const auto c : radii) {
+      for (const auto n : directions) {
+        Sym q{};
+        pw85::spheroid(a, c, n.data(), q.data());
+        spheroids.push_back(q);
       }
     }
   }
