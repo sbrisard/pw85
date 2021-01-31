@@ -1,13 +1,13 @@
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <cstring>
+#include <iostream>
 
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 
 #include <hdf5_hl.h>
-#include <cassert>
-#include <iostream>
 
 #include "pw85/pw85.hpp"
 
