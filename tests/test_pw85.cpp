@@ -2,109 +2,91 @@
 #include <cmath>
 #include <cstring>
 
-#include "catch2/catch.hpp"
-
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 
 #include <hdf5_hl.h>
+#include <cassert>
+#include <iostream>
 
 #include "pw85/pw85.hpp"
 
 using Vec = std::array<double, 3>;
 using Sym = std::array<double, 6>;
 
+void assert_cmp_double(double exp, double act, double rtol, double atol) {
+  double err = fabs(act - exp);
+  double tol = rtol * fabs(exp) + atol;
+  if (err > tol) {
+    std::cerr << "exp = " << exp << std::endl;
+    std::cerr << "act = " << act << std::endl;
+  }
+  assert(err <= tol);
+}
+
 template <typename E, typename A>
 void assert_cmp_doubles(E first_expected, E last_expected, A first_actual,
                         double rtol, double atol) {
   auto act = first_actual;
   for (auto exp = first_expected; exp != last_expected; ++exp, ++act) {
-    REQUIRE(*act == Catch::Detail::Approx(*exp).epsilon(rtol).margin(atol));
+    assert_cmp_double(*exp, *act, rtol, atol);
   }
 }
 
-void test_pw85_read_dataset_double(hid_t const hid, char const *dset_name,
-                                   size_t *size, double **buffer) {
+std::vector<double> test_pw85_read_dataset_double(hid_t const hid,
+                                                  char const *dset_name) {
+  // TODO Use C++ HDF interface
   int ndims;
   H5LTget_dataset_ndims(hid, dset_name, &ndims);
   hsize_t *dim = new hsize_t[ndims];
   H5LTget_dataset_info(hid, dset_name, dim, NULL, NULL);
-  *size = 1;
+  hsize_t size = 1;
   for (size_t i = 0; i < ndims; i++) {
-    *size *= dim[i];
+    size *= dim[i];
   }
-  *buffer = new double[*size];
-  H5LTread_dataset_double(hid, dset_name, *buffer);
+  std::vector<double> dataset(size);
+  H5LTread_dataset_double(hid, dset_name, dataset.data());
   delete[] dim;
+  return dataset;
 }
 
 /* This is a global variable that holds the parameters used for most
  * test-cases. */
 
 struct {
-  size_t num_radii;
-  double *radii;
-  size_t num_directions;
-  double *directions;
-  size_t num_spheroids;
-  double *spheroids;
-  size_t num_lambdas;
-  double *lambdas;
-  size_t num_f;
-  double *f;
-  size_t num_distances;
-  double *distances;
+  std::vector<double> radii;
+  std::vector<Vec> directions;
+  std::vector<Sym> spheroids;
+  std::vector<double> lambdas;
+  std::vector<double> f;
+  std::vector<double> distances;
 } test_pw85_context;
 
 void test_pw85_init_context(hid_t const hid) {
   if (hid > 0) {
-    test_pw85_read_dataset_double(hid, "/directions",
-                                  &test_pw85_context.num_directions,
-                                  &test_pw85_context.directions);
-    test_pw85_context.num_directions /= PW85_DIM;
+    // TODO: this is ugly
+    auto directions = test_pw85_read_dataset_double(hid, "/directions");
+    for (auto n = directions.cbegin(); n != directions.cend(); n += PW85_DIM) {
+      test_pw85_context.directions.push_back({n[0], n[1], n[2]});
+    }
 
-    test_pw85_read_dataset_double(hid, "/radii", &test_pw85_context.num_radii,
-                                  &test_pw85_context.radii);
+    test_pw85_context.radii = test_pw85_read_dataset_double(hid, "/radii");
 
-    test_pw85_read_dataset_double(hid, "/spheroids",
-                                  &test_pw85_context.num_spheroids,
-                                  &test_pw85_context.spheroids);
-    test_pw85_context.num_spheroids /= PW85_SYM;
+    // TODO: this is ugly
+    auto spheroids = test_pw85_read_dataset_double(hid, "/spheroids");
+    for (auto q = spheroids.cbegin(); q != spheroids.cend(); q += PW85_SYM) {
+      test_pw85_context.spheroids.push_back(
+          {q[0], q[1], q[2], q[3], q[4], q[5]});
+    }
 
-    test_pw85_read_dataset_double(hid, "/lambdas",
-                                  &test_pw85_context.num_lambdas,
-                                  &test_pw85_context.lambdas);
+    test_pw85_context.lambdas = test_pw85_read_dataset_double(hid, "/lambdas");
 
-    test_pw85_read_dataset_double(hid, "/F", &test_pw85_context.num_f,
-                                  &test_pw85_context.f);
+    test_pw85_context.f = test_pw85_read_dataset_double(hid, "/F");
   } else {
-    test_pw85_context.num_radii = 0;
-    test_pw85_context.radii = NULL;
-    test_pw85_context.num_directions = 0;
-    test_pw85_context.directions = NULL;
-    test_pw85_context.num_spheroids = 0;
-    test_pw85_context.spheroids = NULL;
-    test_pw85_context.num_lambdas = 0;
-    test_pw85_context.lambdas = NULL;
-    test_pw85_context.num_f = 0;
-    test_pw85_context.f = NULL;
+    exit(-1);
   }
 
-  test_pw85_context.num_distances = 3;
-  test_pw85_context.distances = static_cast<double *>(
-      malloc(sizeof(double) * test_pw85_context.num_distances));
-  test_pw85_context.distances[0] = 0.15;
-  test_pw85_context.distances[1] = 1.1;
-  test_pw85_context.distances[2] = 11.;
-}
-
-void test_pw85_free_context() {
-  free(test_pw85_context.directions);
-  free(test_pw85_context.radii);
-  free(test_pw85_context.spheroids);
-  free(test_pw85_context.lambdas);
-  free(test_pw85_context.f);
-  free(test_pw85_context.distances);
+  test_pw85_context.distances = {0.15, 1.1, 11.};
 }
 
 /* #define TEST_PW85_NUM_DIRECTIONS 12 */
@@ -216,7 +198,7 @@ void test_spheroid(double a, double c, Vec n) {
       delta_q[1] * abs_n[0] + delta_q[3] * abs_n[1] + delta_q[4] * abs_n[2],
       delta_q[2] * abs_n[0] + delta_q[4] * abs_n[1] + delta_q[5] * abs_n[2]};
   for (size_t i = 0; i < PW85_DIM; i++) {
-    REQUIRE(qn[i] == Catch::Detail::Approx(c2 * n[i]).margin(delta_qn[i]));
+    assert_cmp_double(c2 * n[i], qn[i], 0., delta_qn[i]);
   }
 
   /*
@@ -228,7 +210,7 @@ void test_spheroid(double a, double c, Vec n) {
   exp = 2. * a2 + c2;
   act = q[0] + q[3] + q[5];
   tol = delta_q[0] + delta_q[3] + delta_q[5];
-  REQUIRE(act == Catch::Detail::Approx(exp).margin(tol));
+  assert_cmp_double(exp, act, 0., tol);
 
   /* Check det(q). */
   exp = a2 * a2 * c2;
@@ -243,7 +225,7 @@ void test_spheroid(double a, double c, Vec n) {
           (abs_q[1] * delta_q[2] * abs_q[4] + abs_q[0] * delta_q[4] * abs_q[4] +
            abs_q[3] * delta_q[2] * abs_q[2] + abs_q[5] * delta_q[1] * abs_q[1] +
            abs_q[1] * abs_q[2] * delta_q[4]);
-  REQUIRE(act == Catch::Detail::Approx(exp).margin(tol));
+  assert_cmp_double(exp, act, 0., tol);
 
   /* Check [tr(q)^2 - tr(q^2)]/2 */
   exp = a2 * (a2 + 2. * c2);
@@ -253,16 +235,16 @@ void test_spheroid(double a, double c, Vec n) {
         abs_q[3] * delta_q[5] + delta_q[5] * abs_q[0] + abs_q[5] * delta_q[0] +
         2. * delta_q[1] * abs_q[1] + 2. * delta_q[2] * abs_q[2] +
         2. * delta_q[4] * abs_q[4];
-  REQUIRE(act == Catch::Detail::Approx(exp).margin(tol));
+  assert_cmp_double(exp, act, 0., tol);
 }
 
-void test_pw85_contact_function_test(double const *r12, double const *q1,
-                                     double const *q2) {
+void test_pw85_contact_function_test(Vec const r12, Sym const q1,
+                                     Sym const q2) {
   double atol = 1e-15;
   double rtol = 1e-10;
 
   double out[2];
-  pw85::contact_function(r12, q1, q2, out);
+  pw85::contact_function(r12.data(), q1.data(), q2.data(), out);
   double mu2 = out[0];
   double lambda = out[1];
   double lambda1 = 1. - lambda;
@@ -314,8 +296,8 @@ void test_pw85_contact_function_test(double const *r12, double const *q1,
   double mu2_1 = lambda1 * lambda1 * (rs - lambda * su);
   double mu2_2 = lambda * lambda * (rs + lambda1 * su);
 
-  REQUIRE(mu2 == Catch::Detail::Approx(mu2_1).scale(rtol).margin(atol));
-  REQUIRE(mu2 == Catch::Detail::Approx(mu2_2).scale(rtol).margin(atol));
+  assert_cmp_double(mu2_1, mu2, rtol, atol);
+  assert_cmp_double(mu2_2, mu2, rtol, atol);
 
   /*
    * Finally, we check that f'(lambda) = 0.
@@ -334,7 +316,7 @@ void test_pw85_contact_function_test(double const *r12, double const *q1,
   double lambda2 = 1. - 2. * lambda;
   double f1 = lambda2 * rs - lambda * lambda1 * su;
   double f2 = -2. * rs - 2. * lambda2 * su + 2. * lambda * lambda1 * uv;
-  REQUIRE(fabs(f1) <= PW85_LAMBDA_ATOL * fabs(f2));
+  assert_cmp_double(0., f1, 0., PW85_LAMBDA_ATOL * fabs(f2));
 
   gsl_vector_free(r);
   gsl_vector_free(s);
@@ -344,99 +326,64 @@ void test_pw85_contact_function_test(double const *r12, double const *q1,
   gsl_matrix_free(Q);
 }
 
-void test_pw85_f_neg_test(double lambda, double const r12[PW85_DIM],
-                          double const q1[PW85_SYM], double const q2[PW85_SYM],
-                          double exp, double rtol, double atol) {
+void test_pw85_f_neg_test(double lambda, const Vec r12, const Sym q1,
+                          const Sym q2, double exp, double rtol, double atol) {
   double params[2 * PW85_SYM + PW85_DIM];
-  memcpy(params, r12, PW85_DIM * sizeof(double));
-  memcpy(params + PW85_DIM, q1, PW85_SYM * sizeof(double));
-  memcpy(params + PW85_DIM + PW85_SYM, q2, PW85_SYM * sizeof(double));
+  // TODO: this is ugly
+  memcpy(params, r12.data(), PW85_DIM * sizeof(double));
+  memcpy(params + PW85_DIM, q1.data(), PW85_SYM * sizeof(double));
+  memcpy(params + PW85_DIM + PW85_SYM, q2.data(), PW85_SYM * sizeof(double));
   double act = -pw85::f_neg(lambda, params);
-  REQUIRE(act == Catch::Detail::Approx(exp).scale(rtol).margin(atol));
+  assert_cmp_double(exp, act, rtol, atol);
 }
 
-TEST_CASE("pw85") {
+int main() {
   hid_t const hid = H5Fopen(PW85_REF_DATA_PATH, H5F_ACC_RDONLY, H5P_DEFAULT);
   test_pw85_init_context(hid);
   H5Fclose(hid);
 
-  SECTION("cholesky_decomp") {
-    test_cholesky_decomp({4, 2, 6, 17, 23, 70}, {2, 1, 3, 4, 5, 6}, 1e-15);
+  test_cholesky_decomp({4, 2, 6, 17, 23, 70}, {2, 1, 3, 4, 5, 6}, 1e-15);
 
-    test_cholesky_decomp({4, -2, 6, 17, -23, 70}, {2, -1, 3, 4, -5, 6}, 1e-15);
+  test_cholesky_decomp({4, -2, 6, 17, -23, 70}, {2, -1, 3, 4, -5, 6}, 1e-15);
 
-    test_cholesky_decomp(
-        {1e10, -2, -3, 16 + 1. / 25e8, -0.02 + 3. / 5e9, 29. / 8e3 - 9e-10},
-        {1e5, -2e-5, -3e-5, 4, -5e-3, 6e-2}, 1e-6);
+  test_cholesky_decomp(
+      {1e10, -2, -3, 16 + 1. / 25e8, -0.02 + 3. / 5e9, 29. / 8e3 - 9e-10},
+      {1e5, -2e-5, -3e-5, 4, -5e-3, 6e-2}, 1e-6);
+
+  test_cholesky_solve({1, 2, 3, 4, 5, 6}, {11.5, 82.6, 314.2}, {1.2, -3.4, 5.7},
+                      1e-15);
+
+  test_cholesky_solve({1, -2, -3, 4, -5, 6}, {-9.1, -150.2, 443},
+                      {1.2, -3.4, 5.7}, 4e-15);
+
+  for (const auto a : test_pw85_context.radii) {
+    for (const auto c : test_pw85_context.radii) {
+      for (const auto n : test_pw85_context.directions) {
+        test_spheroid(a, c, n);
+      }
+    }
   }
 
-  SECTION("cholesky_solve") {
-    test_cholesky_solve({1, 2, 3, 4, 5, 6}, {11.5, 82.6, 314.2},
-                        {1.2, -3.4, 5.7}, 1e-15);
-
-    test_cholesky_solve({1, -2, -3, 4, -5, 6}, {-9.1, -150.2, 443},
-                        {1.2, -3.4, 5.7}, 4e-15);
-  }
-
-  SECTION("spheroid") {
-    for (size_t i = 0; i < test_pw85_context.num_radii; i++) {
-      double const a = test_pw85_context.radii[i];
-      for (size_t j = 0; j < test_pw85_context.num_radii; j++) {
-        double const c = test_pw85_context.radii[j];
-        for (size_t k = 0; k < test_pw85_context.num_directions; k++) {
-          // TODO: remove raw pointer
-          double *const n = test_pw85_context.directions + PW85_DIM * k;
-          test_spheroid(a, c, {n[0], n[1], n[2]});
+  auto exp = test_pw85_context.f.cbegin();
+  for (const auto q1 : test_pw85_context.spheroids) {
+    for (const auto q2 : test_pw85_context.spheroids) {
+      for (const auto n : test_pw85_context.directions) {
+        for (const auto lambda : test_pw85_context.lambdas) {
+          test_pw85_f_neg_test(lambda, n, q1, q2, *exp, 1e-10, 0.0);
+          ++exp;
         }
       }
     }
   }
 
-  SECTION("f_neg") {
-    double rtol = 1e-10;
-    double *q_begin = test_pw85_context.spheroids;
-    double *q_end = q_begin + test_pw85_context.num_spheroids * PW85_SYM;
-    double *n_begin = test_pw85_context.directions;
-    double *n_end = n_begin + test_pw85_context.num_directions * PW85_DIM;
-    double *lambda_begin = test_pw85_context.lambdas;
-    double *lambda_end = lambda_begin + test_pw85_context.num_lambdas;
-    double *exp = test_pw85_context.f;
-
-    for (double *q1 = q_begin; q1 < q_end; q1 += PW85_SYM) {
-      for (double *q2 = q_begin; q2 < q_end; q2 += PW85_SYM) {
-        for (double *n = n_begin; n < n_end; n += PW85_DIM) {
-          for (double *lambda = lambda_begin; lambda < lambda_end;
-               lambda++, exp++) {
-            test_pw85_f_neg_test(*lambda, n, q1, q2, *exp, rtol, 0.0);
-          }
+  for (auto const r : test_pw85_context.distances) {
+    for (auto const n : test_pw85_context.directions) {
+      Vec r12{r * n[0], r * n[1], r * n[2]};
+      for (auto const q1 : test_pw85_context.spheroids) {
+        for (auto const q2 : test_pw85_context.spheroids) {
+          test_pw85_contact_function_test(r12, q1, q2);
         }
       }
     }
   }
-
-  SECTION("contact_function") {
-    // TODO: these assertions should be removed.
-    assert(test_pw85_context.distances != nullptr);
-    assert(test_pw85_context.directions != nullptr);
-    assert(test_pw85_context.spheroids != nullptr);
-
-    double *q_begin = test_pw85_context.spheroids;
-    double *q_end = q_begin + test_pw85_context.num_spheroids * PW85_SYM;
-    double *n_begin = test_pw85_context.directions;
-    double *n_end = n_begin + test_pw85_context.num_directions * PW85_DIM;
-
-    for (size_t i = 0; i < test_pw85_context.num_distances; i++) {
-      double const r = test_pw85_context.distances[i];
-      for (double *n = n_begin; n < n_end; n += PW85_DIM) {
-        double const r12[] = {r * n[0], r * n[1], r * n[2]};
-        for (double *q1 = q_begin; q1 < q_end; q1 += PW85_SYM) {
-          for (double *q2 = q_begin; q2 < q_end; q2 += PW85_SYM) {
-            test_pw85_contact_function_test(r12, q1, q2);
-          }
-        }
-      }
-    }
-  }
-
-  test_pw85_free_context();
 }

@@ -1,5 +1,4 @@
 add_executable(test_pw85
-        test_pw85_main.cpp
         test_pw85.cpp)
 
 target_include_directories(test_pw85 PUBLIC ../include)
@@ -11,14 +10,12 @@ endif ()
 find_package(PkgConfig REQUIRED)
 find_package(GSL REQUIRED)
 find_package(HDF5 COMPONENTS C HL REQUIRED)
-find_package(Catch2 REQUIRED)
 
 target_link_libraries(test_pw85
         pw85
         GSL::gsl
         hdf5::hdf5
-        hdf5::hdf5_hl
-        Catch2::Catch2)
+        hdf5::hdf5_hl)
 
 set(PW85_REF_DATA_FILENAME "pw85_ref_data.h5")
 set(PW85_REF_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME})
