@@ -4,8 +4,7 @@
 #include <cstring>
 #include <iostream>
 
-#include <gsl/gsl_blas.h>
-#include <gsl/gsl_linalg.h>
+#include <Eigen/Dense>
 
 #include <hdf5_hl.h>
 
@@ -249,36 +248,27 @@ void test_pw85_contact_function_test(Vec const r12, Sym const q1,
   double lambda = out[1];
   double lambda1 = 1. - lambda;
 
-  gsl_vector *r = gsl_vector_calloc(PW85_DIM);
+  Eigen::Vector3d r{r12[0], r12[1], r12[2]};
+  Eigen::Matrix3d Q1, Q2;
+  // clang-format off
+  Q1 << q1[0], q1[1], q1[2],
+        q1[1], q1[3], q1[4],
+        q1[2], q1[4], q1[5];
+  Q2 << q2[0], q2[1], q2[2],
+        q2[1], q2[3], q2[4],
+        q2[2], q2[4], q2[5];
+  // clang-format on
+  auto Q12 = Q2 - Q1;
+  auto Q = (1 - lambda) * Q1 + lambda * Q2;
+  auto cholesky_Q = Q.llt();
+  auto s = cholesky_Q.solve(r);
 
-  gsl_matrix *Q12 = gsl_matrix_alloc(PW85_DIM, PW85_DIM);
-  gsl_matrix *Q = gsl_matrix_alloc(PW85_DIM, PW85_DIM);
+  auto u = Q12 * s;
+  auto v = cholesky_Q.solve(u);
 
-  for (size_t i = 0, ij = 0; i < PW85_DIM; i++) {
-    gsl_vector_set(r, i, r12[i]);
-    for (size_t j = i; j < PW85_DIM; j++, ij++) {
-      gsl_matrix_set(Q12, i, j, q2[ij] - q1[ij]);
-      gsl_matrix_set(Q12, j, i, q2[ij] - q1[ij]);
-      gsl_matrix_set(Q, i, j, lambda1 * q1[ij] + lambda * q2[ij]);
-      gsl_matrix_set(Q, j, i, lambda1 * q1[ij] + lambda * q2[ij]);
-    }
-  }
-
-  gsl_linalg_cholesky_decomp1(Q);
-
-  gsl_vector *s = gsl_vector_calloc(PW85_DIM);
-  gsl_linalg_cholesky_solve(Q, r, s);
-
-  gsl_vector *u = gsl_vector_calloc(PW85_DIM);
-  gsl_blas_dgemv(CblasNoTrans, 1., Q12, s, 0., u);
-
-  gsl_vector *v = gsl_vector_calloc(PW85_DIM);
-  gsl_linalg_cholesky_solve(Q, u, v);
-
-  double rs, su, uv;
-  gsl_blas_ddot(r, s, &rs);
-  gsl_blas_ddot(s, u, &su);
-  gsl_blas_ddot(u, v, &uv);
+  double rs = r.dot(s);
+  double su = s.dot(u);
+  double uv = u.dot(v);
 
   /*
    * We could also check that x0 belong to both (scaled) ellipsoids:
@@ -317,13 +307,6 @@ void test_pw85_contact_function_test(Vec const r12, Sym const q1,
   double f1 = lambda2 * rs - lambda * lambda1 * su;
   double f2 = -2. * rs - 2. * lambda2 * su + 2. * lambda * lambda1 * uv;
   assert_cmp_double(0., f1, 0., PW85_LAMBDA_ATOL * fabs(f2));
-
-  gsl_vector_free(r);
-  gsl_vector_free(s);
-  gsl_vector_free(u);
-  gsl_vector_free(v);
-  gsl_matrix_free(Q12);
-  gsl_matrix_free(Q);
 }
 
 void test_pw85_f_neg_test(double lambda, const Vec r12, const Sym q1,

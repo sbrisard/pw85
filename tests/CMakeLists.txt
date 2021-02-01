@@ -7,13 +7,12 @@ if (MATH_LIBRARY)
     target_link_libraries(test_pw85 ${MATH_LIBRARY})
 endif ()
 
-find_package(PkgConfig REQUIRED)
-find_package(GSL REQUIRED)
 find_package(HDF5 COMPONENTS C HL REQUIRED)
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 target_link_libraries(test_pw85
         pw85
-        GSL::gsl
+        Eigen3::Eigen
         hdf5::hdf5
         hdf5::hdf5_hl)
 
