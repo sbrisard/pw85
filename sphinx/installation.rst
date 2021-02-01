@@ -17,6 +17,8 @@ The C library depends on
 1. The `GNU Scientific Library (GSL) <https://www.gnu.org/software/gsl/>`_ (for
    the implementation of the Brent algorithm)
 2. The `HDF5 <https://portal.hdfgroup.org/>`_ (for testing purposes)
+3. The `Eigen <http://eigen.tuxfamily.org/index.php?title=Main_Page>`_ (for
+   testing purposes)
 
 This is a CMake_ based project. The installation procedure is standard. First,
 clone the repository. Then, ``cd`` into the root directory of the
