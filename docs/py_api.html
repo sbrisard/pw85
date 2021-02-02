@@ -12,7 +12,7 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="The C API" href="c_api.html" />
@@ -37,255 +37,15 @@
 <div class="contents local topic" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#module-pw85" id="id1">The new API</a></p>
-<ul>
-<li><p><a class="reference internal" href="#representation-of-vectors-and-matrices" id="id2">Representation of vectors and matrices</a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#module-pw85.legacy" id="id3">The “legacy” API</a></p></li>
+<li><p><a class="reference internal" href="#the-new-api" id="id1">The new API</a></p></li>
+<li><p><a class="reference internal" href="#the-legacy-api" id="id2">The “legacy” API</a></p></li>
 </ul>
 </div>
-<div class="section" id="module-pw85">
-<span id="the-new-api"></span><h2><a class="toc-backref" href="#id1">The new API</a><a class="headerlink" href="#module-pw85" title="Permalink to this headline">¶</a></h2>
-<p>Overlap test of two ellipsoids.</p>
-<p>This module provides a wrapper around the PW85 C library that implements
-the “contact function” defined by Perram and Wertheim (J. Comp. Phys.
-58(3), 409–416, DOI:10.1016/0021-9991(85)90171-8) for two ellipsoids.
-Given two ellipsoids, this function returns the <em>square</em> of the common
-factor by which both ellipsoids must be scaled (their centers being
-fixed) in order to be tangentially in contact.</p>
-<p>This module is released under a BSD 3-Clause License.</p>
-<div class="section" id="representation-of-vectors-and-matrices">
-<h3><a class="toc-backref" href="#id2">Representation of vectors and matrices</a><a class="headerlink" href="#representation-of-vectors-and-matrices" title="Permalink to this headline">¶</a></h3>
-<p>An ellipsoid is defined from its center <code class="docutils literal notranslate"><span class="pre">c</span></code> (a 3×1, column-vector)
-and quadratic form <code class="docutils literal notranslate"><span class="pre">Q</span></code> (a 3×3, symmetric, positive definite matrix)
-as the set of points <code class="docutils literal notranslate"><span class="pre">m</span></code> such that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
-</pre></div>
+<div class="section" id="the-new-api">
+<h2><a class="toc-backref" href="#id1">The new API</a><a class="headerlink" href="#the-new-api" title="Permalink to this headline">¶</a></h2>
 </div>
-<p>In this module, objects referred to as “vectors” are length-3 arrays
-of <code class="docutils literal notranslate"><span class="pre">double</span></code> coordinates. In other words, the representation of the
-vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is the <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <code class="docutils literal notranslate"><span class="pre">x</span></code> such that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    ⎡ x[0] ⎤
-x = ⎢ x[1] ⎥.
-    ⎣ x[2] ⎦
-</pre></div>
-</div>
-<p>Objects referred to as “symmetric matrices” (or “quadratic forms”) are
-length-6 arrays of <code class="docutils literal notranslate"><span class="pre">double</span></code>. Such arrays list in row-major order the
-coefficients of the triangular upper part. In other words, the
-representation of a the symmetric matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is the array <code class="docutils literal notranslate"><span class="pre">a</span></code> such
-that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    ⎡ a[0] a[1] a[2] ⎤
-A = ⎢      a[3] a[4] ⎥.
-    ⎣ sym.      a[5] ⎦
-</pre></div>
-</div>
-<p>The present wrapper around the PW85 C library relies on the NumPy
-library.  “<code class="docutils literal notranslate"><span class="pre">double[n]</span></code> array” should be understood here as “NumPy
-array with <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">==</span> <span class="pre">(n,)</span></code> and <code class="docutils literal notranslate"><span class="pre">dtype</span> <span class="pre">==</span> <span class="pre">numpy.float64</span></code>.”</p>
-<p>Note that true NumPy array <em>must</em> be passed (array-likes will <em>not</em>
-work).</p>
-<dl class="py function">
-<dt id="pw85._cholesky_decomp">
-<code class="sig-prename descclassname">pw85.</code><code class="sig-name descname">_cholesky_decomp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">l</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85.html#_cholesky_decomp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85._cholesky_decomp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the Cholesky decomposition <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">=</span> <span class="pre">L⋅Lᵀ</span></code> of a 3×3 matrix.</p>
-<p><code class="docutils literal notranslate"><span class="pre">A</span></code> is a symmetric matrix, <code class="docutils literal notranslate"><span class="pre">L</span></code> is a lower matrix, both
-represented by <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> arrays.</p>
-<p>This function returns <code class="docutils literal notranslate"><span class="pre">l</span></code>, suitably updated with the
-coefficients of the Cholesky decomposition. If <code class="docutils literal notranslate"><span class="pre">l</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
-then a new array is allocated.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pw85._cholesky_solve">
-<code class="sig-prename descclassname">pw85.</code><code class="sig-name descname">_cholesky_solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">l</span></em>, <em class="sig-param"><span class="n">b</span></em>, <em class="sig-param"><span class="n">x</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85.html#_cholesky_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85._cholesky_solve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the solution of the 3×3 linear system <code class="docutils literal notranslate"><span class="pre">L⋅Lᵀ⋅x</span> <span class="pre">=</span> <span class="pre">b.</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">L</span></code> is a lower matrix, represented by the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array
-<code class="docutils literal notranslate"><span class="pre">l</span></code>; <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> are vectors (<code class="docutils literal notranslate"><span class="pre">double[3]</span></code> arrays).</p>
-<p>This function returns <code class="docutils literal notranslate"><span class="pre">x</span></code>, suitably updated with the solution to
-the system. If <code class="docutils literal notranslate"><span class="pre">x</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, then a new array is allocated.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pw85.contact_function">
-<code class="sig-prename descclassname">pw85.</code><code class="sig-name descname">contact_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r12</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85.html#contact_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.contact_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the value of the contact function of two ellipsoids.</p>
-<p>See <a class="reference internal" href="#pw85.f" title="pw85.f"><code class="xref py py-func docutils literal notranslate"><span class="pre">f()</span></code></a> for the meaning of the parameters <code class="docutils literal notranslate"><span class="pre">r12</span></code>, <code class="docutils literal notranslate"><span class="pre">q1</span></code>
-and <code class="docutils literal notranslate"><span class="pre">q2</span></code>.</p>
-<p>This function returns the pair <code class="docutils literal notranslate"><span class="pre">(μ²,</span> <span class="pre">λ)</span></code>, defined as (see
-<a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 }
-</pre></div>
-</div>
-<p>(the returned value of <code class="docutils literal notranslate"><span class="pre">λ</span></code> is the actual maximizer).</p>
-<p><code class="docutils literal notranslate"><span class="pre">μ</span></code> is the common factor by which the two ellipsoids must be
-scaled (their centers being fixed) in order to be tangentially in
-contact.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">out</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, it must be a pre-allocated
-<code class="docutils literal notranslate"><span class="pre">double[2]</span></code> array. It is updated with the values of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, and
-the maximizer <code class="docutils literal notranslate"><span class="pre">λ</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>out[0] = μ²    and    out[1] = λ.
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pw85.f">
-<code class="sig-prename descclassname">pw85.</code><code class="sig-name descname">f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lambda_</span></em>, <em class="sig-param"><span class="n">r12</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85.html#f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.f" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the value of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> defined as:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
-</pre></div>
-</div>
-<p>with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Q = (1-λ)Q₁ + λQ₂,
-</pre></div>
-</div>
-<p>where ellipsoids 1 and 2 are defined as the sets of points <code class="docutils literal notranslate"><span class="pre">m</span></code>
-(column-vector) such that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
-</pre></div>
-</div>
-<p>In the above inequality, <code class="docutils literal notranslate"><span class="pre">cᵢ</span></code> is the center; <code class="docutils literal notranslate"><span class="pre">r₁₂</span> <span class="pre">=</span> <span class="pre">c₂-c₁</span></code> is
-the center-to-center radius-vector, represented by the
-<code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <code class="docutils literal notranslate"><span class="pre">r12</span></code>. The symmetric, positive-definite
-matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code>
-arrays <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code>.</p>
-<p>The value of <code class="docutils literal notranslate"><span class="pre">λ</span></code> is specified through the parameter <code class="docutils literal notranslate"><span class="pre">lambda_</span></code>.</p>
-<p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pw85.spheroid">
-<code class="sig-prename descclassname">pw85.</code><code class="sig-name descname">spheroid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">c</span></em>, <em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">q</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85.html#spheroid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.spheroid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the quadratic form associated to a spheroid.</p>
-<p>The spheroid is defined by its equatorial radius <code class="docutils literal notranslate"><span class="pre">a</span></code>, its polar
-radius <code class="docutils literal notranslate"><span class="pre">c</span></code> and the direction of its axis of revolution, <code class="docutils literal notranslate"><span class="pre">n</span></code>
-(vector, a.k.a. <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array).</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">q</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, then it must be a pre-allocated
-<code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array. It is modified in place.</p>
-</dd></dl>
-
-</div>
-</div>
-<div class="section" id="module-pw85.legacy">
-<span id="the-legacy-api"></span><h2><a class="toc-backref" href="#id3">The “legacy” API</a><a class="headerlink" href="#module-pw85.legacy" title="Permalink to this headline">¶</a></h2>
-<p>Python wrapper to the legacy API of PW85.</p>
-<p>This module offers some implementations of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> that
-were eventually discarded (for accuracy reasons). These functions are
-kept for reference.</p>
-<p>The present wrapper around the legacy PW85 C library relies on the
-NumPy library.  “<code class="docutils literal notranslate"><span class="pre">double[n]</span></code> array” should be understood here as
-“NumPy array with <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">==</span> <span class="pre">(n,)</span></code> and <code class="docutils literal notranslate"><span class="pre">dtype</span> <span class="pre">==</span> <span class="pre">numpy.float64</span></code>.”</p>
-<p>Note that true NumPy array <em>must</em> be passed (array-likes will <em>not</em>
-work).</p>
-<dl class="py function">
-<dt id="pw85.legacy._detQ_as_poly">
-<code class="sig-prename descclassname">pw85.legacy.</code><code class="sig-name descname">_detQ_as_poly</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">q3</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">q4</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85/legacy.html#_detQ_as_poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.legacy._detQ_as_poly" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the coefficients of the polynomial <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">↦</span> <span class="pre">det[(1-λ)Q₁+λQ₂]</span></code>.</p>
-<p>The symmetric, positive definite, 3×3 matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code>
-are specified as arrays <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code>. If <code class="docutils literal notranslate"><span class="pre">q3</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">None</span></code>,
-it must hold the difference <code class="docutils literal notranslate"><span class="pre">2Q₁-Q₂</span></code>; if <code class="docutils literal notranslate"><span class="pre">q4</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">None</span></code>, it
-must hold the average <code class="docutils literal notranslate"><span class="pre">(Q₁+Q₂)/2</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">q3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">q1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">q2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="ow">and</span>  <span class="n">q4</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">q1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">q2</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
-</pre></div>
-</div>
-<p>for <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">…,</span> <span class="pre">5</span></code>. The returned polynomial has degree <code class="docutils literal notranslate"><span class="pre">3</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>det[(1-λ)Q₁+λQ₂] = b₀ + b₁λ + b₂λ² + b₃λ³.
-</pre></div>
-</div>
-<p>If <code class="docutils literal notranslate"><span class="pre">b</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">None</span></code>, it must be a pre-allocated <code class="docutils literal notranslate"><span class="pre">double[4]</span></code>
-array. It is modified in place with the coefficients <code class="docutils literal notranslate"><span class="pre">bᵢ</span></code>,
-stored in <em>increasing</em> order: <code class="docutils literal notranslate"><span class="pre">b[i]</span> <span class="pre">=</span> <span class="pre">bᵢ</span></code>.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">b</span> <span class="pre">is</span> <span class="pre">None</span></code>, a new <code class="docutils literal notranslate"><span class="pre">double[4]</span></code> array is created and
-returned.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pw85.legacy._det_sym">
-<code class="sig-prename descclassname">pw85.legacy.</code><code class="sig-name descname">_det_sym</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85/legacy.html#_det_sym"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.legacy._det_sym" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the determinant of <code class="docutils literal notranslate"><span class="pre">A</span></code>.</p>
-<p>The symmetric matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code>
-array <code class="docutils literal notranslate"><span class="pre">a</span></code>.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pw85.legacy._rT_adjQ_r_as_poly">
-<code class="sig-prename descclassname">pw85.legacy.</code><code class="sig-name descname">_rT_adjQ_r_as_poly</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">q3</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85/legacy.html#_rT_adjQ_r_as_poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.legacy._rT_adjQ_r_as_poly" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the coefficients of the polynomial <code class="docutils literal notranslate"><span class="pre">λ</span> <span class="pre">↦</span> <span class="pre">rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r</span></code>.</p>
-<p>The symmetric, positive definite, 3×3 matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code>
-are specified as arrays <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code>. If <code class="docutils literal notranslate"><span class="pre">q3</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">None</span></code>,
-it must hold the difference <code class="docutils literal notranslate"><span class="pre">2Q₁-Q₂</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">q3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">q1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">q2</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-</pre></div>
-</div>
-<p>for <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">…,</span> <span class="pre">5</span></code>. The returned polynomial has degree <code class="docutils literal notranslate"><span class="pre">2</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>rᵀ⋅adj[(1-λ)Q₁+λQ₂]⋅r = a₀ + a₁λ + a₂λ².
-</pre></div>
-</div>
-<p>If <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">None</span></code>, it must be a pre-allocated <code class="docutils literal notranslate"><span class="pre">double[3]</span></code>
-array. It is modified in place with the coefficients <code class="docutils literal notranslate"><span class="pre">aᵢ</span></code>,
-stored in <code class="docutils literal notranslate"><span class="pre">a</span></code> in <em>increasing</em> order: <code class="docutils literal notranslate"><span class="pre">a[i]</span> <span class="pre">=</span> <span class="pre">aᵢ</span></code>. The function
-returns <code class="docutils literal notranslate"><span class="pre">a</span></code>.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">is</span> <span class="pre">None</span></code>, a new <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array is created and
-returned.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pw85.legacy._xT_adjA_x">
-<code class="sig-prename descclassname">pw85.legacy.</code><code class="sig-name descname">_xT_adjA_x</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">a</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85/legacy.html#_xT_adjA_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.legacy._xT_adjA_x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the product <code class="docutils literal notranslate"><span class="pre">xᵀ⋅adj(A)⋅x</span></code>.</p>
-<p>The column vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is specified as a <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array. The
-symmetric matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is specified trough the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array
-<code class="docutils literal notranslate"><span class="pre">a</span></code>.</p>
-<p><code class="docutils literal notranslate"><span class="pre">adj(A)</span></code> denotes the adjugate matrix of <code class="docutils literal notranslate"><span class="pre">A</span></code> (transpose of its
-cofactor matrix), see e.g <a class="reference external" href="https://en.wikipedia.org/wiki/Adjugate_matrix">Wikipedia</a>.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pw85.legacy.f1">
-<code class="sig-prename descclassname">pw85.legacy.</code><code class="sig-name descname">f1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lambda_</span></em>, <em class="sig-param"><span class="n">r12</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85/legacy.html#f1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.legacy.f1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the value of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> defined as
-(see <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
-</pre></div>
-</div>
-<p>with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Q = (1-λ)Q₁ + λQ₂,
-</pre></div>
-</div>
-<p>where ellipsoids 1 and 2 are defined as the sets of points <code class="docutils literal notranslate"><span class="pre">m</span></code>
-(column-vector) such that:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
-</pre></div>
-</div>
-<p>In the above inequality, <code class="docutils literal notranslate"><span class="pre">cᵢ</span></code> is the center; <code class="docutils literal notranslate"><span class="pre">r₁₂</span> <span class="pre">=</span> <span class="pre">c₂-c₁</span></code> is
-the center-to-center radius-vector, represented by the
-<code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <code class="docutils literal notranslate"><span class="pre">r12</span></code>. The symmetric, positive-definite
-matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code>
-arrays <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code>.</p>
-<p>The value of <code class="docutils literal notranslate"><span class="pre">λ</span></code> is specified through the parameter <code class="docutils literal notranslate"><span class="pre">lambda_</span></code>.</p>
-<p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>. If <code class="docutils literal notranslate"><span class="pre">out</span> <span class="pre">is</span> <span class="pre">not</span>
-<span class="pre">None</span></code>, then it must be a pre-allocated <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array which
-is updated with the values of the first and second derivatives:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>out[0] = f(λ),    out[1] = f&#39;(λ)    and    out[2] = f″(λ).
-</pre></div>
-</div>
-<p>This implementation uses <a class="reference internal" href="implementation.html#implementation-cholesky"><span class="std std-ref">Cholesky decompositions</span></a>.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pw85.legacy.f2">
-<code class="sig-prename descclassname">pw85.legacy.</code><code class="sig-name descname">f2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lambda_</span></em>, <em class="sig-param"><span class="n">r12</span></em>, <em class="sig-param"><span class="n">q1</span></em>, <em class="sig-param"><span class="n">q2</span></em>, <em class="sig-param"><span class="n">out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pw85/legacy.html#f2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pw85.legacy.f2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alternative implementation of <a class="reference internal" href="#pw85.legacy.f1" title="pw85.legacy.f1"><code class="xref py py-func docutils literal notranslate"><span class="pre">f1()</span></code></a>.</p>
-<p>See <a class="reference internal" href="#pw85.legacy.f1" title="pw85.legacy.f1"><code class="xref py py-func docutils literal notranslate"><span class="pre">f1()</span></code></a> for the meaning of the parameters <code class="docutils literal notranslate"><span class="pre">lambda_</span></code>,
-<code class="docutils literal notranslate"><span class="pre">r12</span></code>, <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code>.</p>
-<p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>. If <code class="docutils literal notranslate"><span class="pre">out</span> <span class="pre">is</span> <span class="pre">not</span>
-<span class="pre">None</span></code>, then it must be a pre-allocated <code class="docutils literal notranslate"><span class="pre">double[1]</span></code> array which
-is updated with the value of <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code>.</p>
-<p>This implementation uses <a class="reference internal" href="implementation.html#implementation-rational-functions"><span class="std std-ref">rational fractions</span></a>.</p>
-</dd></dl>
-
+<div class="section" id="the-legacy-api">
+<h2><a class="toc-backref" href="#id2">The “legacy” API</a><a class="headerlink" href="#the-legacy-api" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -317,8 +77,8 @@ is updated with the value of <code class="docutils literal notranslate"><span cl
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing the implementation of the contact function</a></li>
 <li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">The python API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-pw85">The new API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pw85.legacy">The “legacy” API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-new-api">The new API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-legacy-api">The “legacy” API</a></li>
 </ul>
 </li>
 </ul>
@@ -357,7 +117,7 @@ is updated with the value of <code class="docutils literal notranslate"><span cl
       &copy;2018–2021, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

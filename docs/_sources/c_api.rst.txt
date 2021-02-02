@@ -71,154 +71,6 @@ and use the following link directive::
   The current version of the library.
 
 
-.. c:macro:: PW85_DIM
-
-  The dimension of the physical space (3).
-
-
-.. c:macro:: PW85_SYM
-
-  The dimension of the space of symmetric matrices (6).
-
-
-.. c:macro:: PW85_LAMBDA_ATOL
-
-  The absolute tolerance for the stopping criterion of Brent’s method (in
-  function :c:func:`pw85_contact_function`).
-
-
-.. c:macro:: PW85_MAX_ITER
-
-  The maximum number of iterations of Brent’s method (in function
-  :c:func:`pw85_contact_function`).
-
-
-.. c:macro:: PW85_NR_ITER
-
-  The total number of iterations of the Newton–Raphson refinement phase (in
-  function :c:func:`pw85_contact_function`).
-
-
-.. c:function:: void pw85__cholesky_decomp(double const a[PW85_SYM], double l[PW85_SYM])
-
-  Compute the Cholesky decomposition of a symmetric, positive matrix.
-
-  Let ``A`` be a symmetric, positive matrix, defined by the ``double[6]`` array
-  ``a``. This function computes the lower-triangular matrix ``L``, defined by
-  the ``double[6]`` array ``l``, such that ``Lᵀ⋅L = A``.
-
-  The array ``l`` must be pre-allocated; it is modified by this function. Note
-  that storage of the coefficients of ``L`` is as follows::
-
-        ⎡ l[0]    0    0 ⎤
-    L = ⎢ l[1] l[3]    0 ⎥.
-        ⎣ l[2] l[4] l[5] ⎦
-
-
-.. c:function:: void pw85__cholesky_solve(double const l[PW85_SYM], double const b[PW85_DIM], double x[PW85_DIM])
-
-  Compute the solution to a previously Cholesky decoposed linear system.
-
-  Let ``L`` be a lower-triangular matrix, defined by the ``double[6]`` array
-  ``l`` (see :c:func:`pw85__cholesky_decomp` for ordering of the
-  coefficients). This function solves (by substitution) the linear system
-  ``Lᵀ⋅L⋅x = b``, where the vectors ``x`` and ``b`` are specfied through their
-  ``double[3]`` array of coordinates; ``x`` is modified by this function.
-
-
-.. c:function:: void pw85__residual(double lambda, double const r12[PW85_DIM], double const q1[PW85_SYM], double const q2[PW85_SYM], double out[3])
-
-   Compute the residual ``g(λ) = μ₂² - μ₁²``.
-
-   See :ref:`optimization` for the definition of ``g``. The value of ``λ`` is
-   specified through the parameter
-   ``lambda``. See :c:func:`pw85_contact_function` for the definition of the
-   parameters ``r12``, ``q1`` and ``q2``.
-
-   The preallocated ``double[3]`` array ``out`` is updated with the values of
-   ``f(λ)``, ``g(λ)`` and ``g’(λ)``::
-
-     out[0] = f(λ),    out[1] = g(λ)    and    out[2] = g’(λ).
-
-   This function is used in function :c:func:`pw85_contact_function` for the
-   final Newton–Raphson refinement step.
-
-
-.. c:function:: void pw85_spheroid(double a, double c, double n[PW85_DIM], double q[PW85_SYM])
-
-  Compute the quadratic form associated to a spheroid.
-
-  The spheroid is defined by its equatorial radius ``a``, its polar radius
-  ``c`` and the direction of its axis of revolution, ``n``.
-
-  ``q`` is the representation of a symmetric matrix as a ``double[6]``
-  array. It is modified in-place.
-
-
-.. c:function:: double pw85_f_neg(double lambda, double const* params)
-
-  Return the value of the opposite of the function ``f`` defined as (see
-  :ref:`theory`)::
-
-    f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
-
-  with::
-
-    Q = (1-λ)Q₁ + λQ₂,
-
-  where ellipsoids 1 and 2 are defined as the sets of points ``m``
-  (column-vector) such that::
-
-    (m-cᵢ)⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1
-
-  In the above inequality, ``cᵢ`` is the center; ``r₁₂ = c₂-c₁`` is the
-  center-to-center radius-vector, represented by the first 3 coefficients of
-  the array ``params``. The symmetric, positive-definite matrices ``Q₁`` and
-  ``Q₂`` are specified through the next 12 coefficients. In other words, if
-  ``r12``, ``Q1`` and ``Q2`` were defined as usual by their ``double[3]``,
-  ``double[6]`` and ``double[6]`` arrays ``r12``, ``q1`` and ``q2``, then
-  ``params`` would be formed as follows::
-
-    double params[] = {r12[0], r12[1], r12[2],
-                       q1[0], q1[1], q1[2], q1[3], q1[4], q1[5],
-		       q2[0], q2[1], q2[2], q2[3], q2[4], q2[5]};
-
-  The value of ``λ`` is specified through the parameter ``lambda``.
-
-  This function returns the value of ``−f(λ)`` (the “minus” sign comes from the
-  fact that we seek the maximum of ``f``, or the minimum of ``−f``).
-
-  This implementation uses :ref:`Cholesky decompositions
-  <implementation-cholesky>`. Its somewhat awkward signature is defined in
-  accordance with ``gsl_min.h`` from the GNU Scientific Library.
-
-
-.. c:function:: int pw85_contact_function(double const r12[PW85_DIM], double const q1[PW85_SYM], double const q2[PW85_SYM], double out[2])
-
-  Compute the value of the contact function of two ellipsoids.
-
-  The center-to-center radius-vector is specified by the ``double[3]`` array
-  ``r12``. The symmetric, positive-definite matrices ``Q₁`` and ``Q₂`` that
-  define the two ellipsoides are specified through the ``double[6]`` arrays
-  ``q1`` and ``q2``.
-
-  This function returns the value of ``μ²``, defined as (see :ref:`theory`)::
-
-    μ² = max{ λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1 },
-
-  and the maximizer ``λ``. Both values are stored in the preallocated
-  ``double[2]`` array ``out``::
-
-    out[0] = μ²    and    out[1] = λ.
-
-  ``μ`` is the common factor by which the two ellipsoids must be scaled (their
-  centers being fixed) in order to be tangentially in contact.
-
-  This function returns ``0``
-
-.. todo:: This function should return an error code.
-
-
 The “legacy” API
 ================
 
@@ -371,6 +223,12 @@ The coefficients ``aᵢ`` are stored in ``a`` in *increasing* order: ``a[i] = a�
   This function returns ``0``
 
 .. todo:: This function should return an error code.
+
+Breathe
+=======
+
+.. autodoxygenfile:: pw85.hpp
+   :project: pw85
 
 .. Local Variables:
 .. fill-column: 79

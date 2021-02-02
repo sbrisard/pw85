@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.9.1" xml:lang="en-US">
+  <compound refid="namespacepw85" kind="namespace"><name>pw85</name>
+    <member refid="pw85_8hpp_1ae06cb10f228d69912ee7dcc8c8b1e347" kind="function"><name>_cholesky_decomp</name></member>
+    <member refid="pw85_8hpp_1ab01524112d90406ef490177609692bb4" kind="function"><name>_cholesky_solve</name></member>
+    <member refid="pw85_8hpp_1ad2ab1e3645c5a25bdefa13f811d7ac0a" kind="function"><name>spheroid</name></member>
+    <member refid="pw85_8hpp_1ac290983e8bb499a0d1f588a23f7e6cc3" kind="function"><name>f_neg</name></member>
+    <member refid="pw85_8hpp_1a432452deed4d9e1b24ed7990d16e3bc6" kind="function"><name>_residual</name></member>
+    <member refid="pw85_8hpp_1ac7a407eb0bf2bf015ec5bbd882f136b0" kind="function"><name>contact_function</name></member>
+  </compound>
+  <compound refid="pw85_8hpp" kind="file"><name>pw85.hpp</name>
+    <member refid="pw85_8hpp_1a3b2d14ef79471c78b23a834a5cd68375" kind="define"><name>PW85_DIM</name></member>
+    <member refid="pw85_8hpp_1a37687b34fc8d77310406214ab504b19a" kind="define"><name>PW85_SYM</name></member>
+    <member refid="pw85_8hpp_1a542008d02554186f8d945dec09e0d608" kind="define"><name>PW85_LAMBDA_ATOL</name></member>
+    <member refid="pw85_8hpp_1ab930d919fc57493229a0add637c23e92" kind="define"><name>PW85_MAX_ITER</name></member>
+    <member refid="pw85_8hpp_1a3f67fcb214d3725a55e3670eb4a2084b" kind="define"><name>PW85_NR_ITER</name></member>
+    <member refid="pw85_8hpp_1af83a0ad9d707a0bc5fe281b6e5c358a1" kind="define"><name>DllExport</name></member>
+  </compound>
+  <compound refid="dir_d44c64559bbebec7f509842c48db8b23" kind="dir"><name>C:/Users/sbrisard/Git/programmes/pw85/include</name>
+  </compound>
+  <compound refid="dir_afad4b991a74bf885d59724fd9ed538a" kind="dir"><name>C:/Users/sbrisard/Git/programmes/pw85/include/pw85</name>
+  </compound>
+</doxygenindex>

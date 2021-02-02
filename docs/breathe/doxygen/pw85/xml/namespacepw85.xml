@@ -1,0 +1,211 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="namespacepw85" kind="namespace" language="C++">
+    <compoundname>pw85</compoundname>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="pw85_8hpp_1ae06cb10f228d69912ee7dcc8c8b1e347" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>DllExport void</type>
+        <definition>DllExport void pw85::_cholesky_decomp</definition>
+        <argsstring>(const double *a, double *l)</argsstring>
+        <name>_cholesky_decomp</name>
+        <param>
+          <type>const double *</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>l</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute the Cholesky decomposition of a symmetric, positive matrix.</para>
+<para>Let <computeroutput>A</computeroutput> be a symmetric, positive matrix, defined by the <computeroutput>double[6]</computeroutput> array <computeroutput>a</computeroutput>. This function computes the lower-triangular matrix <computeroutput>L</computeroutput>, defined by the <computeroutput>double[6]</computeroutput> array <computeroutput>l</computeroutput>, such that <computeroutput>Lᵀ⋅L = A</computeroutput>.</para>
+<para>The array <computeroutput>l</computeroutput> must be pre-allocated; it is modified by this function. Note that storage of the coefficients of <computeroutput>L</computeroutput> is as follows</para>
+<para><programlisting><codeline><highlight class="normal"><sp/><sp/><sp/><sp/>⎡<sp/>l[0]<sp/><sp/><sp/><sp/>0<sp/><sp/><sp/><sp/>0<sp/>⎤</highlight></codeline>
+<codeline><highlight class="normal">L<sp/>=<sp/>⎢<sp/>l[1]<sp/>l[3]<sp/><sp/><sp/><sp/>0<sp/>⎥.</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>⎣<sp/>l[2]<sp/>l[4]<sp/>l[5]<sp/>⎦</highlight></codeline>
+</programlisting> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="64" column="16" declfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" declline="64" declcolumn="16"/>
+      </memberdef>
+      <memberdef kind="function" id="pw85_8hpp_1ab01524112d90406ef490177609692bb4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>DllExport void</type>
+        <definition>DllExport void pw85::_cholesky_solve</definition>
+        <argsstring>(const double *l, const double *b, double *x)</argsstring>
+        <name>_cholesky_solve</name>
+        <param>
+          <type>const double *</type>
+          <declname>l</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>x</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute the solution to a previously Cholesky decomposed linear system.</para>
+<para>Let <computeroutput>L</computeroutput> be a lower-triangular matrix, defined by the <computeroutput>double[6]</computeroutput> array <computeroutput>l</computeroutput> (see <ref refid="pw85_8hpp_1ae06cb10f228d69912ee7dcc8c8b1e347" kindref="member">pw85::_cholesky_decomp()</ref> for ordering of the coefficients). This function solves (by substitution) the linear system <computeroutput>Lᵀ⋅L⋅x = b</computeroutput>, where the vectors <computeroutput>x</computeroutput> and <computeroutput>b</computeroutput> are specified through their <computeroutput>double[3]</computeroutput> array of coordinates; <computeroutput>x</computeroutput> is modified by this function. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="75" column="16" declfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" declline="75" declcolumn="16"/>
+      </memberdef>
+      <memberdef kind="function" id="pw85_8hpp_1ad2ab1e3645c5a25bdefa13f811d7ac0a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>DllExport void</type>
+        <definition>DllExport void pw85::spheroid</definition>
+        <argsstring>(double a, double c, const double *n, double *q)</argsstring>
+        <name>spheroid</name>
+        <param>
+          <type>double</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>c</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>n</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>q</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute the quadratic form associated to a spheroid.</para>
+<para>The spheroid is defined by its equatorial radius <computeroutput>a</computeroutput>, its polar radius <computeroutput>c</computeroutput> and the direction of its axis of revolution, <computeroutput>n</computeroutput> (unit-vector, <computeroutput>double[3]</computeroutput> array).</para>
+<para><computeroutput>q</computeroutput> is the representation of a symmetric matrix as a <computeroutput>double[6]</computeroutput> array. It is modified in-place. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="87" column="16" declfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" declline="87" declcolumn="16"/>
+      </memberdef>
+      <memberdef kind="function" id="pw85_8hpp_1ac290983e8bb499a0d1f588a23f7e6cc3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>DllExport double</type>
+        <definition>DllExport double pw85::f_neg</definition>
+        <argsstring>(double lambda, const double *params)</argsstring>
+        <name>f_neg</name>
+        <param>
+          <type>double</type>
+          <declname>lambda</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>params</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the value of the opposite of the function <computeroutput>f</computeroutput> defined as (see <verbatim>embed:rst:inline :ref:`theory`</verbatim>).</para>
+<para><formula id="0">\[f(\lambda)=\lambda\bigl(1-\lambda\bigr)r_{12}^{\mathsf{T}} \cdot Q^{-1}\cdot r_{12},\]</formula></para>
+<para>with</para>
+<para><formula id="1">\[Q = \bigl(1-\lambda\bigr)Q_1 + \lambda Q₂,\]</formula></para>
+<para>where ellipsoids 1 and 2 are defined as the sets of points <formula id="2">$m$</formula> (column-vector) such that</para>
+<para><formula id="3">\[\bigl(m-c_i\bigr)\cdot Q_i^{-1}\cdot\bigl(m-c_i\bigr)\leq1.\]</formula></para>
+<para>In the above inequality, <formula id="4">$c_i$</formula> is the center; <formula id="5">$r_{12}=c_2-c_1$</formula> is the center-to-center radius-vector, represented by the first 3 coefficients of the array <computeroutput>params</computeroutput>. The symmetric, positive-definite matrices <formula id="6">$Q_1$</formula> and <formula id="7">$Q_2$</formula> are specified through the next 12 coefficients. In other words, if <formula id="8">$r_{12}$</formula>, <formula id="6">$Q_1$</formula> and <formula id="7">$Q_2$</formula> were defined as usual by their <computeroutput>double[3]</computeroutput>, <computeroutput>double[6]</computeroutput> and <computeroutput>double[6]</computeroutput> arrays <computeroutput>r12</computeroutput>, <computeroutput>q1</computeroutput> and <computeroutput>q2</computeroutput>, then <computeroutput>params</computeroutput> would be formed as follows</para>
+<para><programlisting><codeline><highlight class="normal">double<sp/>params[]<sp/>=<sp/>{r12[0],<sp/>r12[1],<sp/>r12[2],</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>q1[0],<sp/>q1[1],<sp/>q1[2],<sp/>q1[3],<sp/>q1[4],<sp/>q1[5],</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>q2[0],<sp/>q2[1],<sp/>q2[2],<sp/>q2[3],<sp/>q2[4],<sp/>q2[5]};</highlight></codeline>
+</programlisting></para>
+<para>The value of <formula id="9">$\lambda$</formula> is specified through the parameter <computeroutput>lambda</computeroutput>.</para>
+<para>This function returns the value of <formula id="10">$−f(\lambda)$</formula> (the “minus” sign comes from the fact that we seek the maximum of <formula id="11">$f$</formula>, or the minimum of <formula id="12">$−f$</formula>).</para>
+<para>This implementation uses <verbatim>embed:rst:inline:ref:`Cholesky decompositions &lt;implementation-cholesky&gt;`</verbatim>. Its somewhat awkward signature is defined in accordance with <computeroutput>gsl_min.h</computeroutput> from the GNU Scientific Library. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="130" column="18" declfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" declline="130" declcolumn="18"/>
+      </memberdef>
+      <memberdef kind="function" id="pw85_8hpp_1a432452deed4d9e1b24ed7990d16e3bc6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>DllExport void</type>
+        <definition>DllExport void pw85::_residual</definition>
+        <argsstring>(double lambda, const double *r12, const double *q1, const double *q2, double *out)</argsstring>
+        <name>_residual</name>
+        <param>
+          <type>double</type>
+          <declname>lambda</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>r12</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>q1</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>q2</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute the residual <formula id="13">$g(\lambda)=\mu_2^2-\mu_1^2$</formula>.</para>
+<para>See<verbatim>embed:rst:inline :ref:`optimization` </verbatim> for the definition of <formula id="14">$g$</formula>. The value of <formula id="9">$\lambda$</formula> is specified through the parameter <computeroutput>lambda</computeroutput>. See <ref refid="pw85_8hpp_1ac7a407eb0bf2bf015ec5bbd882f136b0" kindref="member">contact_function()</ref> for the definition of the parameters <computeroutput>r12</computeroutput>, <computeroutput>q1</computeroutput> and <computeroutput>q2</computeroutput>.</para>
+<para>The preallocated <computeroutput>double[3]</computeroutput> array <computeroutput>out</computeroutput> is updated as follows: <computeroutput>out[0]=</computeroutput> <formula id="15">$f(\lambda)$</formula>, <computeroutput>out[1]=</computeroutput> <formula id="16">$g(\lambda)$</formula> and <computeroutput>out[2]=</computeroutput> <formula id="17">$g&apos;(\lambda)$</formula>.</para>
+<para>This function is used in function <verbatim>embed:rst:inline :cpp:func:`pw85::contact_function` </verbatim> for the final Newton–Raphson refinement step. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="148" column="16" declfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" declline="148" declcolumn="16"/>
+      </memberdef>
+      <memberdef kind="function" id="pw85_8hpp_1ac7a407eb0bf2bf015ec5bbd882f136b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>DllExport int</type>
+        <definition>DllExport int pw85::contact_function</definition>
+        <argsstring>(const double *r12, const double *q1, const double *q2, double *out)</argsstring>
+        <name>contact_function</name>
+        <param>
+          <type>const double *</type>
+          <declname>r12</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>q1</declname>
+        </param>
+        <param>
+          <type>const double *</type>
+          <declname>q2</declname>
+        </param>
+        <param>
+          <type>double *</type>
+          <declname>out</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute the value of the contact function of two ellipsoids.</para>
+<para>The center-to-center radius-vector <formula id="8">$r_{12}$</formula> is specified by the <computeroutput>double[3]</computeroutput> array <computeroutput>r12</computeroutput>. The symmetric, positive-definite matrices <formula id="6">$Q_1$</formula> and <formula id="7">$Q_2$</formula> that define the two ellipsoids are specified through the <computeroutput>double[6]</computeroutput> arrays <computeroutput>q1</computeroutput> and <computeroutput>q2</computeroutput>.</para>
+<para>This function computes the value of <formula id="18">$\mu^2$</formula>, defined as</para>
+<para><formula id="19">\[\mu^2=\max_{0\leq\lambda\leq 1}\bigl\{\lambda\bigl(1-\lambda\bigr) r_{12}^{\mathsf{T}}\cdot\bigl[\bigl(1-\lambda\bigr)Q_1+\lambda Q_2\bigr]^{-1} \cdot r_{12}\bigr\},\]</formula></para>
+<para>and the maximizer <formula id="9">$\lambda$</formula>, see <verbatim>embed:rst:inline:ref:`theory` </verbatim>. Both values are stored in the preallocated <computeroutput>double[2]</computeroutput> array <computeroutput>out</computeroutput>: <computeroutput>out[0] =</computeroutput> <formula id="18">$\mu^2$</formula> and <computeroutput>out[1] =</computeroutput> <formula id="9">$\lambda$</formula>.</para>
+<para><formula id="20">$\mu$</formula> is the common factor by which the two ellipsoids must be scaled (their centers being fixed) in order to be tangentially in contact.</para>
+<para>This function returns <computeroutput>0</computeroutput>.</para>
+<para><verbatim>embed:rst:leading-asterisk
+* .. todo:: This function should return an error code.
+* </verbatim> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="179" column="15" declfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" declline="179" declcolumn="15"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="46" column="1"/>
+  </compounddef>
+</doxygen>

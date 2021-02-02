@@ -12,7 +12,7 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Theory" href="theory.html" />
@@ -88,7 +88,7 @@ underlying C library. We therefore import both modules:</p>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">r₁₂</span></code> is the vector that joins the center of the first ellipsoid,
 <code class="docutils literal notranslate"><span class="pre">x₁</span></code>, to the center of the second ellipsoid, <code class="docutils literal notranslate"><span class="pre">x₂</span></code>.</p>
-<p>We use the function <a class="reference internal" href="py_api.html#pw85.spheroid" title="pw85.spheroid"><code class="xref py py-func docutils literal notranslate"><span class="pre">pw85.spheroid()</span></code></a> to create the matrix
+<p>We use the function <code class="xref py py-func docutils literal notranslate"><span class="pre">pw85.spheroid()</span></code> to create the matrix
 representations <code class="docutils literal notranslate"><span class="pre">q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">q₂</span></code> of the two ellipsoids:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span> <span class="o">=</span> <span class="n">pw85</span><span class="o">.</span><span class="n">spheroid</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">q1</span>
@@ -99,7 +99,7 @@ representations <code class="docutils literal notranslate"><span class="pre">q�
 </pre></div>
 </div>
 <p>We can now compute the value of the contact function — see the documentation of
-<a class="reference internal" href="py_api.html#pw85.contact_function" title="pw85.contact_function"><code class="xref py py-func docutils literal notranslate"><span class="pre">pw85.contact_function()</span></code></a>:</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">pw85.contact_function()</span></code>:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mu2</span><span class="p">,</span> <span class="n">lambda_</span> <span class="o">=</span> <span class="n">pw85</span><span class="o">.</span><span class="n">contact_function</span><span class="p">(</span><span class="n">r12</span><span class="p">,</span> <span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;μ² = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mu2</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;λ = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lambda_</span><span class="p">))</span>
@@ -181,7 +181,7 @@ understand this derivation. What really matters is to check that the resulting
 point <code class="docutils literal notranslate"><span class="pre">x₀</span></code> is indeed the contact point of the two scaled ellipsoids; how the
 coordinates of this point were found is irrelevant.</p>
 <p>From the value of <code class="docutils literal notranslate"><span class="pre">λ</span></code> returned by the function
-<a class="reference internal" href="py_api.html#pw85.contact_function" title="pw85.contact_function"><code class="xref py py-func docutils literal notranslate"><span class="pre">pw85.contact_function()</span></code></a>, we compute <code class="docutils literal notranslate"><span class="pre">Q</span></code> defined by Eq. <a class="reference internal" href="theory.html#theory-eq-10"><span class="std std-ref">(10)</span></a> in section <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>, as well as <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">Q⁻¹⋅r₁₂</span></code></p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">pw85.contact_function()</span></code>, we compute <code class="docutils literal notranslate"><span class="pre">Q</span></code> defined by Eq. <a class="reference internal" href="theory.html#theory-eq-10"><span class="std std-ref">(10)</span></a> in section <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>, as well as <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">Q⁻¹⋅r₁₂</span></code></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">lambda_</span><span class="p">)</span><span class="o">*</span><span class="n">Q1</span><span class="o">+</span><span class="n">lambda_</span><span class="o">*</span><span class="n">Q2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">r12</span><span class="p">)</span>
 </pre></div>
@@ -248,7 +248,7 @@ and <code class="docutils literal notranslate"><span class="pre">λ</span></code
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
 
-<span class="cp">#include</span> <span class="cpf">&quot;pw85/pw85.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;pw85/pw85.hpp&quot;</span><span class="cp"></span>
 
 <span class="cp">#define DIM 3</span>
 <span class="cp">#define SYM 6</span>
@@ -378,7 +378,7 @@ lambda = 0.166859
       &copy;2018–2021, Sébastien Brisard.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

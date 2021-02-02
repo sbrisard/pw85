@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="pw85_8hpp" kind="file" language="C++">
+    <compoundname>pw85.hpp</compoundname>
+    <includes local="no">cmath</includes>
+    <incdepgraph>
+      <node id="2">
+        <label>cmath</label>
+      </node>
+      <node id="1">
+        <label>C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp</label>
+        <link refid="pw85_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <innernamespace refid="namespacepw85">pw85</innernamespace>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="pw85_8hpp_1a3b2d14ef79471c78b23a834a5cd68375" prot="public" static="no">
+        <name>PW85_DIM</name>
+        <initializer>3</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The dimension of the physical space (3). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="6" column="9" bodyfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" bodystart="6" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="pw85_8hpp_1a37687b34fc8d77310406214ab504b19a" prot="public" static="no">
+        <name>PW85_SYM</name>
+        <initializer>6</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The dimension of the space of symmetric matrices (6). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="9" column="9" bodyfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" bodystart="9" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="pw85_8hpp_1a542008d02554186f8d945dec09e0d608" prot="public" static="no">
+        <name>PW85_LAMBDA_ATOL</name>
+        <initializer>1e-6</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The absolute tolerance for the stopping criterion of Brent’s method (in function <ref refid="pw85_8hpp_1ac7a407eb0bf2bf015ec5bbd882f136b0" kindref="member">contact_function()</ref>). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="26" column="9" bodyfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="pw85_8hpp_1ab930d919fc57493229a0add637c23e92" prot="public" static="no">
+        <name>PW85_MAX_ITER</name>
+        <initializer>25</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The maximum number of iterations of Brent’s method (in function <ref refid="pw85_8hpp_1ac7a407eb0bf2bf015ec5bbd882f136b0" kindref="member">contact_function()</ref>). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="32" column="9" bodyfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="pw85_8hpp_1a3f67fcb214d3725a55e3670eb4a2084b" prot="public" static="no">
+        <name>PW85_NR_ITER</name>
+        <initializer>3</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The total number of iterations of the Newton–Raphson refinement phase (in function <ref refid="pw85_8hpp_1ac7a407eb0bf2bf015ec5bbd882f136b0" kindref="member">contact_function()</ref>). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="38" column="9" bodyfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="pw85_8hpp_1af83a0ad9d707a0bc5fe281b6e5c358a1" prot="public" static="no">
+        <name>DllExport</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="43" column="10" bodyfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cmath&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6" refid="pw85_8hpp_1a3b2d14ef79471c78b23a834a5cd68375" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PW85_DIM<sp/>3</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9" refid="pw85_8hpp_1a37687b34fc8d77310406214ab504b19a" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PW85_SYM<sp/>6</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/>*<sp/>For<sp/>the<sp/>Brent<sp/>algorithm,<sp/>these<sp/>two<sp/>constants<sp/>should<sp/>be<sp/>such<sp/>that</highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/>*<sp/>[(3<sp/>-<sp/>sqrt(5))<sp/>/<sp/>2]<sp/>**<sp/>n<sp/>&lt;<sp/>eps</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="16"><highlight class="comment"><sp/>*<sp/>where</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="18"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/><sp/>n<sp/>=<sp/>PW85_MAX_ITER</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"><sp/>*<sp/><sp/><sp/><sp/><sp/>eps<sp/>=<sp/>PW85_LAMBDA_ATOL</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26" refid="pw85_8hpp_1a542008d02554186f8d945dec09e0d608" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PW85_LAMBDA_ATOL<sp/>1e-6</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="pw85_8hpp_1ab930d919fc57493229a0add637c23e92" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PW85_MAX_ITER<sp/>25</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38" refid="pw85_8hpp_1a3f67fcb214d3725a55e3670eb4a2084b" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PW85_NR_ITER<sp/>3</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>_WIN32</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>DllExport<sp/>__declspec(dllexport)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>DllExport</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pw85<sp/>{</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="64" refid="pw85_8hpp_1ae06cb10f228d69912ee7dcc8c8b1e347" refkind="member"><highlight class="normal">DllExport<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="pw85_8hpp_1ae06cb10f228d69912ee7dcc8c8b1e347" kindref="member">_cholesky_decomp</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*a,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*l);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75" refid="pw85_8hpp_1ab01524112d90406ef490177609692bb4" refkind="member"><highlight class="normal">DllExport<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="pw85_8hpp_1ab01524112d90406ef490177609692bb4" kindref="member">_cholesky_solve</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*l,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*b,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*x);</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="87" refid="pw85_8hpp_1ad2ab1e3645c5a25bdefa13f811d7ac0a" refkind="member"><highlight class="normal">DllExport<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="pw85_8hpp_1ad2ab1e3645c5a25bdefa13f811d7ac0a" kindref="member">spheroid</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>a,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>c,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*n,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*q);</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight></codeline>
+<codeline lineno="130" refid="pw85_8hpp_1ac290983e8bb499a0d1f588a23f7e6cc3" refkind="member"><highlight class="normal">DllExport<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="pw85_8hpp_1ac290983e8bb499a0d1f588a23f7e6cc3" kindref="member">f_neg</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>lambda,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*params);</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"></highlight></codeline>
+<codeline lineno="148" refid="pw85_8hpp_1a432452deed4d9e1b24ed7990d16e3bc6" refkind="member"><highlight class="normal">DllExport<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="pw85_8hpp_1a432452deed4d9e1b24ed7990d16e3bc6" kindref="member">_residual</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>lambda,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*r12,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*q1,</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*q2,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*out);</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"></highlight></codeline>
+<codeline lineno="179" refid="pw85_8hpp_1ac7a407eb0bf2bf015ec5bbd882f136b0" refkind="member"><highlight class="normal">DllExport<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="pw85_8hpp_1ac7a407eb0bf2bf015ec5bbd882f136b0" kindref="member">contact_function</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*r12,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*q1,</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*q2,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>*out);</highlight></codeline>
+<codeline lineno="181"><highlight class="normal">}<sp/><sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>pw85</highlight></codeline>
+    </programlisting>
+    <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp"/>
+  </compounddef>
+</doxygen>
