@@ -14,8 +14,8 @@ Installing the C library
 
 The C library depends on
 
-1. The `GNU Scientific Library (GSL) <https://www.gnu.org/software/gsl/>`_ (for
-   the implementation of the Brent algorithm)
+1. The `Boost.Math <https://www.boost.org/doc/libs/1_75_0/libs/math/>`_ (for the
+   implementation of the Brent algorithm)
 2. The `HDF5 <https://portal.hdfgroup.org/>`_ (for testing purposes)
 3. The `Eigen <http://eigen.tuxfamily.org/index.php?title=Main_Page>`_ (for
    testing purposes)

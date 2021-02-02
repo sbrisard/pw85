@@ -20,8 +20,8 @@ if (MATH_LIBRARY)
   target_link_libraries(${PROJECT_NAME} ${MATH_LIBRARY})
 endif()
 
-find_package(GSL REQUIRED)
-target_link_libraries(${PROJECT_NAME} GSL::gsl)
+find_package(Boost REQUIRED)
+target_link_libraries(${PROJECT_NAME} Boost::headers)
 
 install(
   TARGETS ${PROJECT_NAME}

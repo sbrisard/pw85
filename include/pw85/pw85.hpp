@@ -2,10 +2,6 @@
 #pragma once
 #include <cmath>
 
-#include <gsl/gsl_errno.h>
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_min.h>
-
 /** The dimension of the physical space (3).*/
 #define PW85_DIM 3
 

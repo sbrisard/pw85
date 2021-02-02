@@ -1,4 +1,5 @@
 #include "pw85/pw85.hpp"
+#include <boost/math/tools/minima.hpp>
 
 namespace pw85 {
 void _cholesky_decomp(const double *a, double *l) {
@@ -61,12 +62,6 @@ double f_neg(double lambda, const double *params) {
   return -lambda * (1. - lambda) * rs;
 }
 
-double pw85__f_neg(double lambda, void *params) {
-  // TODO Remove this non-const version of f_neg.
-  // It is required by GSL
-  return f_neg(lambda, static_cast<double *>(params));
-}
-
 void _residual(double lambda, const double *r12, const double *q1,
                const double *q2, double *out) {
   double q[PW85_SYM];
@@ -99,27 +94,16 @@ int contact_function(const double *r12, const double *q1, const double *q2,
   double params[] = {r12[0], r12[1], r12[2], q1[0], q1[1], q1[2], q1[3], q1[4],
                      q1[5],  q2[0],  q2[1],  q2[2], q2[3], q2[4], q2[5]};
 
-  gsl_function f = {.function = pw85__f_neg, .params = params};
-  gsl_min_fminimizer *s = gsl_min_fminimizer_alloc(gsl_min_fminimizer_brent);
+  auto f = [params](double lambda) { return f_neg(lambda, params); };
 
-  gsl_min_fminimizer_set(s, &f, 0.5, 0., 1.);
-
-  for (size_t iter = 0; iter < PW85_MAX_ITER; iter++) {
-    gsl_min_fminimizer_iterate(s);
-    double const a = gsl_min_fminimizer_x_lower(s);
-    double const b = gsl_min_fminimizer_x_upper(s);
-
-    if (gsl_min_test_interval(a, b, PW85_LAMBDA_ATOL, 0.0) == GSL_SUCCESS)
-      break;
-  }
+  auto r = boost::math::tools::brent_find_minima(
+      f, 0., 1., std::numeric_limits<double>::digits / 2);
+  auto lambda_brent = r.first;
+  auto mu2_brent = -r.second;
 
   double out_res[3];
-  double mu2_brent = -gsl_min_fminimizer_f_minimum(s);
-  double lambda_brent = gsl_min_fminimizer_x_minimum(s);
   _residual(lambda_brent, r12, q1, q2, out_res);
   double res_brent = fabs(out_res[1]);
-
-  gsl_min_fminimizer_free(s);
 
   /* Try to refine the estimate. */
   double lambda_nr = lambda_brent;
