@@ -1,3 +1,4 @@
+#include <cstdio>
 #include "pw85/pw85_legacy.hpp"
 
 namespace pw85_legacy {
@@ -125,8 +126,8 @@ int contact_function1(const double *r12, const double *q1, const double *q2,
   double b = 1., f_prime_b;
   f1(b, r12, q1, q2, f);
   f_prime_b = f[1];
-  printf("--------------------\n");
-  printf("%g\t%g\n", f_prime_a, f_prime_b);
+  std::printf("--------------------\n");
+  std::printf("%g\t%g\n", f_prime_a, f_prime_b);
   /* Current estimate of the root f'(x) == 0. */
   double x = (a * f_prime_b - b * f_prime_a) / (f_prime_b - f_prime_a);
   for (int i = 0; i < 100; i++) {
@@ -138,7 +139,7 @@ int contact_function1(const double *r12, const double *q1, const double *q2,
       a = x;
       f_prime_a = f[1];
     }
-    printf("%d %g %g %g %g\n", i, x, f[0], f[1], f[2]);
+    std::printf("%d %g %g %g %g\n", i, x, f[0], f[1], f[2]);
     double x_new = x - f[2] / f[1];
     if ((x_new < a) || (x_new > b)) {
       x_new = (a * f_prime_b - b * f_prime_a) / (f_prime_b - f_prime_a);
