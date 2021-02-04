@@ -5,7 +5,6 @@ add_compile_definitions(PROJECT_AUTHOR_QUOTED=\"${METADATA_AUTHOR}\")
 
 add_library(
   ${PROJECT_NAME} SHARED
-        pw85.cpp
         pw85_legacy.cpp
   ../include/${PROJECT_NAME}/pw85.hpp
   ../include/${PROJECT_NAME}/pw85_legacy.hpp)
