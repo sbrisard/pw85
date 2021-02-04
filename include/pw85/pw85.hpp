@@ -79,7 +79,17 @@ void _cholesky_decomp(const double *a, double *l) {
  * vectors `x` and `b` are specified through their `double[3]` array of
  * coordinates; `x` is modified by this function.
  */
-DllExport void _cholesky_solve(const double *l, const double *b, double *x);
+void _cholesky_solve(const double *l, const double *b, double *x){
+  /* Solve L.y = b */
+  double const y0 = b[0] / l[0];
+  double const y1 = (b[1] - l[1] * y0) / l[3];
+  double const y2 = (b[2] - l[2] * y0 - l[4] * y1) / l[5];
+
+  /* Solve L^T.x = y */
+  x[2] = y2 / l[5];
+  x[1] = (y1 - l[4] * x[2]) / l[3];
+  x[0] = (y0 - l[1] * x[1] - l[2] * x[2]) / l[0];
+}
 
 /**
  * Compute the quadratic form associated to a spheroid.
