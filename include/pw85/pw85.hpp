@@ -156,7 +156,30 @@ void spheroid(double a, double c, const double *n, double *q) {
  * <implementation-cholesky>`@endverbatim. Its somewhat awkward signature is
  * defined in accordance with `gsl_min.h` from the GNU Scientific Library.
  */
-DllExport double f_neg(double lambda, const double *params);
+double f_neg(double lambda, const double *params) {
+  double const *r12 = params;
+  double const *q1_i = params + PW85_DIM;
+  double const *q2_i = q1_i + PW85_SYM;
+  double q[PW85_SYM];
+  double *q_i = q;
+  double q12[PW85_SYM];
+  double *q12_i = q12;
+  for (size_t i = 0; i < PW85_SYM; i++, q1_i++, q2_i++, q_i++, q12_i++) {
+    *q_i = (1 - lambda) * (*q1_i) + lambda * (*q2_i);
+    *q12_i = (*q2_i) - (*q1_i);
+  }
+  double l[PW85_SYM];
+  _cholesky_decomp(q, l);
+  double s[PW85_DIM];
+  _cholesky_solve(l, r12, s);
+  double const *r_i = r12;
+  double *s_i = s;
+  double rs = 0.;
+  for (size_t i = 0; i < PW85_DIM; i++, r_i++, s_i++) {
+    rs += (*r_i) * (*s_i);
+  }
+  return -lambda * (1. - lambda) * rs;
+}
 
 /**
  * Compute the residual \f$g(\lambda)=\mu_2^2-\mu_1^2\f$.
