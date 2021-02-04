@@ -79,7 +79,7 @@ void _cholesky_decomp(const double *a, double *l) {
  * vectors `x` and `b` are specified through their `double[3]` array of
  * coordinates; `x` is modified by this function.
  */
-void _cholesky_solve(const double *l, const double *b, double *x){
+void _cholesky_solve(const double *l, const double *b, double *x) {
   /* Solve L.y = b */
   double const y0 = b[0] / l[0];
   double const y1 = (b[1] - l[1] * y0) / l[3];
@@ -101,7 +101,19 @@ void _cholesky_solve(const double *l, const double *b, double *x){
  * `q` is the representation of a symmetric matrix as a `double[6]` array. It is
  * modified in-place.
  */
-DllExport void spheroid(double a, double c, const double *n, double *q);
+void spheroid(double a, double c, const double *n, double *q) {
+  double const a2 = a * a;
+  double const c2_minus_a2 = c * c - a2;
+  double const nx = n[0];
+  double const ny = n[1];
+  double const nz = n[2];
+  q[0] = nx * nx * c2_minus_a2 + a2;
+  q[3] = ny * ny * c2_minus_a2 + a2;
+  q[5] = nz * nz * c2_minus_a2 + a2;
+  q[4] = ny * nz * c2_minus_a2;
+  q[2] = nx * nz * c2_minus_a2;
+  q[1] = nx * ny * c2_minus_a2;
+}
 
 /**
  * Return the value of the opposite of the function ``f`` defined as (see
@@ -140,9 +152,9 @@ DllExport void spheroid(double a, double c, const double *n, double *q);
  * @f$−f@f$).
  *
  * This implementation uses
- * @verbatim embed:rst:inline:ref:`Cholesky decompositions <implementation-cholesky>`@endverbatim.
- * Its somewhat awkward signature is defined in accordance with `gsl_min.h` from
- * the GNU Scientific Library.
+ * @verbatim embed:rst:inline:ref:`Cholesky decompositions
+ * <implementation-cholesky>`@endverbatim. Its somewhat awkward signature is
+ * defined in accordance with `gsl_min.h` from the GNU Scientific Library.
  */
 DllExport double f_neg(double lambda, const double *params);
 

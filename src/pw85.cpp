@@ -3,19 +3,7 @@
 
 namespace pw85 {
 
-void spheroid(double a, double c, const double *n, double *q) {
-  double const a2 = a * a;
-  double const c2_minus_a2 = c * c - a2;
-  double const nx = n[0];
-  double const ny = n[1];
-  double const nz = n[2];
-  q[0] = nx * nx * c2_minus_a2 + a2;
-  q[3] = ny * ny * c2_minus_a2 + a2;
-  q[5] = nz * nz * c2_minus_a2 + a2;
-  q[4] = ny * nz * c2_minus_a2;
-  q[2] = nx * nz * c2_minus_a2;
-  q[1] = nx * ny * c2_minus_a2;
-}
+void spheroid(double a, double c, const double *n, double *q)
 
 double f_neg(double lambda, const double *params) {
   double const *r12 = params;
