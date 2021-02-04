@@ -3,6 +3,7 @@ add_executable(test_pw85
 
 target_include_directories(test_pw85 PUBLIC ../include)
 
+find_library(MATH_LIBRARY m)
 if (MATH_LIBRARY)
     target_link_libraries(test_pw85 ${MATH_LIBRARY})
 endif ()
