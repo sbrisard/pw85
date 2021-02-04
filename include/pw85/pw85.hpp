@@ -198,7 +198,31 @@ double f_neg(double lambda, const double *params) {
  * for the final Newton–Raphson refinement step.
  */
 DllExport void _residual(double lambda, const double *r12, const double *q1,
-                         const double *q2, double *out);
+                         const double *q2, double *out) {
+  double q[PW85_SYM];
+  double q12[PW85_SYM];
+  for (size_t i = 0; i < PW85_SYM; i++) {
+    q[i] = (1. - lambda) * q1[i] + lambda * q2[i];
+    q12[i] = q2[i] - q1[i];
+  }
+  double l[PW85_SYM];
+  _cholesky_decomp(q, l);
+  double s[PW85_DIM];
+  _cholesky_solve(l, r12, s);
+  double u[] = {q12[0] * s[0] + q12[1] * s[1] + q12[2] * s[2],
+                q12[1] * s[0] + q12[3] * s[1] + q12[4] * s[2],
+                q12[2] * s[0] + q12[4] * s[1] + q12[5] * s[2]};
+  double v[PW85_DIM];
+  _cholesky_solve(l, u, v);
+  double rs = r12[0] * s[0] + r12[1] * s[1] + r12[2] * s[2];
+  double su = s[0] * u[0] + s[1] * u[1] + s[2] * u[2];
+  double uv = u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
+
+  out[0] = lambda * (1. - lambda) * rs;
+  out[1] = (2 * lambda - 1.) * rs + lambda * (1. - lambda) * su;
+  out[2] =
+      2. * rs + 2. * (1. - 2. * lambda) * su - 2. * lambda * (1. - lambda) * uv;
+}
 
 /**
  * Compute the value of the contact function of two ellipsoids.
