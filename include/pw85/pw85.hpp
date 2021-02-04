@@ -61,7 +61,14 @@ namespace pw85 {
  *     ⎣ l[2] l[4] l[5] ⎦
  * ```
  */
-DllExport void _cholesky_decomp(const double *a, double *l);
+void _cholesky_decomp(const double *a, double *l) {
+  l[0] = sqrt(a[0]);
+  l[1] = a[1] / l[0];
+  l[2] = a[2] / l[0];
+  l[3] = sqrt(a[3] - l[1] * l[1]);
+  l[4] = (a[4] - l[1] * l[2]) / l[3];
+  l[5] = sqrt(a[5] - l[2] * l[2] - l[4] * l[4]);
+}
 
 /**
  * Compute the solution to a previously Cholesky decomposed linear system.
