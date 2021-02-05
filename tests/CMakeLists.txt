@@ -8,14 +8,16 @@ if (MATH_LIBRARY)
     target_link_libraries(test_pw85 ${MATH_LIBRARY})
 endif ()
 
-find_package(HDF5 COMPONENTS C HL REQUIRED)
+find_package(HDF5 COMPONENTS HL REQUIRED)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 target_link_libraries(test_pw85
         pw85
         Eigen3::Eigen
-        hdf5::hdf5
-        hdf5::hdf5_hl)
+        ${HDF5_LIBRARIES}
+        ${HDF5_HL_LIBRARIES})
+# hdf5::hdf5
+# hdf5::hdf5_hl)
 
 set(PW85_REF_DATA_FILENAME "pw85_ref_data.h5")
 set(PW85_REF_DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME})
