@@ -74,7 +74,7 @@ void test_pw85_init_context(hid_t const hid) {
 
     // TODO: this is ugly
     auto spheroids = test_pw85_read_dataset_double(hid, "/spheroids");
-    for (auto q = spheroids.cbegin(); q != spheroids.cend(); q += PW85_SYM) {
+    for (auto q = spheroids.cbegin(); q != spheroids.cend(); q += pw85::sym) {
       test_pw85_context.spheroids.push_back(
           {q[0], q[1], q[2], q[3], q[4], q[5]});
     }
@@ -312,11 +312,11 @@ void test_pw85_contact_function_test(Vec const r12, Sym const q1,
 
 void test_pw85_f_neg_test(double lambda, const Vec r12, const Sym q1,
                           const Sym q2, double exp, double rtol, double atol) {
-  double params[2 * PW85_SYM + pw85::dim];
+  double params[2 * pw85::sym + pw85::dim];
   // TODO: this is ugly
   memcpy(params, r12.data(), pw85::dim * sizeof(double));
-  memcpy(params + pw85::dim, q1.data(), PW85_SYM * sizeof(double));
-  memcpy(params + pw85::dim + PW85_SYM, q2.data(), PW85_SYM * sizeof(double));
+  memcpy(params + pw85::dim, q1.data(), pw85::sym * sizeof(double));
+  memcpy(params + pw85::dim + pw85::sym, q2.data(), pw85::sym * sizeof(double));
   double act = -pw85::f_neg(lambda, params);
   assert_cmp_double(exp, act, rtol, atol);
 }

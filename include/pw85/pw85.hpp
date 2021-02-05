@@ -3,9 +3,6 @@
 #include <boost/math/tools/minima.hpp>
 #include <cmath>
 
-/** The dimension of the space of symmetric matrices (6). */
-#define PW85_SYM 6
-
 /*
  * For the Brent algorithm, these two constants should be such that
  *
@@ -43,7 +40,10 @@
 
 namespace pw85 {
 /** The dimension of the physical space (3).*/
-constexpr int dim = 3;
+constexpr size_t dim = 3;
+
+/** The dimension of the space of symmetric matrices (6). */
+constexpr size_t sym = 6;
 
 /**
  * Compute the Cholesky decomposition of a symmetric, positive matrix.
@@ -159,16 +159,16 @@ void spheroid(double a, double c, const double *n, double *q) {
 double f_neg(double lambda, const double *params) {
   double const *r12 = params;
   double const *q1_i = params + dim;
-  double const *q2_i = q1_i + PW85_SYM;
-  double q[PW85_SYM];
+  double const *q2_i = q1_i + sym;
+  double q[sym];
   double *q_i = q;
-  double q12[PW85_SYM];
+  double q12[sym];
   double *q12_i = q12;
-  for (size_t i = 0; i < PW85_SYM; i++, q1_i++, q2_i++, q_i++, q12_i++) {
+  for (size_t i = 0; i < sym; i++, q1_i++, q2_i++, q_i++, q12_i++) {
     *q_i = (1 - lambda) * (*q1_i) + lambda * (*q2_i);
     *q12_i = (*q2_i) - (*q1_i);
   }
-  double l[PW85_SYM];
+  double l[sym];
   _cholesky_decomp(q, l);
   double s[dim];
   _cholesky_solve(l, r12, s);
@@ -199,13 +199,13 @@ double f_neg(double lambda, const double *params) {
  */
 void _residual(double lambda, const double *r12, const double *q1,
                const double *q2, double *out) {
-  double q[PW85_SYM];
-  double q12[PW85_SYM];
-  for (size_t i = 0; i < PW85_SYM; i++) {
+  double q[sym];
+  double q12[sym];
+  for (size_t i = 0; i < sym; i++) {
     q[i] = (1. - lambda) * q1[i] + lambda * q2[i];
     q12[i] = q2[i] - q1[i];
   }
-  double l[PW85_SYM];
+  double l[sym];
   _cholesky_decomp(q, l);
   double s[dim];
   _cholesky_solve(l, r12, s);
