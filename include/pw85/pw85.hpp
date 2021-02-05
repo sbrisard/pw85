@@ -3,29 +3,6 @@
 #include <boost/math/tools/minima.hpp>
 #include <cmath>
 
-/*
- * For the Brent algorithm, these two constants should be such that
- *
- * [(3 - sqrt(5)) / 2] ** n < eps
- *
- * where
- *
- *     n = PW85_MAX_ITER
- *     eps = PW85_LAMBDA_ATOL
- */
-
-/**
- * The absolute tolerance for the stopping criterion of Brent’s method (in
- * function contact_function()).
- */
-#define PW85_LAMBDA_ATOL 1e-6
-
-/**
- * The maximum number of iterations of Brent’s method (in function
- * contact_function()).
- */
-#define PW85_MAX_ITER 25
-
 /**
  * The total number of iterations of the Newton–Raphson refinement phase (in
  * function contact_function()).
@@ -44,6 +21,29 @@ constexpr size_t dim = 3;
 
 /** The dimension of the space of symmetric matrices (6). */
 constexpr size_t sym = 6;
+
+/*
+ * For the Brent algorithm, these two constants should be such that
+ *
+ * [(3 - sqrt(5)) / 2] ** n < eps
+ *
+ * where
+ *
+ *     n = max_iter
+ *     eps = lambda_atol
+ */
+
+/**
+ * The absolute tolerance for the stopping criterion of Brent’s method (in
+ * function contact_function()).
+ */
+constexpr double lambda_atol = 1e-6;
+
+/**
+ * The maximum number of iterations of Brent’s method (in function
+ * contact_function()).
+ */
+constexpr size_t max_iter = 25;
 
 /**
  * Compute the Cholesky decomposition of a symmetric, positive matrix.

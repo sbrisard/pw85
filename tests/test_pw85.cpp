@@ -307,7 +307,7 @@ void test_pw85_contact_function_test(Vec const r12, Sym const q1,
   double lambda2 = 1. - 2. * lambda;
   double f1 = lambda2 * rs - lambda * lambda1 * su;
   double f2 = -2. * rs - 2. * lambda2 * su + 2. * lambda * lambda1 * uv;
-  assert_cmp_double(0., f1, 0., PW85_LAMBDA_ATOL * fabs(f2));
+  assert_cmp_double(0., f1, 0., pw85::lambda_atol * fabs(f2));
 }
 
 void test_pw85_f_neg_test(double lambda, const Vec r12, const Sym q1,
