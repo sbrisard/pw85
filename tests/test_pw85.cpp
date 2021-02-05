@@ -119,8 +119,6 @@ void test_pw85_init_context(hid_t const hid) {
 /*   return directions; */
 /* } */
 
-#define TEST_PW85_NUM_DIRECTIONS 3
-
 std::vector<std::array<double, pw85::dim>> test_pw85_gen_directions() {
   double u = sqrt(2. / (5. + sqrt(5.)));
   double v = sqrt((3 + sqrt(5.)) / (5. + sqrt(5.)));
