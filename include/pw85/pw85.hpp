@@ -3,12 +3,6 @@
 #include <boost/math/tools/minima.hpp>
 #include <cmath>
 
-#if _WIN32
-#define DllExport __declspec(dllexport)
-#else
-#define DllExport
-#endif
-
 namespace pw85 {
 /** The dimension of the physical space (3).*/
 constexpr size_t dim = 3;
