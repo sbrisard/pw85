@@ -66,7 +66,7 @@ void test_pw85_init_context(hid_t const hid) {
   if (hid > 0) {
     // TODO: this is ugly
     auto directions = test_pw85_read_dataset_double(hid, "/directions");
-    for (auto n = directions.cbegin(); n != directions.cend(); n += PW85_DIM) {
+    for (auto n = directions.cbegin(); n != directions.cend(); n += pw85::dim) {
       test_pw85_context.directions.push_back({n[0], n[1], n[2]});
     }
 
@@ -92,7 +92,7 @@ void test_pw85_init_context(hid_t const hid) {
 /* #define TEST_PW85_NUM_DIRECTIONS 12 */
 
 /* double *test_pw85_gen_directions() { */
-/*   double *directions = g_new(double, TEST_PW85_NUM_DIRECTIONS *PW85_DIM); */
+/*   double *directions = g_new(double, TEST_PW85_NUM_DIRECTIONS * pw85::dim); */
 /*   double u_abs = sqrt(2. / (5. + sqrt(5.))); */
 /*   double v_abs = sqrt((3 + sqrt(5.)) / (5. + sqrt(5.))); */
 /*   double u_values[] = {-u_abs, u_abs}; */
@@ -105,15 +105,15 @@ void test_pw85_init_context(hid_t const hid) {
 /*       n[0] = 0.; */
 /*       n[1] = u; */
 /*       n[2] = v; */
-/*       n += PW85_DIM; */
+/*       n += pw85::dim; */
 /*       n[0] = v; */
 /*       n[1] = 0.; */
 /*       n[2] = u; */
-/*       n += PW85_DIM; */
+/*       n += pw85::dim; */
 /*       n[0] = u; */
 /*       n[1] = v; */
 /*       n[2] = 0.; */
-/*       n += PW85_DIM; */
+/*       n += pw85::dim; */
 /*     } */
 /*   } */
 /*   return directions; */
@@ -121,7 +121,7 @@ void test_pw85_init_context(hid_t const hid) {
 
 #define TEST_PW85_NUM_DIRECTIONS 3
 
-std::vector<std::array<double, PW85_DIM>> test_pw85_gen_directions() {
+std::vector<std::array<double, pw85::dim>> test_pw85_gen_directions() {
   double u = sqrt(2. / (5. + sqrt(5.)));
   double v = sqrt((3 + sqrt(5.)) / (5. + sqrt(5.)));
   return {{0., -u, -v}, {-v, 0., u}, {u, -v, 0.}};
@@ -197,7 +197,7 @@ void test_spheroid(double a, double c, Vec n) {
       delta_q[0] * abs_n[0] + delta_q[1] * abs_n[1] + delta_q[2] * abs_n[2],
       delta_q[1] * abs_n[0] + delta_q[3] * abs_n[1] + delta_q[4] * abs_n[2],
       delta_q[2] * abs_n[0] + delta_q[4] * abs_n[1] + delta_q[5] * abs_n[2]};
-  for (size_t i = 0; i < PW85_DIM; i++) {
+  for (size_t i = 0; i < pw85::dim; i++) {
     assert_cmp_double(c2 * n[i], qn[i], 0., delta_qn[i]);
   }
 
@@ -312,11 +312,11 @@ void test_pw85_contact_function_test(Vec const r12, Sym const q1,
 
 void test_pw85_f_neg_test(double lambda, const Vec r12, const Sym q1,
                           const Sym q2, double exp, double rtol, double atol) {
-  double params[2 * PW85_SYM + PW85_DIM];
+  double params[2 * PW85_SYM + pw85::dim];
   // TODO: this is ugly
-  memcpy(params, r12.data(), PW85_DIM * sizeof(double));
-  memcpy(params + PW85_DIM, q1.data(), PW85_SYM * sizeof(double));
-  memcpy(params + PW85_DIM + PW85_SYM, q2.data(), PW85_SYM * sizeof(double));
+  memcpy(params, r12.data(), pw85::dim * sizeof(double));
+  memcpy(params + pw85::dim, q1.data(), PW85_SYM * sizeof(double));
+  memcpy(params + pw85::dim + PW85_SYM, q2.data(), PW85_SYM * sizeof(double));
   double act = -pw85::f_neg(lambda, params);
   assert_cmp_double(exp, act, rtol, atol);
 }

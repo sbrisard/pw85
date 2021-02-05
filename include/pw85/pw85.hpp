@@ -1,10 +1,7 @@
 /** @file */
 #pragma once
-#include <cmath>
 #include <boost/math/tools/minima.hpp>
-
-/** The dimension of the physical space (3).*/
-#define PW85_DIM 3
+#include <cmath>
 
 /** The dimension of the space of symmetric matrices (6). */
 #define PW85_SYM 6
@@ -45,6 +42,8 @@
 #endif
 
 namespace pw85 {
+/** The dimension of the physical space (3).*/
+constexpr int dim = 3;
 
 /**
  * Compute the Cholesky decomposition of a symmetric, positive matrix.
@@ -159,7 +158,7 @@ void spheroid(double a, double c, const double *n, double *q) {
  */
 double f_neg(double lambda, const double *params) {
   double const *r12 = params;
-  double const *q1_i = params + PW85_DIM;
+  double const *q1_i = params + dim;
   double const *q2_i = q1_i + PW85_SYM;
   double q[PW85_SYM];
   double *q_i = q;
@@ -171,12 +170,12 @@ double f_neg(double lambda, const double *params) {
   }
   double l[PW85_SYM];
   _cholesky_decomp(q, l);
-  double s[PW85_DIM];
+  double s[dim];
   _cholesky_solve(l, r12, s);
   double const *r_i = r12;
   double *s_i = s;
   double rs = 0.;
-  for (size_t i = 0; i < PW85_DIM; i++, r_i++, s_i++) {
+  for (size_t i = 0; i < dim; i++, r_i++, s_i++) {
     rs += (*r_i) * (*s_i);
   }
   return -lambda * (1. - lambda) * rs;
@@ -208,12 +207,12 @@ void _residual(double lambda, const double *r12, const double *q1,
   }
   double l[PW85_SYM];
   _cholesky_decomp(q, l);
-  double s[PW85_DIM];
+  double s[dim];
   _cholesky_solve(l, r12, s);
   double u[] = {q12[0] * s[0] + q12[1] * s[1] + q12[2] * s[2],
                 q12[1] * s[0] + q12[3] * s[1] + q12[4] * s[2],
                 q12[2] * s[0] + q12[4] * s[1] + q12[5] * s[2]};
-  double v[PW85_DIM];
+  double v[dim];
   _cholesky_solve(l, u, v);
   double rs = r12[0] * s[0] + r12[1] * s[1] + r12[2] * s[2];
   double su = s[0] * u[0] + s[1] * u[1] + s[2] * u[2];
