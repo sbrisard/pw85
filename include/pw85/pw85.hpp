@@ -3,12 +3,6 @@
 #include <boost/math/tools/minima.hpp>
 #include <cmath>
 
-/**
- * The total number of iterations of the Newton–Raphson refinement phase (in
- * function contact_function()).
- */
-#define PW85_NR_ITER 3
-
 #if _WIN32
 #define DllExport __declspec(dllexport)
 #else
@@ -44,6 +38,12 @@ constexpr double lambda_atol = 1e-6;
  * contact_function()).
  */
 constexpr size_t max_iter = 25;
+
+/**
+ * The total number of iterations of the Newton–Raphson refinement phase (in
+ * function contact_function()).
+ */
+constexpr size_t nr_iter = 3;
 
 /**
  * Compute the Cholesky decomposition of a symmetric, positive matrix.
@@ -273,7 +273,7 @@ int contact_function(const double *r12, const double *q1, const double *q2,
   double mu2_nr = mu2_brent;
   double res_nr = res_brent;
 
-  for (size_t i = 0; i < PW85_NR_ITER; i++) {
+  for (size_t i = 0; i < nr_iter; i++) {
     double lambda_trial = lambda_nr - out_res[1] / out_res[2];
     if ((lambda_trial < 0.) || (lambda_trial > 1.)) {
       break;
