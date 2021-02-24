@@ -55,7 +55,7 @@ constexpr size_t nr_iter = 3;
  *     ⎣ l[2] l[4] l[5] ⎦
  * ```
  */
-void _cholesky_decomp(const double *a, double *l) {
+void _cholesky_decomp(double const *a, double *l) {
   l[0] = sqrt(a[0]);
   l[1] = a[1] / l[0];
   l[2] = a[2] / l[0];
