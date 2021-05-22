@@ -1,6 +1,7 @@
 *.exe
 *.h5
 *.o
+*.pyd
 *.egg-info
 __pycache__
 .ipynb_checkpoints
