@@ -2,8 +2,24 @@
 #pragma once
 #include <boost/math/tools/minima.hpp>
 #include <cmath>
+#include <string_view>
 
 namespace pw85 {
+
+namespace metadata {
+constexpr std::string_view author{"S. Brisard"};
+constexpr std::string_view description{
+    "Implementation of the \"contact function\" defined by Perram and Wertheim "
+    "(J. Comp. Phys. 58(3), 409-416, DOI:10.1016/0021-9991(85)90171-8) for two "
+    "ellipsoids."};
+constexpr std::string_view author_email{"sebastien.brisard@univ-eiffel.fr"};
+constexpr std::string_view license{"BSD 3-Clause License"};
+constexpr std::string_view name{"pw85"};
+constexpr std::string_view url{"https://github.com/sbrisard/pw85"};
+constexpr std::string_view version{"1.0"};
+constexpr std::string_view year{"2021"};
+}  // namespace metadata
+
 /** The dimension of the physical space (3).*/
 constexpr size_t dim = 3;
 
