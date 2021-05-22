@@ -1,57 +1,43 @@
-import os
 import pathlib
 
-from setuptools import setup
-from setuptools.command.build_py import build_py
+import pybind11
+import setuptools
 
-from string import Template
-
-def get_metadata(basename, dir_):
-    # For python versions < 3.6, open does not accept pathlib.Path
-    # objects; convert to strings
-    with open(str(dir_/(basename+'.txt')), mode='r', encoding='utf-8') as f:
-        return f.read().strip()
+from setuptools.command.build_ext import build_ext
 
 
-def substitute(path, **kwds):
-    with open(path, mode='r', encoding='utf-8') as infile, open(path+'.tmp', mode='w', encoding='utf-8') as outfile:
-        for line in infile.readlines():
-            outfile.write(Template(line).substitute(**kwds))
-    os.replace(path+'.tmp', path)
+class my_build_ext(build_ext):
+    def build_extensions(self):
+        extra_compile_args = {
+            "msvc": ["/std:c++17"],
+            "unix": ["-std=c++17"],
+        }
+
+        for extension in self.extensions:
+            extension.extra_compile_args += extra_compile_args[
+                self.compiler.compiler_type
+            ]
+        build_ext.build_extensions(self)
 
 
-class my_build_py(build_py):
-    def run(self):
-        super().run()
-        metadata = self.distribution.metadata
-        path = self.get_module_outfile(self.build_lib, ['pw85'], '__init__')
-        substitute(path,
-                   author=metadata.get_author(),
-                   version=metadata.get_version(),
-                   long_description=metadata.get_long_description())
+if __name__ == "__main__":
+    include_dirs = [
+        pybind11.get_include(),
+        pathlib.Path.cwd() / ".." / "include",
+        # TODO Path to boost should be a parameter
+       r"C:\Users\sbrisard\miniconda3\Library\include"
+    ]
 
+    pyfftwpp = setuptools.Extension(
+        "pypw85",
+        include_dirs=include_dirs,
+        sources=["pypw85.cpp"],
+        language="c++",
+    )
 
-if __name__ == '__main__':
-    name = 'pw85'
-    metadata_dir = pathlib.Path(__file__).parent/'..'/'metadata'
-    version = get_metadata('version', metadata_dir)
-    author = get_metadata('author', metadata_dir)
-    url = get_metadata('repository', metadata_dir)
-
-    path = pathlib.Path('../README.md')
-    with open(str(path), mode='r', encoding='utf-8') as f:
-        lines = f.readlines()
-        description = lines[2].strip()
-        long_description = ''.join(lines[2:])
-
-    setup(cmdclass={'build_py': my_build_py},
-          packages=[name],
-          name=name,
-          version=version,
-          author=author,
-          author_email='',
-          description=description,
-          long_description=long_description,
-          long_description_content_type='text/markdown',
-          url=url,
-          license='BSD-3',)
+    setuptools.setup(
+        long_description_content_type="text/markdown",
+        packages=setuptools.find_packages(),
+        ext_modules=[pyfftwpp],
+        cmdclass={"build_ext": my_build_ext},
+    )
