@@ -1,0 +1,8 @@
+"Compute the quadratic form associated to a spheroid.\n"
+"\n"
+"The spheroid is defined by its equatorial radius ``a``, its polar radius ``c``\n"
+"and the direction of its axis of revolution, ``n`` (unit-vector, ``double[3]``\n"
+"array).\n"
+"\n"
+"``q`` is the representation of a symmetric matrix as a ``double[6]`` array. It\n"
+"is modified in-place.\n"

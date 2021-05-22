@@ -32,4 +32,13 @@ PYBIND11_MODULE(pypw85, m) {
       },
 #include "docstrings/_cholesky_solve.txt"
       , pybind11::arg("l"), pybind11::arg("b"), pybind11::arg("x"));
+
+  m.def(
+      "spheroid",
+      [](double a, double c, DoubleArray n, DoubleArray q) {
+        pw85::spheroid(a, c, n.data(), q.mutable_data());
+      },
+#include "docstrings/spheroid.txt"
+      , pybind11::arg("a"), pybind11::arg("c"), pybind11::arg("n"),
+      pybind11::arg("q"));
 }
