@@ -151,12 +151,6 @@ std::vector<Sym> test_pw85_gen_spheroids(const std::vector<double> &radii,
   return spheroids;
 }
 
-void test_cholesky_decomp(Sym const a, Sym const exp, double const rtol) {
-  Sym act;
-  pw85::_cholesky_decomp(a.data(), act.data());
-  assert_cmp_doubles(exp.cbegin(), exp.cend(), act.cbegin(), rtol, 0.);
-}
-
 void test_cholesky_solve(Sym const l, Vec const b, Vec const exp, double rtol) {
   Vec act;
   pw85::_cholesky_solve(l.data(), b.data(), act.data());
@@ -323,14 +317,6 @@ int main() {
   hid_t const hid = H5Fopen(PW85_REF_DATA_PATH, H5F_ACC_RDONLY, H5P_DEFAULT);
   test_pw85_init_context(hid);
   H5Fclose(hid);
-
-  test_cholesky_decomp({4, 2, 6, 17, 23, 70}, {2, 1, 3, 4, 5, 6}, 1e-15);
-
-  test_cholesky_decomp({4, -2, 6, 17, -23, 70}, {2, -1, 3, 4, -5, 6}, 1e-15);
-
-  test_cholesky_decomp(
-      {1e10, -2, -3, 16 + 1. / 25e8, -0.02 + 3. / 5e9, 29. / 8e3 - 9e-10},
-      {1e5, -2e-5, -3e-5, 4, -5e-3, 6e-2}, 1e-6);
 
   test_cholesky_solve({1, 2, 3, 4, 5, 6}, {11.5, 82.6, 314.2}, {1.2, -3.4, 5.7},
                       1e-15);

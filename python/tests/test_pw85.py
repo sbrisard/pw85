@@ -1,11 +1,50 @@
 import numpy as np
 import pytest
 
-# import pw85
-#
-# from numpy.testing import assert_allclose, assert_equal
-#
-#
+import pypw85
+
+from numpy.testing import assert_allclose, assert_equal
+
+
+def empty_vec():
+    return np.empty((3,), dtype=np.float64)
+
+
+def empty_sym():
+    return np.empty((6,), dtype=np.float64)
+
+
+@pytest.mark.parametrize(
+    "a, exp, rtol",
+    [
+        (
+            np.array([4, 2, 6, 17, 23, 70], dtype=np.float64),
+            np.array([2, 1, 3, 4, 5, 6], dtype=np.float64),
+            1e-15,
+        ),
+        (
+            np.array([4, -2, 6, 17, -23, 70], dtype=np.float64),
+            np.array([2, -1, 3, 4, -5, 6], dtype=np.float64),
+            1e-15,
+        ),
+        (
+            np.array(
+                [1e10, -2, -3, 16 + 1.0 / 25e8, -0.02 + 3.0 / 5e9, 29.0 / 8e3 - 9e-10],
+                dtype=np.float64,
+            ),
+            np.array([1e5, -2e-5, -3e-5, 4, -5e-3, 6e-2], dtype=np.float64),
+            1e-6,
+        ),
+    ],
+)
+def test_cholesky_decomp(a, exp, rtol):
+    a = np.asarray(a)
+    exp = np.asarray(exp)
+    act = empty_sym()
+    pypw85._cholesky_decomp(a, act)
+    assert_allclose(act, exp, rtol=rtol, atol=0.0)
+
+
 # @pytest.mark.parametrize(
 #     "a, expected, rtol",
 #     [
