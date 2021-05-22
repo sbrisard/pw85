@@ -3,6 +3,8 @@
 
 #include <pw85/pw85.hpp>
 
+using DoubleArray = pybind11::array_t<double>;
+
 PYBIND11_MODULE(pypw85, m) {
   pybind11::dict metadata;
   metadata["author"] = pybind11::cast(pw85::metadata::author);
@@ -17,10 +19,17 @@ PYBIND11_MODULE(pypw85, m) {
 
   m.def(
       "_cholesky_decomp",
-      [](pybind11::array_t<double> a, pybind11::array_t<double> l) {
+      [](DoubleArray a, DoubleArray l) {
         pw85::_cholesky_decomp(a.data(), l.mutable_data());
       },
 #include "docstrings/_cholesky_decomp.txt"
-      ,
-      pybind11::arg("a"), pybind11::arg("l"));
+      , pybind11::arg("a"), pybind11::arg("l"));
+
+  m.def(
+      "_cholesky_solve",
+      [](DoubleArray l, DoubleArray b, DoubleArray x) {
+        pw85::_cholesky_solve(l.data(), b.data(), x.mutable_data());
+      },
+#include "docstrings/_cholesky_solve.txt"
+      , pybind11::arg("l"), pybind11::arg("b"), pybind11::arg("x"));
 }

@@ -151,12 +151,6 @@ std::vector<Sym> test_pw85_gen_spheroids(const std::vector<double> &radii,
   return spheroids;
 }
 
-void test_cholesky_solve(Sym const l, Vec const b, Vec const exp, double rtol) {
-  Vec act;
-  pw85::_cholesky_solve(l.data(), b.data(), act.data());
-  assert_cmp_doubles(exp.cbegin(), exp.cend(), act.cbegin(), rtol, 0.0);
-}
-
 void test_spheroid(double a, double c, Vec n) {
   /*
    * Relative and absolute tolerance on the coefficients of the matrix
@@ -318,11 +312,6 @@ int main() {
   test_pw85_init_context(hid);
   H5Fclose(hid);
 
-  test_cholesky_solve({1, 2, 3, 4, 5, 6}, {11.5, 82.6, 314.2}, {1.2, -3.4, 5.7},
-                      1e-15);
-
-  test_cholesky_solve({1, -2, -3, 4, -5, 6}, {-9.1, -150.2, 443},
-                      {1.2, -3.4, 5.7}, 4e-15);
 
   for (const auto a : test_pw85_context.radii) {
     for (const auto c : test_pw85_context.radii) {

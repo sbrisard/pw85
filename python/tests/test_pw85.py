@@ -18,30 +18,41 @@ def empty_sym():
     "a, exp, rtol",
     [
         (
-            np.array([4, 2, 6, 17, 23, 70], dtype=np.float64),
-            np.array([2, 1, 3, 4, 5, 6], dtype=np.float64),
+            [4.0, 2.0, 6.0, 17.0, 23.0, 70.0],
+            [2.0, 1.0, 3.0, 4.0, 5.0, 6.0],
             1e-15,
         ),
         (
-            np.array([4, -2, 6, 17, -23, 70], dtype=np.float64),
-            np.array([2, -1, 3, 4, -5, 6], dtype=np.float64),
+            [4.0, -2.0, 6.0, 17.0, -23.0, 70.0],
+            [2.0, -1.0, 3.0, 4.0, -5.0, 6.0],
             1e-15,
         ),
         (
-            np.array(
-                [1e10, -2, -3, 16 + 1.0 / 25e8, -0.02 + 3.0 / 5e9, 29.0 / 8e3 - 9e-10],
-                dtype=np.float64,
-            ),
-            np.array([1e5, -2e-5, -3e-5, 4, -5e-3, 6e-2], dtype=np.float64),
+            [1e10, -2, -3, 16 + 1.0 / 25e8, -0.02 + 3.0 / 5e9, 29.0 / 8e3 - 9e-10],
+            [1e5, -2e-5, -3e-5, 4, -5e-3, 6e-2],
             1e-6,
         ),
     ],
 )
 def test_cholesky_decomp(a, exp, rtol):
-    a = np.asarray(a)
-    exp = np.asarray(exp)
     act = empty_sym()
     pypw85._cholesky_decomp(a, act)
+    assert_allclose(act, exp, rtol=rtol, atol=0.0)
+
+
+@pytest.mark.parametrize(
+    "l, b, exp, rtol",
+    [
+        ([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], [11.5, 82.6, 314.2], [1.2, -3.4, 5.7], 1e-15),
+        ([1, -2, -3, 4, -5, 6], [-9.1, -150.2, 443], [1.2, -3.4, 5.7], 4e-15),
+    ],
+)
+def test_cholesky_solve(l, b, exp, rtol):
+    l = np.asarray(l)
+    b = np.asarray(b)
+    exp = np.asarray(exp)
+    act = empty_vec()
+    pypw85._cholesky_solve(l, b, act)
     assert_allclose(act, exp, rtol=rtol, atol=0.0)
 
 
