@@ -1,9 +1,25 @@
 import pathlib
+import re
 
 import pybind11
 import setuptools
 
 from setuptools.command.build_ext import build_ext
+
+
+def read_metadata():
+    metadata = {}
+    filename = pathlib.Path.cwd() / ".." / "include" / "pw85" / "pw85.hpp"
+    with open(filename, "r", encoding="utf8") as f:
+        lines = f.readlines()
+    prog = re.compile(
+        r"constexpr\s*std::string_view\s*([a-z]*)\s*\{\s*\"([^\"]*)\"\s*}\s*;"
+    )
+    for line in lines:
+        result = prog.match(line)
+        if result is not None:
+            metadata[result.group(1)] = result.group(2)
+    return metadata
 
 
 class my_build_ext(build_ext):
@@ -21,6 +37,9 @@ class my_build_ext(build_ext):
 
 
 if __name__ == "__main__":
+    metadata = read_metadata()
+    print(metadata)
+
     include_dirs = [
         pybind11.get_include(),
         pathlib.Path.cwd() / ".." / "include",
@@ -40,4 +59,5 @@ if __name__ == "__main__":
         packages=setuptools.find_packages(),
         ext_modules=[pyfftwpp],
         cmdclass={"build_ext": my_build_ext},
+        **metadata
     )
