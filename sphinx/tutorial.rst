@@ -58,19 +58,24 @@ where ``r₁₂`` is the vector that joins the center of the first ellipsoid,
 ``x₁``, to the center of the second ellipsoid, ``x₂``.
 
 We use the function :py:func:`pw85.spheroid` to create the matrix
-representations ``q₁`` and ``q₂`` of the two ellipsoids:
+representations ``q₁`` and ``q₂`` of the two ellipsoids. Note that these arrays
+must be *preallocated*:
 
->>> q1 = pw85.spheroid(a1, c1, n1)
+>>> q1 = np.empty((6,), dtype=np.float64)
+>>> pw85.spheroid(a1, c1, n1, q1)
 >>> q1
 array([ 1.e+02, -0.e+00, -0.e+00,  1.e+02, -0.e+00,  1.e-02])
->>> q2 = pw85.spheroid(a2, c2, n2)
+>>> q2 = np.empty_like(q1)
+>>> pw85.spheroid(a2, c2, n2, q2)
 >>> q2
 array([25.  ,  0.  ,  0.  ,  0.25,  0.  ,  0.25])
 
 We can now compute the value of the contact function — see the documentation of
 :py:func:`pw85.contact_function`:
 
->>> mu2, lambda_ = pw85.contact_function(r12, q1, q2)
+>>> out = np.empty((2,), dtype=np.float64)
+>>> pw85.contact_function(r12, q1, q2, out)
+>>> mu2, lambda_ = out
 >>> print('μ² = {}'.format(mu2))
 >>> print('λ = {}'.format(lambda_))
 μ² = 3.362706040638343
