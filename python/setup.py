@@ -43,8 +43,6 @@ if __name__ == "__main__":
     include_dirs = [
         pybind11.get_include(),
         pathlib.Path.cwd() / ".." / "include",
-        # TODO Path to boost should be a parameter
-       r"C:\Users\sbrisard\miniconda3\Library\include"
     ]
 
     pyfftwpp = setuptools.Extension(
