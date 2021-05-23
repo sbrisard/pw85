@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.13)
 
-project("tutorial")
+project("tutorial" LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 
+add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cpp)
 
 find_library(MATH_LIBRARY m)
 if (MATH_LIBRARY)
@@ -9,7 +11,6 @@ if (MATH_LIBRARY)
 endif()
 
 find_package(Boost REQUIRED)
-target_link_libraries(${PROJECT_NAME} INTERFACE Boost::headers)
+target_link_libraries(${PROJECT_NAME} PRIVATE Boost::headers)
 
-add_executable(${PROJECT_NAME} ${PROJECT_NAME}.c)
-target_link_libraries(${PROJECT_NAME} pw85)
+target_include_directories(${PROJECT_NAME} PRIVATE "../../include")

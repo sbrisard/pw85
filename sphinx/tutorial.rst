@@ -217,33 +217,33 @@ contact. QED
 Follow this link to
 :download:`download the above Python script<./py_tutorial/tutorial.py>`.
 
-.. _c-tutorial:
+.. sec20210523205251:
 
-C tutorial
-==========
+C++ tutorial
+============
 
-The Python interface to PW85 has been kept close to the undelying C API. The
-following C program (:download:`download source file
-<./c_tutorial/tutorial.c>`) defines the two ellipsoids, then computes ``μ²``
+The Python interface to PW85 has been kept close to the undelying C++ API. The
+following C++ program (:download:`download source file
+<./cpp_tutorial/tutorial.cpp>`) defines the two ellipsoids, then computes ``μ²``
 and ``λ``:
 
-.. literalinclude:: ./c_tutorial/tutorial.c
-   :language: c
+.. literalinclude:: ./cpp_tutorial/tutorial.cpp
+   :language: cpp
 
 A ``CMakeLists.txt`` file is provided for the compilation of the tutorial using
-the CMake_. You can reuse it in one of your own projects (:download:`download
-<./c_tutorial/CMakeLists.txt>`):
+CMake_. You can reuse it in one of your own projects (:download:`download
+<./cpp_tutorial/CMakeLists.txt>`):
 
-.. literalinclude:: ./c_tutorial/CMakeLists.txt
+.. literalinclude:: ./cpp_tutorial/CMakeLists.txt
    :language: cmake
 
 
-``cd`` into the ``c_tutorial`` subdirectory. The provided example program
+``cd`` into the ``cpp_tutorial`` subdirectory. The provided example program
 should be compiled and linked against pw85::
 
   $ mkdir build
   $ cd build
-  $ cmake -Dpw85_DIR=pw85_INSTALL_PREFIX/lib/cmake/pw85 ..
+  $ cmake ..
   $ cmake --build . --config Release
 
 An executable called ``tutorial`` should be present in the ``build/Release``
