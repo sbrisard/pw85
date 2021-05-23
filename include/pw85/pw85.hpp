@@ -8,10 +8,9 @@ namespace pw85 {
 
 namespace metadata {
 constexpr std::string_view author{"S. Brisard"};
-constexpr std::string_view description{
-    "Implementation of the \"contact function\" defined by Perram and Wertheim "
-    "(J. Comp. Phys. 58(3), 409-416, DOI:10.1016/0021-9991(85)90171-8) for two "
-    "ellipsoids."};
+// clang-format off
+constexpr std::string_view description{"Implementation of the \"contact function\" defined by Perram and Wertheim (J. Comp. Phys. 58(3), 409-416, DOI:10.1016/0021-9991(85)90171-8) for two ellipsoids."};
+// clang-format on
 constexpr std::string_view author_email{"sebastien.brisard@univ-eiffel.fr"};
 constexpr std::string_view license{"BSD 3-Clause License"};
 constexpr std::string_view name{"pw85"};
@@ -134,7 +133,7 @@ void spheroid(double a, double c, const double *n, double *q) {
  *
  * with
  *
- * @f[Q = \bigl(1-\lambda\bigr)Q_1 + \lambda Q₂,@f]
+ * @f[Q = \bigl(1-\lambda\bigr)Q_1 + \lambda Q_2,@f]
  *
  * where ellipsoids 1 and 2 are defined as the sets of points @f$m@f$
  * (column-vector) such that
@@ -142,18 +141,9 @@ void spheroid(double a, double c, const double *n, double *q) {
  * @f[\bigl(m-c_i\bigr)\cdot Q_i^{-1}\cdot\bigl(m-c_i\bigr)\leq1.@f]
  *
  * In the above inequality, @f$c_i@f$ is the center; @f$r_{12}=c_2-c_1@f$ is the
- * center-to-center radius-vector, represented by the first 3 coefficients of
- * the array `params`. The symmetric, positive-definite matrices @f$Q_1@f$ and
- * @f$Q_2@f$ are specified through the next 12 coefficients. In other words, if
- * @f$r_{12}@f$, @f$Q_1@f$ and @f$Q_2@f$ were defined as usual by their
- * `double[3]`, `double[6]` and `double[6]` arrays `r12`, `q1` and `q2`, then
- * `params` would be formed as follows
- *
- * ```
- * double params[] = {r12[0], r12[1], r12[2],
- *                    q1[0], q1[1], q1[2], q1[3], q1[4], q1[5],
- *                    q2[0], q2[1], q2[2], q2[3], q2[4], q2[5]};
- * ```
+ * center-to-center radius-vector, represented by the `double[3]` array `r12`.
+ * The symmetric, positive-definite matrices @f$Q_1@f$ and @f$Q_2@f$ are
+ * specified through the `double[6]` arrays `q1` and `q2`.
  *
  * The value of @f$\lambda@f$ is specified through the parameter ``lambda``.
  *
@@ -163,13 +153,12 @@ void spheroid(double a, double c, const double *n, double *q) {
  *
  * This implementation uses
  * @verbatim embed:rst:inline:ref:`Cholesky decompositions
- * <implementation-cholesky>`@endverbatim. Its somewhat awkward signature is
- * defined in accordance with `gsl_min.h` from the GNU Scientific Library.
+ * <implementation-cholesky>`@endverbatim.
  */
-double f_neg(double lambda, const double *params) {
-  double const *r12 = params;
-  double const *q1_i = params + dim;
-  double const *q2_i = q1_i + sym;
+double f_neg(double lambda, const double *r12, const double *q1,
+             const double *q2) {
+  double const *q1_i = q1;
+  double const *q2_i = q2;
   double q[sym];
   double *q_i = q;
   double q12[sym];
@@ -264,10 +253,7 @@ void _residual(double lambda, const double *r12, const double *q1,
  */
 int contact_function(const double *r12, const double *q1, const double *q2,
                      double *out) {
-  double params[] = {r12[0], r12[1], r12[2], q1[0], q1[1], q1[2], q1[3], q1[4],
-                     q1[5],  q2[0],  q2[1],  q2[2], q2[3], q2[4], q2[5]};
-
-  auto f = [params](double lambda) { return f_neg(lambda, params); };
+  auto f = [r12, q1, q2](double lambda) { return f_neg(lambda, r12, q1, q2); };
 
   auto r = boost::math::tools::brent_find_minima(
       f, 0., 1., std::numeric_limits<double>::digits / 2);

@@ -151,8 +151,6 @@ std::vector<Sym> test_pw85_gen_spheroids(const std::vector<double> &radii,
   return spheroids;
 }
 
-void test_spheroid(double a, double c, Vec n) {
-
 void test_pw85_contact_function_test(Vec const r12, Sym const q1,
                                      Sym const q2) {
   double atol = 1e-15;
@@ -240,15 +238,6 @@ int main() {
   hid_t const hid = H5Fopen(PW85_REF_DATA_PATH, H5F_ACC_RDONLY, H5P_DEFAULT);
   test_pw85_init_context(hid);
   H5Fclose(hid);
-
-
-  for (const auto a : test_pw85_context.radii) {
-    for (const auto c : test_pw85_context.radii) {
-      for (const auto n : test_pw85_context.directions) {
-        test_spheroid(a, c, n);
-      }
-    }
-  }
 
   auto exp = test_pw85_context.f.cbegin();
   for (const auto q1 : test_pw85_context.spheroids) {

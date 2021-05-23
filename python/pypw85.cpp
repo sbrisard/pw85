@@ -41,4 +41,13 @@ PYBIND11_MODULE(pypw85, m) {
 #include "docstrings/spheroid.txt"
       , pybind11::arg("a"), pybind11::arg("c"), pybind11::arg("n"),
       pybind11::arg("q"));
+
+  m.def(
+      "f_neg",
+      [](double lambda, DoubleArray r12, DoubleArray q1, DoubleArray q2) {
+        return pw85::f_neg(lambda, r12.data(), q1.data(), q2.data());
+      },
+#include "docstrings/f_neg.txt"
+      , pybind11::arg("lambda"), pybind11::arg("r12"), pybind11::arg("q1"),
+      pybind11::arg("q2"));
 }

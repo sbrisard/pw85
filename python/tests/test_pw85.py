@@ -9,9 +9,13 @@ import pypw85
 from numpy.testing import assert_allclose, assert_equal
 
 # Initialization
+REF_DATA = {}
 with h5py.File(str(pathlib.Path.cwd() / ".." / "data" / "pw85_ref_data.h5")) as f:
-    radii = np.asarray(f["radii"])
-    directions = np.asarray(f["directions"])
+    REF_DATA["radii"] = np.asarray(f["radii"])
+    REF_DATA["directions"] = np.asarray(f["directions"])
+    REF_DATA["spheroids"] = np.asarray(f["spheroids"])
+    REF_DATA["lambdas"] = np.asarray(f["lambdas"])
+    REF_DATA["F"] = np.asarray(f["F"])
 
 
 def empty_vec():
@@ -64,9 +68,9 @@ def test_cholesky_solve(l, b, exp, rtol):
     assert_allclose(act, exp, rtol=rtol, atol=0.0)
 
 
-@pytest.mark.parametrize("a", radii)
-@pytest.mark.parametrize("c", radii)
-@pytest.mark.parametrize("n", directions)
+@pytest.mark.parametrize("a", REF_DATA["radii"])
+@pytest.mark.parametrize("c", REF_DATA["radii"])
+@pytest.mark.parametrize("n", REF_DATA["directions"])
 def test_spheroid(a, c, n):
     # Relative and absolute tolerance on the coefficients of the matrix
     # q to be computed and tested.
@@ -161,76 +165,12 @@ def test_spheroid(a, c, n):
     assert np.abs(act - exp) <= tol
 
 
-# @pytest.mark.parametrize(
-#     "lambda_, r12, q1, q2, expected, rtol",
-#     [
-#         (
-#             0.1234,
-#             np.array([1, -2, 3], dtype=np.float64),
-#             np.array(
-#                 [
-#                     9.9800100000000000e001,
-#                     0.0000000000000000e000,
-#                     0.0000000000000000e000,
-#                     7.2503590263748606e001,
-#                     -4.4166680527497185e001,
-#                     2.8336909736251414e001,
-#                 ]
-#             ),
-#             np.array(
-#                 [
-#                     7.5286760167683042e001,
-#                     -0.0000000000000000e000,
-#                     -4.6523719335366117e001,
-#                     9.8010000000000007e-003,
-#                     0.0000000000000000e000,
-#                     2.8763040832316932e001,
-#                 ]
-#             ),
-#             9.0045499998758230e-002,
-#             1e-15,
-#         )
-#     ],
-# )
-# def test_f(lambda_, r12, q1, q2, expected, rtol, atol=1e-15):
-#     actual = pw85.f(lambda_, r12, q1, q2)
-#     assert np.abs(actual - expected) <= rtol * np.abs(expected) + atol
-#
-#
-# @pytest.mark.parametrize(
-#     "r12, q1, q2, expected, rtol",
-#     [
-#         (
-#             np.array([1, -2, 3], dtype=np.float64),
-#             np.array(
-#                 [
-#                     9.9800100000000000e001,
-#                     0.0000000000000000e000,
-#                     0.0000000000000000e000,
-#                     7.2503590263748606e001,
-#                     -4.4166680527497185e001,
-#                     2.8336909736251414e001,
-#                 ]
-#             ),
-#             np.array(
-#                 [
-#                     7.5286760167683042e001,
-#                     -0.0000000000000000e000,
-#                     -4.6523719335366117e001,
-#                     9.8010000000000007e-003,
-#                     0.0000000000000000e000,
-#                     2.8763040832316932e001,
-#                 ]
-#             ),
-#             np.array([1.9630383437733556e-001, 9.7798461290800798e-001]),
-#             1e-15,
-#         )
-#     ],
-# )
-# @pytest.mark.parametrize("in_place", [False, True])
-# def test_contact_function(r12, q1, q2, in_place, expected, rtol, atol=1e-15):
-#     out = np.empty((2,), dtype=np.float64) if in_place else None
-#     actual = np.array(pw85.contact_function(r12, q1, q2, out))
-#     assert_allclose(actual, expected, rtol=rtol, atol=atol)
-#     if in_place:
-#         assert_equal(out, actual)
+def test_f_neg():
+    rtol = 1e-10
+    for i1, q1 in enumerate(REF_DATA["spheroids"]):
+        for i2, q2 in enumerate(REF_DATA["spheroids"]):
+            for j, n in enumerate(REF_DATA["directions"]):
+                for k, lambda_ in enumerate(REF_DATA["lambdas"]):
+                    exp = REF_DATA["F"][i1, i2, j, k]
+                    act = -pypw85.f_neg(lambda_, n, q1, q2)
+                    assert np.abs(act - exp) <= rtol * np.abs(exp)
