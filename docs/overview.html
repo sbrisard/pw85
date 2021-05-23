@@ -4,38 +4,48 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Overview &#8212; Documentation of the pw85 library</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinxdoc.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Installation" href="installation.html" />
-    <link rel="prev" title="Documentation of the pw85 library" href="index.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="prev" title="Documentation of the pw85 library" href="index.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Documentation of the pw85 library"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation of the pw85 library</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Overview</a></li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
-  <div class="section" id="overview">
+  <section id="overview">
 <span id="id1"></span><h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="introduction">
+<section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>It is quite common in materials science to reason on assemblies of ellipsoids as
 model materials. Although simplified upscaling mean-field/effective-field
@@ -60,8 +70,8 @@ of the contact function. Then, we discuss two essential features of this
 function: robustness with respect to floating-point errors and suitability for
 application to Monte-Carlo simulations. Finally, we give a brief description of
 the <code class="docutils literal notranslate"><span class="pre">pw85</span></code> library.</p>
-</div>
-<div class="section" id="the-contact-function-of-perram-and-wertheim-pw85">
+</section>
+<section id="the-contact-function-of-perram-and-wertheim-pw85">
 <h2>The contact function of Perram and Wertheim <a class="reference internal" href="#pw85" id="id8"><span>[PW85]</span></a><a class="headerlink" href="#the-contact-function-of-perram-and-wertheim-pw85" title="Permalink to this headline">¶</a></h2>
 <p>The origin being fixed, points are represented by the <code class="docutils literal notranslate"><span class="pre">3×1</span></code> column-vector of
 their coordinates in a global cartesian frame. For <code class="docutils literal notranslate"><span class="pre">i = 1,</span> <span class="pre">2</span></code>, <code class="docutils literal notranslate"><span class="pre">Eᵢ ⊂ ℝ³</span></code>
@@ -92,10 +102,10 @@ an overlap test could be defined as follows</p>
 </ul>
 <p>Despite its apparent complexity, this overlap test has two nice features that
 are discussed below.</p>
-</div>
-<div class="section" id="features-of-the-overlap-test">
+</section>
+<section id="features-of-the-overlap-test">
 <h2>Features of the overlap test<a class="headerlink" href="#features-of-the-overlap-test" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="robustness-with-respect-to-floating-point-errors">
+<section id="robustness-with-respect-to-floating-point-errors">
 <h3>Robustness with respect to floating-point errors<a class="headerlink" href="#robustness-with-respect-to-floating-point-errors" title="Permalink to this headline">¶</a></h3>
 <p>All overlap tests amount to checking for the sign of a real quantity <code class="docutils literal notranslate"><span class="pre">Φ(E₁,</span>
 <span class="pre">E₂)</span></code> that depends on the two ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code>. The ellipsoids do
@@ -116,8 +126,8 @@ criterion will be deemed robust if it is such that <code class="docutils literal
 nearly tangent ellipsoids only. This is obviously true of the overlap test based
 on the contact function of Perram and Wertheim. Note that some of the overlap
 tests that can be found in the literature do not exhibit such robustness.</p>
-</div>
-<div class="section" id="application-to-monte-carlo-simulations">
+</section>
+<section id="application-to-monte-carlo-simulations">
 <h3>Application to Monte-Carlo simulations<a class="headerlink" href="#application-to-monte-carlo-simulations" title="Permalink to this headline">¶</a></h3>
 <p>Generating compact assemblies of hard particles is a notoriously difficult
 task. Event-driven simulations <a class="reference internal" href="#dts05" id="id9"><span>[DTS05]</span></a>; <a class="reference internal" href="#dts05a" id="id10"><span>[DTS05a]</span></a> are often used, but require a
@@ -140,34 +150,33 @@ possible choice for <code class="docutils literal notranslate"><span class="pre"
 <p>Monte-Carlo simulations using previous implementations of the contact function
 of Perram and Wertheim and the above definition of the energy of the system were
 successfully used to produce extremely compact assemblies of ellipsoids <a class="reference internal" href="#bl13" id="id12"><span>[BL13]</span></a>.</p>
-</div>
-</div>
-<div class="section" id="implementation">
+</section>
+</section>
+<section id="implementation">
 <h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">pw85</span></code> is a C library that implements the contact function of Perram and
 Wertheim. It is released under a BSD-3 license, and is available at
 <a class="reference external" href="https://github.com/sbrisard/pw85">https://github.com/sbrisard/pw85</a>. It is fully documented at
 <a class="reference external" href="https://sbrisard.github.io/pw85">https://sbrisard.github.io/pw85</a>.</p>
-<p>The core library depends on The <a class="reference external" href="https://www.gnu.org/software/gsl/">GNU Scientific Library (GSL)</a> (for its implementation of the Brent
-algorithm); the tests also depend on the <a class="reference external" href="https://developer.gnome.org/glib/">GLib</a> and <a class="reference external" href="https://portal.hdfgroup.org/">HDF5</a>
-libraries.</p>
+<p>The core library depends on The <a class="reference external" href="https://www.boost.org/doc/libs/1_76_0/libs/math/doc/html/math_toolkit/brent_minima.html">boost::mathGNU</a>
+(for its implementation of the Brent algorithm).</p>
 <p>The API is extremely simple; in particular it defines no custom objects:
 parameters of all functions are either simple types (<code class="docutils literal notranslate"><span class="pre">size_t</span></code>, <code class="docutils literal notranslate"><span class="pre">double</span></code>) or
 arrays. Note that all arrays must be pre-allocated and are modified
 in-place. This minimizes the risk of creating memory leaks when implementing
 wrappers for higher-level (garbage-collected) languages.</p>
-<p>A Python wrapper (based on <code class="docutils literal notranslate"><span class="pre">ctypes</span></code>) is also provided. It has the following
-(fairly standard) dependencies: <a class="reference external" href="https://numpy.org/">NumPy</a>, <a class="reference external" href="https://pytest.org/">pytest</a> and <a class="reference external" href="https://www.h5py.org/">h5py</a>.</p>
+<p>A Python wrapper (based on <a class="reference external" href="https://pybind11.readthedocs.io/en/stable/">pybind11</a>) is also provided. It
+has the following (fairly standard) dependencies: <a class="reference external" href="https://numpy.org/">NumPy</a>, <a class="reference external" href="https://pytest.org/">pytest</a> and <a class="reference external" href="https://www.h5py.org/">h5py</a>.</p>
 <p>Note that when developing the library, several strategies have been tested for
-the evaluation of the function $f$ defined above, and its
-optimization. Evaluation of $f$ relies on a Cholesky decomposition of
-$mathsf{Q}$; we tested the accuracy of this implementation over a comprehensive
-set of large-precision reference values that are available on Zenodo
-(<a class="reference external" href="https://doi.org/10.5281/zenodo.3323683">https://doi.org/10.5281/zenodo.3323683</a>). Optimization of $f$ first starts with
-a few iterations of Brent’s robust algorithm. Then, the estimate of the
+the evaluation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> defined above, and its
+optimization. Evaluation of <code class="docutils literal notranslate"><span class="pre">f</span></code> relies on a Cholesky decomposition of <code class="docutils literal notranslate"><span class="pre">Q</span></code>;
+we tested the accuracy of this implementation over a comprehensive set of
+large-precision reference values that are available on Zenodo
+(<a class="reference external" href="https://doi.org/10.5281/zenodo.3323683">https://doi.org/10.5281/zenodo.3323683</a>). Optimization of <code class="docutils literal notranslate"><span class="pre">f</span></code> first starts
+with a few iterations of Brent’s robust algorithm. Then, the estimate of the
 minimizer is refined through a few Newton–Raphson iterations.</p>
-</div>
-<div class="section" id="extensions">
+</section>
+<section id="extensions">
 <h2>Extensions<a class="headerlink" href="#extensions" title="Permalink to this headline">¶</a></h2>
 <p>Several improvements/extensions are planned for this library:</p>
 <ol class="arabic simple">
@@ -185,11 +194,11 @@ has the required convexity over <code class="docutils literal notranslate"><span
 points:</p>
 <ol class="arabic simple">
 <li><p>Define a “Code of conduct”.</p></li>
-<li><p>Improve the Python wrapper (using Cython or a C extension).</p></li>
-<li><p>Implement wrappers for other languages (Julia, Javascript).</p></li>
+<li><p>Improve the Python wrapper (see Issue XXX).</p></li>
+<li><p>…</p></li>
 </ol>
-</div>
-<div class="section" id="acknowledgements">
+</section>
+<section id="acknowledgements">
 <h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h2>
 <p>The author would like to thank Prof. Chloé Arson (GeorgiaTech Institute of
 Technology, School of Civil and Environmental Engineering) for stimulating
@@ -250,56 +259,46 @@ the separation of two ellipsoids. Computer Aided Geometric Design,
 18(6), 531–539. <a class="reference external" href="https://doi.org/10.1016/S0167-8396(01)00049-8">https://doi.org/10.1016/S0167-8396(01)00049-8</a></p>
 </dd>
 </dl>
-</div>
-</div>
+</section>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">pw85</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#the-contact-function-of-perram-and-wertheim-pw85">The contact function of Perram and Wertheim <span>[PW85]</span></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#features-of-the-overlap-test">Features of the overlap test</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#extensions">Extensions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Overview</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#the-contact-function-of-perram-and-wertheim-pw85">The contact function of Perram and Wertheim <span>[PW85]</span></a></li>
+<li><a class="reference internal" href="#features-of-the-overlap-test">Features of the overlap test</a><ul>
+<li><a class="reference internal" href="#robustness-with-respect-to-floating-point-errors">Robustness with respect to floating-point errors</a></li>
+<li><a class="reference internal" href="#application-to-monte-carlo-simulations">Application to Monte-Carlo simulations</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="optimization.html">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing the implementation of the contact function</a></li>
-<li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a></li>
+<li><a class="reference internal" href="#implementation">Implementation</a></li>
+<li><a class="reference internal" href="#extensions">Extensions</a></li>
+<li><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
+</ul>
+</li>
 </ul>
 
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Documentation of the <code class="docutils literal notranslate"><span class="pre">pw85</span></code> library</a></li>
-      <li>Next: <a href="installation.html" title="next chapter">Installation</a></li>
-  </ul></li>
-</ul>
-</div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Documentation of the <code class="docutils literal notranslate"><span class="pre">pw85</span></code> library</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="next chapter">Installation</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/overview.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
@@ -310,32 +309,32 @@ the separation of two ellipsoids. Computer Aided Geometric Design,
     </div>
 </div>
 <script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018–2021, Sébastien Brisard.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/overview.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Documentation of the pw85 library"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation of the pw85 library</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Overview</a></li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, S. Brisard.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.2.
+    </div>
   </body>
 </html>

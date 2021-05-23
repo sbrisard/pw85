@@ -4,93 +4,149 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>The python API &#8212; Documentation of the pw85 library</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinxdoc.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="The C API" href="c_api.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="prev" title="The C++ API" href="cpp_api.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cpp_api.html" title="The C++ API"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation of the pw85 library</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">The python API</a></li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
-  <div class="section" id="the-python-api">
+  <section id="the-python-api">
 <h1>The python API<a class="headerlink" href="#the-python-api" title="Permalink to this headline">¶</a></h1>
-<div class="contents local topic" id="contents">
-<p class="topic-title">Contents</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#the-new-api" id="id1">The new API</a></p></li>
-<li><p><a class="reference internal" href="#the-legacy-api" id="id2">The “legacy” API</a></p></li>
-</ul>
+<span class="target" id="module-pypw85"></span><dl class="py function">
+<dt class="sig sig-object py" id="pypw85._cholesky_decomp">
+<span class="sig-prename descclassname"><span class="pre">pypw85.</span></span><span class="sig-name descname"><span class="pre">_cholesky_decomp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pypw85._cholesky_decomp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Cholesky decomposition of a symmetric, positive matrix.</p>
+<p>Let <code class="docutils literal notranslate"><span class="pre">A</span></code> be a symmetric, positive matrix, defined by the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array
+<code class="docutils literal notranslate"><span class="pre">a</span></code>. This function computes the lower-triangular matrix <code class="docutils literal notranslate"><span class="pre">L</span></code>, defined by
+the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array <code class="docutils literal notranslate"><span class="pre">l</span></code>, such that <code class="docutils literal notranslate"><span class="pre">Lᵀ⋅L</span> <span class="pre">=</span> <span class="pre">A</span></code>.</p>
+<p>The array <code class="docutils literal notranslate"><span class="pre">l</span></code> must be pre-allocated; it is modified by this function. Note
+that storage of the coefficients of <code class="docutils literal notranslate"><span class="pre">L</span></code> is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    ⎡ l[0]    0    0 ⎤
+L = ⎢ l[1] l[3]    0 ⎥.
+    ⎣ l[2] l[4] l[5] ⎦
+</pre></div>
 </div>
-<div class="section" id="the-new-api">
-<h2><a class="toc-backref" href="#id1">The new API</a><a class="headerlink" href="#the-new-api" title="Permalink to this headline">¶</a></h2>
+<p>This function is exposed for testing purposes only.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pypw85._cholesky_solve">
+<span class="sig-prename descclassname"><span class="pre">pypw85.</span></span><span class="sig-name descname"><span class="pre">_cholesky_solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pypw85._cholesky_solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the solution to a previously Cholesky decomposed linear system.</p>
+<p>Let <code class="docutils literal notranslate"><span class="pre">L</span></code> be a lower-triangular matrix, defined by the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array <code class="docutils literal notranslate"><span class="pre">l</span></code>
+(see <a class="reference internal" href="#pypw85._cholesky_decomp" title="pypw85._cholesky_decomp"><code class="xref py py-func docutils literal notranslate"><span class="pre">_cholesky_decomp()</span></code></a> for ordering of the coefficients). This
+function solves (by substitution) the linear system <code class="docutils literal notranslate"><span class="pre">Lᵀ⋅L⋅x</span> <span class="pre">=</span> <span class="pre">b</span></code>, where the
+vectors <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> are specified through their <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array of
+coordinates; <code class="docutils literal notranslate"><span class="pre">x</span></code> is modified by this function.</p>
+<p>This function is exposed for testing purposes only.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pypw85.contact_function">
+<span class="sig-prename descclassname"><span class="pre">pypw85.</span></span><span class="sig-name descname"><span class="pre">contact_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r12</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q1</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q2</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">int</span><a class="headerlink" href="#pypw85.contact_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the value of the contact function of two ellipsoids.</p>
+<p>See <a class="reference internal" href="#pypw85.f_neg" title="pypw85.f_neg"><code class="xref py py-func docutils literal notranslate"><span class="pre">f_neg()</span></code></a> for the meaning of the parameters <cite>r12</cite>, <cite>q1</cite> and <cite>q2</cite>.</p>
+<p>This function computes the value of <code class="docutils literal notranslate"><span class="pre">μ²</span></code>, defined as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>μ² = max{λ(1-λ)r₁₂ᵀ⋅[(1-λ)Q₁ + λQ₂]⁻¹⋅r₁₂, 0 ≤ λ ≤ 1}
+</pre></div>
 </div>
-<div class="section" id="the-legacy-api">
-<h2><a class="toc-backref" href="#id2">The “legacy” API</a><a class="headerlink" href="#the-legacy-api" title="Permalink to this headline">¶</a></h2>
+<p>and the maximizer <code class="docutils literal notranslate"><span class="pre">λ</span></code>, see <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>. Both values are stored in the
+preallocated <code class="docutils literal notranslate"><span class="pre">double[2]</span></code> array <code class="docutils literal notranslate"><span class="pre">out</span></code>: <code class="docutils literal notranslate"><span class="pre">out[0]</span> <span class="pre">=</span> <span class="pre">μ²</span></code> and <code class="docutils literal notranslate"><span class="pre">out[1]</span> <span class="pre">=</span> <span class="pre">λ</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">μ</span></code> is the common factor by which the two ellipsoids must be scaled (their
+centers being fixed) in order to be tangentially in contact.</p>
+<p>This function returns <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>This function should return an error code.</p>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pypw85.f_neg">
+<span class="sig-prename descclassname"><span class="pre">pypw85.</span></span><span class="sig-name descname"><span class="pre">f_neg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">lambda:</span> <span class="pre">float,</span> <span class="pre">r12:</span> <span class="pre">numpy.ndarray[numpy.float64],</span> <span class="pre">q1:</span> <span class="pre">numpy.ndarray[numpy.float64],</span> <span class="pre">q2:</span> <span class="pre">numpy.ndarray[numpy.float64]</span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">float</span><a class="headerlink" href="#pypw85.f_neg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the opposite of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> defined as (see
+<a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>f(λ) = λ(1-λ)r₁₂ᵀ⋅Q⁻¹⋅r₁₂,
+</pre></div>
 </div>
+<p>with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Q = (1-λ)Q₁ + λQ₂,
+</pre></div>
+</div>
+<p>where ellipsoids 1 and 2 are defined as the sets of points <code class="docutils literal notranslate"><span class="pre">m</span></code> (column-vector)
+such that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(m-cᵢ)ᵀ⋅Qᵢ⁻¹⋅(m-cᵢ) ≤ 1.
+</pre></div>
+</div>
+<p>In the above inequality, <code class="docutils literal notranslate"><span class="pre">cᵢ</span></code> is the center; <code class="docutils literal notranslate"><span class="pre">r₁₂</span> <span class="pre">=</span> <span class="pre">c₂</span> <span class="pre">-</span> <span class="pre">c₁</span></code> is the
+center-to-center radius-vector, represented by the <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <code class="docutils literal notranslate"><span class="pre">r12</span></code>.
+The symmetric, positive-definite matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are specified
+through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> arrays <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code>.</p>
+<p>The value of <code class="docutils literal notranslate"><span class="pre">λ</span></code> is specified through the parameter <code class="docutils literal notranslate"><span class="pre">lambda</span></code>.</p>
+<p>This function returns the value of <code class="docutils literal notranslate"><span class="pre">-f(λ)</span></code> (the “minus” sign comes from the
+fact that we seek the maximum of <code class="docutils literal notranslate"><span class="pre">f</span></code>, or the minimum of <code class="docutils literal notranslate"><span class="pre">(-f)</span></code>.</p>
+<p>This implementation uses <a class="reference internal" href="implementation.html#implementation-cholesky"><span class="std std-ref">Cholesky decompositions</span></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pypw85.spheroid">
+<span class="sig-prename descclassname"><span class="pre">pypw85.</span></span><span class="sig-name descname"><span class="pre">spheroid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#pypw85.spheroid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the quadratic form associated to a spheroid.</p>
+<p>The spheroid is defined by its equatorial radius <code class="docutils literal notranslate"><span class="pre">a</span></code>, its polar radius <code class="docutils literal notranslate"><span class="pre">c</span></code>
+and the direction of its axis of revolution, <code class="docutils literal notranslate"><span class="pre">n</span></code> (unit-vector, <code class="docutils literal notranslate"><span class="pre">double[3]</span></code>
+array).</p>
+<p><code class="docutils literal notranslate"><span class="pre">q</span></code> is the representation of a symmetric matrix as a <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array. It
+is modified in-place.</p>
+</dd></dl>
+
+</section>
 
 
+            <div class="clearer"></div>
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">pw85</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="optimization.html">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing the implementation of the contact function</a></li>
-<li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">The python API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#the-new-api">The new API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#the-legacy-api">The “legacy” API</a></li>
-</ul>
-</li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="c_api.html" title="previous chapter">The C API</a></li>
-  </ul></li>
-</ul>
-</div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cpp_api.html"
+                        title="previous chapter">The C++ API</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/py_api.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
@@ -101,32 +157,29 @@
     </div>
 </div>
 <script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018–2021, Sébastien Brisard.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/py_api.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cpp_api.html" title="The C++ API"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation of the pw85 library</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">The python API</a></li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, S. Brisard.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.2.
+    </div>
   </body>
 </html>

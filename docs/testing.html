@@ -4,108 +4,84 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Testing the implementation of the contact function &#8212; Documentation of the pw85 library</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinxdoc.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="The C API" href="c_api.html" />
-    <link rel="prev" title="Optimization of the function f" href="optimization.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="next" title="The C++ API" href="cpp_api.html" />
+    <link rel="prev" title="Optimization of the function f" href="optimization.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cpp_api.html" title="The C++ API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="optimization.html" title="Optimization of the function f"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation of the pw85 library</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Testing the implementation of the contact function</a></li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
-  <div class="section" id="testing-the-implementation-of-the-contact-function">
+  <section id="testing-the-implementation-of-the-contact-function">
 <span id="testing"></span><h1>Testing the implementation of the contact function<a class="headerlink" href="#testing-the-implementation-of-the-contact-function" title="Permalink to this headline">¶</a></h1>
 <p>This chapter describes how our implementation of the contact function is
 tested. The source of the unit tests can be found in the file
 <code class="docutils literal notranslate"><span class="pre">src/test_pw85.c</span></code>. Note that the tests described here are repeated over a
 large set of tests case, including very flat and very slender sheroids, for
 various relative orientations and center-to-center distances.</p>
-<p>In the present chapter, we assume that the two ellipsoids (their matrices
-<code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are given), as well as their center-to-center radius vector
-<code class="docutils literal notranslate"><span class="pre">r₁₂</span></code>. Then, a call to <code class="xref py py-func docutils literal notranslate"><span class="pre">pw85_contact_function()</span></code> delivers an estimate of
-<code class="docutils literal notranslate"><span class="pre">λ</span></code> and <code class="docutils literal notranslate"><span class="pre">μ²</span></code>.</p>
+<p>In the present chapter, we assume that the two ellipsoids (their matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code>
+and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> are given), as well as their center-to-center radius vector
+<code class="docutils literal notranslate"><span class="pre">r₁₂</span></code>. Then, a call to <a class="reference internal" href="cpp_api.html#_CPPv4N4pw8516contact_functionEPKdPKdPKdPd" title="pw85::contact_function"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">pw85::contact_function()</span></code></a> delivers an estimate
+of <code class="docutils literal notranslate"><span class="pre">λ</span></code> and <code class="docutils literal notranslate"><span class="pre">μ²</span></code>.</p>
 <p>We first assert that <code class="docutils literal notranslate"><span class="pre">μ₁²</span></code> and <code class="docutils literal notranslate"><span class="pre">μ₂²</span></code> as defined by Eq. <a class="reference internal" href="optimization.html#optimization-eq-3"><span class="std std-ref">(3)</span></a> in chapter <a class="reference internal" href="optimization.html#optimization"><span class="std std-ref">Optimization of the function f</span></a> are close to the value
-returned by <code class="xref c c-func docutils literal notranslate"><span class="pre">pw85_contact_function()</span></code>. For all the cases considered here,
+returned by <a class="reference internal" href="cpp_api.html#_CPPv4N4pw8516contact_functionEPKdPKdPKdPd" title="pw85::contact_function"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">pw85::contact_function()</span></code></a>. For all the cases considered here,
 this is true up to a relative error of <code class="docutils literal notranslate"><span class="pre">10⁻¹⁰</span></code>.</p>
 <p>We also check that <code class="docutils literal notranslate"><span class="pre">f’(λ) = 0</span></code>, up to an absolute error of <code class="docutils literal notranslate"><span class="pre">Δλf”(λ)</span></code> where
 <code class="docutils literal notranslate"><span class="pre">Δλ</span></code> is the absolute tolerance on <code class="docutils literal notranslate"><span class="pre">λ</span></code> for the stopping criterion of the
-Brent iterations, as defined by the macro <a class="reference internal" href="c_api.html#c.PW85_LAMBDA_ATOL" title="PW85_LAMBDA_ATOL"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PW85_LAMBDA_ATOL</span></code></a>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The PW85 library offers a “new” API and a “legacy” API. The
-latter is kept for reference. The new API is generally more
-accurate and robust, and should be preferred by most
-users. Both APIs are thoroughly tested; however, we adopted
-two different testing strategies.</p>
-<p>The legacy API is solely (but fully) tested through its
-Python wrapper using pytest.</p>
-<p>The new API is fully tested through pure C tests (using
-GLib). Then the Python wrapper is also tested (using
-pytest). However, the python tests do not need to be as
-thorough, since only the validity of the wrapper itself must
-be checked, not the validity of the underlying C library.</p>
-</div>
-</div>
+Brent iterations, as defined by the constant <a class="reference internal" href="cpp_api.html#_CPPv4N4pw8511lambda_atolE" title="pw85::lambda_atol"><code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">pw85::lambda_atol</span></code></a>.</p>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">pw85</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="optimization.html">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Testing the implementation of the contact function</a></li>
-<li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="optimization.html" title="previous chapter">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
-      <li>Next: <a href="c_api.html" title="next chapter">The C API</a></li>
-  </ul></li>
-</ul>
-</div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="optimization.html"
+                        title="previous chapter">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cpp_api.html"
+                        title="next chapter">The C++ API</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/testing.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
@@ -116,32 +92,32 @@ be checked, not the validity of the underlying C library.</p>
     </div>
 </div>
 <script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018–2021, Sébastien Brisard.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/testing.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cpp_api.html" title="The C++ API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="optimization.html" title="Optimization of the function f"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation of the pw85 library</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Testing the implementation of the contact function</a></li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, S. Brisard.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.2.
+    </div>
   </body>
 </html>

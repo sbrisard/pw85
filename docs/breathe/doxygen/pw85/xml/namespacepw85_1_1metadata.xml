@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="namespacepw85_1_1metadata" kind="namespace" language="C++">
+    <compoundname>pw85::metadata</compoundname>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="pw85_8hpp_1abff4d15a190d8a7d5589a510802019de" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr std::string_view</type>
+        <definition>constexpr std::string_view pw85::metadata::author</definition>
+        <argsstring></argsstring>
+        <name>author</name>
+        <initializer>{&quot;S. Brisard&quot;}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="10" column="28" bodyfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" bodystart="10" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="pw85_8hpp_1aa7bea3364da5d469821f3e6e182f4fb1" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr std::string_view</type>
+        <definition>constexpr std::string_view pw85::metadata::description</definition>
+        <argsstring></argsstring>
+        <name>description</name>
+        <initializer>{&quot;Implementation of the \&quot;contact function\&quot; defined by Perram and Wertheim (J. Comp. Phys. 58(3), 409-416, DOI:10.1016/0021-9991(85)90171-8) for two ellipsoids.&quot;}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="12" column="28" bodyfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" bodystart="12" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="pw85_8hpp_1a49f26d45e3a30c2c9765d7a3b1239054" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr std::string_view</type>
+        <definition>constexpr std::string_view pw85::metadata::author_email</definition>
+        <argsstring></argsstring>
+        <name>author_email</name>
+        <initializer>{&quot;sebastien.brisard@univ-eiffel.fr&quot;}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="14" column="28" bodyfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="pw85_8hpp_1aa0ab7d6a1dd170d0634752b96e8abbd3" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr std::string_view</type>
+        <definition>constexpr std::string_view pw85::metadata::license</definition>
+        <argsstring></argsstring>
+        <name>license</name>
+        <initializer>{&quot;BSD 3-Clause License&quot;}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="15" column="28" bodyfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="pw85_8hpp_1ad553c9fae537640390a1f3ed3ce4884d" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr std::string_view</type>
+        <definition>constexpr std::string_view pw85::metadata::name</definition>
+        <argsstring></argsstring>
+        <name>name</name>
+        <initializer>{&quot;pw85&quot;}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="16" column="28" bodyfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="pw85_8hpp_1afbaaf5c499b0c35f9166fa33f1ea7961" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr std::string_view</type>
+        <definition>constexpr std::string_view pw85::metadata::url</definition>
+        <argsstring></argsstring>
+        <name>url</name>
+        <initializer>{&quot;https://github.com/sbrisard/pw85&quot;}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="17" column="28" bodyfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="pw85_8hpp_1afb249ce1cd1afe88cf8f51a649879df6" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr std::string_view</type>
+        <definition>constexpr std::string_view pw85::metadata::version</definition>
+        <argsstring></argsstring>
+        <name>version</name>
+        <initializer>{&quot;2.0&quot;}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="18" column="28" bodyfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="pw85_8hpp_1a4c5f5d89d64f0277f349e9dc514dc35a" prot="public" static="no" constexpr="yes" mutable="no">
+        <type>constexpr std::string_view</type>
+        <definition>constexpr std::string_view pw85::metadata::year</definition>
+        <argsstring></argsstring>
+        <name>year</name>
+        <initializer>{&quot;2021&quot;}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="19" column="28" bodyfile="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/Users/sbrisard/Git/programmes/pw85/include/pw85/pw85.hpp" line="9" column="1"/>
+  </compounddef>
+</doxygen>

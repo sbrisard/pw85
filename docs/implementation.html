@@ -4,36 +4,46 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Implementation of the function f &#8212; Documentation of the pw85 library</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinxdoc.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Optimization of the function f" href="optimization.html" />
-    <link rel="prev" title="Theory" href="theory.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="prev" title="Theory" href="theory.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="optimization.html" title="Optimization of the function f"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="theory.html" title="Theory"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation of the pw85 library</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
-  <div class="section" id="implementation-of-the-function-f">
+  <section id="implementation-of-the-function-f">
 <span id="implementation"></span><h1>Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code><a class="headerlink" href="#implementation-of-the-function-f" title="Permalink to this headline">¶</a></h1>
 <p id="implementation-eq-1">In this chapter, we explain how the contact function is computed. From
 Eq.  <a class="reference internal" href="theory.html#theory-eq-12"><span class="std std-ref">(12)</span></a> in chapter <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a>, the value of
@@ -50,7 +60,7 @@ the contact function is found from the solution <code class="docutils literal no
 evaluation of <code class="docutils literal notranslate"><span class="pre">f</span></code>.  The <a class="reference internal" href="#implementation-cholesky"><span class="std std-ref">first implementation</span></a> uses the Cholesky decomposition of
 <code class="docutils literal notranslate"><span class="pre">Q</span></code>. The <a class="reference internal" href="#implementation-rational-functions"><span class="std std-ref">second implementation</span></a> uses a representation of <code class="docutils literal notranslate"><span class="pre">f</span></code> as
 a quotient of two polynomials (rational fraction).</p>
-<div class="section" id="implementation-1-using-cholesky-decompositions">
+<section id="implementation-1-using-cholesky-decompositions">
 <span id="implementation-cholesky"></span><h2>Implementation #1: using Cholesky decompositions<a class="headerlink" href="#implementation-1-using-cholesky-decompositions" title="Permalink to this headline">¶</a></h2>
 <p>Since <code class="docutils literal notranslate"><span class="pre">Q</span></code> is a symmetric, positive definite matrix, we can compute
 its <a class="reference external" href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky decomposition</a>, which reads
@@ -86,8 +96,8 @@ found that:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(9)    f″(λ) = -2rᵀ⋅s - 2(1-2λ)sᵀ⋅u + 2λ(1-λ)uᵀ⋅v.
 </pre></div>
 </div>
-</div>
-<div class="section" id="implementation-2-using-rational-functions">
+</section>
+<section id="implementation-2-using-rational-functions">
 <span id="implementation-rational-functions"></span><h2>Implementation #2: using rational functions<a class="headerlink" href="#implementation-2-using-rational-functions" title="Permalink to this headline">¶</a></h2>
 <p id="implementation-eq-10">We observe that <code class="docutils literal notranslate"><span class="pre">f(λ)</span></code> is a
 rational function [see Eq. <a class="reference internal" href="#implementation-eq-1"><span class="std std-ref">(1)</span></a>], and we write:</p>
@@ -177,13 +187,13 @@ root of <code class="docutils literal notranslate"><span class="pre">c</span></c
 <a class="reference external" href="https://en.wikipedia.org/wiki/Bisection_method">bisection method</a> has been
 implemented (more efficient methods will be implemented in future versions).</p>
 <p>Once <code class="docutils literal notranslate"><span class="pre">λ</span></code> is found, <code class="docutils literal notranslate"><span class="pre">μ</span></code> is computed from <code class="docutils literal notranslate"><span class="pre">μ²</span> <span class="pre">=</span> <span class="pre">f(λ)</span></code> using Eq. <a class="reference internal" href="#implementation-eq-10"><span class="std std-ref">(10)</span></a>.</p>
-</div>
-<div class="section" id="comparison-of-the-two-implementations">
+</section>
+<section id="comparison-of-the-two-implementations">
 <h2>Comparison of the two implementations<a class="headerlink" href="#comparison-of-the-two-implementations" title="Permalink to this headline">¶</a></h2>
 <p>High precision reference data was generated using the <a class="reference external" href="http://mpmath.org/">mpmath</a> library. The reference dataset is fully described and
 freely downloadable from the <a class="reference external" href="http://about.zenodo.org/">Zenodo platform</a>
 (<a class="reference external" href="https://doi.org/10.5281/zenodo.3323683">DOI:10.5281/zenodo.3323683</a>). Accuracy of both implementations is
-then evaluated through the following script (<a class="reference download internal" download="" href="_downloads/13430580ae2f6c7babf01d69d5c77fcc/f_accuracy.c"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">source</span> <span class="pre">file</span></code></a>):</p>
+then evaluated through the following script (<a class="reference download internal" download="" href="_downloads/ba9234fc8431d0c4835aa65d6c3de625/f_accuracy.c"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">source</span> <span class="pre">file</span></code></a>):</p>
 <div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;glib.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;hdf5.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;hdf5_hl.h&gt;</span><span class="cp"></span>
@@ -300,63 +310,55 @@ then evaluated through the following script (<a class="reference download intern
 <p class="admonition-title">Note</p>
 <p>To compute this program, you might need to pass the options
 <code class="docutils literal notranslate"><span class="pre">-Dpw85_include=…</span></code>, <code class="docutils literal notranslate"><span class="pre">-Dpw85_lib=…</span></code> and <code class="docutils literal notranslate"><span class="pre">-Dpw85_data=…</span></code>
-to <code class="docutils literal notranslate"><span class="pre">meson</span></code> (see <a class="reference internal" href="tutorial.html#c-tutorial"><span class="std std-ref">C tutorial</span></a>).</p>
+to <code class="docutils literal notranslate"><span class="pre">meson</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The provided script refers to an old implementation of pw85.</p>
 </div>
 <p>We get the histograms shown in <a class="reference internal" href="#implementation-histograms"><span class="std std-numref">Fig. 1</span></a>. These
 histograms show that <a class="reference internal" href="#implementation-cholesky"><span class="std std-ref">Implementation #1</span></a> is more
 accurate than <a class="reference internal" href="#implementation-rational-functions"><span class="std std-ref">Implementation #2</span></a>. The
 former will therefore be selected as default.</p>
-<div class="figure align-default" id="id1">
+<figure class="align-default" id="id1">
 <span id="implementation-histograms"></span><img alt="_images/histograms.png" src="_images/histograms.png" />
-<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Accuracy of the two implementations.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</div>
-</div>
-</div>
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Accuracy of the two implementations.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">pw85</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#implementation-1-using-cholesky-decompositions">Implementation #1: using Cholesky decompositions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#implementation-2-using-rational-functions">Implementation #2: using rational functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#comparison-of-the-two-implementations">Comparison of the two implementations</a></li>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a><ul>
+<li><a class="reference internal" href="#implementation-1-using-cholesky-decompositions">Implementation #1: using Cholesky decompositions</a></li>
+<li><a class="reference internal" href="#implementation-2-using-rational-functions">Implementation #2: using rational functions</a></li>
+<li><a class="reference internal" href="#comparison-of-the-two-implementations">Comparison of the two implementations</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="optimization.html">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing the implementation of the contact function</a></li>
-<li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a></li>
 </ul>
 
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="theory.html" title="previous chapter">Theory</a></li>
-      <li>Next: <a href="optimization.html" title="next chapter">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
-  </ul></li>
-</ul>
-</div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="theory.html"
+                        title="previous chapter">Theory</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="optimization.html"
+                        title="next chapter">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/implementation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
@@ -367,32 +369,32 @@ former will therefore be selected as default.</p>
     </div>
 </div>
 <script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018–2021, Sébastien Brisard.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/implementation.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="optimization.html" title="Optimization of the function f"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="theory.html" title="Theory"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation of the pw85 library</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, S. Brisard.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.2.
+    </div>
   </body>
 </html>

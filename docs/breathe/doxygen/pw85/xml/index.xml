@@ -1,20 +1,29 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.9.1" xml:lang="en-US">
   <compound refid="namespacepw85" kind="namespace"><name>pw85</name>
-    <member refid="pw85_8hpp_1ae06cb10f228d69912ee7dcc8c8b1e347" kind="function"><name>_cholesky_decomp</name></member>
-    <member refid="pw85_8hpp_1ab01524112d90406ef490177609692bb4" kind="function"><name>_cholesky_solve</name></member>
-    <member refid="pw85_8hpp_1ad2ab1e3645c5a25bdefa13f811d7ac0a" kind="function"><name>spheroid</name></member>
-    <member refid="pw85_8hpp_1ac290983e8bb499a0d1f588a23f7e6cc3" kind="function"><name>f_neg</name></member>
-    <member refid="pw85_8hpp_1a432452deed4d9e1b24ed7990d16e3bc6" kind="function"><name>_residual</name></member>
-    <member refid="pw85_8hpp_1ac7a407eb0bf2bf015ec5bbd882f136b0" kind="function"><name>contact_function</name></member>
+    <member refid="pw85_8hpp_1adbc1ca07399ce169c63d6b3270709d61" kind="variable"><name>dim</name></member>
+    <member refid="pw85_8hpp_1afb9f9a7ecf33323741c53e4a1b293823" kind="variable"><name>sym</name></member>
+    <member refid="pw85_8hpp_1a713835b4ea9d8f80c4696f58fe95511d" kind="variable"><name>lambda_atol</name></member>
+    <member refid="pw85_8hpp_1ad96843772a8685a4eabfd4fb4c2cbf50" kind="variable"><name>max_iter</name></member>
+    <member refid="pw85_8hpp_1aceaec09317678cef301ba3f1f8061eb0" kind="variable"><name>nr_iter</name></member>
+    <member refid="pw85_8hpp_1af10144a1ddcc02c51c67040bae4f0db1" kind="function"><name>_cholesky_decomp</name></member>
+    <member refid="pw85_8hpp_1a66fa95248c023de2ed278e1a9626399f" kind="function"><name>_cholesky_solve</name></member>
+    <member refid="pw85_8hpp_1aa286d2d6e355fb7b5be2fa3c15af8f3c" kind="function"><name>spheroid</name></member>
+    <member refid="pw85_8hpp_1a800dd17004d57d580bca78149c731f2a" kind="function"><name>f_neg</name></member>
+    <member refid="pw85_8hpp_1ac962f4ad307bb407e7475f4c27b08de0" kind="function"><name>_residual</name></member>
+    <member refid="pw85_8hpp_1aa55fb187a8ad5da0e7cf3b4600ac42e6" kind="function"><name>contact_function</name></member>
+  </compound>
+  <compound refid="namespacepw85_1_1metadata" kind="namespace"><name>pw85::metadata</name>
+    <member refid="pw85_8hpp_1abff4d15a190d8a7d5589a510802019de" kind="variable"><name>author</name></member>
+    <member refid="pw85_8hpp_1aa7bea3364da5d469821f3e6e182f4fb1" kind="variable"><name>description</name></member>
+    <member refid="pw85_8hpp_1a49f26d45e3a30c2c9765d7a3b1239054" kind="variable"><name>author_email</name></member>
+    <member refid="pw85_8hpp_1aa0ab7d6a1dd170d0634752b96e8abbd3" kind="variable"><name>license</name></member>
+    <member refid="pw85_8hpp_1ad553c9fae537640390a1f3ed3ce4884d" kind="variable"><name>name</name></member>
+    <member refid="pw85_8hpp_1afbaaf5c499b0c35f9166fa33f1ea7961" kind="variable"><name>url</name></member>
+    <member refid="pw85_8hpp_1afb249ce1cd1afe88cf8f51a649879df6" kind="variable"><name>version</name></member>
+    <member refid="pw85_8hpp_1a4c5f5d89d64f0277f349e9dc514dc35a" kind="variable"><name>year</name></member>
   </compound>
   <compound refid="pw85_8hpp" kind="file"><name>pw85.hpp</name>
-    <member refid="pw85_8hpp_1a3b2d14ef79471c78b23a834a5cd68375" kind="define"><name>PW85_DIM</name></member>
-    <member refid="pw85_8hpp_1a37687b34fc8d77310406214ab504b19a" kind="define"><name>PW85_SYM</name></member>
-    <member refid="pw85_8hpp_1a542008d02554186f8d945dec09e0d608" kind="define"><name>PW85_LAMBDA_ATOL</name></member>
-    <member refid="pw85_8hpp_1ab930d919fc57493229a0add637c23e92" kind="define"><name>PW85_MAX_ITER</name></member>
-    <member refid="pw85_8hpp_1a3f67fcb214d3725a55e3670eb4a2084b" kind="define"><name>PW85_NR_ITER</name></member>
-    <member refid="pw85_8hpp_1af83a0ad9d707a0bc5fe281b6e5c358a1" kind="define"><name>DllExport</name></member>
   </compound>
   <compound refid="dir_d44c64559bbebec7f509842c48db8b23" kind="dir"><name>C:/Users/sbrisard/Git/programmes/pw85/include</name>
   </compound>

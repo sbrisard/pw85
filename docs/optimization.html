@@ -4,36 +4,46 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Optimization of the function f &#8212; Documentation of the pw85 library</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinxdoc.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Testing the implementation of the contact function" href="testing.html" />
-    <link rel="prev" title="Implementation of the function f" href="implementation.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="prev" title="Implementation of the function f" href="implementation.html" /> 
   </head><body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="testing.html" title="Testing the implementation of the contact function"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="implementation.html" title="Implementation of the function f"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation of the pw85 library</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
-  <div class="section" id="optimization-of-the-function-f">
+  <section id="optimization-of-the-function-f">
 <span id="optimization"></span><h1>Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code><a class="headerlink" href="#optimization-of-the-function-f" title="Permalink to this headline">¶</a></h1>
 <p>It was shown in chapter <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a> [see Eq. <a class="reference internal" href="theory.html#theory-eq-6"><span class="std std-ref">(6)</span></a>] that
 the contact function was defined as the maximum for <code class="docutils literal notranslate"><span class="pre">0 ≤ λ ≤ 1</span></code> of the function
@@ -47,8 +57,8 @@ be quite sharp in the neighborhood of <code class="docutils literal notranslate"
 otpimization of <code class="docutils literal notranslate"><span class="pre">f</span></code>, we therefore proceed in two steps.</p>
 <p>In the first step, we use a robust optimization algorithm. We selected here
 <a class="reference external" href="https://en.wikipedia.org/wiki/Brent%27s_method">Brent’s method</a>, as
-implemented in the <a class="reference external" href="https://www.gnu.org/software/gsl/">GNU Scientific Library (GSL)</a>. However, this method delivers a
-relatively low accuracy of the maxmimizer and the maximum.</p>
+implemented in the <a class="reference external" href="https://www.boost.org/doc/libs/1_75_0/libs/math/">Boost::Math library</a>. However, this method
+delivers a relatively low accuracy of the maxmimizer and the maximum.</p>
 <p>Therefore, in the second step, we use a few Newton–Raphson iterations to refine
 the previously obtained estimates of the minimizer and minimum of <code class="docutils literal notranslate"><span class="pre">f</span></code>. In the
 remainder of this chapter, we describe how these Newton–Raphson iterations are
@@ -87,47 +97,28 @@ residual. Using results that are presented in section
 </div>
 <p>Eqs. <a class="reference internal" href="#optimization-eq-4"><span class="std std-ref">(4)</span></a> and <a class="reference internal" href="#optimization-eq-5"><span class="std std-ref">(5)</span></a> are then
 used for the final, refinement step of determination of <code class="docutils literal notranslate"><span class="pre">λ</span></code>.</p>
-</div>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">pw85</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing the implementation of the contact function</a></li>
-<li class="toctree-l1"><a class="reference internal" href="c_api.html">The C API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="py_api.html">The python API</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="implementation.html" title="previous chapter">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li>
-      <li>Next: <a href="testing.html" title="next chapter">Testing the implementation of the contact function</a></li>
-  </ul></li>
-</ul>
-</div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="implementation.html"
+                        title="previous chapter">Implementation of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="testing.html"
+                        title="next chapter">Testing the implementation of the contact function</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/optimization.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
@@ -138,32 +129,32 @@ used for the final, refinement step of determination of <code class="docutils li
     </div>
 </div>
 <script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018–2021, Sébastien Brisard.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/optimization.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="testing.html" title="Testing the implementation of the contact function"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="implementation.html" title="Implementation of the function f"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation of the pw85 library</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Optimization of the function <code class="docutils literal notranslate"><span class="pre">f</span></code></a></li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, S. Brisard.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.2.
+    </div>
   </body>
 </html>

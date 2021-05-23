@@ -58,19 +58,24 @@ where ``r₁₂`` is the vector that joins the center of the first ellipsoid,
 ``x₁``, to the center of the second ellipsoid, ``x₂``.
 
 We use the function :py:func:`pw85.spheroid` to create the matrix
-representations ``q₁`` and ``q₂`` of the two ellipsoids:
+representations ``q₁`` and ``q₂`` of the two ellipsoids. Note that these arrays
+must be *preallocated*:
 
->>> q1 = pw85.spheroid(a1, c1, n1)
+>>> q1 = np.empty((6,), dtype=np.float64)
+>>> pw85.spheroid(a1, c1, n1, q1)
 >>> q1
 array([ 1.e+02, -0.e+00, -0.e+00,  1.e+02, -0.e+00,  1.e-02])
->>> q2 = pw85.spheroid(a2, c2, n2)
+>>> q2 = np.empty_like(q1)
+>>> pw85.spheroid(a2, c2, n2, q2)
 >>> q2
 array([25.  ,  0.  ,  0.  ,  0.25,  0.  ,  0.25])
 
 We can now compute the value of the contact function — see the documentation of
 :py:func:`pw85.contact_function`:
 
->>> mu2, lambda_ = pw85.contact_function(r12, q1, q2)
+>>> out = np.empty((2,), dtype=np.float64)
+>>> pw85.contact_function(r12, q1, q2, out)
+>>> mu2, lambda_ = out
 >>> print('μ² = {}'.format(mu2))
 >>> print('λ = {}'.format(lambda_))
 μ² = 3.362706040638343
@@ -212,33 +217,33 @@ contact. QED
 Follow this link to
 :download:`download the above Python script<./py_tutorial/tutorial.py>`.
 
-.. _c-tutorial:
+.. _sec20210523205251:
 
-C tutorial
-==========
+C++ tutorial
+============
 
-The Python interface to PW85 has been kept close to the undelying C API. The
-following C program (:download:`download source file
-<./c_tutorial/tutorial.c>`) defines the two ellipsoids, then computes ``μ²``
+The Python interface to PW85 has been kept close to the undelying C++ API. The
+following C++ program (:download:`download source file
+<./cpp_tutorial/tutorial.cpp>`) defines the two ellipsoids, then computes ``μ²``
 and ``λ``:
 
-.. literalinclude:: ./c_tutorial/tutorial.c
-   :language: c
+.. literalinclude:: ./cpp_tutorial/tutorial.cpp
+   :language: cpp
 
 A ``CMakeLists.txt`` file is provided for the compilation of the tutorial using
-the CMake_. You can reuse it in one of your own projects (:download:`download
-<./c_tutorial/CMakeLists.txt>`):
+CMake_. You can reuse it in one of your own projects (:download:`download
+<./cpp_tutorial/CMakeLists.txt>`):
 
-.. literalinclude:: ./c_tutorial/CMakeLists.txt
+.. literalinclude:: ./cpp_tutorial/CMakeLists.txt
    :language: cmake
 
 
-``cd`` into the ``c_tutorial`` subdirectory. The provided example program
+``cd`` into the ``cpp_tutorial`` subdirectory. The provided example program
 should be compiled and linked against pw85::
 
   $ mkdir build
   $ cd build
-  $ cmake -Dpw85_DIR=pw85_INSTALL_PREFIX/lib/cmake/pw85 ..
+  $ cmake ..
   $ cmake --build . --config Release
 
 An executable called ``tutorial`` should be present in the ``build/Release``

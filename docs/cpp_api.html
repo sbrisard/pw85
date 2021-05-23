@@ -1,0 +1,322 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>The C++ API &#8212; Documentation of the pw85 library</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinxdoc.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The python API" href="py_api.html" />
+    <link rel="prev" title="Testing the implementation of the contact function" href="testing.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="py_api.html" title="The python API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="testing.html" title="Testing the implementation of the contact function"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation of the pw85 library</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">The C++ API</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="the-c-api">
+<h1>The C++ API<a class="headerlink" href="#the-c-api" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>functions whose name is prefixed with an underscore should be
+considered as “private”: these functions are exposed for testing
+purposes. They should not be used, since they are susceptible of
+incompatible changes (or even removal) in future versions.</p>
+</div>
+<section id="representation-of-vectors-and-matrices">
+<h2>Representation of vectors and matrices<a class="headerlink" href="#representation-of-vectors-and-matrices" title="Permalink to this headline">¶</a></h2>
+<p>An ellipsoid is defined from its center <code class="docutils literal notranslate"><span class="pre">c</span></code> (a 3×1, column-vector) and
+quadratic form <code class="docutils literal notranslate"><span class="pre">Q</span></code> (a 3×3, symmetric, positive definite matrix) as the set of
+points <code class="docutils literal notranslate"><span class="pre">m</span></code> such that:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(m-c)ᵀ⋅Q⁻¹⋅(m-c) ≤ 1.
+</pre></div>
+</div>
+<p>In this module, objects referred to as “vectors” are <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> arrays of
+coordinates. In other words, the representation of the vector <code class="docutils literal notranslate"><span class="pre">x</span></code> is the
+<code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <code class="docutils literal notranslate"><span class="pre">x</span></code> such that:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    ⎡ x[0] ⎤
+x = ⎢ x[1] ⎥.
+    ⎣ x[2] ⎦
+</pre></div>
+</div>
+<p>Objects referred to as “symmetric matrices” (or “quadratic forms”) are of type
+<code class="docutils literal notranslate"><span class="pre">double[6]</span></code>. Such arrays list in row-major order the coefficients of the
+triangular upper part. In other words, the representation of a the symmetric
+matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array <code class="docutils literal notranslate"><span class="pre">a</span></code> such that:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    ⎡ a[0] a[1] a[2] ⎤
+A = ⎢      a[3] a[4] ⎥.
+    ⎣ sym.      a[5] ⎦
+</pre></div>
+</div>
+</section>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv44pw85">
+<span id="_CPPv34pw85"></span><span id="_CPPv24pw85"></span><span id="pw85"></span><span class="target" id="namespacepw85"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pw85</span></span></span><a class="headerlink" href="#_CPPv44pw85" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw8516_cholesky_decompEPKdPd">
+<span id="_CPPv3N4pw8516_cholesky_decompEPKdPd"></span><span id="_CPPv2N4pw8516_cholesky_decompEPKdPd"></span><span id="pw85::_cholesky_decomp__doubleCP.doubleP"></span><span class="target" id="pw85_8hpp_1af10144a1ddcc02c51c67040bae4f0db1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_cholesky_decomp</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">a</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">l</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4pw8516_cholesky_decompEPKdPd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Compute the Cholesky decomposition of a symmetric, positive matrix.</p>
+<p>Let <code class="docutils literal notranslate"><span class="pre">A</span></code> be a symmetric, positive matrix, defined by the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array <code class="docutils literal notranslate"><span class="pre">a</span></code>. This function computes the lower-triangular matrix <code class="docutils literal notranslate"><span class="pre">L</span></code>, defined by the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array <code class="docutils literal notranslate"><span class="pre">l</span></code>, such that <code class="docutils literal notranslate"><span class="pre">Lᵀ⋅L</span> <span class="pre">=</span> <span class="pre">A</span></code>.</p>
+<p>The array <code class="docutils literal notranslate"><span class="pre">l</span></code> must be pre-allocated; it is modified by this function. Note that storage of the coefficients of <code class="docutils literal notranslate"><span class="pre">L</span></code> is as follows</p>
+<p><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    ⎡ l[0]    0    0 ⎤
+L = ⎢ l[1] l[3]    0 ⎥.
+    ⎣ l[2] l[4] l[5] ⎦
+</pre></div>
+</div>
+ </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw8515_cholesky_solveEPKdPKdPd">
+<span id="_CPPv3N4pw8515_cholesky_solveEPKdPKdPd"></span><span id="_CPPv2N4pw8515_cholesky_solveEPKdPKdPd"></span><span id="pw85::_cholesky_solve__doubleCP.doubleCP.doubleP"></span><span class="target" id="pw85_8hpp_1a66fa95248c023de2ed278e1a9626399f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_cholesky_solve</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">l</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">b</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">x</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4pw8515_cholesky_solveEPKdPKdPd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Compute the solution to a previously Cholesky decomposed linear system.</p>
+<p>Let <code class="docutils literal notranslate"><span class="pre">L</span></code> be a lower-triangular matrix, defined by the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array <code class="docutils literal notranslate"><span class="pre">l</span></code> (see <a class="reference internal" href="#pw85_8hpp_1af10144a1ddcc02c51c67040bae4f0db1"><span class="std std-ref">pw85::_cholesky_decomp()</span></a> for ordering of the coefficients). This function solves (by substitution) the linear system <code class="docutils literal notranslate"><span class="pre">Lᵀ⋅L⋅x</span> <span class="pre">=</span> <span class="pre">b</span></code>, where the vectors <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> are specified through their <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array of coordinates; <code class="docutils literal notranslate"><span class="pre">x</span></code> is modified by this function. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw858spheroidEddPKdPd">
+<span id="_CPPv3N4pw858spheroidEddPKdPd"></span><span id="_CPPv2N4pw858spheroidEddPKdPd"></span><span id="pw85::spheroid__double.double.doubleCP.doubleP"></span><span class="target" id="pw85_8hpp_1aa286d2d6e355fb7b5be2fa3c15af8f3c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">spheroid</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">a</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">c</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">n</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">q</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4pw858spheroidEddPKdPd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Compute the quadratic form associated to a spheroid.</p>
+<p>The spheroid is defined by its equatorial radius <code class="docutils literal notranslate"><span class="pre">a</span></code>, its polar radius <code class="docutils literal notranslate"><span class="pre">c</span></code> and the direction of its axis of revolution, <code class="docutils literal notranslate"><span class="pre">n</span></code> (unit-vector, <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array).</p>
+<p><code class="docutils literal notranslate"><span class="pre">q</span></code> is the representation of a symmetric matrix as a <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> array. It is modified in-place. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw855f_negEdPKdPKdPKd">
+<span id="_CPPv3N4pw855f_negEdPKdPKdPKd"></span><span id="_CPPv2N4pw855f_negEdPKdPKdPKd"></span><span id="pw85::f_neg__double.doubleCP.doubleCP.doubleCP"></span><span class="target" id="pw85_8hpp_1a800dd17004d57d580bca78149c731f2a"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">f_neg</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lambda</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">r12</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">q1</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">q2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4pw855f_negEdPKdPKdPKd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Return the value of the opposite of the function <code class="docutils literal notranslate"><span class="pre">f</span></code> defined as (see <span> <a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a></span>).</p>
+<p><div class="math notranslate nohighlight">
+\[f(\lambda)=\lambda\bigl(1-\lambda\bigr)r_{12}^{\mathsf{T}} \cdot Q^{-1}\cdot r_{12},\]</div>
+</p>
+<p>with</p>
+<p><div class="math notranslate nohighlight">
+\[Q = \bigl(1-\lambda\bigr)Q_1 + \lambda Q_2,\]</div>
+</p>
+<p>where ellipsoids 1 and 2 are defined as the sets of points <span class="math notranslate nohighlight">\(m\)</span> (column-vector) such that</p>
+<p><div class="math notranslate nohighlight">
+\[\bigl(m-c_i\bigr)\cdot Q_i^{-1}\cdot\bigl(m-c_i\bigr)\leq1.\]</div>
+</p>
+<p>In the above inequality, <span class="math notranslate nohighlight">\(c_i\)</span> is the center; <span class="math notranslate nohighlight">\(r_{12}=c_2-c_1\)</span> is the center-to-center radius-vector, represented by the <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <code class="docutils literal notranslate"><span class="pre">r12</span></code>. The symmetric, positive-definite matrices <span class="math notranslate nohighlight">\(Q_1\)</span> and <span class="math notranslate nohighlight">\(Q_2\)</span> are specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> arrays <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code>.</p>
+<p>The value of <span class="math notranslate nohighlight">\(\lambda\)</span> is specified through the parameter <code class="docutils literal notranslate"><span class="pre">lambda</span></code>.</p>
+<p>This function returns the value of <span class="math notranslate nohighlight">\(−f(\lambda)\)</span> (the “minus” sign comes from the fact that we seek the maximum of <span class="math notranslate nohighlight">\(f\)</span>, or the minimum of <span class="math notranslate nohighlight">\(−f\)</span>).</p>
+<p>This implementation uses <span><a class="reference internal" href="implementation.html#implementation-cholesky"><span class="std std-ref">Cholesky decompositions*</span></a></span>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw859_residualEdPKdPKdPKdPd">
+<span id="_CPPv3N4pw859_residualEdPKdPKdPKdPd"></span><span id="_CPPv2N4pw859_residualEdPKdPKdPKdPd"></span><span id="pw85::_residual__double.doubleCP.doubleCP.doubleCP.doubleP"></span><span class="target" id="pw85_8hpp_1ac962f4ad307bb407e7475f4c27b08de0"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">_residual</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lambda</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">r12</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">q1</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">q2</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">out</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4pw859_residualEdPKdPKdPKdPd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Compute the residual <span class="math notranslate nohighlight">\(g(\lambda)=\mu_2^2-\mu_1^2\)</span>.</p>
+<p>See<span> <a class="reference internal" href="optimization.html#optimization"><span class="std std-ref">Optimization of the function f</span></a> </span> for the definition of <span class="math notranslate nohighlight">\(g\)</span>. The value of <span class="math notranslate nohighlight">\(\lambda\)</span> is specified through the parameter <code class="docutils literal notranslate"><span class="pre">lambda</span></code>. See <a class="reference internal" href="#pw85_8hpp_1aa55fb187a8ad5da0e7cf3b4600ac42e6"><span class="std std-ref">contact_function()</span></a> for the definition of the parameters <code class="docutils literal notranslate"><span class="pre">r12</span></code>, <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code>.</p>
+<p>The preallocated <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <code class="docutils literal notranslate"><span class="pre">out</span></code> is updated as follows: <code class="docutils literal notranslate"><span class="pre">out[0]=</span></code> <span class="math notranslate nohighlight">\(f(\lambda)\)</span>, <code class="docutils literal notranslate"><span class="pre">out[1]=</span></code> <span class="math notranslate nohighlight">\(g(\lambda)\)</span> and <code class="docutils literal notranslate"><span class="pre">out[2]=</span></code> <span class="math notranslate nohighlight">\(g'(\lambda)\)</span>.</p>
+<p>This function is used in function <span> <a class="reference internal" href="#_CPPv4N4pw8516contact_functionEPKdPKdPKdPd" title="pw85::contact_function"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">pw85::contact_function()</span></code></a> </span> for the final Newton–Raphson refinement step. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw8516contact_functionEPKdPKdPKdPd">
+<span id="_CPPv3N4pw8516contact_functionEPKdPKdPKdPd"></span><span id="_CPPv2N4pw8516contact_functionEPKdPKdPKdPd"></span><span id="pw85::contact_function__doubleCP.doubleCP.doubleCP.doubleP"></span><span class="target" id="pw85_8hpp_1aa55fb187a8ad5da0e7cf3b4600ac42e6"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">contact_function</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">r12</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">q1</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">q2</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">out</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4pw8516contact_functionEPKdPKdPKdPd" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Compute the value of the contact function of two ellipsoids.</p>
+<p>The center-to-center radius-vector <span class="math notranslate nohighlight">\(r_{12}\)</span> is specified by the <code class="docutils literal notranslate"><span class="pre">double[3]</span></code> array <code class="docutils literal notranslate"><span class="pre">r12</span></code>. The symmetric, positive-definite matrices <span class="math notranslate nohighlight">\(Q_1\)</span> and <span class="math notranslate nohighlight">\(Q_2\)</span> that define the two ellipsoids are specified through the <code class="docutils literal notranslate"><span class="pre">double[6]</span></code> arrays <code class="docutils literal notranslate"><span class="pre">q1</span></code> and <code class="docutils literal notranslate"><span class="pre">q2</span></code>.</p>
+<p>This function computes the value of <span class="math notranslate nohighlight">\(\mu^2\)</span>, defined as</p>
+<p><div class="math notranslate nohighlight">
+\[\mu^2=\max_{0\leq\lambda\leq 1}\bigl\{\lambda\bigl(1-\lambda\bigr) r_{12}^{\mathsf{T}}\cdot\bigl[\bigl(1-\lambda\bigr)Q_1+\lambda Q_2\bigr]^{-1} \cdot r_{12}\bigr\},\]</div>
+</p>
+<p>and the maximizer <span class="math notranslate nohighlight">\(\lambda\)</span>, see <span><a class="reference internal" href="theory.html#theory"><span class="std std-ref">Theory</span></a> </span>. Both values are stored in the preallocated <code class="docutils literal notranslate"><span class="pre">double[2]</span></code> array <code class="docutils literal notranslate"><span class="pre">out</span></code>: <code class="docutils literal notranslate"><span class="pre">out[0]</span> <span class="pre">=</span></code> <span class="math notranslate nohighlight">\(\mu^2\)</span> and <code class="docutils literal notranslate"><span class="pre">out[1]</span> <span class="pre">=</span></code> <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
+<p><span class="math notranslate nohighlight">\(\mu\)</span> is the common factor by which the two ellipsoids must be scaled (their centers being fixed) in order to be tangentially in contact.</p>
+<p>This function returns <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<p><p><div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>This function should return an error code.</p>
+</div>
+</p>
+ </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-variables">Variables</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw853dimE">
+<span id="_CPPv3N4pw853dimE"></span><span id="_CPPv2N4pw853dimE"></span><span id="pw85::dim__s"></span><span class="target" id="pw85_8hpp_1adbc1ca07399ce169c63d6b3270709d61"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><a class="headerlink" href="#_CPPv4N4pw853dimE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The dimension of the physical space (3). </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw853symE">
+<span id="_CPPv3N4pw853symE"></span><span id="_CPPv2N4pw853symE"></span><span id="pw85::sym__s"></span><span class="target" id="pw85_8hpp_1afb9f9a7ecf33323741c53e4a1b293823"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sym</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">6</span></span><a class="headerlink" href="#_CPPv4N4pw853symE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The dimension of the space of symmetric matrices (6). </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw8511lambda_atolE">
+<span id="_CPPv3N4pw8511lambda_atolE"></span><span id="_CPPv2N4pw8511lambda_atolE"></span><span id="pw85::lambda_atol__double"></span><span class="target" id="pw85_8hpp_1a713835b4ea9d8f80c4696f58fe95511d"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lambda_atol</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1e-6</span></span><a class="headerlink" href="#_CPPv4N4pw8511lambda_atolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The absolute tolerance for the stopping criterion of Brent’s method (in function <a class="reference internal" href="#pw85_8hpp_1aa55fb187a8ad5da0e7cf3b4600ac42e6"><span class="std std-ref">contact_function()</span></a>). </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw858max_iterE">
+<span id="_CPPv3N4pw858max_iterE"></span><span id="_CPPv2N4pw858max_iterE"></span><span id="pw85::max_iter__s"></span><span class="target" id="pw85_8hpp_1ad96843772a8685a4eabfd4fb4c2cbf50"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">max_iter</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">25</span></span><a class="headerlink" href="#_CPPv4N4pw858max_iterE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The maximum number of iterations of Brent’s method (in function <a class="reference internal" href="#pw85_8hpp_1aa55fb187a8ad5da0e7cf3b4600ac42e6"><span class="std std-ref">contact_function()</span></a>). </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw857nr_iterE">
+<span id="_CPPv3N4pw857nr_iterE"></span><span id="_CPPv2N4pw857nr_iterE"></span><span id="pw85::nr_iter__s"></span><span class="target" id="pw85_8hpp_1aceaec09317678cef301ba3f1f8061eb0"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nr_iter</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><a class="headerlink" href="#_CPPv4N4pw857nr_iterE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The total number of iterations of the Newton–Raphson refinement phase (in function <a class="reference internal" href="#pw85_8hpp_1aa55fb187a8ad5da0e7cf3b4600ac42e6"><span class="std std-ref">contact_function()</span></a>). </p>
+</dd></dl>
+
+</div>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw858metadataE">
+<span id="_CPPv3N4pw858metadataE"></span><span id="_CPPv2N4pw858metadataE"></span><span id="pw85::metadata"></span><span class="target" id="namespacepw85_1_1metadata"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">metadata</span></span></span><a class="headerlink" href="#_CPPv4N4pw858metadataE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-variables">Variables</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw858metadata6authorE">
+<span id="_CPPv3N4pw858metadata6authorE"></span><span id="_CPPv2N4pw858metadata6authorE"></span><span id="pw85::metadata::author__std::string_view"></span><span class="target" id="pw85_8hpp_1abff4d15a190d8a7d5589a510802019de"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string_view</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">author</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><s><span class="pre">&quot;S.</span> <span class="pre">Brisard&quot;</span></s><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4pw858metadata6authorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw858metadata11descriptionE">
+<span id="_CPPv3N4pw858metadata11descriptionE"></span><span id="_CPPv2N4pw858metadata11descriptionE"></span><span id="pw85::metadata::description__std::string_view"></span><span class="target" id="pw85_8hpp_1aa7bea3364da5d469821f3e6e182f4fb1"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string_view</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">description</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><s><span class="pre">&quot;Implementation</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">\&quot;contact</span> <span class="pre">function\&quot;</span> <span class="pre">defined</span> <span class="pre">by</span> <span class="pre">Perram</span> <span class="pre">and</span> <span class="pre">Wertheim</span> <span class="pre">(J.</span> <span class="pre">Comp.</span> <span class="pre">Phys.</span> <span class="pre">58(3),</span> <span class="pre">409-416,</span> <span class="pre">DOI:10.1016/0021-9991(85)90171-8)</span> <span class="pre">for</span> <span class="pre">two</span> <span class="pre">ellipsoids.&quot;</span></s><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4pw858metadata11descriptionE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw858metadata12author_emailE">
+<span id="_CPPv3N4pw858metadata12author_emailE"></span><span id="_CPPv2N4pw858metadata12author_emailE"></span><span id="pw85::metadata::author_email__std::string_view"></span><span class="target" id="pw85_8hpp_1a49f26d45e3a30c2c9765d7a3b1239054"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string_view</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">author_email</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><s><span class="pre">&quot;sebastien.brisard&#64;univ-eiffel.fr&quot;</span></s><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4pw858metadata12author_emailE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw858metadata7licenseE">
+<span id="_CPPv3N4pw858metadata7licenseE"></span><span id="_CPPv2N4pw858metadata7licenseE"></span><span id="pw85::metadata::license__std::string_view"></span><span class="target" id="pw85_8hpp_1aa0ab7d6a1dd170d0634752b96e8abbd3"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string_view</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">license</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><s><span class="pre">&quot;BSD</span> <span class="pre">3-Clause</span> <span class="pre">License&quot;</span></s><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4pw858metadata7licenseE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw858metadata4nameE">
+<span id="_CPPv3N4pw858metadata4nameE"></span><span id="_CPPv2N4pw858metadata4nameE"></span><span id="pw85::metadata::name__std::string_view"></span><span class="target" id="pw85_8hpp_1ad553c9fae537640390a1f3ed3ce4884d"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string_view</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">name</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><s><span class="pre">&quot;pw85&quot;</span></s><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4pw858metadata4nameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw858metadata3urlE">
+<span id="_CPPv3N4pw858metadata3urlE"></span><span id="_CPPv2N4pw858metadata3urlE"></span><span id="pw85::metadata::url__std::string_view"></span><span class="target" id="pw85_8hpp_1afbaaf5c499b0c35f9166fa33f1ea7961"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string_view</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">url</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><s><span class="pre">&quot;https://github.com/sbrisard/pw85&quot;</span></s><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4pw858metadata3urlE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw858metadata7versionE">
+<span id="_CPPv3N4pw858metadata7versionE"></span><span id="_CPPv2N4pw858metadata7versionE"></span><span id="pw85::metadata::version__std::string_view"></span><span class="target" id="pw85_8hpp_1afb249ce1cd1afe88cf8f51a649879df6"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string_view</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">version</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><s><span class="pre">&quot;2.0&quot;</span></s><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4pw858metadata7versionE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4pw858metadata4yearE">
+<span id="_CPPv3N4pw858metadata4yearE"></span><span id="_CPPv2N4pw858metadata4yearE"></span><span id="pw85::metadata::year__std::string_view"></span><span class="target" id="pw85_8hpp_1a4c5f5d89d64f0277f349e9dc514dc35a"></span><span class="k"><span class="pre">constexpr</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string_view</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">year</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><s><span class="pre">&quot;2021&quot;</span></s><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N4pw858metadata4yearE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The C++ API</a><ul>
+<li><a class="reference internal" href="#representation-of-vectors-and-matrices">Representation of vectors and matrices</a></li>
+<li><a class="reference internal" href="#api">API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="testing.html"
+                        title="previous chapter">Testing the implementation of the contact function</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="py_api.html"
+                        title="next chapter">The python API</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cpp_api.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="py_api.html" title="The python API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="testing.html" title="Testing the implementation of the contact function"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Documentation of the pw85 library</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">The C++ API</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, S. Brisard.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.2.
+    </div>
+  </body>
+</html>
