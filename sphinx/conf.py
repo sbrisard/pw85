@@ -2,21 +2,24 @@
 import datetime
 import pathlib
 
+try:
+    import pypw85
 
-metadata_dir = pathlib.Path('../metadata')
+    project = pypw85.metadata["name"]
+    author = pypw85.metadata["author"]
+    copyright = pypw85.metadata["year"] + ", " + pypw85.metadata["author"]
+    release = pypw85.metadata["version"]
+    url = pypw85.metadata["url"]
+except ImportError:
+    from sphinx.util import logging
 
-def read_metadata(basename):
-    with open(metadata_dir/(basename+'.txt'), 'r', encoding='utf-8') as f:
-        return f.read().strip()
-
-basenames = ['version', 'author', 'repository']
-project = "pw85"
-version, author, url = [read_metadata(basename)
-                        for basename in basenames]
-release = version
-copyright = '{}–{}, {}'.format(read_metadata('year'),
-                               datetime.date.today().year,
-                               author)
+    logger = logging.getLogger(__name__)
+    logger.warn("Could not import python module; some metadata is missing")
+    project = "**MISSING PROJECT NAME**"
+    copyright = "**MISSING COPYRIGHT**"
+    author = "**MISSING AUTHOR**"
+    release = "**MISSING VERSION**"
+    url = "**MISSING URL**"
 
 title = 'Documentation of the {} library'.format(project)
 basename = project.lower()
@@ -42,7 +45,7 @@ language = 'en'
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 pygments_style = 'sphinx'
 
-html_theme = 'alabaster'
+html_theme = 'sphinxdoc'
 html_title = title
 htmlhelp_basename = basename+'doc'
 
