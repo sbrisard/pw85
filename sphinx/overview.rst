@@ -133,11 +133,9 @@ Wertheim. It is released under a BSD-3 license, and is available at
 https://github.com/sbrisard/pw85. It is fully documented at
 https://sbrisard.github.io/pw85.
 
-The core library depends on The `GNU Scientific Library (GSL)
-<https://www.gnu.org/software/gsl/>`_ (for its implementation of the Brent
-algorithm); the tests also depend on the `GLib
-<https://developer.gnome.org/glib/>`_ and `HDF5 <https://portal.hdfgroup.org/>`_
-libraries.
+The core library depends on The `boost::mathGNU
+<https://www.boost.org/doc/libs/1_76_0/libs/math/doc/html/math_toolkit/brent_minima.html>`_
+(for its implementation of the Brent algorithm).
 
 The API is extremely simple; in particular it defines no custom objects:
 parameters of all functions are either simple types (``size_t``, ``double``) or
@@ -145,17 +143,19 @@ arrays. Note that all arrays must be pre-allocated and are modified
 in-place. This minimizes the risk of creating memory leaks when implementing
 wrappers for higher-level (garbage-collected) languages.
 
-A Python wrapper (based on ``ctypes``) is also provided. It has the following
-(fairly standard) dependencies: `NumPy <https://numpy.org/>`_, `pytest
-<https://pytest.org/>`_ and `h5py <https://www.h5py.org/>`_.
+A Python wrapper (based on `pybind11
+<https://pybind11.readthedocs.io/en/stable/>`_) is also provided. It
+has the following (fairly standard) dependencies: `NumPy
+<https://numpy.org/>`_, `pytest <https://pytest.org/>`_ and `h5py
+<https://www.h5py.org/>`_.
 
 Note that when developing the library, several strategies have been tested for
-the evaluation of the function $f$ defined above, and its
-optimization. Evaluation of $f$ relies on a Cholesky decomposition of
-$\mathsf{Q}$; we tested the accuracy of this implementation over a comprehensive
-set of large-precision reference values that are available on Zenodo
-(https://doi.org/10.5281/zenodo.3323683). Optimization of $f$ first starts with
-a few iterations of Brent's robust algorithm. Then, the estimate of the
+the evaluation of the function ``f`` defined above, and its
+optimization. Evaluation of ``f`` relies on a Cholesky decomposition of ``Q``;
+we tested the accuracy of this implementation over a comprehensive set of
+large-precision reference values that are available on Zenodo
+(https://doi.org/10.5281/zenodo.3323683). Optimization of ``f`` first starts
+with a few iterations of Brent's robust algorithm. Then, the estimate of the
 minimizer is refined through a few Newton–Raphson iterations.
 
 
@@ -178,8 +178,8 @@ This project welcomes contributions. We definitely need help for the following
 points:
 
 1. Define a “Code of conduct”.
-2. Improve the Python wrapper (using Cython or a C extension).
-3. Implement wrappers for other languages (Julia, Javascript).
+2. Improve the Python wrapper (see Issue XXX).
+3. …
 
 
 Acknowledgements
