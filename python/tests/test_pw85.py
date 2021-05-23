@@ -230,8 +230,7 @@ def _test_contact_function(r12, q1, q2):
     f1 = lambda2 * rs - lambda_ * lambda1 * su
     f2 = -2.0 * rs - 2.0 * lambda2 * su + 2.0 * lambda_ * lambda1 * uv
 
-    # TODO Expose lambda_atol
-    assert np.abs(f1) <= 1.0e-6 * np.abs(f2)
+    assert np.abs(f1) <= pypw85.lambda_atol * np.abs(f2)
 
 
 def test_contact_function():

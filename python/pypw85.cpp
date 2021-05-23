@@ -17,6 +17,8 @@ PYBIND11_MODULE(pypw85, m) {
   metadata["year"] = pybind11::cast(pw85::metadata::year);
   m.attr("metadata") = metadata;
 
+  m.attr("lambda_atol") = pw85::lambda_atol;
+
   m.def(
       "_cholesky_decomp",
       [](DoubleArray a, DoubleArray l) {
