@@ -223,17 +223,6 @@ void test_pw85_contact_function_test(Vec const r12, Sym const q1,
   assert_cmp_double(0., f1, 0., pw85::lambda_atol * fabs(f2));
 }
 
-void test_pw85_f_neg_test(double lambda, const Vec r12, const Sym q1,
-                          const Sym q2, double exp, double rtol, double atol) {
-  double params[2 * pw85::sym + pw85::dim];
-  // TODO: this is ugly
-  memcpy(params, r12.data(), pw85::dim * sizeof(double));
-  memcpy(params + pw85::dim, q1.data(), pw85::sym * sizeof(double));
-  memcpy(params + pw85::dim + pw85::sym, q2.data(), pw85::sym * sizeof(double));
-  double act = -pw85::f_neg(lambda, params);
-  assert_cmp_double(exp, act, rtol, atol);
-}
-
 int main() {
   hid_t const hid = H5Fopen(PW85_REF_DATA_PATH, H5F_ACC_RDONLY, H5P_DEFAULT);
   test_pw85_init_context(hid);
