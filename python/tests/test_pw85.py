@@ -1,12 +1,9 @@
-import pathlib
-
 import h5py
 import numpy as np
-import pytest
-
+import pathlib
 import pypw85
-
-from numpy.testing import assert_allclose, assert_equal
+import pytest
+from numpy.testing import assert_allclose
 
 # Initialization
 REF_DATA = {}
@@ -16,6 +13,8 @@ with h5py.File(str(pathlib.Path.cwd() / ".." / "data" / "pw85_ref_data.h5")) as 
     REF_DATA["spheroids"] = np.asarray(f["spheroids"])
     REF_DATA["lambdas"] = np.asarray(f["lambdas"])
     REF_DATA["F"] = np.asarray(f["F"])
+
+REF_DATA["distances"] = np.array([0.15, 1.1, 11.0], dtype=np.float64)
 
 
 def empty_vec():
@@ -174,3 +173,71 @@ def test_f_neg():
                     exp = REF_DATA["F"][i1, i2, j, k]
                     act = -pypw85.f_neg(lambda_, n, q1, q2)
                     assert np.abs(act - exp) <= rtol * np.abs(exp)
+
+
+def _test_contact_function(r12, q1, q2):
+    atol = 1e-15
+    rtol = 1e-10
+
+    out = np.empty((2,), dtype=np.float64)
+    pypw85.contact_function(r12, q1, q2, out)
+    mu2 = out[0]
+    lambda_ = out[1]
+    lambda1 = 1.0 - lambda_
+
+    Q1 = np.array(
+        [[q1[0], q1[1], q1[2]], [q1[1], q1[3], q1[4]], [q1[2], q1[4], q1[5]]],
+        dtype=np.float64,
+    )
+
+    Q2 = np.array(
+        [[q2[0], q2[1], q2[2]], [q2[1], q2[3], q2[4]], [q2[2], q2[4], q2[5]]],
+        dtype=np.float64,
+    )
+    Q12 = Q2 - Q1
+    Q = (1 - lambda_) * Q1 + lambda_ * Q2
+    s = np.linalg.solve(Q, r12)
+    u = Q12 @ s
+    v = np.linalg.solve(Q, u)
+
+    rs = r12.dot(s)
+    su = s.dot(u)
+    uv = u.dot(v)
+    # We could also check that x0 belong to both (scaled) ellipsoids:
+    #
+    # mu^2 = c1x0.Q1^(-1).c1x0 = (1-lambda) c1x0.s
+    #
+    # and
+    #
+    # mu^2 = c2x0.Q2^(-1).c2x0 = -lambda c2x0.s.
+    #
+    # The code is provided below. However, the accuracy seems to be
+    # quite poor.
+    mu2_1 = lambda1 * lambda1 * (rs - lambda_ * su)
+    mu2_2 = lambda_ * lambda_ * (rs + lambda1 * su)
+
+    assert np.abs(mu2 - mu2_1) <= rtol * mu2_1 + atol
+    assert np.abs(mu2 - mu2_2) <= rtol * mu2_2 + atol
+
+    # Finally, we check that f'(lambda) = 0.
+    # The tolerance is given by the tolerance eps on lambda (defined in
+    # contact_function). The test therefore reads
+    #
+    #     |f'(lambda)| <= eps * |f"(lambda)|.
+    #
+    #  We first compute f' and f".
+    lambda2 = 1.0 - 2.0 * lambda_
+    f1 = lambda2 * rs - lambda_ * lambda1 * su
+    f2 = -2.0 * rs - 2.0 * lambda2 * su + 2.0 * lambda_ * lambda1 * uv
+
+    # TODO Expose lambda_atol
+    assert np.abs(f1) <= 1.0e-6 * np.abs(f2)
+
+
+def test_contact_function():
+    for r in REF_DATA["distances"]:
+        for n in REF_DATA["directions"]:
+            r12 = r * n
+            for q1 in REF_DATA["spheroids"]:
+                for q2 in REF_DATA["spheroids"]:
+                    _test_contact_function(r12, q1, q2)

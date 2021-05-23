@@ -5,7 +5,7 @@
 "\n"
 "with::\n"
 "\n"
-"    Q = Q = (1-λ)Q₁ + λQ₂,\n"
+"    Q = (1-λ)Q₁ + λQ₂,\n"
 "\n"
 "where ellipsoids 1 and 2 are defined as the sets of points ``m`` (column-vector)\n"
 "such that::\n"

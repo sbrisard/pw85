@@ -50,4 +50,14 @@ PYBIND11_MODULE(pypw85, m) {
 #include "docstrings/f_neg.txt"
       , pybind11::arg("lambda"), pybind11::arg("r12"), pybind11::arg("q1"),
       pybind11::arg("q2"));
+
+  m.def(
+      "contact_function",
+      [](DoubleArray r12, DoubleArray q1, DoubleArray q2, DoubleArray out) {
+        return pw85::contact_function(r12.data(), q1.data(), q2.data(),
+                                      out.mutable_data());
+      },
+#include "docstrings/contact_function.txt"
+      , pybind11::arg("r12"), pybind11::arg("q1"), pybind11::arg("q2"),
+      pybind11::arg("out"));
 }
