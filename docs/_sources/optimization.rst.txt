@@ -18,9 +18,9 @@ otpimization of ``f``, we therefore proceed in two steps.
 
 In the first step, we use a robust optimization algorithm. We selected here
 `Brent's method <https://en.wikipedia.org/wiki/Brent%27s_method>`_, as
-implemented in the `GNU Scientific Library (GSL)
-<https://www.gnu.org/software/gsl/>`_. However, this method delivers a
-relatively low accuracy of the maxmimizer and the maximum.
+implemented in the `Boost::Math library
+<https://www.boost.org/doc/libs/1_75_0/libs/math/>`_. However, this method
+delivers a relatively low accuracy of the maxmimizer and the maximum.
 
 Therefore, in the second step, we use a few Newton–Raphson iterations to refine
 the previously obtained estimates of the minimizer and minimum of ``f``. In the
