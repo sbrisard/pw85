@@ -20,6 +20,12 @@ pw85 is released under a BSD 3-Clause License.
 
 ## Release notes
 
+### New in version 2.0 (2021-05-03)
+
+- moved to C++
+- header-only library
+- Python bindings
+
 ### New in version 1.1
 
 - pw85 now relies on the CMake build system
