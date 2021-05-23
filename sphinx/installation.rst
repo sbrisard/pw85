@@ -32,7 +32,7 @@ and inform the compiler of its location.
 .. note:: pw85 depends on `Boost::Math <https://www.boost.org/doc/libs/1_75_0/libs/math/>`_
 	  (for the implementation of the Brent algorithm). You must pass the
 	  relevant options to the compiler. Typically, these would be ``-I``
-	  options. The C++ tutorials provides a :ref:`CMake example <sec20210415083504>`.
+	  options. The C++ tutorials provides a :ref:`CMake example <sec20210523205251>`.
 
 To run the tests or build the documentation properly, you need to first build
 the python bindings (see :ref:`below <sec20210523203528>`).

@@ -184,7 +184,9 @@ then evaluated through the following script (:download:`download source file
 
 .. note:: To compute this program, you might need to pass the options
           ``-Dpw85_include=…``, ``-Dpw85_lib=…`` and ``-Dpw85_data=…``
-          to ``meson`` (see :ref:`c-tutorial`).
+          to ``meson``.
+
+.. note:: The provided script refers to an old implementation of pw85.
 
 We get the histograms shown in :numref:`implementation-histograms`. These
 histograms show that :ref:`Implementation #1 <implementation-cholesky>` is more
