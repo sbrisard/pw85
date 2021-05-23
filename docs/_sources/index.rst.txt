@@ -35,5 +35,5 @@ This library is released under a BSD 3-Clause License.
    implementation
    optimization
    testing
-   c_api
+   cpp_api
    py_api
