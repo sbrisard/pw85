@@ -2,8 +2,14 @@ cmake_minimum_required(VERSION 3.13)
 
 project("tutorial")
 
-find_package(GSL REQUIRED)
-find_package(pw85 CONFIG REQUIRED)
+
+find_library(MATH_LIBRARY m)
+if (MATH_LIBRARY)
+    target_link_libraries(${PROJECT_NAME} INTERFACE ${MATH_LIBRARY})
+endif()
+
+find_package(Boost REQUIRED)
+target_link_libraries(${PROJECT_NAME} INTERFACE Boost::headers)
 
 add_executable(${PROJECT_NAME} ${PROJECT_NAME}.c)
 target_link_libraries(${PROJECT_NAME} pw85)
