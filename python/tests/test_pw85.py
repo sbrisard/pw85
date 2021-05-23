@@ -1,20 +1,48 @@
+import hashlib
 import h5py
 import numpy as np
+import os.path
 import pathlib
 import pypw85
 import pytest
+import urllib.request
+import shutil
+
 from numpy.testing import assert_allclose
 
-# Initialization
 REF_DATA = {}
-with h5py.File(str(pathlib.Path.cwd() / ".." / "data" / "pw85_ref_data.h5")) as f:
-    REF_DATA["radii"] = np.asarray(f["radii"])
-    REF_DATA["directions"] = np.asarray(f["directions"])
-    REF_DATA["spheroids"] = np.asarray(f["spheroids"])
-    REF_DATA["lambdas"] = np.asarray(f["lambdas"])
-    REF_DATA["F"] = np.asarray(f["F"])
 
-REF_DATA["distances"] = np.array([0.15, 1.1, 11.0], dtype=np.float64)
+def download_file(url, path, md5):
+    should_download = True
+    if os.path.exists(path):
+        hash_md5 = hashlib.md5()
+        with open(path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        if hash_md5.hexdigest() == md5:
+            should_download = False
+    if should_download:
+        with urllib.request.urlopen(url) as r, open(path, "wb") as f:
+            shutil.copyfileobj(r, f)
+
+
+def setup_module():
+    url = "https://zenodo.org/record/3323683/files/pw85_ref_data-20190712.h5"
+    md5 = "6009b2a9abde129113612825ee105546"
+
+    path = pathlib.Path.cwd() / ".." / "data"
+    path.mkdir(exist_ok=True)
+    path /= "pw85_ref_data.h5"
+    download_file(url, path, md5)
+
+    with h5py.File(str(path)) as f:
+        REF_DATA["radii"] = np.asarray(f["radii"])
+        REF_DATA["directions"] = np.asarray(f["directions"])
+        REF_DATA["spheroids"] = np.asarray(f["spheroids"])
+        REF_DATA["lambdas"] = np.asarray(f["lambdas"])
+        REF_DATA["F"] = np.asarray(f["F"])
+
+    REF_DATA["distances"] = np.array([0.15, 1.1, 11.0], dtype=np.float64)
 
 
 def empty_vec():
@@ -67,10 +95,7 @@ def test_cholesky_solve(l, b, exp, rtol):
     assert_allclose(act, exp, rtol=rtol, atol=0.0)
 
 
-@pytest.mark.parametrize("a", REF_DATA["radii"])
-@pytest.mark.parametrize("c", REF_DATA["radii"])
-@pytest.mark.parametrize("n", REF_DATA["directions"])
-def test_spheroid(a, c, n):
+def _test_spheroid(a, c, n):
     # Relative and absolute tolerance on the coefficients of the matrix
     # q to be computed and tested.
     rtol = atol = 1e-15
@@ -164,6 +189,13 @@ def test_spheroid(a, c, n):
     assert np.abs(act - exp) <= tol
 
 
+def test_spheroid():
+    for a in REF_DATA["radii"]:
+        for c in REF_DATA["radii"]:
+            for n in REF_DATA["directions"]:
+                _test_spheroid(a, c, n)
+
+
 def test_f_neg():
     rtol = 1e-10
     for i1, q1 in enumerate(REF_DATA["spheroids"]):
@@ -240,3 +272,6 @@ def test_contact_function():
             for q1 in REF_DATA["spheroids"]:
                 for q2 in REF_DATA["spheroids"]:
                     _test_contact_function(r12, q1, q2)
+
+if __name__ == "__main__":
+    setup_module()
