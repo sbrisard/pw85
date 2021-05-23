@@ -7,53 +7,78 @@ Installation
 .. contents:: Contents
    :local:
 
-.. highlight:: none
+First of all, clone the repository
 
-Installing the C library
-========================
+.. code-block:: none
 
-The C library depends on
+  $ git clone https://github.com/sbrisard/pw85
 
-1. The `Boost.Math <https://www.boost.org/doc/libs/1_75_0/libs/math/>`_ (for the
-   implementation of the Brent algorithm)
-2. The `HDF5 <https://portal.hdfgroup.org/>`_ (for testing purposes)
-3. The `Eigen <http://eigen.tuxfamily.org/index.php?title=Main_Page>`_ (for
-   testing purposes)
 
-This is a CMake_ based project. The installation procedure is standard. First,
-clone the repository. Then, ``cd`` into the root directory of the
-pw85 project. Let
-``pw85_INSTALL_PREFIX`` be the path to the directory
-where pw85 should be installed::
+Installing the C++ library
+==========================
 
-  $ git clone https://github.com/sbrisard/pw85.git
-  $ cd pw85
-  $ mkdir build
-  $ cd build
-  $ cmake -DCMAKE_INSTALL_PREFIX=pw85_INSTALL_PREFIX ..
-  $ cmake --build . --config Release
-  $ cmake --install . --config Release
+pw85 is a header-only library: there is no installation procedure *per se* and
+you can drop the header wherever you like (as long as it is located in a
+``pw85`` subdirectory). To use pw85 in a C++ project, you must include the
+header
 
-.. note:: The ``--config`` option might not be available, depending on the
-   selected generator.
 
-At this point, pw85 should be installed. You can now
-run the tests::
+.. code-block:: cpp
 
-  $ ctest . -C Release
+   #include <pw85/pw85.hpp>
 
-.. note:: Depending on the system, you might need to add
-   ``pw85_INSTALL_PREFIX`` to your ``PATH`` environment
-   variable.
+and inform the compiler of its location.
+
+.. note:: pw85 depends on `Boost::Math <https://www.boost.org/doc/libs/1_75_0/libs/math/>`_
+	  (for the implementation of the Brent algorithm). You must pass the
+	  relevant options to the compiler. Typically, these would be ``-I``
+	  options. The C++ tutorials provides a :ref:`CMake example <sec20210415083504>`.
+
+To run the tests or build the documentation properly, you need to first build
+the python bindings (see :ref:`below <sec20210523203528>`).
+
 
 To further test your installation, build the example in the :ref:`c-tutorial`.
+
+
+.. _sec20210523203528:
+
+Installing the Python bindings
+==============================
+
+The Python bindings are built with pybind11_, which must be installed.
+
+To install the pw85 module, ``cd`` into the ``python`` subdirectory and run
+the ``setup.py`` script as follows.
+
+First, build the extension::
+
+  $ python setup.py build_ext -Ipath/to/boost/math
+
+When the extension is built, installation is down as usual::
+
+  $ python setup.py install --user
+
+or (if you intend to edit the project)::
+
+  $ python setup.py develop --user
+
+To run the tests with Pytest_::
+
+  $ python -m pytest tests
+
+(beware, these tests take some time!).
 
 
 Building the documentation
 ==========================
 
-The documentation of pw85 requires Sphinx_. The C++ API
-docs are built with Doxygen_ and the Breathe_ extension to Sphinx_.
+.. note:: For the documentation to build properly, the python module
+          must be installed, as it is imported to retrieve the project
+          metadata.
+
+The documentation of pw85 requires Sphinx_. The C++ API docs are built with
+Doxygen_ and the Breathe_ extension to Sphinx_.
 
 To build the HTML version of the docs in the ``docs`` subdirectory::
 
@@ -66,84 +91,10 @@ To build the LaTeX version of the docs::
   $ make latex
 
 
-Installing the Python bindings
-==============================
-
-**—————————— This section to be needed when pybind11 is used.**
-
-To install the pw85 module, ``cd`` into the ``python`` subdirectory and edit the
-``setup.cfg`` file. Set the ``include_dir`` and ``library_dir`` to the
-appropriate paths. These should be::
-
-  [pw85]
-  include_dir = ${CMAKE_INSTALL_PREFIX}/include
-  library_dir = ${CMAKE_INSTLAL_PREFIX}/lib
-
-Then, issue the following command::
-
-  $ python setup.py install --user
-
-or (if you intend to edit the project)::
-
-  $ python setup.py develop --user
-
-**—————————— End of this section.**
-
-You need to define the location of the dynamic libraries, for ``ctypes`` to be
-able to import it. This is done through the ``pw85.cfg`` file, which you must
-create and place in the following directory
-
-- Windows 10/8/7/Vista: ``C:\Users\<username>\AppData\Roaming\pw85``
-- Windows XP/2000: ``C:\Documents and Settings\<username>\Application
-  Data\pw85``
-- Mac: ``/Users/<username>/Library/Application Support/pw85``
-- Linux: ``~/.pw85``
-
-(in all cases, the ``pw85`` subdirectory must be created). The contents of the
-``pw85.cfg`` file should be::
-
-  [pw85]
-  libpw85 = full/path/to/the/pw85/dynamic/library
-  libpw85_legacy = full/path/to/the/pw85_legacy/dynamic/library
-  datadir = full/path/to/the/pw85/data/directory
-
-where the ``libpw85`` and ``libpw85_legacy`` entries are the full path to the
-dynamic libraries (``*.dll``, ``*.so`` or ``*.dylib``) *including their
-name*. All these configure opions can be retrieved from the output of
-``cmake --install .``. For example, on a Windows machine, where the output was::
-
-  $ cmake --install .
-  -- Install configuration: ""
-  -- Installing: C:/opt/pw85/include/pw85
-  -- Installing: C:/opt/pw85/include/pw85/pw85.h
-  -- Installing: C:/opt/pw85/include/pw85/pw85_legacy.h
-  -- Installing: C:/opt/pw85/lib/libpw85.dll.a
-  -- Installing: C:/opt/pw85/lib/libpw85.dll
-  -- Installing: C:/opt/pw85/lib/cmake/pw85/pw85-targets.cmake
-  -- Installing: C:/opt/pw85/lib/cmake/pw85/pw85-targets-noconfig.cmake
-  -- Installing: C:/opt/pw85/lib/cmake/pw85/pw85-config.cmake
-
-the contents of ``pw85.cfg`` is::
-
-  [pw85]
-  libpw85 = C:/opt/pw85/lib/libpw85.dll
-  libpw85_legacy = C:/opt/pw85/lib/libpw85_legacy.dll
-  datadir = C:/opt/pw85/share/pw85
-
-To run the tests with Pytest_::
-
-  $ python -m pytest tests/test_pw85.py
-
-You can also test the “legacy” API. This requires the h5py_ module. To run the
-tests, issue the command::
-
-  $ python -m pytest tests/test_pw85_legacy.py
-
-(beware, these tests take some time!).
-
 .. _Breathe: https://breathe.readthedocs.io/
 .. _CMake: https://cmake.org/
 .. _Doxygen: https://www.doxygen.nl/
+.. _pybind11: https://pybind11.readthedocs.io/
 .. _Pytest: https://docs.pytest.org/
 .. _Sphinx: https://www.sphinx-doc.org/
 .. _h5py: https://www.h5py.org/
