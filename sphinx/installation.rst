@@ -38,7 +38,7 @@ To run the tests or build the documentation properly, you need to first build
 the python bindings (see :ref:`below <sec20210523203528>`).
 
 
-To further test your installation, build the example in the :ref:`c-tutorial`.
+To further test your installation, build the example in the :ref:`sec20210523205251`.
 
 
 .. _sec20210523203528:
