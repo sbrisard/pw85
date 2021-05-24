@@ -69,6 +69,30 @@ To run the tests with Pytest_::
 
 (beware, these tests take some time!).
 
+.. note:: Upon first execution, the test script will attempt to retrieve some
+          precomputed reference data. In case of failure (e.g. if you sit behind
+          a firewall), this reference file can be downloaded manually at this
+          address: https://zenodo.org/record/3323683/files/pw85_ref_data-20190712.h5
+
+	  The file should be placed in the ``data/`` subdirectory, at the root
+	  of the project, and should be renamed ``pw85_ref_data.h5``::
+
+              ├───data
+              │   └───pw85_ref_data.h5
+              ├───docs
+              ├───include
+              │   └───pw85
+              ├───joss
+              ├───legacy
+              ├───python
+              │   ├───docstrings
+              │   └───tests
+              └───sphinx
+                  ├───cpp_tutorial
+                  ├───implementation
+                  │   └───f_accuracy
+                  └───py_tutorial
+
 
 Building the documentation
 ==========================
