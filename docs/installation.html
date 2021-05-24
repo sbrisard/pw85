@@ -45,20 +45,12 @@
             
   <section id="installation">
 <span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<div class="contents local topic" id="contents">
-<p class="topic-title">Contents</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#installing-the-c-library" id="id2">Installing the C++ library</a></p></li>
-<li><p><a class="reference internal" href="#installing-the-python-bindings" id="id3">Installing the Python bindings</a></p></li>
-<li><p><a class="reference internal" href="#building-the-documentation" id="id4">Building the documentation</a></p></li>
-</ul>
-</div>
 <p>First of all, clone the repository</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/sbrisard/pw85
 </pre></div>
 </div>
 <section id="installing-the-c-library">
-<h2><a class="toc-backref" href="#id2">Installing the C++ library</a><a class="headerlink" href="#installing-the-c-library" title="Permalink to this headline">¶</a></h2>
+<h2>Installing the C++ library<a class="headerlink" href="#installing-the-c-library" title="Permalink to this headline">¶</a></h2>
 <p>pw85 is a header-only library: there is no installation procedure <em>per se</em> and
 you can drop the header wherever you like (as long as it is located in a
 <code class="docutils literal notranslate"><span class="pre">pw85</span></code> subdirectory). To use pw85 in a C++ project, you must include the
@@ -79,7 +71,7 @@ the python bindings (see <a class="reference internal" href="#sec20210523203528"
 <p>To further test your installation, build the example in the <a class="reference internal" href="tutorial.html#sec20210523205251"><span class="std std-ref">C++ tutorial</span></a>.</p>
 </section>
 <section id="installing-the-python-bindings">
-<span id="sec20210523203528"></span><h2><a class="toc-backref" href="#id3">Installing the Python bindings</a><a class="headerlink" href="#installing-the-python-bindings" title="Permalink to this headline">¶</a></h2>
+<span id="sec20210523203528"></span><h2>Installing the Python bindings<a class="headerlink" href="#installing-the-python-bindings" title="Permalink to this headline">¶</a></h2>
 <p>The Python bindings are built with <a class="reference external" href="https://pybind11.readthedocs.io/">pybind11</a>, which must be installed.</p>
 <p>To install the pw85 module, <code class="docutils literal notranslate"><span class="pre">cd</span></code> into the <code class="docutils literal notranslate"><span class="pre">python</span></code> subdirectory and run
 the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> script as follows.</p>
@@ -100,9 +92,35 @@ the <code class="docutils literal notranslate"><span class="pre">setup.py</span>
 </pre></div>
 </div>
 <p>(beware, these tests take some time!).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Upon first execution, the test script will attempt to retrieve some
+precomputed reference data. In case of failure (e.g. if you sit behind
+a firewall), this reference file can be downloaded manually at this
+address: <a class="reference external" href="https://zenodo.org/record/3323683/files/pw85_ref_data-20190712.h5">https://zenodo.org/record/3323683/files/pw85_ref_data-20190712.h5</a></p>
+<p>The file should be placed in the <code class="docutils literal notranslate"><span class="pre">data/</span></code> subdirectory, at the root
+of the project, and should be renamed <code class="docutils literal notranslate"><span class="pre">pw85_ref_data.h5</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>├───data
+│   └───pw85_ref_data.h5
+├───docs
+├───include
+│   └───pw85
+├───joss
+├───legacy
+├───python
+│   ├───docstrings
+│   └───tests
+└───sphinx
+    ├───cpp_tutorial
+    ├───implementation
+    │   └───f_accuracy
+    └───py_tutorial
+</pre></div>
+</div>
+</div>
 </section>
 <section id="building-the-documentation">
-<h2><a class="toc-backref" href="#id4">Building the documentation</a><a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h2>
+<h2>Building the documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For the documentation to build properly, the python module

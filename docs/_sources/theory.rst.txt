@@ -4,9 +4,6 @@
 Theory
 ******
 
-.. contents:: Contents
-   :local:
-
 This chapter provides the theoretical background to the Perram–Wertheim
 algorithm [PW85]_. We use matrices rather than tensors: a point/vector is
 therefore defined through the 3×1 column-vector of its coordinates. Likewise, a

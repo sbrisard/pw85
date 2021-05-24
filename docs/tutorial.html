@@ -45,17 +45,6 @@
             
   <section id="tutorial">
 <span id="id1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
-<div class="contents local topic" id="contents">
-<p class="topic-title">Contents</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#python-tutorial" id="id2">Python tutorial</a></p>
-<ul>
-<li><p><a class="reference internal" href="#checking-the-output" id="id3">Checking the output</a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#c-tutorial" id="id4">C++ tutorial</a></p></li>
-</ul>
-</div>
 <p>In this tutorial, we consider two ellipsoids, and check wether or not
 they overlap.</p>
 <p>Ellipsoid <code class="docutils literal notranslate"><span class="pre">E₁</span></code> is an <a class="reference external" href="https://en.wikipedia.org/wiki/Spheroid">oblate spheroid</a> centered at point <code class="docutils literal notranslate"><span class="pre">x₁</span> <span class="pre">=</span> <span class="pre">(-0.5,</span> <span class="pre">0.4,</span>
@@ -79,7 +68,7 @@ compute the matrices themselves.</p>
 <p>We first check for the overlap of <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code> using the Python wrapper of
 <code class="docutils literal notranslate"><span class="pre">pw85</span></code>. We will then illustrate the C API.</p>
 <section id="python-tutorial">
-<h2><a class="toc-backref" href="#id2">Python tutorial</a><a class="headerlink" href="#python-tutorial" title="Permalink to this headline">¶</a></h2>
+<h2>Python tutorial<a class="headerlink" href="#python-tutorial" title="Permalink to this headline">¶</a></h2>
 <p>The Python module relies on <a class="reference external" href="www.numpy.org">NumPy</a> for passing arrays to the
 underlying C library. We therefore import both modules:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -125,7 +114,7 @@ must be <em>preallocated</em>:</p>
 <p>We find that <code class="docutils literal notranslate"><span class="pre">μ²</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>, hence <code class="docutils literal notranslate"><span class="pre">μ</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>. In other words, both ellipsoids must
 be <em>swollen</em> in order to bring them in contact: the ellipsoids do not overlap!</p>
 <section id="checking-the-output">
-<h3><a class="toc-backref" href="#id3">Checking the output</a><a class="headerlink" href="#checking-the-output" title="Permalink to this headline">¶</a></h3>
+<h3>Checking the output<a class="headerlink" href="#checking-the-output" title="Permalink to this headline">¶</a></h3>
 <p>The output of this simulation can readily be checked. First, we can check that
 <code class="docutils literal notranslate"><span class="pre">q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">q₂</span></code> indeed represent the ellipsoids <code class="docutils literal notranslate"><span class="pre">E₁</span></code> and <code class="docutils literal notranslate"><span class="pre">E₂</span></code>. To do so,
 we first construct the symmetric matrices <code class="docutils literal notranslate"><span class="pre">Q₁</span></code> and <code class="docutils literal notranslate"><span class="pre">Q₂</span></code> from their upper
@@ -256,7 +245,7 @@ contact. QED</p>
 </section>
 </section>
 <section id="c-tutorial">
-<span id="sec20210523205251"></span><h2><a class="toc-backref" href="#id4">C++ tutorial</a><a class="headerlink" href="#c-tutorial" title="Permalink to this headline">¶</a></h2>
+<span id="sec20210523205251"></span><h2>C++ tutorial<a class="headerlink" href="#c-tutorial" title="Permalink to this headline">¶</a></h2>
 <p>The Python interface to PW85 has been kept close to the undelying C++ API. The
 following C++ program (<a class="reference download internal" download="" href="_downloads/c2b7b2965f34e12a0073f1577700ca31/tutorial.cpp"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">source</span> <span class="pre">file</span></code></a>) defines the two ellipsoids, then computes <code class="docutils literal notranslate"><span class="pre">μ²</span></code>
 and <code class="docutils literal notranslate"><span class="pre">λ</span></code>:</p>
