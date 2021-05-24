@@ -4,9 +4,6 @@
 Installation
 ************
 
-.. contents:: Contents
-   :local:
-
 First of all, clone the repository
 
 .. code-block:: none

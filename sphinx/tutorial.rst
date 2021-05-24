@@ -4,9 +4,6 @@
 Tutorial
 ********
 
-.. contents:: Contents
-   :local:
-
 In this tutorial, we consider two ellipsoids, and check wether or not
 they overlap.
 
